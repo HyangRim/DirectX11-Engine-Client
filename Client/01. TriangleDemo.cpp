@@ -30,5 +30,5 @@ void TriangleDemo::Render()
 	DC->IASetVertexBuffers(0, 1, _buffer->GetComPtr().GetAddressOf(), &stride, &offset);
 
 	//_buffer->GetCount()
-	_shader->Draw(1, 0, 3);
+	_shader->Draw(0, 1, 3);
 }
