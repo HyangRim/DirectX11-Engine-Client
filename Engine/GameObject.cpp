@@ -4,7 +4,7 @@
 #include "Transform.h"
 #include "Component.h"
 #include "MonoBehaviour.h"
-//#include "MeshRenderer.h"
+#include "MeshRenderer.h"
 #include "Camera.h"
 //#include "Animator.h"
 //#include "Animation.h"
@@ -100,13 +100,13 @@ shared_ptr<Camera> GameObject::GetCamera()
 	shared_ptr<Component> component = GetFixedComponent(ComponentType::Camera);
 	return static_pointer_cast<Camera>(component);
 }
-/*
+
 shared_ptr<MeshRenderer> GameObject::GetMeshRenderer()
 {
 	shared_ptr<Component> component = GetFixedComponent(ComponentType::MeshRenderer);
 	return static_pointer_cast<MeshRenderer>(component);
 }
-*/
+
 shared_ptr<Transform> GameObject::GetOrAddTransform()
 {
 	if (GetTransform() == nullptr) {
@@ -122,8 +122,8 @@ shared_ptr<Animator> GameObject::GetAnimator()
 {
 	shared_ptr<Component> component = GetFixedComponent(ComponentType::Animator);
 	return static_pointer_cast<Animator>(component);
-}
-*/
+}*/
+
 void GameObject::AddComponent(shared_ptr<Component> _component)
 {
 	//enable_shared_from_this 안쓰고, this로 그냥 넘겨주면. 

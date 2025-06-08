@@ -4,8 +4,12 @@
 #include "02. QuadDemo.h"
 #include "03. ConstBufferDemo.h"
 #include "04. CameraDemo.h"
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
-{
+#include "05. TextureDemo.h"
+#include "06. SamplerDemo.h"
+#include "07. HeightDemo.h"
+#include "08. NormalDemo.h"
+#include "09. MeshDemo.h"
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCm{
 	GameDesc desc;
 	desc.appName = L"GameCoding";
 	desc.hInstance = hInstance;
@@ -14,7 +18,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	desc.width = 1366;
 	desc.height = 768;
 	desc.clearColor = Color(0.5f, 0.5f, 0.5f, 0.5f);
-	desc.app = make_shared<CameraDemo>();
+	desc.app = make_shared<MeshDemo>();
 
 	GAME->Run(desc);
 

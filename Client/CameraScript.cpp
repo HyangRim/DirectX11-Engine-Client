@@ -29,9 +29,31 @@ void CameraScript::Update()
 	GetTransform()->SetPosition(pos);
 
 
-	if (INPUT->GetButton(KEY_TYPE::Q)) {
+	if (INPUT->GetButton(KEY_TYPE::Q))
+	{
 		Vec3 rotation = GetTransform()->GetLocalRotation();
 		rotation.x += dt * 0.5f;
+		GetTransform()->SetLocalRotation(rotation);
+	}
+
+	if (INPUT->GetButton(KEY_TYPE::E))
+	{
+		Vec3 rotation = GetTransform()->GetLocalRotation();
+		rotation.x -= dt * 0.5f;
+		GetTransform()->SetLocalRotation(rotation);
+	}
+
+	if (INPUT->GetButton(KEY_TYPE::Z))
+	{
+		Vec3 rotation = GetTransform()->GetLocalRotation();
+		rotation.y += dt * 0.5f;
+		GetTransform()->SetLocalRotation(rotation);
+	}
+
+	if (INPUT->GetButton(KEY_TYPE::C))
+	{
+		Vec3 rotation = GetTransform()->GetLocalRotation();
+		rotation.y -= dt * 0.5f;
 		GetTransform()->SetLocalRotation(rotation);
 	}
 
