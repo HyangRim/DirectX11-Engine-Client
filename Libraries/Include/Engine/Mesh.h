@@ -15,16 +15,16 @@ public:
 	void CreateGrid(int32 sizeX, int32 sizeZ);
 	void CreateSphere();
 
-	shared_ptr<VertexBuffer> GetVertexBuffer() { return _vertexBuffer; }
-	shared_ptr<IndexBuffer> GetIndexBuffer() { return _indexBuffer; }
+	shared_ptr<VertexBuffer> GetVertexBuffer() { return m_vertexBuffer; }
+	shared_ptr<IndexBuffer> GetIndexBuffer() { return m_indexBuffer; }
 
 private:
 	void CreateBuffers();
 
 private:
 	// Mesh
-	shared_ptr<Geometry<VertexTextureNormalData>> _geometry;
-	shared_ptr<VertexBuffer> _vertexBuffer;
-	shared_ptr<IndexBuffer> _indexBuffer;
+	shared_ptr<Geometry<VertexTextureNormalData>> m_geometry;
+	shared_ptr<VertexBuffer> m_vertexBuffer;
+	shared_ptr<IndexBuffer> m_indexBuffer;
 };
 

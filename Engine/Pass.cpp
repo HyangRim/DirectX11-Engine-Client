@@ -1,70 +1,70 @@
 #include "pch.h"
 #include "Pass.h"
 
-void Pass::Draw(UINT vertexCount, UINT startVertexLocation)
+void Pass::Draw(UINT _vertexCount, UINT _startVertexLocation)
 {
 	BeginDraw();
 	{
-		DC->Draw(vertexCount, startVertexLocation);
+		DC->Draw(_vertexCount, _startVertexLocation);
 	}
 	EndDraw();
 }
 
-void Pass::DrawIndexed(UINT indexCount, UINT startIndexLocation, INT baseVertexLocation)
+void Pass::DrawIndexed(UINT _indexCount, UINT _startIndexLocation, INT _baseVertexLocation)
 {
 	BeginDraw();
 	{
-		DC->DrawIndexed(indexCount, startIndexLocation, baseVertexLocation);
+		DC->DrawIndexed(_indexCount, _startIndexLocation, _baseVertexLocation);
 	}
 	EndDraw();
 }
 
-void Pass::DrawInstanced(UINT vertexCountPerInstance, UINT instanceCount, UINT startVertexLocation, UINT startInstanceLocation)
+void Pass::DrawInstanced(UINT _vertexCountPerInstance, UINT _instanceCount, UINT _startVertexLocation, UINT _startInstanceLocation)
 {
 	BeginDraw();
 	{
-		DC->DrawInstanced(vertexCountPerInstance, instanceCount, startVertexLocation, startInstanceLocation);
+		DC->DrawInstanced(_vertexCountPerInstance, _instanceCount, _startVertexLocation, _startInstanceLocation);
 	}
 	EndDraw();
 }
 
-void Pass::DrawIndexedInstanced(UINT indexCountPerInstance, UINT instanceCount, UINT startIndexLocation, INT baseVertexLocation, UINT startInstanceLocation)
+void Pass::DrawIndexedInstanced(UINT _indexCountPerInstance, UINT _instanceCount, UINT _startIndexLocation, INT _baseVertexLocation, UINT _startInstanceLocation)
 {
 	BeginDraw();
 	{
-		DC->DrawIndexedInstanced(indexCountPerInstance, instanceCount, startIndexLocation, baseVertexLocation, startIndexLocation);
+		DC->DrawIndexedInstanced(_indexCountPerInstance, _instanceCount, _startIndexLocation, _baseVertexLocation, _startInstanceLocation);
 	}
 	EndDraw();
 }
 
 void Pass::BeginDraw()
 {
-	pass->ComputeStateBlockMask(&stateblockMask);
+	m_pass->ComputeStateBlockMask(&m_stateblockMask);
 
-	DC->IASetInputLayout(inputLayout.Get());
-	pass->Apply(0, DC.Get());
+	DC->IASetInputLayout(m_inputLayout.Get());
+	m_pass->Apply(0, DC.Get());
 }
 
 void Pass::EndDraw()
 {
-	if (stateblockMask.RSRasterizerState == 1)
-		DC->RSSetState(stateBlock->RSRasterizerState.Get());
+	if (m_stateblockMask.RSRasterizerState == 1)
+		DC->RSSetState(m_stateBlock->m_RSRasterizerState.Get());
 
-	if (stateblockMask.OMDepthStencilState == 1)
-		DC->OMSetDepthStencilState(stateBlock->OMDepthStencilState.Get(), stateBlock->OMStencilRef);
+	if (m_stateblockMask.OMDepthStencilState == 1)
+		DC->OMSetDepthStencilState(m_stateBlock->m_OMDepthStencilState.Get(), m_stateBlock->m_OMStencilRef);
 
-	if (stateblockMask.OMBlendState == 1)
-		DC->OMSetBlendState(stateBlock->OMBlendState.Get(), stateBlock->OMBlendFactor, stateBlock->OMSampleMask);
+	if (m_stateblockMask.OMBlendState == 1)
+		DC->OMSetBlendState(m_stateBlock->m_OMBlendState.Get(), m_stateBlock->m_OMBlendFactor, m_stateBlock->m_OMSampleMask);
 
 	DC->HSSetShader(NULL, NULL, 0);
 	DC->DSSetShader(NULL, NULL, 0);
 	DC->GSSetShader(NULL, NULL, 0);
 }
 
-void Pass::Dispatch(UINT x, UINT y, UINT z)
+void Pass::Dispatch(UINT _x, UINT _y, UINT _z)
 {
-	pass->Apply(0, DC.Get());
-	DC->Dispatch(x, y, z);
+	m_pass->Apply(0, DC.Get());
+	DC->Dispatch(_x, _y, _z);
 
 	ID3D11ShaderResourceView* null[1] = { 0 };
 	DC->CSSetShaderResources(0, 1, null);

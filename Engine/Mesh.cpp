@@ -14,36 +14,36 @@ Mesh::~Mesh()
 
 void Mesh::CreateQuad()
 {
-	_geometry = make_shared<Geometry<VertexTextureNormalData>>();
-	GeometryHelper::CreateQuad(_geometry);
+	m_geometry = make_shared<Geometry<VertexTextureNormalData>>();
+	GeometryHelper::CreateQuad(m_geometry);
 	CreateBuffers();
 }
 
 void Mesh::CreateCube()
 {
-	_geometry = make_shared<Geometry<VertexTextureNormalData>>();
-	GeometryHelper::CreateCube(_geometry);
+	m_geometry = make_shared<Geometry<VertexTextureNormalData>>();
+	GeometryHelper::CreateCube(m_geometry);
 	CreateBuffers();
 }
 
 void Mesh::CreateGrid(int32 sizeX, int32 sizeZ)
 {
-	_geometry = make_shared<Geometry<VertexTextureNormalData>>();
-	GeometryHelper::CreateGrid(_geometry, sizeX, sizeZ);
+	m_geometry = make_shared<Geometry<VertexTextureNormalData>>();
+	GeometryHelper::CreateGrid(m_geometry, sizeX, sizeZ);
 	CreateBuffers();
 }
 
 void Mesh::CreateSphere()
 {
-	_geometry = make_shared<Geometry<VertexTextureNormalData>>();
-	GeometryHelper::CreateSphere(_geometry);
+	m_geometry = make_shared<Geometry<VertexTextureNormalData>>();
+	GeometryHelper::CreateSphere(m_geometry);
 	CreateBuffers();
 }
 
 void Mesh::CreateBuffers()
 {
-	_vertexBuffer = make_shared<VertexBuffer>();
-	_vertexBuffer->Create(_geometry->GetVertices());
-	_indexBuffer = make_shared<IndexBuffer>();
-	_indexBuffer->Create(_geometry->GetIndices());
+	m_vertexBuffer = make_shared<VertexBuffer>();
+	m_vertexBuffer->Create(m_geometry->GetVertices());
+	m_indexBuffer = make_shared<IndexBuffer>();
+	m_indexBuffer->Create(m_geometry->GetIndices());
 }

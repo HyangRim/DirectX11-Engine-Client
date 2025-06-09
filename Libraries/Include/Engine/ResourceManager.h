@@ -13,13 +13,13 @@ public:
 	void Init();
 
 	template<typename T>
-	shared_ptr<T> Load(const wstring& key, const wstring& path);
+	shared_ptr<T> Load(const wstring& _key, const wstring& _path);
 
 	template<typename T>
-	bool Add(const wstring& key, shared_ptr<T> object);
+	bool Add(const wstring& _key, shared_ptr<T> _object);
 
 	template<typename T>
-	shared_ptr<T> Get(const wstring& key);
+	shared_ptr<T> Get(const wstring& _key);
 
 	template<typename T>
 	ResourceType GetResourceType();
@@ -28,52 +28,52 @@ private:
 	void CreateDefaultMesh();
 
 private:
-	wstring _resourcePath;
+	wstring m_resourcePath;
 
 private:
 	using KeyObjMap = map<wstring/*key*/, shared_ptr<ResourceBase>>;
-	array<KeyObjMap, RESOURCE_TYPE_COUNT> _resources;
+	array<KeyObjMap, RESOURCE_TYPE_COUNT> m_resources;
 };
 
 template<typename T>
 shared_ptr<T>
-ResourceManager::Load(const wstring& key, const wstring& path)
+ResourceManager::Load(const wstring& _key, const wstring& _path)
 {
 	auto objectType = GetResourceType<T>();
-	KeyObjMap& keyObjMap = _resources[static_cast<uint8>(objectType)];
+	KeyObjMap& keyObjMap = m_resources[static_cast<uint8>(objectType)];
 
-	auto findIt = keyObjMap.find(key);
+	auto findIt = keyObjMap.find(_key);
 	if (findIt != keyObjMap.end())
 		return static_pointer_cast<T>(findIt->second);
 
 	shared_ptr<T> object = make_shared<T>();
-	object->Load(path);
-	keyObjMap[key] = object;
+	object->Load(_path);
+	keyObjMap[_key] = object;
 
 	return object;
 }
 
 template<typename T>
-bool ResourceManager::Add(const wstring& key, shared_ptr<T> object)
+bool ResourceManager::Add(const wstring& _key, shared_ptr<T> _object)
 {
 	ResourceType resourceType = GetResourceType<T>();
-	KeyObjMap& keyObjMap = _resources[static_cast<uint8>(resourceType)];
+	KeyObjMap& keyObjMap = m_resources[static_cast<uint8>(resourceType)];
 
-	auto findIt = keyObjMap.find(key);
+	auto findIt = keyObjMap.find(_key);
 	if (findIt != keyObjMap.end())
 		return false;
 
-	keyObjMap[key] = object;
+	keyObjMap[_key] = _object;
 	return true;
 }
 
 template<typename T>
-shared_ptr<T> ResourceManager::Get(const wstring& key)
+shared_ptr<T> ResourceManager::Get(const wstring& _key)
 {
 	ResourceType resourceType = GetResourceType<T>();
-	KeyObjMap& keyObjMap = _resources[static_cast<uint8>(resourceType)];
+	KeyObjMap& keyObjMap = m_resources[static_cast<uint8>(resourceType)];
 
-	auto findIt = keyObjMap.find(key);
+	auto findIt = keyObjMap.find(_key);
 	if (findIt != keyObjMap.end())
 		return static_pointer_cast<T>(findIt->second);
 

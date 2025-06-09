@@ -7,17 +7,17 @@ public:
 	~IndexBuffer();
 
 	ComPtr<ID3D11Buffer> GetComPtr() { return _indexBuffer; }
-	uint32 GetStride() { return _stride; }
-	uint32 GetOffset() { return _offset; }
-	uint32 GetCount() { return _count; }
+	uint32 GetStride() { return m_stride; }
+	uint32 GetOffset() { return m_offset; }
+	uint32 GetCount() { return m_count; }
 
-	void Create(const vector<uint32>& indices);
+	void Create(const vector<uint32>& _indices);
 
 private:
 	ComPtr<ID3D11Buffer> _indexBuffer;
 
-	uint32 _stride = 0;
-	uint32 _offset = 0;
-	uint32 _count = 0;
+	uint32 m_stride = 0;
+	uint32 m_offset = 0;
+	uint32 m_count = 0;
 };
 

@@ -15,27 +15,46 @@ MeshRenderer::~MeshRenderer()
 
 }
 
+/*
 void MeshRenderer::Update()
 {
-	if (_mesh == nullptr || _texture == nullptr || _shader == nullptr)
+	if (m_mesh == nullptr || m_texture == nullptr || m_shader == nullptr)
 		return;
 
+
+	m_shader->GetSRV("Texture0")->SetResource(m_texture->GetComPtr().Get());
+
 	auto world = GetTransform()->GetWorldMatrix();
-	_shader->GetMatrix("World")->SetMatrix((float*)&world);
-	
-	_shader->GetMatrix("View")->SetMatrix((float*)&Camera::s_MatView);
-	_shader->GetMatrix("Projection")->SetMatrix((float*)&Camera::s_MatProjection);
-	_shader->GetSRV("Texture0")->SetResource(_texture->GetComPtr().Get());
-	
-	// TEMP
-	Vec3 lightDir = {0.f, 0.f, 1.f};
-	_shader->GetVector("LightDir")->SetFloatVector((float*)&lightDir);
+	RENDER->PushTransformData(TransformDesc{ world });
+	//m_shader->GetConstantBuffer()
 
-	uint32 stride = _mesh->GetVertexBuffer()->GetStride();
-	uint32 offset = _mesh->GetVertexBuffer()->GetOffset();
+	uint32 stride = m_mesh->GetVertexBuffer()->GetStride();
+	uint32 offset = m_mesh->GetVertexBuffer()->GetOffset();
 
-	DC->IASetVertexBuffers(0, 1, _mesh->GetVertexBuffer()->GetComPtr().GetAddressOf(), &stride, &offset);
-	DC->IASetIndexBuffer(_mesh->GetIndexBuffer()->GetComPtr().Get(), DXGI_FORMAT_R32_UINT, 0);
+	DC->IASetVertexBuffers(0, 1, m_mesh->GetVertexBuffer()->GetComPtr().GetAddressOf(), &stride, &offset);
+	DC->IASetIndexBuffer(m_mesh->GetIndexBuffer()->GetComPtr().Get(), DXGI_FORMAT_R32_UINT, 0);
 
-	_shader->DrawIndexed(0, 0, _mesh->GetIndexBuffer()->GetCount(), 0, 0);
+	m_shader->DrawIndexed(0, 0, m_mesh->GetIndexBuffer()->GetCount(), 0, 0);
+}
+*/
+
+void MeshRenderer::Update()
+{
+	if (m_mesh == nullptr || m_texture == nullptr || m_shader == nullptr)
+		return;
+
+
+	m_shader->GetSRV("DiffuseMap")->SetResource(m_texture->GetComPtr().Get());
+
+	auto world = GetTransform()->GetWorldMatrix();
+	RENDER->PushTransformData(TransformDesc{ world });
+	//m_shader->GetConstantBuffer()
+
+	uint32 stride = m_mesh->GetVertexBuffer()->GetStride();
+	uint32 offset = m_mesh->GetVertexBuffer()->GetOffset();
+
+	DC->IASetVertexBuffers(0, 1, m_mesh->GetVertexBuffer()->GetComPtr().GetAddressOf(), &stride, &offset);
+	DC->IASetIndexBuffer(m_mesh->GetIndexBuffer()->GetComPtr().Get(), DXGI_FORMAT_R32_UINT, 0);
+
+	m_shader->DrawIndexed(0, 0, m_mesh->GetIndexBuffer()->GetCount(), 0, 0);
 }

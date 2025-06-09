@@ -11,20 +11,21 @@ IndexBuffer::~IndexBuffer()
 
 }
 
-void IndexBuffer::Create(const vector<uint32>& indices)
+void IndexBuffer::Create(const vector<uint32>& _indices)
 {
-	_stride = sizeof(uint32);
-	_count = static_cast<uint32>(indices.size());
+	//stride란 uint32가 점유하고 있는 바이트(4바이트)
+	m_stride = sizeof(uint32);
+	m_count = static_cast<uint32>(_indices.size());
 
 	D3D11_BUFFER_DESC desc;
 	ZeroMemory(&desc, sizeof(desc));
 	desc.Usage = D3D11_USAGE_IMMUTABLE;
 	desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	desc.ByteWidth = (uint32)(_stride * _count);
+	desc.ByteWidth = (uint32)(m_stride * m_count);
 
 	D3D11_SUBRESOURCE_DATA data;
 	ZeroMemory(&data, sizeof(data));
-	data.pSysMem = indices.data();
+	data.pSysMem = _indices.data();
 
 	HRESULT hr = DEVICE->CreateBuffer(&desc, &data, _indexBuffer.GetAddressOf());
 	CHECK(hr);

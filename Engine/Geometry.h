@@ -7,23 +7,23 @@ public:
 	Geometry() {}
 	~Geometry() {}
 
-	uint32 GetVertexCount() { return static_cast<uint32>(_vertices.size()); }
-	void* GetVertexData() { return _vertices.data(); }
-	const vector<T>& GetVertices() { return _vertices; }
+	uint32 GetVertexCount() { return static_cast<uint32>(m_vertices.size()); }
+	void* GetVertexData() { return m_vertices.data(); }
+	const vector<T>& GetVertices() { return m_vertices; }
 
-	uint32 GetIndexCount() { return static_cast<uint32>(_indices.size()); }
-	void* GetIndexData() { return _indices.data(); }
-	const vector<uint32>& GetIndices() { return _indices; }
+	uint32 GetIndexCount() { return static_cast<uint32>(m_indices.size()); }
+	void* GetIndexData() { return m_indices.data(); }
+	const vector<uint32>& GetIndices() { return m_indices; }
 
-	void AddVertex(const T& vertex) { _vertices.push_back(vertex); }
-	void AddVertices(const vector<T>& vertices) { _vertices.insert(_vertices.end(), vertices.begin(), vertices.end()); }
-	void SetVertices(const vector<T>& vertices) { _vertices = vertices; }
+	void AddVertex(const T& vertex) { m_vertices.push_back(vertex); }
+	void AddVertices(const vector<T>& vertices) { m_vertices.insert(m_vertices.end(), vertices.begin(), vertices.end()); }
+	void SetVertices(const vector<T>& vertices) { m_vertices = vertices; }
 
-	void AddIndex(uint32 index) { _indices.push_back(index); }
-	void AddIndices(const vector<uint32>& indices) { _indices.insert(_indices.end(), indices.begin(), indices.end()); }
-	void SetIndices(const vector<uint32>& indices) { _indices = indices; }
+	void AddIndex(uint32 index) { m_indices.push_back(index); }
+	void AddIndices(const vector<uint32>& indices) { m_indices.insert(m_indices.end(), indices.begin(), indices.end()); }
+	void SetIndices(const vector<uint32>& indices) { m_indices = indices; }
 
 private:
-	vector<T> _vertices;
-	vector<uint32> _indices;
+	vector<T> m_vertices;
+	vector<uint32> m_indices;
 };

@@ -7,6 +7,7 @@ float3 LightDir;
 uint Address;
 
 
+
 struct VertexInput
 {
 	float4 position : POSITION;

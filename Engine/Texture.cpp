@@ -11,16 +11,16 @@ Texture::~Texture()
 
 }
 
-void Texture::Load(const wstring& path)
+void Texture::Load(const wstring& _path)
 {
 	DirectX::TexMetadata md;
-	HRESULT hr = ::LoadFromWICFile(path.c_str(), WIC_FLAGS_NONE, &md, _img);
+	HRESULT hr = ::LoadFromWICFile(_path.c_str(), WIC_FLAGS_NONE, &md, m_img);
 	CHECK(hr);
 
-	hr = ::CreateShaderResourceView(DEVICE.Get(), _img.GetImages(), _img.GetImageCount(), md, _shaderResourveView.GetAddressOf());
+	hr = ::CreateShaderResourceView(DEVICE.Get(), m_img.GetImages(), m_img.GetImageCount(), md, m_shaderResourveView.GetAddressOf());
 	CHECK(hr);
 	
-	_size.x = md.width;
-	_size.y = md.height;
+	m_size.x = md.width;
+	m_size.y = md.height;
 }
 
