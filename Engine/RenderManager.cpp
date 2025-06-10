@@ -36,6 +36,7 @@ void RenderManager::PushGlobalData(const Matrix& _view, const Matrix& _projectio
 	m_globalDesc.P = _projection;
 	m_globalDesc.V = _view;
 	m_globalDesc.VP = _view * _projection;
+	m_globalDesc.Vinv = _view.Invert();
 
 	m_globalBuffer->CopyData(m_globalDesc);
 	m_globalEffectBuffer->SetConstantBuffer(m_globalBuffer->GetComPtr().Get());

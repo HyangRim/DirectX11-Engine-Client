@@ -14,28 +14,28 @@ Mesh::~Mesh()
 
 void Mesh::CreateQuad()
 {
-	m_geometry = make_shared<Geometry<VertexTextureNormalData>>();
+	m_geometry = make_shared<Geometry<VertexTextureNormalTangentData>>();
 	GeometryHelper::CreateQuad(m_geometry);
 	CreateBuffers();
 }
 
 void Mesh::CreateCube()
 {
-	m_geometry = make_shared<Geometry<VertexTextureNormalData>>();
+	m_geometry = make_shared<Geometry<VertexTextureNormalTangentData>>();
 	GeometryHelper::CreateCube(m_geometry);
 	CreateBuffers();
 }
 
 void Mesh::CreateGrid(int32 sizeX, int32 sizeZ)
 {
-	m_geometry = make_shared<Geometry<VertexTextureNormalData>>();
+	m_geometry = make_shared<Geometry<VertexTextureNormalTangentData>>();
 	GeometryHelper::CreateGrid(m_geometry, sizeX, sizeZ);
 	CreateBuffers();
 }
 
 void Mesh::CreateSphere()
 {
-	m_geometry = make_shared<Geometry<VertexTextureNormalData>>();
+	m_geometry = make_shared<Geometry<VertexTextureNormalTangentData>>();
 	GeometryHelper::CreateSphere(m_geometry);
 	CreateBuffers();
 }

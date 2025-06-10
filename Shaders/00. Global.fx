@@ -11,6 +11,7 @@ cbuffer GlobalBuffer
     matrix V;
     matrix P;
     matrix VP;
+    matrix Vinv;
 };
 
 cbuffer TransformBuffer
@@ -49,9 +50,24 @@ struct VertexTextureNormal
     float3 normal : NORMAL;
 };
 
+struct VertexTextureTangentNormal
+{
+    float4 position : POSITION;
+    float2 uv : TEXCOORD;
+    float3 normal : NORMAL;
+    float3 tangent : TANGENT;
+};
+
 ////////////////
 //VertexOutput//
 ////////////////
+
+struct VertexOutput
+{
+    float4 position : SV_POSITION;
+    float2 uv : TEXCOORD;
+    float3 normal : NORMAL;
+};
 
 struct MeshOutput
 {
@@ -59,6 +75,7 @@ struct MeshOutput
     float3 worldPosition : POSITION1;
     float2 uv : TEXCOORD;
     float3 normal : NORMAL;
+    float3 tangent : TANGENT;
 };
 
 ////////////////
@@ -103,9 +120,14 @@ pass name                                               \
 //    Function   //
 ///////////////////
 
+
+//월드 좌표계에서는 View변환 행렬을 구하면 월드의 역행렬임. 
+//회전이 들어가면 Right, Up, Look이 섞여 들어가기 떄문에. 
+
+
 float3 CameraPosition()
 {
-    return -V._41_42_43;
+    return -Vinv._41_42_43;
 }
 
 

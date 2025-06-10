@@ -102,12 +102,35 @@ float4 ComputeLight(float3 _normal, float2 _uv, float3 _worldPosition)
     
         //min, max, x (smooth lerp느낌)
         emissive = smoothstep(0.0f, 1.0f, emissive);
-        emissive = pow(emissive, 3);
+        emissive = pow(emissive, 2);
         emissiveColor = Material.emissive * Material.emissive * emissive;
     }
     
     return ambientColor + diffuseColor + specularColor + emissiveColor;
     
+}
+
+void ComputeNormalMapping(inout float3 normal, float3 tangent, float2 uv)
+{
+    // [0, 255]범위에서 [0, 1]로 변환
+    float4 map = NormalMap.Sample(LinearSampler, uv);
+    
+    if (any(map.rgb) == false)
+        return;
+
+    float3 N = normalize(normal);   //Z
+    float3 T = normalize(tangent);  //X
+    float3 B = normalize(cross(N, T));
+    
+    //Tangent Space -> World Space
+    float3x3 TBN = float3x3(T, B, N);
+    
+    // [0, 1]범위에서 [-1, 1]범위로 변환
+    float3 tangentSpaceNormal = (map.rgb * 2.0f - 1.0f);
+    float3 worldNormal = mul(tangentSpaceNormal, TBN);
+
+    
+    normal = worldNormal;
 }
 
 

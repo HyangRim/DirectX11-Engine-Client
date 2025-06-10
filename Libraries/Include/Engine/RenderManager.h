@@ -5,6 +5,7 @@ struct GlobalDesc {
 	Matrix V = Matrix::Identity;
 	Matrix P = Matrix::Identity;
 	Matrix VP = Matrix::Identity;
+	Matrix Vinv = Matrix::Identity;
 };
 
 struct TransformDesc {
