@@ -3,6 +3,7 @@
 #include "Component.h"
 class Pipeline;
 class MeshRenderer;
+class ModelRenderer;
 class Transform;
 class MonoBehaviour;
 class Camera;
@@ -26,6 +27,7 @@ public:
 	shared_ptr<Transform> GetTransform();
 	shared_ptr<Camera> GetCamera();
 	shared_ptr<MeshRenderer> GetMeshRenderer();
+	shared_ptr<ModelRenderer> GetModelRenderer();
 	shared_ptr<Transform> GetOrAddTransform();
 	//shared_ptr<Animator> GetAnimator();
 

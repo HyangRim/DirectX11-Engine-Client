@@ -28,6 +28,12 @@
     <Filter Include="Shaders\Common">
       <UniqueIdentifier>{52931e45-58c0-4b5f-82bd-b79f029791a5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Week3">
+      <UniqueIdentifier>{f5d8a2ef-cfc3-46b6-9fc0-d6a7a191d2a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Week3">
+      <UniqueIdentifier>{bc7dfe81-6423-4906-a296-9631c67a7593}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -207,6 +213,9 @@
     </FxCompile>
     <FxCompile Include="..\Shaders\14. NormalMapping.fx">
       <Filter>Shaders\Week2</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\15. ModelDemo.fx">
+      <Filter>Shaders\Week3</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

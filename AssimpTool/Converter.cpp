@@ -39,6 +39,41 @@ void Converter::ExportModelData(wstring _savePath)
 {
 	wstring finalPath = m_modelPath + _savePath + L".mesh";
 	ReadModelData(m_scene->mRootNode, -1, -1);
+	ReadSkinData();
+
+	//Write CSV File
+	{
+		FILE* file;
+		::fopen_s(&file, "../Vertices.csv", "w");
+
+		for (shared_ptr<asBone>& bone : m_bones)
+		{
+			string name = bone->m_name;
+			::fprintf(file, "%d,%s\n", bone->m_index, bone->m_name.c_str());
+		}
+
+		::fprintf(file, "\n");
+
+		for (shared_ptr<asMesh>& mesh : m_meshes)
+		{
+			string name = mesh->m_name;
+			::printf("%s\n", name.c_str());
+
+			for (UINT i = 0; i < mesh->m_vertices.size(); i++)
+			{
+				Vec3 p = mesh->m_vertices[i].position;
+				Vec4 indices = mesh->m_vertices[i].blendIndices;
+				Vec4 weights = mesh->m_vertices[i].blendWeights;
+
+				::fprintf(file, "%f,%f,%f,", p.x, p.y, p.z);
+				::fprintf(file, "%f,%f,%f,%f,", indices.x, indices.y, indices.z, indices.w);
+				::fprintf(file, "%f,%f,%f,%f\n", weights.x, weights.y, weights.z, weights.w);
+			}
+		}
+
+		::fclose(file);
+	}
+
 	WriteModelFile(finalPath);
 }
 
@@ -48,6 +83,22 @@ void Converter::ExportMaterialData(wstring _savePath)
 	ReadMaterialData();
 	WriteMaterialData(finalPath);
 }
+
+
+//Root가 있으면 그것에 루트 -> 머리통 -> 포신 간의 계층 구조가 있음
+//데이터를 파싱할 때, 처음에 Vertex정보들을 받아온다. 이건 어디를 기준으로 하는 정보인가? 
+
+//즉 FBX파일에 있는 그 포신의 정점은 무엇을 기준으로 할 때 좌표인가?
+//계층구조가 없었을 때는 Local좌표가 기준임.  
+//계층구조가 있었을 때는 Root(Local)이긴 한데. 물체의 Root 기준인지, 상위 부모의 기준인지? 
+
+//둘 다 아님. 자기 자신을 기준으로 함. 그렇기에 계층구조 생각안하고 렌더링 했을 때
+//전부 겹쳐서 나오는 것. 
+
+//루트를 기준으로 한 좌표계로 변경해줘야 함. 
+//A -> ROOT로 변경하는 행렬을 만들어주면 됨. 
+//루트까지 부모의 WORLD를 구한다.
+
 
 void Converter::ReadModelData(aiNode* _node, int32 _index, int32 _parent)
 {
@@ -69,13 +120,15 @@ void Converter::ReadModelData(aiNode* _node, int32 _index, int32 _parent)
 	//Local (Root) Transform으로 변환해줘야함.
 	// mat Patent는 무엇을 기준으로 하는 것? root으로 가는 직통 경로 행렬. 
 	//따라서 말단 자식 노드도 한 번에 root node행렬로 감. 
+	// 2) Local (Root) Transform.
 	Matrix matParent = Matrix::Identity;
 	if (_parent >= 0) {
-		matParent = _bones[_parent]->m_transform;
+		matParent = m_bones[_parent]->m_transform;
 	}
+
 	//한 번만 변환 해주면 root node 기준. 
 	bone->m_transform = bone->m_transform * matParent;
-	_bones.push_back(bone);
+	m_bones.push_back(bone);
 
 
 	//여기까지 하나의 노드에 대한 거 읽어옴.
@@ -83,7 +136,7 @@ void Converter::ReadModelData(aiNode* _node, int32 _index, int32 _parent)
 	ReadMeshData(_node, _index);
 
 	for (uint32 idx = 0; idx < _node->mNumChildren; ++idx) {
-		ReadModelData(_node->mChildren[idx], _bones.size(), _index);
+		ReadModelData(_node->mChildren[idx], m_bones.size(), _index);
 	}
 }
 
@@ -132,16 +185,94 @@ void Converter::ReadMeshData(aiNode* _node, int32 _bone)
 			aiFace& face = srcMesh->mFaces[f];
 
 			for (uint32 k = 0; k < face.mNumIndices; ++k)
-				mesh->indices.push_back(face.mIndices[k] + startVertex);
+				mesh->m_indices.push_back(face.mIndices[k] + startVertex);
 		}
 	}
-	_meshes.push_back(mesh);
+	m_meshes.push_back(mesh);
+}
+
+void Converter::ReadSkinData()
+{
+
+	//모든 뼈를 전부 순회하면서, 그걸 정점들에게 넣어준다. 
+	//정점마다 어떤 뼈에 영향 받느냐. 
+	for (uint32 idx = 0; idx < m_scene->mNumMeshes; ++idx) {
+		aiMesh* srcMesh = m_scene->mMeshes[idx];
+
+		if (srcMesh->HasBones() == false)
+			continue;
+		
+		shared_ptr<asMesh> mesh = m_meshes[idx];
+		vector<asBoneWeights> tempVertexBoneWeights;
+
+		tempVertexBoneWeights.resize(mesh->m_vertices.size());
+
+		//Bone을 순회하면서 연관된 VertexId, Weight를 구해서 기록한다.
+		for (uint32 bIdx = 0; bIdx < srcMesh->mNumBones; ++bIdx) {
+			aiBone* srcMeshBone = srcMesh->mBones[bIdx];
+			uint32 boneIndex = GetBoneIndex(srcMeshBone->mName.C_Str());
+
+			for (uint32 w = 0; w < srcMeshBone->mNumWeights; ++w) {
+				uint32 index = srcMeshBone->mWeights[w].mVertexId;
+				float weight = srcMeshBone->mWeights[w].mWeight;
+
+
+				//TODO
+				tempVertexBoneWeights[index].AddWeights(boneIndex, weight);
+			}
+		}
+		//최종 결과 계산
+
+		for (uint32 v = 0; v < tempVertexBoneWeights.size(); ++v) {
+			tempVertexBoneWeights[v].Normalize();
+
+			asBlendWeight blendWeight = tempVertexBoneWeights[v].GetBlendWeights();
+			mesh->m_vertices[v].blendIndices = blendWeight.m_indices;
+			mesh->m_vertices[v].blendWeights = blendWeight.m_weights;
+		}
+	}
+	
+
 }
 
 void Converter::WriteModelFile(wstring _filePath)
 {
-
+	auto path = filesystem::path(_filePath);
+	filesystem::create_directory(path.parent_path());
 	//FBX기반 사용자 기반 파싱. 
+
+	shared_ptr<FileUtils> file = make_shared<FileUtils>();
+	file->Open(_filePath, FileMode::Write);
+
+	// Bone Data
+	//본 몇개인지 넣어주고, 본마다 데이터 쓰기. 
+	file->Write<uint32>(m_bones.size());
+	for (shared_ptr<asBone>& bone : m_bones)
+	{
+		file->Write<int32>(bone->m_index);
+		file->Write<string>(bone->m_name);
+		file->Write<int32>(bone->m_parent);
+		file->Write<Matrix>(bone->m_transform);
+	}
+
+	// Mesh Data
+	//매쉬가 몇 개 있는지 넣어주고. 매쉬마다 데이터 쓰기. 
+	file->Write<uint32>(m_meshes.size());
+	for (shared_ptr<asMesh>& meshData : m_meshes)
+	{
+		file->Write<string>(meshData->m_name);
+		file->Write<int32>(meshData->m_boneIndex);
+		file->Write<string>(meshData->m_materialName);
+
+		// Vertex Data
+		file->Write<uint32>(meshData->m_vertices.size());
+		file->Write(&meshData->m_vertices[0], sizeof(VertexType) * meshData->m_vertices.size());
+
+		// Index Data
+		file->Write<uint32>(meshData->m_indices.size());
+		file->Write(&meshData->m_indices[0], sizeof(uint32) * meshData->m_indices.size());
+	}
+
 }
 
 void Converter::ReadMaterialData()
@@ -185,7 +316,7 @@ void Converter::ReadMaterialData()
 		srcMaterial->GetTexture(aiTextureType_NORMALS, 0, &file);
 		material->m_normalFile = file.C_Str();
 
-		_materials.push_back(material);
+		m_materials.push_back(material);
 	}
 }
 
@@ -205,7 +336,7 @@ void Converter::WriteMaterialData(wstring _filePath)
 	tinyxml2::XMLElement* root = document->NewElement("Materials");
 	document->LinkEndChild(root);
 
-	for (shared_ptr<asMaterial> material : _materials)
+	for (shared_ptr<asMaterial> material : m_materials)
 	{
 		tinyxml2::XMLElement* node = document->NewElement("Material");
 		root->LinkEndChild(node);
@@ -325,4 +456,15 @@ string Converter::WriteTexture(string _saveFolder, string _file)
 
 	return fileName;
 
+}
+
+uint32 Converter::GetBoneIndex(const string& _name)
+{
+	for (shared_ptr<asBone>& bone : m_bones) {
+		if (bone->m_name == _name)
+			return bone->m_index;
+	}
+
+	assert(false);
+	return 0;
 }

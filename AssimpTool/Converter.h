@@ -16,12 +16,15 @@ public:
 private:
 	void ReadModelData(aiNode* _node, int32 _index, int32 _parent);
 	void ReadMeshData(aiNode* _node, int32 _bone);
+	void ReadSkinData();
 	void WriteModelFile(wstring _filePath);
 
 	void ReadMaterialData();
 	void WriteMaterialData(wstring _filePath);
 	string WriteTexture(string _saveFolder, string _file);
 
+private:
+	uint32 GetBoneIndex(const string& _name);
 
 private:
 	const wstring m_assetPath = L"../Resources/Assets/";
@@ -34,9 +37,9 @@ private:
 	const aiScene* m_scene;
 
 private:
-	vector<shared_ptr<asBone>> _bones;
-	vector<shared_ptr<asMesh>> _meshes;
-	vector<shared_ptr<asMaterial>> _materials;
+	vector<shared_ptr<asBone>> m_bones;
+	vector<shared_ptr<asMesh>> m_meshes;
+	vector<shared_ptr<asMaterial>> m_materials;
 };
 
 

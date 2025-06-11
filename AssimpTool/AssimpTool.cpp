@@ -7,31 +7,19 @@ void AssimpTool::Init()
 	
 	{
 		
-		//shared_ptr<Converter> converter = make_shared<Converter>();
+		shared_ptr<Converter> converter = make_shared<Converter>();
 
 		//FBX -> Memory
-		//converter->ReadAssetFile(L"House/House.fbx");
+		converter->ReadAssetFile(L"Kachujin/Mesh.fbx");
 
 		//Memory ->CustomData;
-		//converter->ExportMaterialData(L"House/House");
-		//converter->ExportModelData(L"House/House");
+		converter->ExportMaterialData(L"Kachujin/Kachujin");
+		converter->ExportModelData(L"Kachujin/Kachujin");
 
 		//CustomData -> Memory;
 		
 	}
 
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-
-		//FBX -> Memory
-		converter->ReadAssetFile(L"Tower/Tower.fbx");
-
-		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Tower/Tower");
-		converter->ExportModelData(L"Tower/Tower");
-
-		//CustomData -> Memory;
-	}
 }
 
 void AssimpTool::Update()

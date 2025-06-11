@@ -31,7 +31,11 @@ struct MaterialDesc
 	Color specular = Color(0.f, 0.f, 0.f, 1.f);
 	Color emissive = Color(0.f, 0.f, 0.f, 1.f);
 };
-
+//Bone
+#define MAX_BONE_TRANSFORMS 50
+struct BoneDesc {
+	Matrix transforms[MAX_BONE_TRANSFORMS];
+};
 
 class Shader;
 
@@ -47,6 +51,7 @@ public:
 	void PushTransformData(const TransformDesc& _desc);
 	void PushLightData(const LightDesc& _desc);
 	void PushMaterialData(const MaterialDesc& _desc);
+	void PushBoneData(const BoneDesc& _desc);
 
 private:
 	shared_ptr<Shader> m_shader;
@@ -70,5 +75,9 @@ private:
 	shared_ptr<ConstantBuffer<MaterialDesc>> m_materialBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> m_materialEffectBuffer;
 
+	//Born°ü·Ã Buffer
+	BoneDesc m_boneDesc;
+	shared_ptr<ConstantBuffer<BoneDesc>> m_boneBuffer;
+	ComPtr<ID3DX11EffectConstantBuffer> m_boneEffectBuffer;
 };
 

@@ -7,9 +7,9 @@ class Transform;
 enum class ComponentType : uint8 {
 	Transform,
 	MeshRenderer,
+	ModelRenderer,
 	Camera,
 	Animator,
-
 	// ...
 	Script,
 	End

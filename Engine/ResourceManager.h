@@ -22,6 +22,8 @@ public:
 	template<typename T>
 	shared_ptr<T> Get(const wstring& _key);
 
+	shared_ptr<Texture> GetOrAddTexture(const wstring& _key, const wstring& _path);
+
 	template<typename T>
 	ResourceType GetResourceType();
 
