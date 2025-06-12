@@ -26,7 +26,11 @@ void RenderManager::init(shared_ptr<Shader> _shader)
 
 	m_boneBuffer = make_shared<ConstantBuffer<BoneDesc>>();
 	m_boneBuffer->Create();
-	m_boneEffectBuffer = _shader->GetConstantBuffer("BoneBuffer");
+	m_boneEffectBuffer = m_shader->GetConstantBuffer("BoneBuffer");
+
+	m_keyframeBuffer = make_shared<ConstantBuffer<KeyframeDesc>>();
+	m_keyframeBuffer->Create();
+	m_keyframeEffectBuffer = m_shader->GetConstantBuffer("KeyframeBuffer");
 }
 
 void RenderManager::Update()
@@ -75,4 +79,11 @@ void RenderManager::PushBoneData(const BoneDesc& _desc)
 	m_boneDesc = _desc;
 	m_boneBuffer->CopyData(m_boneDesc);
 	m_boneEffectBuffer->SetConstantBuffer(m_boneBuffer->GetComPtr().Get());
+}
+
+void RenderManager::PushKeyframeData(const KeyframeDesc& _desc)
+{
+	m_keyframeDesc = _desc;
+	m_keyframeBuffer->CopyData(m_keyframeDesc);
+	m_keyframeEffectBuffer->SetConstantBuffer(m_keyframeBuffer->GetComPtr().Get());
 }

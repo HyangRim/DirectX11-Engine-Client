@@ -8,6 +8,7 @@ class Transform;
 class MonoBehaviour;
 class Camera;
 class Animator;
+class ModelAnimator;
 
 
 class GameObject : public enable_shared_from_this<GameObject>
@@ -29,7 +30,7 @@ public:
 	shared_ptr<MeshRenderer> GetMeshRenderer();
 	shared_ptr<ModelRenderer> GetModelRenderer();
 	shared_ptr<Transform> GetOrAddTransform();
-	//shared_ptr<Animator> GetAnimator();
+	shared_ptr<ModelAnimator> GetModelAnimator();
 
 	void AddComponent(shared_ptr<Component> _component);
 

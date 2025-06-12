@@ -9,6 +9,8 @@
 #include "Camera.h"
 //#include "Animator.h"
 //#include "Animation.h"
+#include "ModelAnimation.h"
+#include "ModelAnimator.h"
 
 GameObject::GameObject()
 {
@@ -124,12 +126,12 @@ shared_ptr<Transform> GameObject::GetOrAddTransform()
 	return GetTransform();
 }
 
-/*
-shared_ptr<Animator> GameObject::GetAnimator()
+shared_ptr<ModelAnimator> GameObject::GetModelAnimator()
 {
 	shared_ptr<Component> component = GetFixedComponent(ComponentType::Animator);
-	return static_pointer_cast<Animator>(component);
-}*/
+	return static_pointer_cast<ModelAnimator>(component);
+}
+
 
 void GameObject::AddComponent(shared_ptr<Component> _component)
 {

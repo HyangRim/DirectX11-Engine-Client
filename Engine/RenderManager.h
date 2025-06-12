@@ -32,9 +32,24 @@ struct MaterialDesc
 	Color emissive = Color(0.f, 0.f, 0.f, 1.f);
 };
 //Bone
-#define MAX_BONE_TRANSFORMS 50
+#define MAX_BONE_TRANSFORMS 250
+#define MAX_MODEL_KEYFRAMES 500
+
 struct BoneDesc {
 	Matrix transforms[MAX_BONE_TRANSFORMS];
+};
+
+//Animation
+struct KeyframeDesc {
+	int32 animIndex = 0;
+	uint32 currFrame = 0;
+
+	//TODO
+	uint32 m_nextFrame = 0;
+	float m_ratio = 0.f;
+	float m_sumTime = 0.f;
+	float m_speed = 1.f;
+	Vec2 padding;
 };
 
 class Shader;
@@ -52,6 +67,7 @@ public:
 	void PushLightData(const LightDesc& _desc);
 	void PushMaterialData(const MaterialDesc& _desc);
 	void PushBoneData(const BoneDesc& _desc);
+	void PushKeyframeData(const KeyframeDesc& _desc);
 
 private:
 	shared_ptr<Shader> m_shader;
@@ -79,5 +95,10 @@ private:
 	BoneDesc m_boneDesc;
 	shared_ptr<ConstantBuffer<BoneDesc>> m_boneBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> m_boneEffectBuffer;
+
+
+	KeyframeDesc m_keyframeDesc;
+	shared_ptr<ConstantBuffer<KeyframeDesc>> m_keyframeBuffer;
+	ComPtr<ID3DX11EffectConstantBuffer> m_keyframeEffectBuffer;
 };
 

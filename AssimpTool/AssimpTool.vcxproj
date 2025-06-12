@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AnimationDemo.cpp" />
     <ClCompile Include="AssimpTool.cpp" />
     <ClCompile Include="AsTypes.cpp" />
     <ClCompile Include="CameraScript.cpp" />
@@ -158,6 +159,7 @@
     <ClCompile Include="Static_MeshDemo.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnimationDemo.h" />
     <ClInclude Include="AssimpTool.h" />
     <ClInclude Include="AsTypes.h" />
     <ClInclude Include="CameraScript.h" />

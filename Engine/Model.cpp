@@ -6,6 +6,7 @@
 #include <filesystem>
 #include "Material.h"
 #include "ModelMesh.h"
+#include "ModelAnimation.h"
 
 Model::Model()
 {
@@ -204,6 +205,44 @@ void Model::ReadModel(wstring _filename)
 
 }
 
+void Model::ReadAnimation(wstring _filename)
+{
+	wstring fullPath = _modelPath + _filename + L".clip";
+
+	shared_ptr<FileUtils> file = make_shared<FileUtils>();
+	file->Open(fullPath, FileMode::Read);
+	shared_ptr<ModelAnimation> animation = make_shared<ModelAnimation>();
+
+	//툴에서 저장한 순서대로 넣어주기. 
+	animation->m_name = Utils::ToWString(file->Read<string>());
+	animation->m_duration = file->Read<float>();
+	animation->m_frameRate = file->Read<float>();
+	animation->m_frameCount = file->Read<uint32>();
+
+	uint32 keyframesCount = file->Read<uint32>();
+
+	//키 프레임 하나하나 넣어주기. 
+	for (uint32 i = 0; i < keyframesCount; i++)
+	{
+		shared_ptr<ModelKeyframe> keyframe = make_shared<ModelKeyframe>();
+		keyframe->m_boneName = Utils::ToWString(file->Read<string>());
+
+		uint32 size = file->Read<uint32>();
+
+		if (size > 0)
+		{
+			keyframe->m_transforms.resize(size);
+			void* ptr = &keyframe->m_transforms[0];
+			file->Read(&ptr, sizeof(ModelKeyframeData) * size);
+		}
+
+		animation->keyframes[keyframe->m_boneName] = keyframe;
+	}
+
+	m_animations.push_back(animation);
+
+}
+
 shared_ptr<Material> Model::GetMaterialByName(const wstring& _name)
 {
 	for (auto& material : m_materials)
@@ -233,6 +272,17 @@ shared_ptr<ModelBone> Model::GetBoneByName(const wstring& _name)
 	{
 		if (bone->m_name == _name)
 			return bone;
+	}
+
+	return nullptr;
+}
+
+shared_ptr<ModelAnimation> Model::GetAnimationByName(wstring _name)
+{
+	for (auto& animation : m_animations)
+	{
+		if (animation->m_name == _name)
+			return animation;
 	}
 
 	return nullptr;

@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Converter.h"
 #include <filesystem>
 #include "Utils.h"
@@ -84,20 +84,28 @@ void Converter::ExportMaterialData(wstring _savePath)
 	WriteMaterialData(finalPath);
 }
 
+void Converter::ExportAnimationData(wstring _savePath, uint32 _index)
+{
+	wstring finalPath = m_modelPath + _savePath + L".clip";
+	assert(_index < m_scene->mNumAnimations);
+	shared_ptr<asAnimation> animation = ReadAnimationData(m_scene->mAnimations[_index]);
+	WriteAnimationData(animation, finalPath);
+}
 
-//Root°¡ ÀÖÀ¸¸é ±×°Í¿¡ ·çÆ® -> ¸Ó¸®Åë -> Æ÷½Å °£ÀÇ °èÃş ±¸Á¶°¡ ÀÖÀ½
-//µ¥ÀÌÅÍ¸¦ ÆÄ½ÌÇÒ ¶§, Ã³À½¿¡ VertexÁ¤º¸µéÀ» ¹Ş¾Æ¿Â´Ù. ÀÌ°Ç ¾îµğ¸¦ ±âÁØÀ¸·Î ÇÏ´Â Á¤º¸ÀÎ°¡? 
 
-//Áï FBXÆÄÀÏ¿¡ ÀÖ´Â ±× Æ÷½ÅÀÇ Á¤Á¡Àº ¹«¾ùÀ» ±âÁØÀ¸·Î ÇÒ ¶§ ÁÂÇ¥ÀÎ°¡?
-//°èÃş±¸Á¶°¡ ¾ø¾úÀ» ¶§´Â LocalÁÂÇ¥°¡ ±âÁØÀÓ.  
-//°èÃş±¸Á¶°¡ ÀÖ¾úÀ» ¶§´Â Root(Local)ÀÌ±ä ÇÑµ¥. ¹°Ã¼ÀÇ Root ±âÁØÀÎÁö, »óÀ§ ºÎ¸ğÀÇ ±âÁØÀÎÁö? 
+//Rootê°€ ìˆìœ¼ë©´ ê·¸ê²ƒì— ë£¨íŠ¸ -> ë¨¸ë¦¬í†µ -> í¬ì‹  ê°„ì˜ ê³„ì¸µ êµ¬ì¡°ê°€ ìˆìŒ
+//ë°ì´í„°ë¥¼ íŒŒì‹±í•  ë•Œ, ì²˜ìŒì— Vertexì •ë³´ë“¤ì„ ë°›ì•„ì˜¨ë‹¤. ì´ê±´ ì–´ë””ë¥¼ ê¸°ì¤€ìœ¼ë¡œ í•˜ëŠ” ì •ë³´ì¸ê°€? 
 
-//µÑ ´Ù ¾Æ´Ô. ÀÚ±â ÀÚ½ÅÀ» ±âÁØÀ¸·Î ÇÔ. ±×·¸±â¿¡ °èÃş±¸Á¶ »ı°¢¾ÈÇÏ°í ·»´õ¸µ ÇßÀ» ¶§
-//ÀüºÎ °ãÃÄ¼­ ³ª¿À´Â °Í. 
+//ì¦‰ FBXíŒŒì¼ì— ìˆëŠ” ê·¸ í¬ì‹ ì˜ ì •ì ì€ ë¬´ì—‡ì„ ê¸°ì¤€ìœ¼ë¡œ í•  ë•Œ ì¢Œí‘œì¸ê°€?
+//ê³„ì¸µêµ¬ì¡°ê°€ ì—†ì—ˆì„ ë•ŒëŠ” Localì¢Œí‘œê°€ ê¸°ì¤€ì„.  
+//ê³„ì¸µêµ¬ì¡°ê°€ ìˆì—ˆì„ ë•ŒëŠ” Root(Local)ì´ê¸´ í•œë°. ë¬¼ì²´ì˜ Root ê¸°ì¤€ì¸ì§€, ìƒìœ„ ë¶€ëª¨ì˜ ê¸°ì¤€ì¸ì§€? 
 
-//·çÆ®¸¦ ±âÁØÀ¸·Î ÇÑ ÁÂÇ¥°è·Î º¯°æÇØÁà¾ß ÇÔ. 
-//A -> ROOT·Î º¯°æÇÏ´Â Çà·ÄÀ» ¸¸µé¾îÁÖ¸é µÊ. 
-//·çÆ®±îÁö ºÎ¸ğÀÇ WORLD¸¦ ±¸ÇÑ´Ù.
+//ë‘˜ ë‹¤ ì•„ë‹˜. ìê¸° ìì‹ ì„ ê¸°ì¤€ìœ¼ë¡œ í•¨. ê·¸ë ‡ê¸°ì— ê³„ì¸µêµ¬ì¡° ìƒê°ì•ˆí•˜ê³  ë Œë”ë§ í–ˆì„ ë•Œ
+//ì „ë¶€ ê²¹ì³ì„œ ë‚˜ì˜¤ëŠ” ê²ƒ. 
+
+//ë£¨íŠ¸ë¥¼ ê¸°ì¤€ìœ¼ë¡œ í•œ ì¢Œí‘œê³„ë¡œ ë³€ê²½í•´ì¤˜ì•¼ í•¨. 
+//A -> ROOTë¡œ ë³€ê²½í•˜ëŠ” í–‰ë ¬ì„ ë§Œë“¤ì–´ì£¼ë©´ ë¨. 
+//ë£¨íŠ¸ê¹Œì§€ ë¶€ëª¨ì˜ WORLDë¥¼ êµ¬í•œë‹¤.
 
 
 void Converter::ReadModelData(aiNode* _node, int32 _index, int32 _parent)
@@ -111,27 +119,27 @@ void Converter::ReadModelData(aiNode* _node, int32 _index, int32 _parent)
 	//Relative Transform. 
 	Matrix transform(_node->mTransformation[0]);
 
-	//Çà·ÄÀ» µÚÁı¾îÁà¾ßÇÑ´Ù? 
-	//Bone¿¡¼­ transformÀ» °¡Á®¿À´Âµ¥, ±×°Ô ¹«¾ùÀ» ±âÁØÀ¸·Î ÇÏ´Â°¡? 
-	//ÃÖÁ¾ rootÀ» ±âÁØÀ¸·Î ÇÑ °Ô ¾Æ´Ñ, ¹Ù·Î Á÷¼Ó ºÎ¸ğ¸¦ ±âÁØÀ¸·Î ÇÑ transform.
+	//í–‰ë ¬ì„ ë’¤ì§‘ì–´ì¤˜ì•¼í•œë‹¤? 
+	//Boneì—ì„œ transformì„ ê°€ì ¸ì˜¤ëŠ”ë°, ê·¸ê²Œ ë¬´ì—‡ì„ ê¸°ì¤€ìœ¼ë¡œ í•˜ëŠ”ê°€? 
+	//ìµœì¢… rootì„ ê¸°ì¤€ìœ¼ë¡œ í•œ ê²Œ ì•„ë‹Œ, ë°”ë¡œ ì§ì† ë¶€ëª¨ë¥¼ ê¸°ì¤€ìœ¼ë¡œ í•œ transform.
 
 	bone->m_transform = transform.Transpose();
 
-	//Local (Root) TransformÀ¸·Î º¯È¯ÇØÁà¾ßÇÔ.
-	// mat Patent´Â ¹«¾ùÀ» ±âÁØÀ¸·Î ÇÏ´Â °Í? rootÀ¸·Î °¡´Â Á÷Åë °æ·Î Çà·Ä. 
-	//µû¶ó¼­ ¸»´Ü ÀÚ½Ä ³ëµåµµ ÇÑ ¹ø¿¡ root nodeÇà·Ä·Î °¨. 
+	//Local (Root) Transformìœ¼ë¡œ ë³€í™˜í•´ì¤˜ì•¼í•¨.
+	// mat PatentëŠ” ë¬´ì—‡ì„ ê¸°ì¤€ìœ¼ë¡œ í•˜ëŠ” ê²ƒ? rootìœ¼ë¡œ ê°€ëŠ” ì§í†µ ê²½ë¡œ í–‰ë ¬. 
+	//ë”°ë¼ì„œ ë§ë‹¨ ìì‹ ë…¸ë“œë„ í•œ ë²ˆì— root nodeí–‰ë ¬ë¡œ ê°. 
 	// 2) Local (Root) Transform.
 	Matrix matParent = Matrix::Identity;
 	if (_parent >= 0) {
 		matParent = m_bones[_parent]->m_transform;
 	}
 
-	//ÇÑ ¹ø¸¸ º¯È¯ ÇØÁÖ¸é root node ±âÁØ. 
+	//í•œ ë²ˆë§Œ ë³€í™˜ í•´ì£¼ë©´ root node ê¸°ì¤€. 
 	bone->m_transform = bone->m_transform * matParent;
 	m_bones.push_back(bone);
 
 
-	//¿©±â±îÁö ÇÏ³ªÀÇ ³ëµå¿¡ ´ëÇÑ °Å ÀĞ¾î¿È.
+	//ì—¬ê¸°ê¹Œì§€ í•˜ë‚˜ì˜ ë…¸ë“œì— ëŒ€í•œ ê±° ì½ì–´ì˜´.
 	// Mesh 
 	ReadMeshData(_node, _index);
 
@@ -150,12 +158,12 @@ void Converter::ReadMeshData(aiNode* _node, int32 _bone)
 	mesh->m_boneIndex = _bone;
 
 	for (uint32 idx = 0; idx < _node->mNumMeshes; ++idx) {
-		//Scene¿¡¼­ µé°íÀÖ´ø meshµé Á¢±Ù. 
+		//Sceneì—ì„œ ë“¤ê³ ìˆë˜ meshë“¤ ì ‘ê·¼. 
 		uint32 index = _node->mMeshes[idx];
 		const aiMesh* srcMesh = m_scene->mMeshes[index];
 
 		//Material Name
-		//¸Å½¬¸¶´Ù ¸ÓÅ×¸®¾óÀÌ ´Ş¶óÁú ¼ö ÀÖÀ½. ±×·¡¼­ Á¦°¢±â ºÒ·¯¿À±â. 
+		//ë§¤ì‰¬ë§ˆë‹¤ ë¨¸í…Œë¦¬ì–¼ì´ ë‹¬ë¼ì§ˆ ìˆ˜ ìˆìŒ. ê·¸ë˜ì„œ ì œê°ê¸° ë¶ˆëŸ¬ì˜¤ê¸°. 
 		const aiMaterial* material = m_scene->mMaterials[srcMesh->mMaterialIndex];
 		mesh->m_materialName = material->GetName().C_Str();
 
@@ -178,8 +186,8 @@ void Converter::ReadMeshData(aiNode* _node, int32 _bone)
 			mesh->m_vertices.push_back(vertex);
 		}
 		
-		//submesh¸¶´Ù index¹øÈ£°¡ °°¾Æ¼­´Â ¾ÈµÊ
-		//µû¶ó¼­ ex·Î 0 ~ 1104, 1105 ~ 3235. ÀÌ·± ´À³¦À¸·Î vertices¹øÈ£°¡ °ãÄ¡Áö ¾Ê°Ô²û. 
+		//submeshë§ˆë‹¤ indexë²ˆí˜¸ê°€ ê°™ì•„ì„œëŠ” ì•ˆë¨
+		//ë”°ë¼ì„œ exë¡œ 0 ~ 1104, 1105 ~ 3235. ì´ëŸ° ëŠë‚Œìœ¼ë¡œ verticesë²ˆí˜¸ê°€ ê²¹ì¹˜ì§€ ì•Šê²Œë”. 
 		for (uint32 f = 0; f < srcMesh->mNumFaces; ++f)
 		{
 			aiFace& face = srcMesh->mFaces[f];
@@ -194,8 +202,8 @@ void Converter::ReadMeshData(aiNode* _node, int32 _bone)
 void Converter::ReadSkinData()
 {
 
-	//¸ğµç »À¸¦ ÀüºÎ ¼øÈ¸ÇÏ¸é¼­, ±×°É Á¤Á¡µé¿¡°Ô ³Ö¾îÁØ´Ù. 
-	//Á¤Á¡¸¶´Ù ¾î¶² »À¿¡ ¿µÇâ ¹Ş´À³Ä. 
+	//ëª¨ë“  ë¼ˆë¥¼ ì „ë¶€ ìˆœíšŒí•˜ë©´ì„œ, ê·¸ê±¸ ì •ì ë“¤ì—ê²Œ ë„£ì–´ì¤€ë‹¤. 
+	//ì •ì ë§ˆë‹¤ ì–´ë–¤ ë¼ˆì— ì˜í–¥ ë°›ëŠëƒ. 
 	for (uint32 idx = 0; idx < m_scene->mNumMeshes; ++idx) {
 		aiMesh* srcMesh = m_scene->mMeshes[idx];
 
@@ -207,7 +215,7 @@ void Converter::ReadSkinData()
 
 		tempVertexBoneWeights.resize(mesh->m_vertices.size());
 
-		//BoneÀ» ¼øÈ¸ÇÏ¸é¼­ ¿¬°üµÈ VertexId, Weight¸¦ ±¸ÇØ¼­ ±â·ÏÇÑ´Ù.
+		//Boneì„ ìˆœíšŒí•˜ë©´ì„œ ì—°ê´€ëœ VertexId, Weightë¥¼ êµ¬í•´ì„œ ê¸°ë¡í•œë‹¤.
 		for (uint32 bIdx = 0; bIdx < srcMesh->mNumBones; ++bIdx) {
 			aiBone* srcMeshBone = srcMesh->mBones[bIdx];
 			uint32 boneIndex = GetBoneIndex(srcMeshBone->mName.C_Str());
@@ -221,7 +229,7 @@ void Converter::ReadSkinData()
 				tempVertexBoneWeights[index].AddWeights(boneIndex, weight);
 			}
 		}
-		//ÃÖÁ¾ °á°ú °è»ê
+		//ìµœì¢… ê²°ê³¼ ê³„ì‚°
 
 		for (uint32 v = 0; v < tempVertexBoneWeights.size(); ++v) {
 			tempVertexBoneWeights[v].Normalize();
@@ -239,13 +247,13 @@ void Converter::WriteModelFile(wstring _filePath)
 {
 	auto path = filesystem::path(_filePath);
 	filesystem::create_directory(path.parent_path());
-	//FBX±â¹İ »ç¿ëÀÚ ±â¹İ ÆÄ½Ì. 
+	//FBXê¸°ë°˜ ì‚¬ìš©ì ê¸°ë°˜ íŒŒì‹±. 
 
 	shared_ptr<FileUtils> file = make_shared<FileUtils>();
 	file->Open(_filePath, FileMode::Write);
 
 	// Bone Data
-	//º» ¸î°³ÀÎÁö ³Ö¾îÁÖ°í, º»¸¶´Ù µ¥ÀÌÅÍ ¾²±â. 
+	//ë³¸ ëª‡ê°œì¸ì§€ ë„£ì–´ì£¼ê³ , ë³¸ë§ˆë‹¤ ë°ì´í„° ì“°ê¸°. 
 	file->Write<uint32>(m_bones.size());
 	for (shared_ptr<asBone>& bone : m_bones)
 	{
@@ -256,7 +264,7 @@ void Converter::WriteModelFile(wstring _filePath)
 	}
 
 	// Mesh Data
-	//¸Å½¬°¡ ¸î °³ ÀÖ´ÂÁö ³Ö¾îÁÖ°í. ¸Å½¬¸¶´Ù µ¥ÀÌÅÍ ¾²±â. 
+	//ë§¤ì‰¬ê°€ ëª‡ ê°œ ìˆëŠ”ì§€ ë„£ì–´ì£¼ê³ . ë§¤ì‰¬ë§ˆë‹¤ ë°ì´í„° ì“°ê¸°. 
 	file->Write<uint32>(m_meshes.size());
 	for (shared_ptr<asMesh>& meshData : m_meshes)
 	{
@@ -397,15 +405,16 @@ string Converter::WriteTexture(string _saveFolder, string _file)
 	string fileName = filesystem::path(_file).filename().string();
 	string folderName = filesystem::path(_saveFolder).filename().string();
 
-	//°æ¿ì¿¡ µû¶ó ½ÇÁ¦·Î fbxÆÄÀÏ¿¡ ÅØ½ºÃ³°¡ Æ÷ÇÔµÈ °æ¿ìµµ ÀÖÀ½. 
-	//±×·± °æ¿ì¿¡´Â. 
+	//ê²½ìš°ì— ë”°ë¼ ì‹¤ì œë¡œ fbxíŒŒì¼ì— í…ìŠ¤ì²˜ê°€ í¬í•¨ëœ ê²½ìš°ë„ ìˆìŒ. 
+	//ê·¸ëŸ° ê²½ìš°ì—ëŠ”. 
 	const aiTexture* srcTexture = m_scene->GetEmbeddedTexture(_file.c_str());
 	if (srcTexture)
 	{
-		string pathStr = _saveFolder + fileName;
+		string pathStr = (filesystem::path(_saveFolder) / fileName).string();
+		//string pathStr = _saveFolder + fileName;
 
 		
-		if (srcTexture->mHeight == 0)//¹ÙÀÌ³Ê¸® ¸ğµå. 
+		if (srcTexture->mHeight == 0)//ë°”ì´ë„ˆë¦¬ ëª¨ë“œ. 
 		{
 			shared_ptr<FileUtils> file = make_shared<FileUtils>();
 			file->Open(Utils::ToWString(pathStr), FileMode::Write);
@@ -441,10 +450,10 @@ string Converter::WriteTexture(string _saveFolder, string _file)
 	}
 	else
 	{
-		// '/'¸¦ ¾²¸é ½ÇÁ¦·Î ÀÌ¾îºÙ¿©Áü 
-		//Àú°É ½ºÆ®¸µÀ¸·Î ÃßÃâÇØ¼­. 
+		// '/'ë¥¼ ì“°ë©´ ì‹¤ì œë¡œ ì´ì–´ë¶™ì—¬ì§ 
+		//ì €ê±¸ ìŠ¤íŠ¸ë§ìœ¼ë¡œ ì¶”ì¶œí•´ì„œ. 
 		string originStr = (filesystem::path(m_assetPath) / folderName / _file).string();
-		// '/'¸¦ \\·Î º¯°æÇØ¼­ ÅëÀÏ. 
+		// '/'ë¥¼ \\ë¡œ ë³€ê²½í•´ì„œ í†µì¼. 
 		Utils::Replace(originStr, "\\", "/");
 
 		string pathStr = (filesystem::path(_saveFolder) / fileName).string();
@@ -456,6 +465,158 @@ string Converter::WriteTexture(string _saveFolder, string _file)
 
 	return fileName;
 
+}
+
+shared_ptr<asAnimation> Converter::ReadAnimationData(aiAnimation* _srcAnimation)
+{
+	shared_ptr<asAnimation> animation = make_shared<asAnimation>();
+	animation->m_name = _srcAnimation->mName.C_Str();
+	animation->m_frameRate = (float)_srcAnimation->mTicksPerSecond;
+	animation->m_frameCount = (uint32)_srcAnimation->mDuration + 1;
+
+	map<string, shared_ptr<asAnimationnode>> cacheAnimNodes;
+
+	for (uint32 idx = 0; idx < _srcAnimation->mNumChannels; ++idx) {
+		aiNodeAnim* srcNode = _srcAnimation->mChannels[idx];
+
+		//ì• ë‹ˆë©”ì´ì…˜ ë…¸ë“œ ë°ì´í„° íŒŒì‹±
+		shared_ptr<asAnimationnode> node = ParseAnimationNode(animation, srcNode);
+
+		//í˜„ì¬ ì°¾ì€ ë…¸ë“œ ì¤‘ì— ì œì¼ ê¸´ ì‹œê°„ìœ¼ë¡œ ì• ë‹ˆë©”ì´ì…˜ ì‹œê°„ ê°±ì‹ 
+		animation->m_duration = max(animation->m_duration, node->m_keyFrame.back().m_time);
+	
+
+		cacheAnimNodes[srcNode->mNodeName.C_Str()] = node;
+	}
+
+	ReadKeyframeData(animation, m_scene->mRootNode, cacheAnimNodes);
+
+	return animation;
+}
+
+shared_ptr<asAnimationnode> Converter::ParseAnimationNode(shared_ptr<asAnimation> _animation, aiNodeAnim* _srcNode)
+{
+	shared_ptr<asAnimationnode> node = make_shared<asAnimationnode>();
+	node->m_name = _srcNode->mNodeName;
+
+	uint32 keyCount = max(max(_srcNode->mNumPositionKeys, _srcNode->mNumScalingKeys), _srcNode->mNumRotationKeys);
+
+	for (uint32 k = 0; k < keyCount; ++k) {
+		asKeyFrameData frameData;
+
+		bool found = false;
+		uint32 t = node->m_keyFrame.size();
+
+		// Position
+		if (::fabsf((float)_srcNode->mPositionKeys[k].mTime - (float)t) <= 0.0001f)
+		{
+			aiVectorKey key = _srcNode->mPositionKeys[k];
+			frameData.m_time = (float)key.mTime;
+			::memcpy_s(&frameData.m_translation, sizeof(Vec3), &key.mValue, sizeof(aiVector3D));
+
+			found = true;
+		}
+
+		// Rotation
+		if (::fabsf((float)_srcNode->mRotationKeys[k].mTime - (float)t) <= 0.0001f)
+		{
+			aiQuatKey key = _srcNode->mRotationKeys[k];
+			frameData.m_time = (float)key.mTime;
+
+			frameData.m_rotation.x = key.mValue.x;
+			frameData.m_rotation.y = key.mValue.y;
+			frameData.m_rotation.z = key.mValue.z;
+			frameData.m_rotation.w = key.mValue.w;
+
+			found = true;
+		}
+
+		// Scale
+		if (::fabsf((float)_srcNode->mScalingKeys[k].mTime - (float)t) <= 0.0001f)
+		{
+			aiVectorKey key = _srcNode->mScalingKeys[k];
+			frameData.m_time = (float)key.mTime;
+			::memcpy_s(&frameData.m_scale, sizeof(Vec3), &key.mValue, sizeof(aiVector3D));
+
+			found = true;
+		}
+
+		if (found == true)
+			node->m_keyFrame.push_back(frameData);
+
+	}
+	//KeyFrame
+	if (node->m_keyFrame.size() < _animation->m_frameCount)
+	{
+		uint32 count = _animation->m_frameCount - node->m_keyFrame.size();
+		asKeyFrameData keyFrame = node->m_keyFrame.back();
+
+		for (uint32 n = 0; n < count; n++)
+			node->m_keyFrame.push_back(keyFrame);
+	}
+
+	return node;
+}
+
+void Converter::ReadKeyframeData(shared_ptr<asAnimation> _animation, aiNode* _Node, map<string, shared_ptr<asAnimationnode>>& _cache)
+{
+	shared_ptr<asKeyFrame> keyframe = make_shared<asKeyFrame>();
+	keyframe->m_boneName = _Node->mName.C_Str();
+
+	shared_ptr<asAnimationnode> findNode = _cache[_Node->mName.C_Str()];
+
+	for (uint32 i = 0; i < _animation->m_frameCount; i++)
+	{
+		asKeyFrameData frameData;
+
+		if (findNode == nullptr)
+		{
+			Matrix transform(_Node->mTransformation[0]);
+			transform = transform.Transpose();
+			frameData.m_time = (float)i;
+			transform.Decompose(OUT frameData.m_scale, OUT frameData.m_rotation, OUT frameData.m_translation);
+		}
+		else
+		{
+			frameData = findNode->m_keyFrame[i];
+		}
+		//í‚¤ í”„ë ˆì„ì—ë‹¤ê°€ ë„£ì–´ì£¼ê¸°. 
+		keyframe->transform.push_back(frameData);
+	}
+
+	// KeyFrameì˜ ë°ì´í„°ê°€ ë‹¤ ë„£ì–´ì£¼ë©´.
+	// ì• ë‹ˆë©”ì´ì…˜ í‚¤í”„ë ˆì„ ì±„ìš°ê¸°. 
+	_animation->m_keyFrames.push_back(keyframe);
+
+	for (uint32 i = 0; i < _Node->mNumChildren; i++)
+		ReadKeyframeData(_animation, _Node->mChildren[i], _cache);
+
+}
+
+void Converter::WriteAnimationData(shared_ptr<asAnimation> _animation, wstring _finalPath)
+{
+	auto path = filesystem::path(_finalPath);
+
+	//                    .
+	filesystem::create_directory(path.parent_path());
+
+	shared_ptr<FileUtils> file = make_shared<FileUtils>();
+	file->Open(_finalPath, FileMode::Write);
+
+	file->Write<string>(_animation->m_name);
+	file->Write<float>(_animation->m_duration);
+	file->Write<float>(_animation->m_frameRate);
+	file->Write<uint32>(_animation->m_frameCount);
+
+	file->Write<uint32>(_animation->m_keyFrames.size());
+
+	for (shared_ptr<asKeyFrame> keyframe : _animation->m_keyFrames)
+	{
+		file->Write<string>(keyframe->m_boneName);
+
+		file->Write<uint32>(keyframe->transform.size());
+		file->Write(&keyframe->transform[0], sizeof(asKeyFrameData) * keyframe->transform.size());
+	}
 }
 
 uint32 Converter::GetBoneIndex(const string& _name)
