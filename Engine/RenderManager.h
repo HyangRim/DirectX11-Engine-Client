@@ -41,8 +41,8 @@ struct BoneDesc {
 
 //Animation
 struct KeyframeDesc {
-	int32 animIndex = 0;
-	uint32 currFrame = 0;
+	int32 m_animIndex = 0;
+	uint32 m_currFrame = 0;
 
 	//TODO
 	uint32 m_nextFrame = 0;
@@ -50,6 +50,29 @@ struct KeyframeDesc {
 	float m_sumTime = 0.f;
 	float m_speed = 1.f;
 	Vec2 padding;
+};
+
+struct TweenDesc {
+	TweenDesc() {
+		m_curr.m_animIndex = 0;
+		m_next.m_animIndex = -1;
+	}
+
+	void ClearNextAnim() {
+		m_next.m_animIndex = -1;
+		m_next.m_currFrame = 0;
+		m_next.m_nextFrame = 0;
+		m_next.m_sumTime = 0;
+		m_tweenSumTime = 0;
+		m_tweenRatio = 0;
+	}
+
+	float m_tweenDuration = 1.0f;
+	float m_tweenRatio = 0.f;
+	float m_tweenSumTime = 0.f;
+	float padding = 0.f;
+	KeyframeDesc m_curr;
+	KeyframeDesc m_next;
 };
 
 class Shader;
@@ -68,6 +91,7 @@ public:
 	void PushMaterialData(const MaterialDesc& _desc);
 	void PushBoneData(const BoneDesc& _desc);
 	void PushKeyframeData(const KeyframeDesc& _desc);
+	void PushTweenData(const TweenDesc& _desc);
 
 private:
 	shared_ptr<Shader> m_shader;
@@ -100,5 +124,9 @@ private:
 	KeyframeDesc m_keyframeDesc;
 	shared_ptr<ConstantBuffer<KeyframeDesc>> m_keyframeBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> m_keyframeEffectBuffer;
+
+	TweenDesc m_tweenDesc;
+	shared_ptr<ConstantBuffer<TweenDesc>> m_tweenBuffer;
+	ComPtr<ID3DX11EffectConstantBuffer> m_tweenEffectBuffer;
 };
 

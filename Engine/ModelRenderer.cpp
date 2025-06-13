@@ -75,6 +75,8 @@ void ModelRenderer::Update()
 		DC->IASetIndexBuffer(mesh->m_indexBuffer->GetComPtr().Get(), DXGI_FORMAT_R32_UINT, 0);
 
 		m_shader->DrawIndexed(0, m_pass, mesh->m_indexBuffer->GetCount(), 0, 0);
+
+		//m_shader->DrawIndexedInstanced
 	}
 }
 
