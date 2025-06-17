@@ -13,12 +13,12 @@ public:
 public:
 	LightDesc& GetLightDesc() { return m_desc; }
 
-	void SetLightDesc(LightDesc& desc) { m_desc = desc; }
-	void SetAmbient(const Color& color) { m_desc.ambient = color; }
-	void SetDiffuse(const Color& color) { m_desc.diffuse = color; }
-	void SetSpecular(const Color& color) { m_desc.specular = color; }
-	void SetEmissive(const Color& color) { m_desc.emissive = color; }
-	void SetLightDirection(Vec3 direction) { m_desc.direction = direction; }
+	void SetLightDesc(LightDesc& _desc) { m_desc = _desc; }
+	void SetAmbient(const Color& _color) { m_desc.ambient = _color; }
+	void SetDiffuse(const Color& _color) { m_desc.diffuse = _color; }
+	void SetSpecular(const Color& _color) { m_desc.specular = _color; }
+	void SetEmissive(const Color& _color) { m_desc.emissive = _color; }
+	void SetLightDirection(Vec3 _direction) { m_desc.direction = _direction; }
 
 private:
 	LightDesc m_desc;

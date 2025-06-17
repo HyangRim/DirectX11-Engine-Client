@@ -25,3 +25,5 @@ public:										\
 #define RENDER		GET_SINGLE(RenderManager)
 #define INSTANCING	GET_SINGLE(InstancingManager)
 #define GUI			GET_SINGLE(ImGuiManager)
+#define SCENE		GET_SINGLE(SceneManager)
+#define CURSCENE	SCENE->GetCurScene()

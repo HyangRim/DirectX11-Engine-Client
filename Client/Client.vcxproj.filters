@@ -99,19 +99,10 @@
     <ClCompile Include="18. NormalMapDemo.cpp">
       <Filter>Game\Week2</Filter>
     </ClCompile>
-    <ClCompile Include="InstancingDemo.cpp">
+    <ClCompile Include="SceneDemo.cpp">
       <Filter>Game\Week3</Filter>
     </ClCompile>
-    <ClCompile Include="MeshInstancingDemo.cpp">
-      <Filter>Game\Week3</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelInstancingDemo.cpp">
-      <Filter>Game\Week3</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimInstancingDemo.cpp">
-      <Filter>Game\Week3</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderDemo.cpp">
+    <ClCompile Include="RawBufferDemo.cpp">
       <Filter>Game\Week3</Filter>
     </ClCompile>
   </ItemGroup>
@@ -179,19 +170,10 @@
     <ClInclude Include="18. NormalMapDemo.h">
       <Filter>Game\Week2</Filter>
     </ClInclude>
-    <ClInclude Include="InstancingDemo.h">
+    <ClInclude Include="SceneDemo.h">
       <Filter>Game\Week3</Filter>
     </ClInclude>
-    <ClInclude Include="MeshInstancingDemo.h">
-      <Filter>Game\Week3</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelInstancingDemo.h">
-      <Filter>Game\Week3</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimInstancingDemo.h">
-      <Filter>Game\Week3</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderDemo.h">
+    <ClInclude Include="RawBufferDemo.h">
       <Filter>Game\Week3</Filter>
     </ClInclude>
   </ItemGroup>
@@ -273,6 +255,9 @@
     </FxCompile>
     <FxCompile Include="..\Shaders\00. Render.fx">
       <Filter>Shaders\Common</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\24. RawBufferDemo.fx">
+      <Filter>Shaders\Week3</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

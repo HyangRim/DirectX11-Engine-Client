@@ -11,7 +11,10 @@ float4 PS(MeshOutput input) : SV_TARGET
 }
 
 
+//GPU와 CPU를 둘 다 일 많이 시키는 것. 
+//GPU를 많이 쓰자, 인공지능과 암호화폐에서 ComputeShader를 씀.
 
+//GPU한테 어떤 식으로 일을 분배할 것인가??
 technique11 T0
 {
 	//여러 개의 패스를 둔다. 

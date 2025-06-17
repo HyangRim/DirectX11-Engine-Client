@@ -20,6 +20,8 @@ Camera::~Camera()
 void Camera::Update()
 {
 	UpdateMatrix();
+
+	RENDER->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);
 }
 
 

@@ -1,2 +1,11 @@
 #include "pch.h"
 #include "SceneManager.h"
+
+void SceneManager::Update()
+{
+	if (m_curScene == nullptr)
+		return;
+
+	m_curScene->Update();
+	m_curScene->LateUpdate();
+}
