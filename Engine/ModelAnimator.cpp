@@ -9,6 +9,8 @@
 ModelAnimator::ModelAnimator(shared_ptr<Shader> _shader)
 	: Super(ComponentType::Animator), m_shader(_shader)
 {
+	m_tweenDesc.m_next.m_animIndex = rand() % 3;
+	m_tweenDesc.m_tweenSumTime += rand() % 100;
 }
 
 ModelAnimator::~ModelAnimator()
@@ -17,13 +19,10 @@ ModelAnimator::~ModelAnimator()
 
 void ModelAnimator::Update()
 {
-	if (m_model == nullptr)
-		return;
+}
 
-	//TODO(Animation)
-	if (m_texture == nullptr)
-		CreateTexture();
-
+void ModelAnimator::UpdateTweenData()
+{
 	TweenDesc& desc = m_tweenDesc;
 
 	desc.m_curr.m_sumTime += DT;
@@ -43,7 +42,7 @@ void ModelAnimator::Update()
 
 			desc.m_curr.m_ratio = (desc.m_curr.m_sumTime / timePerFrame);
 		}
-	
+
 	}
 
 	//다음 애니메이션이 예약되어 있다면.
@@ -62,7 +61,7 @@ void ModelAnimator::Update()
 			desc.m_next.m_sumTime += DT;
 
 			float timePerFrame = 1.f / (nextAnim->m_frameRate * desc.m_next.m_speed);
-			
+
 
 			if (desc.m_next.m_ratio >= 1.f)
 			{
@@ -72,30 +71,34 @@ void ModelAnimator::Update()
 				desc.m_next.m_nextFrame = (desc.m_next.m_currFrame + 1) % nextAnim->m_frameCount;
 			}
 			desc.m_next.m_ratio = desc.m_next.m_sumTime / timePerFrame;
-			
+
 		}
 	}
 
 
-	// Anim Update
-	ImGui::InputInt("AnimIndex", &desc.m_curr.m_animIndex);
-	m_keyframeDesc.m_animIndex %= m_model->GetAnimationCount();
 
-	static int32 nextAnimIndex = 0;
-	if (ImGui::InputInt("NextAnimIndex", &nextAnimIndex))
+}
+
+void ModelAnimator::SetModel(shared_ptr<Model> _model)
+{
+	m_model = _model;
+
+	const auto& materials = m_model->GetMaterials();
+	for (auto& material : materials)
 	{
-		nextAnimIndex %= m_model->GetAnimationCount();
-		desc.ClearNextAnim(); // 기존꺼 밀어주기
-		desc.m_next.m_animIndex = nextAnimIndex;
+		material->SetShader(m_shader);
 	}
+}
 
-	if (m_model->GetAnimationCount() > 0)
-		desc.m_curr.m_animIndex %= m_model->GetAnimationCount();
-	ImGui::InputFloat("Speed", &desc.m_curr.m_speed, 0.5f, 4.f);
-	//m_keyframeDesc.currFrame %= m_model->GetAnimationByIndex(m_keyframeDesc.animIndex)->m_frameCount;
+void ModelAnimator::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer)
+{
+	if (m_model == nullptr)
+		return;
 
-	//애니메이션 현재 프레임 정보
-	RENDER->PushTweenData(desc);
+	//TODO(Animation)
+	//TransformMap은 뼈대 정보. 
+	if (m_texture == nullptr)
+		CreateTexture();
 
 	//SRV를 통해 정보 전달. 
 	m_shader->GetSRV("TransformMap")->SetResource(m_srv.Get());
@@ -113,11 +116,6 @@ void ModelAnimator::Update()
 	}
 	RENDER->PushBoneData(boneDesc);
 
-	// Transform
-	auto world = GetTransform()->GetWorldMatrix();
-	RENDER->PushTransformData(TransformDesc{ world });
-
-
 	//Mesh마다 출력. 
 	const auto& meshes = m_model->GetMeshes();
 	for (auto& mesh : meshes)
@@ -129,28 +127,17 @@ void ModelAnimator::Update()
 		//그게 몇 번째 Bone인지 넣어주기. 
 		m_shader->GetScalar("BoneIndex")->SetInt(mesh->m_boneIndex);
 
-		uint32 stride = mesh->m_vertexBuffer->GetStride();
-		uint32 offset = mesh->m_vertexBuffer->GetOffset();
+		mesh->m_vertexBuffer->PushData();
+		mesh->m_indexBuffer->PushData();
 
-		DC->IASetVertexBuffers(0, 1, mesh->m_vertexBuffer->GetComPtr().GetAddressOf(), &stride, &offset);
-		DC->IASetIndexBuffer(mesh->m_indexBuffer->GetComPtr().Get(), DXGI_FORMAT_R32_UINT, 0);
-
-		m_shader->DrawIndexed(0, m_pass, mesh->m_indexBuffer->GetCount(), 0, 0);
+		_buffer->PushData();
+		m_shader->DrawIndexedInstanced(0, m_pass, mesh->m_indexBuffer->GetCount(), _buffer->GetCount());
 	}
 }
 
-
-
-
-void ModelAnimator::SetModel(shared_ptr<Model> _model)
+InstanceID ModelAnimator::GetInstanceID()
 {
-	m_model = _model;
-
-	const auto& materials = m_model->GetMaterials();
-	for (auto& material : materials)
-	{
-		material->SetShader(m_shader);
-	}
+	return make_pair((uint64)m_model.get(), (uint64)m_shader.get());
 }
 
 void ModelAnimator::CreateTexture()

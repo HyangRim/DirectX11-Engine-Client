@@ -23,10 +23,13 @@ public:
     ~ModelAnimator();
 
     virtual void Update() override;
-
+    void UpdateTweenData();
     void SetModel(shared_ptr<Model> _model);
     void SetPass(uint8 _pass) { m_pass = _pass; }
 
+    void RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer);
+    InstanceID GetInstanceID();
+    TweenDesc GetTweenDesc() { return m_tweenDesc; }
 
 private:
     void CreateTexture();
@@ -38,7 +41,6 @@ private:
     ComPtr<ID3D11ShaderResourceView> m_srv;
 
 private:
-    KeyframeDesc m_keyframeDesc;
     TweenDesc m_tweenDesc;
 
 private:

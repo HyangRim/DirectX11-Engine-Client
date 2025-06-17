@@ -31,9 +31,11 @@ struct MaterialDesc
 	Color specular = Color(0.f, 0.f, 0.f, 1.f);
 	Color emissive = Color(0.f, 0.f, 0.f, 1.f);
 };
+
 //Bone
 #define MAX_BONE_TRANSFORMS 250
 #define MAX_MODEL_KEYFRAMES 500
+#define MAX_MODEL_INSTANCE 500
 
 struct BoneDesc {
 	Matrix transforms[MAX_BONE_TRANSFORMS];
@@ -75,6 +77,10 @@ struct TweenDesc {
 	KeyframeDesc m_next;
 };
 
+struct InstancedTweenDesc {
+	TweenDesc tweens[MAX_MODEL_INSTANCE];
+};
+
 class Shader;
 
 class RenderManager
@@ -91,7 +97,7 @@ public:
 	void PushMaterialData(const MaterialDesc& _desc);
 	void PushBoneData(const BoneDesc& _desc);
 	void PushKeyframeData(const KeyframeDesc& _desc);
-	void PushTweenData(const TweenDesc& _desc);
+	void PushTweenData(const InstancedTweenDesc& _desc);
 
 private:
 	shared_ptr<Shader> m_shader;
@@ -125,8 +131,8 @@ private:
 	shared_ptr<ConstantBuffer<KeyframeDesc>> m_keyframeBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> m_keyframeEffectBuffer;
 
-	TweenDesc m_tweenDesc;
-	shared_ptr<ConstantBuffer<TweenDesc>> m_tweenBuffer;
+	InstancedTweenDesc m_tweenDesc;
+	shared_ptr<ConstantBuffer<InstancedTweenDesc>> m_tweenBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> m_tweenEffectBuffer;
 };
 

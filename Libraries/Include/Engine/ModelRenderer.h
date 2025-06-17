@@ -15,10 +15,13 @@ public:
     ModelRenderer(shared_ptr<Shader> _shader);
     virtual ~ModelRenderer();
 
-    virtual void Update() override;
+    //virtual void Update() override;
 
     void SetModel(shared_ptr<Model> _model);
     void SetPass(uint8 _pass) { m_pass = _pass; }
+
+    void RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer);
+    InstanceID GetInstanceID();
 
 private:
     shared_ptr<Shader>  m_shader;
