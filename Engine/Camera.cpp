@@ -21,7 +21,7 @@ void Camera::Update()
 {
 	UpdateMatrix();
 
-	RENDER->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);
+	//RENDER->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);
 }
 
 
@@ -39,9 +39,9 @@ void Camera::UpdateMatrix()
 
 
 	if (m_type == ProjectionType::Perspective) {
-		s_MatProjection = ::XMMatrixPerspectiveFovLH(m_fov, m_width / m_height, m_near, m_far);
+		m_matProjection = s_MatProjection = ::XMMatrixPerspectiveFovLH(m_fov, m_width / m_height, m_near, m_far);
 	}
 	else {
-		s_MatProjection = ::XMMatrixOrthographicLH(1366.f, 768.f, 0.f, 1.f);
+		m_matProjection = s_MatProjection = ::XMMatrixOrthographicLH(1366.f, 768.f, 0.f, 1.f);
 	}
 }

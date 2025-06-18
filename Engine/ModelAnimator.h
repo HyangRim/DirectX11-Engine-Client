@@ -26,6 +26,8 @@ public:
     void UpdateTweenData();
     void SetModel(shared_ptr<Model> _model);
     void SetPass(uint8 _pass) { m_pass = _pass; }
+    shared_ptr<Shader> GetShader() { return m_shader; }
+
 
     void RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer);
     InstanceID GetInstanceID();

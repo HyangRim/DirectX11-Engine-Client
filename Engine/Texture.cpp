@@ -24,3 +24,11 @@ void Texture::Load(const wstring& _path)
 	m_size.y = md.height;
 }
 
+ComPtr<ID3D11Texture2D> Texture::GetTexture2D()
+{
+	ComPtr<ID3D11Texture2D> texture;
+	m_shaderResourveView->GetResource((ID3D11Resource**)texture.GetAddressOf());
+
+	return texture;
+}
+

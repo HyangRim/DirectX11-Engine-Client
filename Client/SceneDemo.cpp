@@ -88,7 +88,7 @@ void SceneDemo::Init()
 
 
 	//CreateTower();
-	RENDER->init(m_shader);
+	//RENDER->init(m_shader);
 }
 
 void SceneDemo::Update()

@@ -23,8 +23,8 @@ void Material::Update()
 	if (m_shader == nullptr)
 		return;
 
-	RENDER->PushMaterialData(m_desc);
-
+	//RENDER->PushMaterialData(m_desc);
+	m_shader->PushMaterialData(m_desc);
 	if (m_diffuseMap)
 		m_diffuseEffectBuffer->SetResource(m_diffuseMap->GetComPtr().Get());
 

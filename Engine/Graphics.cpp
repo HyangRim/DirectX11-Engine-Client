@@ -8,7 +8,7 @@ void Graphics::Init(HWND hwnd)
 	CreateDeviceAndSwapChain();
 	CreateRenderTargetView();
 	CreateDepthStencilView();
-	SetViewport();
+	SetViewport(GAME->GetGameDesc().width, GAME->GetGameDesc().height);
 }
 
 void Graphics::RenderBegin()
@@ -27,8 +27,10 @@ void Graphics::RenderBegin()
 	//스텐실이란. 원하는 뭔가에 따라서 그걸 구멍이 뚫려 그 부분만 바꾼다거나.
 	//그런 고급 기법. 
 	m_deviceContext->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
-	m_deviceContext->RSSetViewports(1, &m_viewport);
+	//m_deviceContext->RSSetViewports(1, &m_viewport);
+	m_viewport.RSSetViewport();
 }
+
 
 void Graphics::RenderEnd()
 {
@@ -122,12 +124,7 @@ void Graphics::CreateDepthStencilView()
 	}
 }
 
-void Graphics::SetViewport()
+void Graphics::SetViewport(float _width, float _height, float _x, float _y, float _minDepth, float _maxDepth)
 {
-	m_viewport.TopLeftX = 0.0f;
-	m_viewport.TopLeftY = 0.0f;
-	m_viewport.Width = static_cast<float>(GAME->GetGameDesc().width);
-	m_viewport.Height = static_cast<float>(GAME->GetGameDesc().height);
-	m_viewport.MinDepth = 0.0f;
-	m_viewport.MaxDepth = 1.0f;
+	m_viewport.Set(_width, _height, _x, _y, _minDepth, _maxDepth);
 }

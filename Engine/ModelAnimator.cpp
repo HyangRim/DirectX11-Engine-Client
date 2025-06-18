@@ -5,6 +5,8 @@
 #include "Shader.h"
 #include "ModelMesh.h"
 #include "ModelAnimation.h"
+#include "Camera.h"
+#include "Light.h"
 
 ModelAnimator::ModelAnimator(shared_ptr<Shader> _shader)
 	: Super(ComponentType::Animator), m_shader(_shader)
@@ -100,6 +102,15 @@ void ModelAnimator::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer
 	if (m_texture == nullptr)
 		CreateTexture();
 
+
+	//GlobalData
+	m_shader->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);
+
+	//Light
+	auto lightObj = SCENE->GetCurScene()->GetLight();
+	if (lightObj)
+		m_shader->PushLightData(lightObj->GetLight()->GetLightDesc());
+
 	//SRV를 통해 정보 전달. 
 	m_shader->GetSRV("TransformMap")->SetResource(m_srv.Get());
 
@@ -114,7 +125,8 @@ void ModelAnimator::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer
 		shared_ptr<ModelBone> bone = m_model->GetBoneByIndex(i);
 		boneDesc.transforms[i] = bone->m_transform;
 	}
-	RENDER->PushBoneData(boneDesc);
+	m_shader->PushBoneData(boneDesc);
+	//RENDER->PushBoneData(boneDesc);
 
 	//Mesh마다 출력. 
 	const auto& meshes = m_model->GetMeshes();

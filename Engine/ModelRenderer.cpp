@@ -4,6 +4,8 @@
 #include "Material.h"
 #include "Shader.h"
 #include "ModelMesh.h"
+#include "Camera.h"
+#include "Light.h"
 
 ModelRenderer::ModelRenderer(shared_ptr<Shader> _shader) : Super(ComponentType::ModelRenderer), m_shader(_shader)
 {
@@ -98,6 +100,15 @@ void ModelRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer
 	if (m_model == nullptr)
 		return;
 
+
+	//GlobalData
+	m_shader->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);
+
+	//Light
+	auto lightObj = SCENE->GetCurScene()->GetLight();
+	if (lightObj)
+		m_shader->PushLightData(lightObj->GetLight()->GetLightDesc());
+
 	// Bones
 	BoneDesc boneDesc;
 
@@ -111,8 +122,8 @@ void ModelRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer
 		shared_ptr<ModelBone> bone = m_model->GetBoneByIndex(i);
 		boneDesc.transforms[i] = bone->m_transform;
 	}
-
-	RENDER->PushBoneData(boneDesc);
+	m_shader->PushBoneData(boneDesc);
+	//RENDER->PushBoneData(boneDesc);
 
 	//Mesh마다 출력. 
 

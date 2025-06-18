@@ -30,8 +30,8 @@ public:
     void SetWidth(float _value) { m_width = _value; }
     void SetHeight(float _value) { m_height = _value; }
 
-    Matrix& GetViewMatrix() {}
-    Matrix& GetProjectionMatrix() {}
+    Matrix& GetViewMatrix() { return m_matView; }
+    Matrix& GetProjectionMatrix() { return m_matProjection; }
 
 private:
     ProjectionType m_type = ProjectionType::Perspective;

@@ -12,6 +12,9 @@ public:
 
 	virtual void Load(const wstring& _path) override;
 
+	ComPtr<ID3D11Texture2D> GetTexture2D();
+	void SetSRV(ComPtr<ID3D11ShaderResourceView> _srv) { m_shaderResourveView = _srv; }
+
 	Vec2 GetSize() { return m_size; }
 
 	const DirectX::ScratchImage& GetInfo() { return m_img; }

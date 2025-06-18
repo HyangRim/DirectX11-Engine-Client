@@ -307,3 +307,102 @@ ShaderDesc ShaderManager::GetEffect(wstring _fileName)
 
 	return ShaderDesc{desc.m_blob, effect};
 }
+
+void Shader::PushGlobalData(const Matrix& _view, const Matrix& _projection)
+{
+	if (m_globalBuffer == nullptr) {
+		m_globalBuffer = make_shared<ConstantBuffer<GlobalDesc>>();
+		m_globalBuffer->Create();
+		m_globalEffectBuffer = GetConstantBuffer("GlobalBuffer");
+	}
+	m_globalDesc.P = _projection;
+	m_globalDesc.V = _view;
+	m_globalDesc.VP = _view * _projection;
+	m_globalDesc.Vinv = _view.Invert();
+
+	m_globalBuffer->CopyData(m_globalDesc);
+	m_globalEffectBuffer->SetConstantBuffer(m_globalBuffer->GetComPtr().Get());
+
+}
+
+void Shader::PushTransformData(const TransformDesc& _desc)
+{
+	if (m_transformBuffer == nullptr) {
+		m_transformBuffer = make_shared<ConstantBuffer<TransformDesc>>();
+		m_transformBuffer->Create();
+		m_transformEffectBuffer = GetConstantBuffer("TransformBuffer");
+	}
+
+	m_transformDesc = _desc;
+
+	m_transformBuffer->CopyData(m_transformDesc);
+	m_transformEffectBuffer->SetConstantBuffer(m_transformBuffer->GetComPtr().Get());
+}
+
+void Shader::PushLightData(const LightDesc& _desc)
+{
+	if (m_lightBuffer == nullptr) {
+		m_lightBuffer = make_shared<ConstantBuffer<LightDesc>>();
+		m_lightBuffer->Create();
+		m_lightEffectBuffer = GetConstantBuffer("LightBuffer");
+	}
+
+	m_lightDesc = _desc;
+	m_lightBuffer->CopyData(m_lightDesc);
+	m_lightEffectBuffer->SetConstantBuffer(m_lightBuffer->GetComPtr().Get());
+}
+
+void Shader::PushMaterialData(const MaterialDesc& _desc)
+{
+	if (m_materialBuffer == nullptr) {
+
+		m_materialBuffer = make_shared<ConstantBuffer<MaterialDesc>>();
+		m_materialBuffer->Create();
+		m_materialEffectBuffer = GetConstantBuffer("MaterialBuffer");
+	}
+
+	m_materialDesc = _desc;
+	m_materialBuffer->CopyData(m_materialDesc);
+	m_materialEffectBuffer->SetConstantBuffer(m_materialBuffer->GetComPtr().Get());
+}
+
+void Shader::PushBoneData(const BoneDesc& _desc)
+{
+
+	if (m_boneBuffer == nullptr) {
+		m_boneBuffer = make_shared<ConstantBuffer<BoneDesc>>();
+		m_boneBuffer->Create();
+		m_boneEffectBuffer = GetConstantBuffer("BoneBuffer");
+	}
+
+	m_boneDesc = _desc;
+	m_boneBuffer->CopyData(m_boneDesc);
+	m_boneEffectBuffer->SetConstantBuffer(m_boneBuffer->GetComPtr().Get());
+}
+
+void Shader::PushKeyframeData(const KeyframeDesc& _desc)
+{
+	if (m_keyframeBuffer == nullptr) {
+		m_keyframeBuffer = make_shared<ConstantBuffer<KeyframeDesc>>();
+		m_keyframeBuffer->Create();
+		m_keyframeEffectBuffer = GetConstantBuffer("KeyframeBuffer");
+	}
+
+
+	m_keyframeDesc = _desc;
+	m_keyframeBuffer->CopyData(m_keyframeDesc);
+	m_keyframeEffectBuffer->SetConstantBuffer(m_keyframeBuffer->GetComPtr().Get());
+}
+
+void Shader::PushTweenData(const InstancedTweenDesc& _desc)
+{
+	if (m_tweenBuffer == nullptr) {
+		m_tweenBuffer = make_shared<ConstantBuffer<InstancedTweenDesc>>();
+		m_tweenBuffer->Create();
+		m_tweenEffectBuffer = GetConstantBuffer("TweenBuffer");
+	}
+
+	m_tweenDesc = _desc;
+	m_tweenBuffer->CopyData(m_tweenDesc);
+	m_tweenEffectBuffer->SetConstantBuffer(m_tweenBuffer->GetComPtr().Get());
+}

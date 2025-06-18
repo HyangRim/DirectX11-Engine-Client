@@ -10,10 +10,17 @@ public:
 
 	virtual void Add(shared_ptr<GameObject> _object);
 	virtual void Remove(shared_ptr<GameObject> _object);
+
+
+	const unordered_set<shared_ptr<GameObject>>& GetObjects() { return m_gameObjects; }
+	shared_ptr<GameObject> GetCamera() { return m_cameras.empty() ? nullptr : *m_cameras.begin();  }
+	shared_ptr<GameObject> GetLight() { return m_Lights.empty() ? nullptr : *m_Lights.begin(); }
+
+
+	shared_ptr<class GameObject> Pick(int32 _screenX, int32 _screenY);
+
 private:
 	unordered_set<shared_ptr<GameObject>> m_gameObjects;
-
-
 	//일단 임시로 만들어놓음. 
 	//Cache Camera;
 	unordered_set<shared_ptr<GameObject>> m_cameras;
