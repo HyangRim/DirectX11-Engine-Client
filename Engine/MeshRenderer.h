@@ -5,6 +5,8 @@ class Mesh;
 class Shader;
 class Material;
 
+#define MAX_MESH_INSTANCE 500
+
 class MeshRenderer : public Component
 {
 	using Super = Component;
@@ -16,9 +18,6 @@ public:
 
 	void SetMesh(shared_ptr<Mesh> _mesh) { m_mesh = _mesh; }
 	void SetMaterial(shared_ptr<Material> _material) { m_material = _material; }
-
-	void SetTexture(shared_ptr<Texture> _texture) {  }
-	void SetShader(shared_ptr<Shader> _shader) {  }
 	void SetPass(uint8 _pass) { m_pass = _pass; }
 
 	void RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer);

@@ -9,6 +9,7 @@ public:
 
     virtual void Update() override;
     virtual bool Intersects(Ray& _ray, OUT float& _distance) override;
+    virtual bool Intersects(shared_ptr<BaseCollider>& _other) override;
 
     void SetRadius(float _radius) { m_radius = _radius; }
 

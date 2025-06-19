@@ -33,6 +33,7 @@ void Scene::LateUpdate()
 	for (auto object : m_gameObjects) {
 		object->LateUpdate();
 	}
+	CheckCollision();
 }
 
 void Scene::Add(shared_ptr<GameObject> _object)
@@ -114,4 +115,28 @@ shared_ptr<class GameObject> Scene::Pick(int32 _screenX, int32 _screenY)
 
 	return picked;
 
+}
+
+void Scene::CheckCollision()
+{
+	vector<shared_ptr<BaseCollider>> colliders;
+
+	for (auto object : m_gameObjects) {
+		if (object->GetCollider() == nullptr)
+			continue;
+
+		colliders.push_back(object->GetCollider());
+	}
+
+	//BruteForce
+	//쿼드 트리 같은 거. 
+	for (uint32 idx = 0; idx < colliders.size(); ++idx) {
+		for (uint32 jdx = 0; jdx < colliders.size(); ++jdx) {
+			shared_ptr<BaseCollider>& other = colliders[jdx];
+
+			if (colliders[idx]->Intersects(other)) {
+				int a = 3;
+			}
+		}
+	}
 }

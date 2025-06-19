@@ -19,6 +19,8 @@ public:
 
 	shared_ptr<class GameObject> Pick(int32 _screenX, int32 _screenY);
 
+	void CheckCollision();
+
 private:
 	unordered_set<shared_ptr<GameObject>> m_gameObjects;
 	//일단 임시로 만들어놓음. 
