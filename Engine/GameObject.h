@@ -12,6 +12,7 @@ class ModelAnimator;
 class Light;
 class BaseCollider;
 class Terrain;
+class Button;
 
 
 class GameObject : public enable_shared_from_this<GameObject>
@@ -37,9 +38,12 @@ public:
 	shared_ptr<Light> GetLight();
 	shared_ptr<BaseCollider> GetCollider();
 	shared_ptr<Terrain> GetTerrain();
+	shared_ptr<Button> GetButton();
 
 	void AddComponent(shared_ptr<Component> _component);
 
+	void SetLayerIndex(uint8 _layer) { m_layerIndex = _layer; }
+	uint8 GetLayerIndex() { return m_layerIndex; }
 protected:
 
 	//고정된 배열. Component별 고정된 위치. 
@@ -47,5 +51,8 @@ protected:
 
 	//스트립트는 따로. 
 	vector<shared_ptr<MonoBehaviour>> m_scripts;
+
+
+	uint8 m_layerIndex = 0;
 };
 

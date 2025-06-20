@@ -32,6 +32,9 @@ public:
 
     Matrix& GetViewMatrix() { return m_matView; }
     Matrix& GetProjectionMatrix() { return m_matProjection; }
+    
+    float GetWidth() { return m_width;}
+    float GetHeight() { return m_height; }
 
 private:
     ProjectionType m_type = ProjectionType::Perspective;
@@ -50,5 +53,23 @@ public:
     static Matrix s_MatProjection;
 
 
+public:
+    void SortGameObject();
+    void Render_Forward();
+
+    void SetCullingMaskLayerOnOff(uint8 _layer, bool _on) {
+        if (_on) {
+            m_cullingMask |= (1 << _layer);
+        }
+        else
+            m_cullingMask &= ~(1 << _layer);
+    }
+    void SetCullingMaskAll() { SetCullingMask(UINT32_MAX); }
+    void SetCullingMask(uint32 _mask) { m_cullingMask = _mask; }
+    bool IsCulled(uint8 _layer) { return (m_cullingMask & (1 << _layer)) != 0; }
+
+private:
+    uint32 m_cullingMask = 0;
+    vector<shared_ptr<GameObject>> m_vecForward;
 };
 

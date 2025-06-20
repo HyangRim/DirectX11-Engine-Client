@@ -53,6 +53,10 @@ struct AABB3D
 		Vec3 p2 = aabb.position - aabb.size;
 		return Vec3(fmaxf(p1.x, p2.x), fmaxf(p1.y, p2.y), fmaxf(p1.z, p2.z));
 	}
+	// 최소 및 최대 좌표를 이용하여 AABB를 생성합니다.
+	static AABB3D FromMinMax(const Vec3& min, const Vec3& max) {
+		return AABB3D{ (min + max) / 2, (max - min) / 2 };
+	}
 
 };
 

@@ -8,4 +8,6 @@ void SceneManager::Update()
 
 	m_curScene->Update();
 	m_curScene->LateUpdate();
+
+	m_curScene->Render();
 }

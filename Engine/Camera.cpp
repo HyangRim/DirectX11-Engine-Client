@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "Component.h"
 #include "Transform.h"
+#include "Scene.h"
 
 
 Matrix Camera::s_MatView = Matrix::Identity;
@@ -35,13 +36,43 @@ void Camera::UpdateMatrix()
 	Vec3 eyePosition = GetTransform()->GetPosition();
 	Vec3 focusPosition = eyePosition + GetTransform()->GetLook();
 	Vec3 upDirection = GetTransform()->GetUp();
-	s_MatView = ::XMMatrixLookAtLH(eyePosition, focusPosition, upDirection);
+	
+	m_matView = ::XMMatrixLookAtLH(eyePosition, focusPosition, upDirection);
 
 
 	if (m_type == ProjectionType::Perspective) {
 		m_matProjection = s_MatProjection = ::XMMatrixPerspectiveFovLH(m_fov, m_width / m_height, m_near, m_far);
 	}
 	else {
-		m_matProjection = s_MatProjection = ::XMMatrixOrthographicLH(1366.f, 768.f, 0.f, 1.f);
+		m_matProjection = s_MatProjection = ::XMMatrixOrthographicLH(m_width, m_height, m_near, m_far);
 	}
+}
+
+void Camera::SortGameObject()
+{
+	shared_ptr<Scene> scene = CURSCENE;
+	const unordered_set<shared_ptr<GameObject>>& gameObjects = scene->GetObjects();
+
+	m_vecForward.clear();
+
+
+	//그려줄 것 선별하기. 
+	for (auto& object : gameObjects) {
+		if (IsCulled(object->GetLayerIndex()))
+			continue;
+		if (object->GetMeshRenderer() == nullptr &&
+			object->GetModelRenderer() == nullptr &&
+			object->GetModelAnimator() == nullptr)
+			continue;
+
+		m_vecForward.push_back(object);
+	}
+}
+
+void Camera::Render_Forward()
+{
+	s_MatView = m_matView;
+	s_MatProjection = m_matProjection;
+
+	INSTANCING->Render(m_vecForward);
 }

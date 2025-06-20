@@ -7,7 +7,8 @@
 #include "TextureBufferDemo.h"
 #include "StructuredDemo.h"
 #include "ViewportDemo.h"
-#include "CollisionDemo.h"
+#include "OrthoGraphicDemo.h"
+#include "ButtonDemo.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd){
 	GameDesc desc;
@@ -18,7 +19,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	desc.width = 1366;
 	desc.height = 768;
 	desc.clearColor = Color(0.f, 0.f, 0.f, 0.f);
-	desc.app = make_shared<CollisionDemo>();
+	desc.app = make_shared<ButtonDemo>();
 
 	GAME->Run(desc);
 

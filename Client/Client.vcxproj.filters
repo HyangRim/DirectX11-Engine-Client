@@ -60,7 +60,10 @@
     <ClCompile Include="ViewportDemo.cpp">
       <Filter>Game\Week3</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionDemo.cpp">
+    <ClCompile Include="OrthoGraphicDemo.cpp">
+      <Filter>Game\Week4</Filter>
+    </ClCompile>
+    <ClCompile Include="ButtonDemo.cpp">
       <Filter>Game\Week4</Filter>
     </ClCompile>
   </ItemGroup>
@@ -92,7 +95,10 @@
     <ClInclude Include="ViewportDemo.h">
       <Filter>Game\Week3</Filter>
     </ClInclude>
-    <ClInclude Include="CollisionDemo.h">
+    <ClInclude Include="OrthoGraphicDemo.h">
+      <Filter>Game\Week4</Filter>
+    </ClInclude>
+    <ClInclude Include="ButtonDemo.h">
       <Filter>Game\Week4</Filter>
     </ClInclude>
   </ItemGroup>
