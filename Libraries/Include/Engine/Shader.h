@@ -67,6 +67,7 @@ public:
 	void PushKeyframeData(const KeyframeDesc& _desc);
 	void PushTweenData(const InstancedTweenDesc& _desc);
 	void PushSnowData(const SnowBillboardDesc& _desc);
+	void PushParticleData(const ParticleDesc& _desc);
 
 
 private:
@@ -107,6 +108,9 @@ private:
 	shared_ptr<ConstantBuffer<SnowBillboardDesc>> m_snowBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> m_snowEffectBuffer;
 
+	ParticleDesc m_particleDesc;
+	shared_ptr<ConstantBuffer<ParticleDesc>> m_particleBuffer;
+	ComPtr<ID3DX11EffectConstantBuffer> m_particleEffectBuffer;
 };
 
 class ShaderManager

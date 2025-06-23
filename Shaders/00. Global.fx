@@ -2,6 +2,10 @@
 #define _GLOBAL_FX_
 
 
+
+Texture1D RandomMap;
+
+
 ////////////////
 //Const Buffer//
 ////////////////
@@ -185,6 +189,23 @@ BlendState AdditiveBlendAlphaToCoverageEnable
     RenderTargetWriteMask[0] = 15;
 };
 
+///////////////////
+//  DepthStencil //
+///////////////////
+
+DepthStencilState DisableDepth
+{
+    DepthEnable = false;
+    DepthWriteMask = ZERO;
+};
+
+DepthStencilState NoDepthWrites
+{
+    DepthEnable = true;
+    DepthWriteMask = ZERO;
+};
+
+
 
 ///////////////////
 //     Macro     //
@@ -224,6 +245,15 @@ pass name											\
 float3 CameraPosition()
 {
     return -Vinv._41_42_43;
+}
+
+
+float3 RandUnitVec3(float gameTime, float offset)
+{
+    float u = (gameTime + offset);
+    float v = RandomMap.SampleLevel(LinearSampler, u, 0).xyz;
+    
+    return normalize(v);
 }
 
 

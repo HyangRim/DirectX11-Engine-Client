@@ -25,6 +25,7 @@
 #include "Billboard.h"
 #include "SnowBillboard.h"
 
+
 void SnowBillboardDemo::Init()
 {
 	m_shader = make_shared<Shader>(L"29. SnowBillboard.fx");
@@ -32,7 +33,7 @@ void SnowBillboardDemo::Init()
 	// Camera
 	{
 		auto camera = make_shared<GameObject>();
-		camera->GetOrAddTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
+		camera->GetOrAddTransform()->SetPosition(Vec3{ 0.f, 5.f, -5.f });
 		camera->AddComponent(make_shared<Camera>());
 		camera->AddComponent(make_shared<CameraScript>());
 		camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
@@ -57,7 +58,7 @@ void SnowBillboardDemo::Init()
 	{
 		auto obj = make_shared<GameObject>();
 		obj->GetOrAddTransform()->SetLocalPosition(Vec3(0.f));
-		obj->AddComponent(make_shared<SnowBillboard>(Vec3(100, 100, 100), 10000));
+		obj->AddComponent(make_shared<SnowBillboard>(Vec3(200, 200, 200), 20000));
 		{
 			// Material
 			{

@@ -74,5 +74,5 @@ void Camera::Render_Forward()
 	s_MatView = m_matView;
 	s_MatProjection = m_matProjection;
 
-	INSTANCING->Render(m_vecForward);
+	RENDER->Render(m_vecForward);
 }

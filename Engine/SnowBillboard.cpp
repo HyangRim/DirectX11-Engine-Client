@@ -8,8 +8,8 @@
 SnowBillboard::SnowBillboard(Vec3 _extent, int32 _drawCount /*= 100*/)
 	:Super(ComponentType::SnowBillboard)
 {
-	m_desc.extent = _extent;
-	m_desc.drawDistance = _extent.z * 2.0f;
+	m_desc.m_extent = _extent;
+	m_desc.m_drawDistance = _extent.z * 2.0f;
 	m_drawCount = _drawCount;
 
 	const int32 vertexCount = _drawCount * 4;
@@ -20,9 +20,9 @@ SnowBillboard::SnowBillboard(Vec3 _extent, int32 _drawCount /*= 100*/)
 		Vec2 scale = MathUtils::RandomVec2(0.1f, 0.5f);
 
 		Vec3 position;
-		position.x = MathUtils::Random(-m_desc.extent.x, m_desc.extent.x);
-		position.y = MathUtils::Random(-m_desc.extent.y, m_desc.extent.y);
-		position.z = MathUtils::Random(-m_desc.extent.z, m_desc.extent.z);
+		position.x = MathUtils::Random(-m_desc.m_extent.x, m_desc.m_extent.x);
+		position.y = MathUtils::Random(-m_desc.m_extent.y, m_desc.m_extent.y);
+		position.z = MathUtils::Random(-m_desc.m_extent.z, m_desc.m_extent.z);
 
 		Vec2 random = MathUtils::RandomVec2(0.0f, 1.0f);
 
@@ -74,8 +74,8 @@ SnowBillboard::~SnowBillboard()
 
 void SnowBillboard::Update()
 {
-	m_desc.origin = CURSCENE->GetMainCamera()->GetTransform()->GetPosition();
-	m_desc.time = m_elapsedTime;
+	m_desc.m_origin = CURSCENE->GetMainCamera()->GetTransform()->GetPosition();
+	m_desc.m_time = m_elapsedTime;
 	m_elapsedTime += DT;
 
 	auto shader = m_material->GetShader();

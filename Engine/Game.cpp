@@ -108,9 +108,10 @@ void Game::Update()
 
 	GRAPHICS->RenderBegin();
 
-	SCENE->Update();
 
 	GUI->Update();
+
+	SCENE->Update();
 
 	_desc.app->Update();
 	_desc.app->Render();

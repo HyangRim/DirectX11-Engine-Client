@@ -82,14 +82,21 @@ struct InstancedTweenDesc {
 };
 
 struct SnowBillboardDesc {
-	Color color = Color(1, 1, 1, 1);
+	Color m_color = Color(1, 1, 1, 1);
 
-	Vec3 velocity = Vec3(0, -5, 0);
-	float drawDistance = 0;
+	Vec3 m_velocity = Vec3(0, -5, 0);
+	float m_drawDistance = 0;
 
-	Vec3 origin = Vec3(0, 0, 0);
-	float turbulence = 5;
+	Vec3 m_origin = Vec3(0, 0, 0);
+	float m_turbulence = 5;
 
-	Vec3 extent = Vec3(0, 0, 0);
-	float time;
+	Vec3 m_extent = Vec3(0, 0, 0);
+	float m_time = 0;
+};
+
+struct ParticleDesc {
+	float timeStep = 0.f;
+	float gameTime = 0.f;
+	Vec3 emitPosW = Vec3(0, 0, 0);
+	Vec3 emitDirW = Vec3(0, 0, 0);
 };

@@ -67,6 +67,7 @@ void MeshRenderer::Update()
 
 void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer)
 {
+	/*
 	if (m_mesh == nullptr || m_material == nullptr)
 		return;
 
@@ -83,7 +84,12 @@ void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer)
 	auto lightObj = SCENE->GetCurScene()->GetLight();
 	if(lightObj)
 		shader->PushLightData(lightObj->GetLight()->GetLightDesc());
+	*/
 
+	Super::Render();
+
+	if (m_mesh == nullptr)
+		return;
 	//텍스처 업데이트. 
 	m_material->Update();
 
@@ -93,7 +99,9 @@ void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer)
 	//Instancing의 PushData는 수많은 애들의 world matrix
 	_buffer->PushData();
 
-	shader->DrawIndexedInstanced(0, m_pass, m_mesh->GetIndexBuffer()->GetCount(), _buffer->GetCount());
+	m_material->GetShader()->DrawIndexedInstanced(0, m_pass, m_mesh->GetIndexBuffer()->GetCount(), _buffer->GetCount());
+
+	//shader->DrawIndexedInstanced(0, m_pass, m_mesh->GetIndexBuffer()->GetCount(), _buffer->GetCount());
 }
 
 InstanceID MeshRenderer::GetInstanceID()

@@ -1,5 +1,5 @@
 #pragma once
-#include "Component.h"
+#include "Renderer.h"
 
 class Mesh;
 class Shader;
@@ -7,9 +7,9 @@ class Material;
 
 #define MAX_MESH_INSTANCE 500
 
-class MeshRenderer : public Component
+class MeshRenderer : public Renderer
 {
-	using Super = Component;
+	using Super = Renderer;
 public:
 	MeshRenderer();
 	virtual ~MeshRenderer();

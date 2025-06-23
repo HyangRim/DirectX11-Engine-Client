@@ -15,6 +15,7 @@ class Terrain;
 class Button;
 class Billboard;
 class SnowBillboard;
+class ParticleSystem;
 
 class GameObject : public enable_shared_from_this<GameObject>
 {
@@ -42,11 +43,17 @@ public:
 	shared_ptr<Button> GetButton();
 	shared_ptr<Billboard> GetBillboard();
 	shared_ptr<SnowBillboard> GetSnowBillboard();
+	shared_ptr<ParticleSystem> GetParticleSystem();
 
 	void AddComponent(shared_ptr<Component> _component);
 
 	void SetLayerIndex(uint8 _layer) { m_layerIndex = _layer; }
 	uint8 GetLayerIndex() { return m_layerIndex; }
+
+	template<typename T>
+	shared_ptr<T> GetFixedComponent(ComponentType _type) {
+		return static_pointer_cast<T>(GetFixedComponent(_type));
+	}
 protected:
 
 	//고정된 배열. Component별 고정된 위치. 

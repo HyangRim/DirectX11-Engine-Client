@@ -192,7 +192,7 @@
     <ClInclude Include="ModelAnimator.h">
       <Filter>04. Component</Filter>
     </ClInclude>
-    <ClInclude Include="InstancingManager.h">
+    <ClInclude Include="RenderManager.h">
       <Filter>02. Managers</Filter>
     </ClInclude>
     <ClInclude Include="InstancingBuffer.h">
@@ -254,6 +254,12 @@
     </ClInclude>
     <ClInclude Include="SnowBillboard.h">
       <Filter>06. UI &amp; Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>04. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>04. Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -386,7 +392,7 @@
     <ClCompile Include="ModelAnimator.cpp">
       <Filter>04. Component</Filter>
     </ClCompile>
-    <ClCompile Include="InstancingManager.cpp">
+    <ClCompile Include="RenderManager.cpp">
       <Filter>02. Managers</Filter>
     </ClCompile>
     <ClCompile Include="InstancingBuffer.cpp">
@@ -445,6 +451,12 @@
     </ClCompile>
     <ClCompile Include="SnowBillboard.cpp">
       <Filter>06. UI &amp; Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>04. Component</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>04. Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

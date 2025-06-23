@@ -60,6 +60,24 @@ public:
 		DC->IASetVertexBuffers(m_slot, 1, _vertexBuffer.GetAddressOf(), &m_stride, &m_offset);
 	}
 
+
+	template<typename T>
+	void CreateStreamOut(const int _maxVertexSize) {
+		D3D11_BUFFER_DESC vbd;
+		vbd.Usage = D3D11_USAGE_DEFAULT;
+
+		vbd.CPUAccessFlags = 0;
+		vbd.MiscFlags = 0;
+		vbd.StructureByteStride = 0;
+
+		vbd.ByteWidth = sizeof(T) * _maxVertexSize;
+		vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT;
+
+		HRESULT hr = DEVICE->CreateBuffer(&vbd, 0, _vertexBuffer.GetAddressOf());
+		CHECK(hr);
+	}
+
+
 private:
 	ComPtr<ID3D11Buffer> _vertexBuffer;
 

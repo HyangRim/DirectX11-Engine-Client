@@ -17,6 +17,7 @@ void TimeManager::Update()
 
 	m_frameCount++;
 	m_frameTime += m_deltaTime;
+	m_gameTime += m_deltaTime;
 
 	if (m_frameTime > 1.f)
 	{

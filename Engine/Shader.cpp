@@ -419,3 +419,7 @@ void Shader::PushSnowData(const SnowBillboardDesc& _desc)
 	m_snowBuffer->CopyData(m_snowDesc);
 	m_snowEffectBuffer->SetConstantBuffer(m_snowBuffer->GetComPtr().Get());
 }
+
+void Shader::PushParticleData(const ParticleDesc& _desc)
+{
+}

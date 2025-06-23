@@ -12,5 +12,6 @@ public:
 
 	static wstring ToWString(string _value);
 	static string ToString(wstring _value);
+	static string ToString(Vec3& _value);
 };
 

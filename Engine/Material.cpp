@@ -13,9 +13,10 @@ void Material::SetShader(shared_ptr<Shader> _shader)
 {
 	m_shader = _shader;
 
-	m_diffuseEffectBuffer = _shader->GetSRV("DiffuseMap");
-	m_normalEffectBuffer = _shader->GetSRV("NormalMap");
-	m_specularEffectBuffer = _shader->GetSRV("SpecularMap");
+	m_diffuseEffectBuffer = m_shader->GetSRV("DiffuseMap");
+	m_normalEffectBuffer = m_shader->GetSRV("NormalMap");
+	m_specularEffectBuffer = m_shader->GetSRV("SpecularMap");
+	m_randomEffectBuffer = m_shader->GetSRV("RandomMap");
 }
 
 void Material::Update()
@@ -33,6 +34,9 @@ void Material::Update()
 
 	if (m_specularMap)
 		m_specularEffectBuffer->SetResource(m_specularMap->GetComPtr().Get());
+
+	if (m_randomMap)
+		m_randomEffectBuffer->SetResource(m_randomMap->GetComPtr().Get());
 }
 
 shared_ptr<Material> Material::Clone()

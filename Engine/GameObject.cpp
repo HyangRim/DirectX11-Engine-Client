@@ -17,6 +17,7 @@
 #include "Button.h"
 #include "Billboard.h"
 #include "SnowBillboard.h"
+#include "ParticleSystem.h"
 
 GameObject::GameObject()
 {
@@ -172,6 +173,12 @@ shared_ptr<SnowBillboard> GameObject::GetSnowBillboard()
 {
 	shared_ptr<Component> component = GetFixedComponent(ComponentType::SnowBillboard);
 	return static_pointer_cast<SnowBillboard>(component);
+}
+
+shared_ptr<ParticleSystem> GameObject::GetParticleSystem()
+{
+	shared_ptr<Component> component = GetFixedComponent(ComponentType::ParticleSystem);
+	return static_pointer_cast<ParticleSystem>(component);
 }
 
 

@@ -31,6 +31,14 @@ struct V_OUT
     float alpha : ALPHA;
 };
 
+
+float3 FindPointInWindow(float3 center, float3 extent, float position)
+{
+    float3 ijk = round((center - position) / extent);
+    float3 result = extent * ijk + position;
+    return result;
+}
+
 V_OUT VS(VertexInput input)
 {
     V_OUT output;
@@ -76,6 +84,7 @@ float4 PS(V_OUT input) : SV_Target
 
     diffuse.rgb = Color.rgb * input.alpha * 2.0f;
     diffuse.a = diffuse.a * input.alpha * 1.5f;
+
 
     return diffuse;
 }

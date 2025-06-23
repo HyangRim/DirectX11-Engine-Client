@@ -29,6 +29,7 @@ public:
 
 private:
 	void CreateDefaultMesh();
+	void CreateRandomTexture();
 
 private:
 	wstring m_resourcePath;
