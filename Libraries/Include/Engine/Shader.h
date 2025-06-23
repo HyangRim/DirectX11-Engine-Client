@@ -66,6 +66,7 @@ public:
 	void PushBoneData(const BoneDesc& _desc);
 	void PushKeyframeData(const KeyframeDesc& _desc);
 	void PushTweenData(const InstancedTweenDesc& _desc);
+	void PushSnowData(const SnowBillboardDesc& _desc);
 
 
 private:
@@ -102,6 +103,9 @@ private:
 	shared_ptr<ConstantBuffer<InstancedTweenDesc>> m_tweenBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> m_tweenEffectBuffer;
 
+	SnowBillboardDesc m_snowDesc;
+	shared_ptr<ConstantBuffer<SnowBillboardDesc>> m_snowBuffer;
+	ComPtr<ID3DX11EffectConstantBuffer> m_snowEffectBuffer;
 
 };
 

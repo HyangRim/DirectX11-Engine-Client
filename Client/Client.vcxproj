@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BillboardDemo.h" />
     <ClInclude Include="ButtonDemo.h" />
     <ClInclude Include="CameraScript.h" />
     <ClInclude Include="GroupBufferDemo.h" />
@@ -27,11 +28,13 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="RawBufferDemo.h" />
     <ClInclude Include="SceneDemo.h" />
+    <ClInclude Include="SnowBillboardDemo.h" />
     <ClInclude Include="StructuredDemo.h" />
     <ClInclude Include="TextureBufferDemo.h" />
     <ClInclude Include="ViewportDemo.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BillboardDemo.cpp" />
     <ClCompile Include="ButtonDemo.cpp" />
     <ClCompile Include="CameraScript.cpp" />
     <ClCompile Include="GroupBufferDemo.cpp" />
@@ -43,6 +46,7 @@
     </ClCompile>
     <ClCompile Include="RawBufferDemo.cpp" />
     <ClCompile Include="SceneDemo.cpp" />
+    <ClCompile Include="SnowBillboardDemo.cpp" />
     <ClCompile Include="StructuredDemo.cpp" />
     <ClCompile Include="TextureBufferDemo.cpp" />
     <ClCompile Include="ViewportDemo.cpp" />
@@ -162,6 +166,8 @@
     <FxCompile Include="..\Shaders\25. GroupBufferDemo.fx" />
     <FxCompile Include="..\Shaders\26. TextureBufferDemo.fx" />
     <FxCompile Include="..\Shaders\27. StructuredDemo.fx" />
+    <FxCompile Include="..\Shaders\28. BillboardDemo.fx" />
+    <FxCompile Include="..\Shaders\29. SnowBillboard.fx" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

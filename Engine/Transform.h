@@ -49,6 +49,8 @@ public:
 	void AddChild(shared_ptr<Transform> _child) {
 		m_children.emplace_back(_child);
 	}
+	
+	static Vec3 ToEulerAngles(Quaternion q);
 
 private:
 

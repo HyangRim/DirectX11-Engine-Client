@@ -13,6 +13,7 @@ public:
 	void AddOnClikedEvent(std::function<void(void)> _func);
 	void InvokeOnClicked();
 private:
+
 	std::function<void(void)> m_onClicked;
 	RECT m_rect;
 };

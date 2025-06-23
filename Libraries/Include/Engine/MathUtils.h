@@ -92,5 +92,11 @@ struct MathUtils
 	static Vec3 Barycentric(const Point3D& _P, const Triangle3D& _t);
 	static bool RayCast(const Triangle3D& _triangle, const Ray3D& _ray, OUT float& _distance);
 	static Vec3 ProjectVecOnVec(Vec3 _from, Vec3 _to);
+
+
+
+	static float Random(float r1, float r2);
+	static Vec2 RandomVec2(float r1, float r2);
+	static Vec3 RandomVec3(float r1, float r2);
 };
 

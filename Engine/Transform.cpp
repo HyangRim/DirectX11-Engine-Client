@@ -9,7 +9,7 @@ Transform::~Transform()
 {
 }
 
-Vec3 ToEulerAngles(Quaternion q)
+Vec3 Transform::ToEulerAngles(Quaternion q)
 {
 	Vec3 angles;
 

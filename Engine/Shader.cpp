@@ -406,3 +406,16 @@ void Shader::PushTweenData(const InstancedTweenDesc& _desc)
 	m_tweenBuffer->CopyData(m_tweenDesc);
 	m_tweenEffectBuffer->SetConstantBuffer(m_tweenBuffer->GetComPtr().Get());
 }
+
+void Shader::PushSnowData(const SnowBillboardDesc& _desc)
+{
+	if (m_snowBuffer == nullptr) {
+		m_snowBuffer = make_shared<ConstantBuffer<SnowBillboardDesc>>();
+		m_snowBuffer->Create();
+		m_snowEffectBuffer = GetConstantBuffer("SnowBuffer");
+	}
+
+	m_snowDesc = _desc;
+	m_snowBuffer->CopyData(m_snowDesc);
+	m_snowEffectBuffer->SetConstantBuffer(m_snowBuffer->GetComPtr().Get());
+}
