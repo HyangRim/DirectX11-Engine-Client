@@ -89,6 +89,8 @@ void ModelAnimator::SetModel(shared_ptr<Model> _model)
 	for (auto& material : materials)
 	{
 		material->SetShader(m_shader);
+		m_material = material;
+		break;
 	}
 }
 
@@ -97,19 +99,14 @@ void ModelAnimator::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer
 	if (m_model == nullptr)
 		return;
 
+	Super::Render();
+
+
 	//TODO(Animation)
 	//TransformMap은 뼈대 정보. 
 	if (m_texture == nullptr)
 		CreateTexture();
 
-
-	//GlobalData
-	m_shader->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);
-
-	//Light
-	auto lightObj = SCENE->GetCurScene()->GetLight();
-	if (lightObj)
-		m_shader->PushLightData(lightObj->GetLight()->GetLightDesc());
 
 	//SRV를 통해 정보 전달. 
 	m_shader->GetSRV("TransformMap")->SetResource(m_srv.Get());
@@ -287,4 +284,8 @@ void ModelAnimator::CreateAnimationTransform(uint32 _index)
 			m_animTransform[_index].transforms[frame][bone] = invGlobal * tempAnimBoneTransforms[bone];
 		}
 	}
+}
+
+shared_ptr<Shader> ModelAnimator::GetShader() {
+	return m_material->GetShader();
 }

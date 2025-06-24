@@ -1,5 +1,5 @@
 #pragma once
-#include "Component.h"
+#include "Renderer.h"
 
 class Model;
 
@@ -14,9 +14,9 @@ struct AnimTransform {
 };
 
 class ModelAnimator :
-    public Component
+    public Renderer
 {
-    using Super = Component;
+    using Super = Renderer;
 
 public:
     ModelAnimator(shared_ptr<Shader> _shader);
@@ -26,7 +26,7 @@ public:
     void UpdateTweenData();
     void SetModel(shared_ptr<Model> _model);
     void SetPass(uint8 _pass) { m_pass = _pass; }
-    shared_ptr<Shader> GetShader() { return m_shader; }
+    shared_ptr<Shader> GetShader();
 
 
     void RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer);

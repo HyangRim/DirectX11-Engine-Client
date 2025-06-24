@@ -34,9 +34,6 @@
     <Filter Include="Shaders\Week5">
       <UniqueIdentifier>{5f62659e-f74f-41d7-b10a-919c1fa0eb28}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders\Particle">
-      <UniqueIdentifier>{e1475631-6a26-447c-83de-9ba86768a6d6}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -78,6 +75,9 @@
     <ClCompile Include="SnowBillboardDemo.cpp">
       <Filter>Game\Week4</Filter>
     </ClCompile>
+    <ClCompile Include="ParticleDemo.cpp">
+      <Filter>Game\Week4</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -117,6 +117,9 @@
       <Filter>Game\Week4</Filter>
     </ClInclude>
     <ClInclude Include="SnowBillboardDemo.h">
+      <Filter>Game\Week4</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleDemo.h">
       <Filter>Game\Week4</Filter>
     </ClInclude>
   </ItemGroup>
@@ -217,8 +220,11 @@
     <FxCompile Include="..\Shaders\29. SnowBillboard.fx">
       <Filter>Shaders\Week5</Filter>
     </FxCompile>
+    <FxCompile Include="..\Shaders\Sky.fx">
+      <Filter>Shaders\Common</Filter>
+    </FxCompile>
     <FxCompile Include="..\Shaders\ParticleSystem.fx">
-      <Filter>Shaders\Particle</Filter>
+      <Filter>Shaders\Common</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

@@ -17,6 +17,7 @@ void Material::SetShader(shared_ptr<Shader> _shader)
 	m_normalEffectBuffer = m_shader->GetSRV("NormalMap");
 	m_specularEffectBuffer = m_shader->GetSRV("SpecularMap");
 	m_randomEffectBuffer = m_shader->GetSRV("RandomMap");
+	m_cubeMapEffectBuffer = m_shader->GetSRV("CubeMap");
 }
 
 void Material::Update()
@@ -37,6 +38,9 @@ void Material::Update()
 
 	if (m_randomMap)
 		m_randomEffectBuffer->SetResource(m_randomMap->GetComPtr().Get());
+
+	if (m_cubeMap)
+		m_cubeMapEffectBuffer->SetResource(m_cubeMap->GetComPtr().Get());
 }
 
 shared_ptr<Material> Material::Clone()

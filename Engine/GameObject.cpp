@@ -18,6 +18,7 @@
 #include "Billboard.h"
 #include "SnowBillboard.h"
 #include "ParticleSystem.h"
+#include "Renderer.h"
 
 GameObject::GameObject()
 {
@@ -137,6 +138,19 @@ shared_ptr<ModelAnimator> GameObject::GetModelAnimator()
 {
 	shared_ptr<Component> component = GetFixedComponent(ComponentType::Animator);
 	return static_pointer_cast<ModelAnimator>(component);
+}
+
+shared_ptr<Renderer> GameObject::GetRenderer()
+{
+	shared_ptr<Component> renderer = GetFixedComponent(ComponentType::MeshRenderer);
+	if (renderer == nullptr)
+		renderer = GetFixedComponent(ComponentType::ModelRenderer);
+	if (renderer == nullptr)
+		renderer = GetFixedComponent(ComponentType::Animator);
+	if (renderer == nullptr)
+		renderer = GetFixedComponent(ComponentType::ParticleSystem);
+
+	return static_pointer_cast<Renderer>(renderer);
 }
 
 shared_ptr<Light> GameObject::GetLight()

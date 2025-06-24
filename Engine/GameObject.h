@@ -16,6 +16,8 @@ class Button;
 class Billboard;
 class SnowBillboard;
 class ParticleSystem;
+class Renderer;
+
 
 class GameObject : public enable_shared_from_this<GameObject>
 {
@@ -37,6 +39,7 @@ public:
 	shared_ptr<ModelRenderer> GetModelRenderer();
 	shared_ptr<Transform> GetOrAddTransform();
 	shared_ptr<ModelAnimator> GetModelAnimator();
+	shared_ptr<Renderer> GetRenderer();
 	shared_ptr<Light> GetLight();
 	shared_ptr<BaseCollider> GetCollider();
 	shared_ptr<Terrain> GetTerrain();

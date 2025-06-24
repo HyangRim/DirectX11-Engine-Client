@@ -261,6 +261,9 @@
     <ClInclude Include="ParticleSystem.h">
       <Filter>04. Component</Filter>
     </ClInclude>
+    <ClInclude Include="Sky.h">
+      <Filter>01. Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -457,6 +460,9 @@
     </ClCompile>
     <ClCompile Include="ParticleSystem.cpp">
       <Filter>04. Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Sky.cpp">
+      <Filter>01. Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

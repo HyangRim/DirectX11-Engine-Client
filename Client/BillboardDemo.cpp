@@ -23,16 +23,19 @@
 #include "Terrain.h"
 #include "Button.h"
 #include "Billboard.h"
+#include "SnowBillboard.h"
 #include "ParticleSystem.h"
+#include "Sky.h"
 
 void BillboardDemo::Init()
 {
+	DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	m_shader = make_shared<Shader>(L"28. BillboardDemo.fx");
 
 	// Camera
 	{
 		auto camera = make_shared<GameObject>();
-		camera->GetOrAddTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
+		camera->GetOrAddTransform()->SetPosition(Vec3{ 0.f, 3.f, -15.f });
 		camera->AddComponent(make_shared<Camera>());
 		camera->AddComponent(make_shared<CameraScript>());
 		camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
@@ -61,6 +64,7 @@ void BillboardDemo::Init()
 		{
 			// Material
 			{
+				
 				shared_ptr<Material> material = make_shared<Material>();
 				material->SetShader(m_shader);
 				auto texture = RESOURCES->Load<Texture>(L"Veigar", L"..\\Resources\\Textures\\grass.png");
@@ -87,24 +91,99 @@ void BillboardDemo::Init()
 
 		CURSCENE->Add(obj);
 	}
-	//Particle System
-	/*
+	// Terrain
 	{
-		auto particle = make_shared<Shader>(L"ParticleSystem.fx");
+		auto terrainShader = make_shared<Shader>(L"23. RenderDemo.fx");
+		{
+			shared_ptr<Material> material = make_shared<Material>();
+			material->SetShader(terrainShader);
+			auto texture = RESOURCES->Load<Texture>(L"TerrainGrass", L"..\\Resources\\Textures\\Terrain\\grass.jpg");
+			material->SetDiffuseMap(texture);
+			MaterialDesc& desc = material->GetMaterialDesc();
+			desc.ambient = Vec4(1.f);
+			desc.diffuse = Vec4(1.f);
+			desc.specular = Vec4(1.f);
+			RESOURCES->Add(L"TerrainGrass", material);
+		}
 		auto obj = make_shared<GameObject>();
+		obj->GetOrAddTransform()->SetLocalPosition(Vec3(-100.f, 0.f, -100.f));
+		obj->AddComponent(make_shared<Terrain>());
+		obj->GetTerrain()->Create(200, 200, RESOURCES->Get<Material>(L"TerrainGrass"));
+		CURSCENE->Add(obj);
+	}
+	//Particle System
 
+	{
+		auto particleShader = make_shared<Shader>(L"ParticleSystem.fx");
+		auto obj = make_shared<GameObject>();
 		obj->GetOrAddTransform()->SetLocalPosition(Vec3(0.f, 5.f, 0.f));
 		obj->AddComponent(make_shared<ParticleSystem>());
 		shared_ptr<ParticleSystem> particleSystem = obj->GetFixedComponent<ParticleSystem>(ComponentType::ParticleSystem);
 		shared_ptr<Material> material = make_shared<Material>();
-		material->SetShader(particle);
-		material->SetDiffuseMap(RESOURCES->Get<Texture>(L"Veigar"));
+		material->SetShader(particleShader);
+		//auto texture = RESOURCES->Load<Texture>(L"TerrainGrass", L"..\\Resources\\Textures\\Terrain\\grass.jpg");
+		material->SetDiffuseMap(RESOURCES->Get<Texture>(L"TerrainGrass"));
 		material->SetRandomTex(RESOURCES->Get<Texture>(L"RandomTex"));
-
 		particleSystem->SetMaterial(material);
 		CURSCENE->Add(obj);
 	}
-	*/
+
+	// Billboard
+	{
+		auto snowShader = make_shared<Shader>(L"29. SnowBillboard.fx");
+		auto obj = make_shared<GameObject>();
+		obj->GetOrAddTransform()->SetLocalPosition(Vec3(0.f));
+		obj->AddComponent(make_shared<SnowBillboard>(Vec3(100, 100, 100), 10000));
+		{
+			// Material
+			{
+				shared_ptr<Material> material = make_shared<Material>();
+				material->SetShader(snowShader);
+				auto texture = RESOURCES->Load<Texture>(L"Veigar", L"..\\Resources\\Textures\\grass.png");
+				//auto texture = RESOURCES->Load<Texture>(L"Veigar", L"..\\Resources\\Textures\\veigar.jpg");
+				material->SetDiffuseMap(texture);
+				MaterialDesc& desc = material->GetMaterialDesc();
+				desc.ambient = Vec4(1.f);
+				desc.diffuse = Vec4(1.f);
+				desc.specular = Vec4(1.f);
+				RESOURCES->Add(L"Veigar", material);
+
+				obj->GetSnowBillboard()->SetMaterial(material);
+			}
+		}
+
+		CURSCENE->Add(obj);
+	}
+
+
+	// UI
+	{
+		auto obj = make_shared<GameObject>();
+		obj->SetLayerIndex(LAYER_UI);
+		obj->AddComponent(make_shared<Button>());
+		obj->GetButton()->Create(Vec2(100, 100), Vec2(100, 100), RESOURCES->Get<Material>(L"Veigar"));
+		obj->GetButton()->AddOnClikedEvent([obj]() { CURSCENE->Remove(obj); });
+
+		CURSCENE->Add(obj);
+	}
+
+	{
+		// UICamera
+		auto camera = make_shared<GameObject>();
+		camera->GetOrAddTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
+		camera->AddComponent(make_shared<Camera>());
+		camera->GetCamera()->SetProjectionType(ProjectionType::Orthographic);
+		camera->GetCamera()->SetNear(1.0f);
+		camera->GetCamera()->SetFar(100.0f);
+		camera->GetCamera()->SetCullingMaskAll();
+		camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, false);
+		CURSCENE->Add(camera);
+	}
+
+	//Sky
+	{
+		CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\snowcube1024.dds", L"Sky.fx"));
+	}
 }
 
 void BillboardDemo::Update()

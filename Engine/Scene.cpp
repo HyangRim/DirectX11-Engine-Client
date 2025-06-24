@@ -4,7 +4,7 @@
 #include "BaseCollider.h"
 #include "Camera.h"
 #include "Button.h"
-
+#include "Sky.h"
 void Scene::Start()
 {
 	auto objects = m_gameObjects;
@@ -37,8 +37,16 @@ void Scene::LateUpdate()
 void Scene::Render()
 {
 	for (auto camera : m_cameras) {
-		camera->GetCamera()->SortGameObject();
-		camera->GetCamera()->Render_Forward();
+		//camera->GetCamera()->SortGameObject();
+		//camera->GetCamera()->Render_Forward();
+
+		const shared_ptr<Camera>& cam = camera->GetCamera();
+		cam->SortGameObject();
+		cam->Render_Forward();
+		if (cam->IsCulled(LAYER_UI) == true && m_sky)
+			m_sky->Render(cam);
+
+		cam->Render_Backward();
 	}
 }
 

@@ -1,14 +1,14 @@
 #pragma once
-#include "Component.h"
+#include "Renderer.h"
 
 class Model;
 class Shader;
 class Material;
 
 class ModelRenderer :
-    public Component
+    public Renderer
 {
-    using Super = Component;
+    using Super = Renderer;
 
 
 public:
@@ -22,6 +22,8 @@ public:
 
     void RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer);
     InstanceID GetInstanceID();
+
+    void SetMaterial(shared_ptr <Material> _material) override;
 
 private:
     shared_ptr<Shader>  m_shader;

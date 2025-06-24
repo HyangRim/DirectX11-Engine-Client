@@ -2,15 +2,13 @@
 #include "00. Light.fx"
 #include "00. Render.fx"
 
-
 cbuffer ParticleBuffer
 {
     float3 emitPosW;
     float timeStep;
-    float3 emitDirw;
+    float3 emitDirW;
     float gameTime;
 };
-
 
 struct VertexInput
 {
@@ -24,27 +22,33 @@ struct VertexInput
 cbuffer cbFixed
 {
     float3 gAccelW = { 0.0f, 7.8f, 0.0f };
+	
     float2 gQuadTexC[4] =
     {
         float2(0.0f, 1.0f),
-        float2(1.0f, 1.0f),
-        float2(0.0f, 0.0f),
-        float2(1.0f, 0.0f)
+		float2(1.0f, 1.0f),
+		float2(0.0f, 0.0f),
+		float2(1.0f, 0.0f)
     };
 };
 
-
-// STREAM-OUT TECH
+//***********************************************
+// STREAM-OUT TECH                              *
+//***********************************************
 
 #define PT_EMITTER 0
 #define PT_FLARE 1
-
 
 VertexInput StreamOutVS(VertexInput vin)
 {
     return vin;
 }
 
+// The stream-out GS is just responsible for emitting 
+// new particles and destroying old particles.  The logic
+// programed here will generally vary from particle system
+// to particle system, as the destroy/spawn rules will be 
+// different.
 [maxvertexcount(2)]
 void StreamOutGS(point VertexInput gin[1],
 	inout PointStream<VertexInput> ptStream)
@@ -57,16 +61,16 @@ void StreamOutGS(point VertexInput gin[1],
         if (gin[0].Age > 0.005f)
         {
             float3 vRandom = RandUnitVec3(gameTime, 0.0f);
-            //vRandom.x *= 0.5f;
-            //vRandom.z *= 0.5f;
+			//vRandom.x *= 0.5f;
+			//vRandom.z *= 0.5f;
 
             VertexInput p;
             p.InitialPos = emitPosW.xyz;
-            p.InitialVel = emitDirw + vRandom;
+            p.InitialVel = emitDirW + vRandom;
             p.Size = float2(3.0f, 3.0f);
             p.Age = 0.0f;
             p.Type = PT_FLARE;
-
+			
             ptStream.Append(p);
 
 			// reset the time to emit
@@ -186,7 +190,9 @@ void DrawGS(point VertexOut gin[1],
 
 float4 DrawPS(GeoOut pin) : SV_TARGET
 {
-    return DiffuseMap.Sample(LinearSampler, pin.Tex) * pin.Color;
+    float4 diffuse = DiffuseMap.Sample(LinearSampler, pin.Tex);
+    float4 result = diffuse * pin.Color;
+    return result;
 }
 
 technique11 DrawTech

@@ -18,7 +18,7 @@ public:
     Camera();
     virtual ~Camera();
 
-    virtual void Update() override;
+    virtual void LateUpdate() override;
 
     void SetProjectionType(ProjectionType _type) { m_type = _type; }
     ProjectionType GetProjectionType() { return m_type; }
@@ -56,6 +56,7 @@ public:
 public:
     void SortGameObject();
     void Render_Forward();
+    void Render_Backward();
 
     void SetCullingMaskLayerOnOff(uint8 _layer, bool _on) {
         if (_on) {
@@ -71,5 +72,6 @@ public:
 private:
     uint32 m_cullingMask = 0;
     vector<shared_ptr<GameObject>> m_vecForward;
+    vector<shared_ptr<GameObject>> m_vecBackward;
 };
 

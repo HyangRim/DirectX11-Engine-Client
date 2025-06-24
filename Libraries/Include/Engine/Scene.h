@@ -1,5 +1,6 @@
 #pragma once
 
+class Sky;
 class Scene
 {
 public:
@@ -22,6 +23,8 @@ public:
 	void PickUI();
 	shared_ptr<class GameObject> Pick(int32 _screenX, int32 _screenY);
 
+	void SetSky(shared_ptr<Sky> _sky) { m_sky = _sky; }
+
 	void CheckCollision();
 
 private:
@@ -32,5 +35,7 @@ private:
 
 	//Cache Light;
 	unordered_set<shared_ptr<GameObject>> m_Lights;
+
+	shared_ptr<Sky> m_sky;
 };
 
