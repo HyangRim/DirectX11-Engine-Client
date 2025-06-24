@@ -159,17 +159,14 @@ BlendState AlphaBlendAlphaToCoverageEnable
 
 BlendState AdditiveBlend
 {
-    AlphaToCoverageEnable = true;
-
-    BlendEnable[0] = true;
-    SrcBlend[0] = One;
-    DestBlend[0] = One;
-    BlendOp[0] = ADD;
-
-    SrcBlendAlpha[0] = One;
-    DestBlendAlpha[0] = Zero;
-    BlendOpAlpha[0] = Add;
-
+    AlphaToCoverageEnable = FALSE;
+	BlendEnable[0] = TRUE;
+    SrcBlend = SRC_ALPHA;
+    DestBlend = ONE;
+	BlendOp = ADD;
+    SrcBlendAlpha = ZERO;
+    DestBlendAlpha = ZERO;
+    BlendOpAlpha = ADD;
     RenderTargetWriteMask[0] = 15;
 };
 

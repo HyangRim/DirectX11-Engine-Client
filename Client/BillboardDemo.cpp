@@ -23,10 +23,11 @@
 #include "Terrain.h"
 #include "Button.h"
 #include "Billboard.h"
+#include "ParticleSystem.h"
 
 void BillboardDemo::Init()
 {
-	m_shader = make_shared<Shader>(L"28. BillBoardDemo.fx");
+	m_shader = make_shared<Shader>(L"28. BillboardDemo.fx");
 
 	// Camera
 	{
@@ -86,8 +87,24 @@ void BillboardDemo::Init()
 
 		CURSCENE->Add(obj);
 	}
+	//Particle System
+	/*
+	{
+		auto particle = make_shared<Shader>(L"ParticleSystem.fx");
+		auto obj = make_shared<GameObject>();
 
-	
+		obj->GetOrAddTransform()->SetLocalPosition(Vec3(0.f, 5.f, 0.f));
+		obj->AddComponent(make_shared<ParticleSystem>());
+		shared_ptr<ParticleSystem> particleSystem = obj->GetFixedComponent<ParticleSystem>(ComponentType::ParticleSystem);
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(particle);
+		material->SetDiffuseMap(RESOURCES->Get<Texture>(L"Veigar"));
+		material->SetRandomTex(RESOURCES->Get<Texture>(L"RandomTex"));
+
+		particleSystem->SetMaterial(material);
+		CURSCENE->Add(obj);
+	}
+	*/
 }
 
 void BillboardDemo::Update()

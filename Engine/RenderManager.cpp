@@ -7,7 +7,7 @@
 #include "ModelAnimator.h"
 #include "Transform.h"
 #include "Camera.h"
-
+#include "ParticleSystem.h"
 class GameObject;
 
 //이 게임 오브젝트들 중에서 실질적으로 인스턴싱 되어야 하는 부분만 여기서. 
@@ -18,6 +18,16 @@ void RenderManager::Render(vector<shared_ptr<GameObject>>& _gameObjects)
 	RenderMeshRenderer(_gameObjects);
 	RenderModelRenderer(_gameObjects);
 	RenderAnimRenderer(_gameObjects);
+
+	//파티클 시스템 있는 것들 선별. 
+	for (shared_ptr<GameObject>& gameObject : _gameObjects) {
+		shared_ptr<ParticleSystem> particle = gameObject->GetFixedComponent<ParticleSystem>(ComponentType::ParticleSystem);
+
+		if (particle == nullptr)
+			continue;
+
+		particle->Render();
+	}
 }
 
 void RenderManager::ClearData()

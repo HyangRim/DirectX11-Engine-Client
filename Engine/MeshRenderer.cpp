@@ -67,29 +67,12 @@ void MeshRenderer::Update()
 
 void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer)
 {
-	/*
-	if (m_mesh == nullptr || m_material == nullptr)
-		return;
-
-	auto shader = m_material->GetShader();
-
-	if (shader == nullptr)
-		return;
-
-
-	//GlobalData
-	shader->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);
-
-	//Light
-	auto lightObj = SCENE->GetCurScene()->GetLight();
-	if(lightObj)
-		shader->PushLightData(lightObj->GetLight()->GetLightDesc());
-	*/
 
 	Super::Render();
 
 	if (m_mesh == nullptr)
 		return;
+
 	//텍스처 업데이트. 
 	m_material->Update();
 
@@ -100,7 +83,7 @@ void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer)
 	_buffer->PushData();
 
 	m_material->GetShader()->DrawIndexedInstanced(0, m_pass, m_mesh->GetIndexBuffer()->GetCount(), _buffer->GetCount());
-
+	int aa = 32323;
 	//shader->DrawIndexedInstanced(0, m_pass, m_mesh->GetIndexBuffer()->GetCount(), _buffer->GetCount());
 }
 
