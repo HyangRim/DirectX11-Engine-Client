@@ -34,7 +34,7 @@ void Graphics::RenderBegin()
 
 void Graphics::RenderEnd()
 {
-	HRESULT hr = m_swapChain->Present(1, 0);
+	HRESULT hr = m_swapChain->Present(0, 0);
 	CHECK(hr);
 }
 void Graphics::CreateDeviceAndSwapChain()
@@ -64,7 +64,7 @@ void Graphics::CreateDeviceAndSwapChain()
 		nullptr,
 		D3D_DRIVER_TYPE_HARDWARE,
 		nullptr,
-		0,
+		D3D11_CREATE_DEVICE_DEBUG,
 		nullptr,
 		0,
 		D3D11_SDK_VERSION,

@@ -3,6 +3,7 @@
 #include "Component.h"
 #include "Transform.h"
 #include "Scene.h"
+#include "ParticleSystem.h"
 
 
 Matrix Camera::s_MatView = Matrix::Identity;
@@ -62,11 +63,14 @@ void Camera::SortGameObject()
 			continue;
 		if (object->GetMeshRenderer() == nullptr &&
 			object->GetModelRenderer() == nullptr &&
-			object->GetModelAnimator() == nullptr)
+			object->GetModelAnimator() == nullptr &&
+			object->GetFixedComponent<ParticleSystem>(ComponentType::ParticleSystem) == nullptr)
 			continue;
 
 		m_vecForward.push_back(object);
 	}
+
+	int aa = 42;
 }
 
 void Camera::Render_Forward()

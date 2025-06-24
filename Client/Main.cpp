@@ -20,8 +20,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	desc.hWnd = NULL;
 	desc.width = 1366;
 	desc.height = 768;
-	desc.clearColor = Color(0.f, 0.f, 0.f, 0.f);
-	desc.app = make_shared<SnowBillboardDemo>();
+	desc.clearColor = Color(0.5f, 0.5f, 0.5f, 0.5f);
+	desc.app = make_shared<ButtonDemo>();
 
 	GAME->Run(desc);
 

@@ -63,6 +63,8 @@ public:
 
 	template<typename T>
 	void CreateStreamOut(const int _maxVertexSize) {
+
+		m_stride = sizeof(T);
 		D3D11_BUFFER_DESC vbd;
 		vbd.Usage = D3D11_USAGE_DEFAULT;
 

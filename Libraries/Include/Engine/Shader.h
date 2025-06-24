@@ -26,6 +26,9 @@ public:
 	void DrawInstanced(UINT _technique, UINT _pass, UINT _vertexCountPerInstance, UINT _instanceCount, UINT _startVertexLocation = 0, UINT _startInstanceLocation = 0);
 	void DrawIndexedInstanced(UINT _technique, UINT _pass, UINT _indexCountPerInstance, UINT _instanceCount, UINT _startIndexLocation = 0, INT _baseVertexLocation = 0, UINT _startInstanceLocation = 0);
 
+	void BeginDraw(UINT _technique, UINT _pass);
+	void EndDraw(UINT _technique, UINT _pass);
+
 	void Dispatch(UINT _technique, UINT _pass, UINT _x, UINT _y, UINT _z);
 
 	ComPtr<ID3DX11EffectVariable> GetVariable(string _name);
@@ -69,7 +72,7 @@ public:
 	void PushSnowData(const SnowBillboardDesc& _desc);
 	void PushParticleData(const ParticleDesc& _desc);
 
-
+	vector<Technique>& GetTechniqes() { return m_techniques; }
 private:
 	//어떤 정보를 넣으려거든 이 삼총사. 
 	GlobalDesc m_globalDesc;
