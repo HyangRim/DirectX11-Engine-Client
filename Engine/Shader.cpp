@@ -193,6 +193,16 @@ void Shader::DrawIndexedInstanced(UINT _technique, UINT _pass, UINT _indexCountP
 	m_techniques[_technique].m_passes[_pass].DrawIndexedInstanced(_indexCountPerInstance, _instanceCount, _startIndexLocation, _baseVertexLocation, _startInstanceLocation);
 }
 
+void Shader::BeginDraw(UINT _technique, UINT _pass)
+{
+	m_techniques[_technique].m_passes[_pass].BeginDraw();
+}
+
+void Shader::EndDraw(UINT _technique, UINT _pass)
+{
+	m_techniques[_technique].m_passes[_pass].EndDraw();
+}
+
 void Shader::Dispatch(UINT _technique, UINT _pass, UINT _x, UINT _y, UINT _z)
 {
 	m_techniques[_technique].m_passes[_pass].Dispatch(_x, _y, _z);
@@ -281,9 +291,19 @@ ShaderDesc ShaderManager::GetEffect(wstring _fileName)
 	{
 		ComPtr<ID3DBlob> blob;
 		ComPtr<ID3DBlob> error;
-		INT flag = D3D10_SHADER_ENABLE_BACKWARDS_COMPATIBILITY | D3D10_SHADER_PACK_MATRIX_ROW_MAJOR;
+		//INT flag = D3D10_SHADER_ENABLE_BACKWARDS_COMPATIBILITY | D3D10_SHADER_PACK_MATRIX_ROW_MAJOR;
 
-		HRESULT hr = ::D3DCompileFromFile(_fileName.c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, NULL, "fx_5_0", flag, NULL, blob.GetAddressOf(), error.GetAddressOf());
+		//HRESULT hr = ::D3DCompileFromFile(_fileName.c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, NULL, "fx_5_0", flag, NULL, blob.GetAddressOf(), error.GetAddressOf());
+		
+		WORD shaderFlags = 0;
+#if defined(DEBUG) || defined(_DEBUG)
+		shaderFlags |= D3D10_SHADER_DEBUG;
+		shaderFlags |= D3D10_SHADER_SKIP_OPTIMIZATION;
+#endif
+
+		shaderFlags |= D3D10_SHADER_PACK_MATRIX_ROW_MAJOR;
+		HRESULT hr = ::D3DCompileFromFile(_fileName.c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, NULL, "fx_5_0", shaderFlags, NULL, blob.GetAddressOf(), error.GetAddressOf());
+
 		if (FAILED(hr))
 		{
 			if (error != NULL)
@@ -422,4 +442,13 @@ void Shader::PushSnowData(const SnowBillboardDesc& _desc)
 
 void Shader::PushParticleData(const ParticleDesc& _desc)
 {
+	if (m_particleBuffer == nullptr) {
+		m_particleBuffer = make_shared<ConstantBuffer<ParticleDesc>>();
+		m_particleBuffer->Create();
+		m_particleEffectBuffer = GetConstantBuffer("ParticleBuffer");
+	}
+
+	m_particleDesc = _desc;
+	m_particleBuffer->CopyData(m_particleDesc);
+	m_particleEffectBuffer->SetConstantBuffer(m_particleBuffer->GetComPtr().Get());
 }

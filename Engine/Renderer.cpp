@@ -18,6 +18,8 @@ void Renderer::Render()
 	if (m_material == nullptr)
 		return;
 
+	m_material->Update();
+
 	const auto& shader = m_material->GetShader();
 	if (shader == nullptr)
 		return;

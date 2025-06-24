@@ -4,9 +4,6 @@
 
 ##  프로젝트 소개
 
-이 프로젝트는 DirectX11 강의를 기반으로 개발된 3D 게임 엔진입니다.
-[https://www.inflearn.com/course/directx11-%EA%B2%8C%EC%9E%84%EA%B0%9C%EB%B0%9C-%EB%8F%84%EC%95%BD%EB%B0%98]
-
 ##  주요 기능
 
 - DirectX11 기반 렌더링 파이프라인 구현. 
