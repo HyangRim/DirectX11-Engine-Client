@@ -32,7 +32,7 @@
 > 추후 예정. 
 
 ##  프로젝트 구조
-
+```
 DirectX/
 ├── AssimpTool/ # FBX(모델, 애니메이션)파일 변환. 
 ├── Binaries/ # 빌드 파일
@@ -51,3 +51,4 @@ DirectX/
 ├── Resources/ # 이미지, 모델, 오디오 파일 등.  
 ├── Shaders/ # 쉐이더 코드 파일.  
 └── GameCoding.sln # VS 솔루션
+```
