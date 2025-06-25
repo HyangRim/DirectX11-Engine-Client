@@ -29,13 +29,14 @@ void ModelRenderer::SetModel(shared_ptr<Model> _model)
 	}
 }
 
-void ModelRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer)
+void ModelRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech)
 {
 	if (m_model == nullptr)
 		return;
 
 	//카메라, 빛 계산은 Render에서. 
-	Super::Render();
+	if (Super::Render(_isShadowTech) == false)
+		return;
 
 	// Bones
 	BoneDesc boneDesc;
@@ -74,7 +75,7 @@ void ModelRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer
 		//쉐이더한테 여기서 각 오브젝트별 WORLDPOSITION을 넣어주는 중. 
 		_buffer->PushData();
 
-		m_shader->DrawIndexedInstanced(0, m_pass, mesh->m_indexBuffer->GetCount(), _buffer->GetCount());
+		m_shader->DrawIndexedInstanced(GET_TECH(_isShadowTech), m_pass, mesh->m_indexBuffer->GetCount(), _buffer->GetCount());
 	}
 }
 
@@ -86,5 +87,5 @@ InstanceID ModelRenderer::GetInstanceID()
 
 void ModelRenderer::SetMaterial(shared_ptr<Material> _material)
 {
-	static_assert("ModelRenderer::SetMaterial is not supported. Use SetModel instead.");
+	assert(false, "ModelRenderer::SetMaterial is not supported. Use SetModel instead.");
 }

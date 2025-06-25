@@ -3,6 +3,7 @@
 
 
 #include "00. Global.fx"
+#include "00. Light.fx"
 
 #define MAX_MODEL_TRANSFORMS 250
 #define MAX_MODEL_KEYFRAMES 500
@@ -26,11 +27,13 @@ MeshOutput VS_Mesh(VertexMesh input)
 {
     MeshOutput output;
     
-    output.position = mul(input.position, input.world); // W 
+    float4 worldPos = mul(input.position, input.world);
+    output.position = worldPos;
     output.worldPosition = output.position;
     output.position = mul(output.position, VP);
     output.uv = input.uv;
     output.normal = input.normal;
+    output.shadowPosH = mul(worldPos, ShadowTransform);
     
     return output;
 }
@@ -63,13 +66,16 @@ MeshOutput VS_Model(VertexModel input)
     MeshOutput output;
     
     //Model Global로 해서, 모델 내부의 메쉬들 Global좌표로 변경하기. 
-    output.position = mul(input.position, BoneTransforms[BoneIndex]);
-    
-    output.position = mul(output.position, input.world); // W 
+    float4 worldPos = mul(input.position, BoneTransforms[BoneIndex]);
+	worldPos = mul(worldPos, input.world); // W
+	//output.position = mul(input.position, BoneTransforms[BoneIndex]); // Model Global
+	//output.position = mul(output.position, input.world); // W
+    output.position = worldPos;
     output.worldPosition = output.position;
     output.position = mul(output.position, VP);
     output.uv = input.uv;
     output.normal = input.normal;
+    output.shadowPosH = mul(worldPos, ShadowTransform);
     
     return output;
 }
@@ -193,8 +199,11 @@ MeshOutput VS_Animation(VertexModel input)
     //Model Global로 해서, 모델 내부의 메쉬들 Global좌표로 변경하기. 
     //output.position = mul(input.position, BoneTransforms[BoneIndex]);
     matrix m = GetAnimationWorldMatrix(input);
-    output.position = mul(input.position, m);
-    output.position = mul(output.position, input.world); // W 
+    
+    float4 worldPos = mul(input.position, m);
+    worldPos = mul(worldPos, input.world);
+    output.position = worldPos;
+    
     output.worldPosition = output.position;
     output.position = mul(output.position, VP);
     output.uv = input.uv;
@@ -202,6 +211,7 @@ MeshOutput VS_Animation(VertexModel input)
     //빛 관련 처리. 
     output.normal = mul(input.normal, (float3x3) input.world);
     output.tangent = mul(input.normal, (float3x3) input.world);
+    output.shadowPosH = mul(worldPos, ShadowTransform);
     
     return output;
 }

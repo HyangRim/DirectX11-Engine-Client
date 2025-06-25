@@ -103,6 +103,11 @@ shared_ptr<Component> GameObject::GetFixedComponent(ComponentType _type)
 shared_ptr<Transform> GameObject::GetTransform()
 {
 	shared_ptr<Component> component = GetFixedComponent(ComponentType::Transform);
+	if (component == nullptr) {
+		component = make_shared<Transform>();
+		AddComponent(component);
+	}
+
 	return static_pointer_cast<Transform>(component);
 }
 
@@ -124,16 +129,6 @@ shared_ptr<ModelRenderer> GameObject::GetModelRenderer()
 	return static_pointer_cast<ModelRenderer>(component);
 }
 
-shared_ptr<Transform> GameObject::GetOrAddTransform()
-{
-	if (GetTransform() == nullptr) {
-		shared_ptr<Transform> transform = make_shared<Transform>();
-		AddComponent(transform);
-	}
-
-	return GetTransform();
-}
-
 shared_ptr<ModelAnimator> GameObject::GetModelAnimator()
 {
 	shared_ptr<Component> component = GetFixedComponent(ComponentType::Animator);
@@ -149,6 +144,10 @@ shared_ptr<Renderer> GameObject::GetRenderer()
 		renderer = GetFixedComponent(ComponentType::Animator);
 	if (renderer == nullptr)
 		renderer = GetFixedComponent(ComponentType::ParticleSystem);
+	if (renderer == nullptr)
+		renderer = GetFixedComponent(ComponentType::Billboard);
+	if (renderer == nullptr)
+		renderer = GetFixedComponent(ComponentType::SnowBillboard);
 
 	return static_pointer_cast<Renderer>(renderer);
 }

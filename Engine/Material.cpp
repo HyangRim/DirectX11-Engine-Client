@@ -18,6 +18,8 @@ void Material::SetShader(shared_ptr<Shader> _shader)
 	m_specularEffectBuffer = m_shader->GetSRV("SpecularMap");
 	m_randomEffectBuffer = m_shader->GetSRV("RandomMap");
 	m_cubeMapEffectBuffer = m_shader->GetSRV("CubeMap");
+	m_shadowMapEffectBuffer = m_shader->GetSRV("ShadowMap");
+
 }
 
 void Material::Update()
@@ -41,6 +43,9 @@ void Material::Update()
 
 	if (m_cubeMap)
 		m_cubeMapEffectBuffer->SetResource(m_cubeMap->GetComPtr().Get());
+
+	if (m_castShadow)
+		m_shadowMapEffectBuffer->SetResource(GRAPHICS->GetShadowMap()->GetComPtr().Get());
 }
 
 shared_ptr<Material> Material::Clone()
@@ -49,12 +54,20 @@ shared_ptr<Material> Material::Clone()
 
 	material->m_desc = m_desc;
 	material->m_shader = m_shader;
+	material->m_renderQueue = m_renderQueue;
 	material->m_diffuseMap = m_diffuseMap;
 	material->m_normalMap = m_normalMap;
 	material->m_specularMap = m_specularMap;
+	material->m_randomMap = m_randomMap;
+	material->m_cubeMap = m_cubeMap;
+
 	material->m_diffuseEffectBuffer = m_diffuseEffectBuffer;
 	material->m_normalEffectBuffer = m_normalEffectBuffer;
 	material->m_specularEffectBuffer = m_specularEffectBuffer;
+
+	material->m_randomEffectBuffer = m_randomEffectBuffer;
+	material->m_cubeMapEffectBuffer = m_cubeMapEffectBuffer;
+	material->m_shadowMapEffectBuffer = m_shadowMapEffectBuffer;
 
 	return material;
 }

@@ -2,6 +2,7 @@
 #include "Billboard.h"
 #include "Material.h"
 #include "Camera.h"
+#include "Renderer.h"
 
 Billboard::Billboard() : Super(ComponentType::Billboard)
 {
@@ -33,8 +34,10 @@ Billboard::~Billboard()
 {
 }
 
-void Billboard::Update()
+void Billboard::InnerRender(bool _isShadowTech)
 {
+	Super::InnerRender(_isShadowTech);
+
 
 	//정보가 바뀌었을 때 해주는 것. 
 	if (m_drawCount != m_prevCount)
@@ -51,21 +54,11 @@ void Billboard::Update()
 
 	auto shader = m_material->GetShader();
 
-	// Transform
-	auto world = GetTransform()->GetWorldMatrix();
-	shader->PushTransformData(TransformDesc{ world });
-
-	// GlobalData
-	shader->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);
-
-	// Light
-	m_material->Update();
-
 	// IA
 	m_vertexBuffer->PushData();
 	m_indexBuffer->PushData();
 
-	shader->DrawIndexed(0, m_pass, m_drawCount * 6);
+	shader->DrawIndexed(GET_TECH(_isShadowTech), m_pass, m_drawCount * 6);
 
 }
 

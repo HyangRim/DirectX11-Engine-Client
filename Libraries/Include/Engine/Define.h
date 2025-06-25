@@ -28,6 +28,9 @@ public:										\
 #define CURSCENE	SCENE->GetCurScene()
 
 
+#define GET_TECH(_isShadow) _isShadow == true ? 1 : 0
+
+
 enum LayerMask {
 	LAYER_DEFAULT = 0,
 	LAYER_UI = 1

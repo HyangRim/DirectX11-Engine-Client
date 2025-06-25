@@ -29,7 +29,7 @@ public:
     shared_ptr<Shader> GetShader();
 
 
-    void RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer);
+    void RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech);
     InstanceID GetInstanceID();
     TweenDesc GetTweenDesc() { return m_tweenDesc; }
 

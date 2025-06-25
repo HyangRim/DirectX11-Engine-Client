@@ -226,5 +226,8 @@
     <FxCompile Include="..\Shaders\ParticleSystem.fx">
       <Filter>Shaders\Common</Filter>
     </FxCompile>
+    <FxCompile Include="..\Shaders\DebugTexture.fx">
+      <Filter>Shaders\Common</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

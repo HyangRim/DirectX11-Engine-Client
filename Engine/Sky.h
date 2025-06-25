@@ -7,7 +7,7 @@ public:
 
 	 ComPtr<ID3D11ShaderResourceView> CubeMapSRV();
 
-	 void Render(const shared_ptr<Camera>& _camera);
+	 void Render(Camera* _camera);
 
 private:
 	shared_ptr<VertexBuffer> m_vb;

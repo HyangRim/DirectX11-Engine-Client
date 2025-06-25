@@ -16,6 +16,8 @@ cbuffer GlobalBuffer
     matrix P;
     matrix VP;
     matrix Vinv;
+    float3 CamPos; //그림자 그릴 때 라이트가 아닌 카메라 위치가 필요. 
+    float padding;
 };
 
 cbuffer TransformBuffer
@@ -89,6 +91,7 @@ struct MeshOutput
     float2 uv : TEXCOORD;
     float3 normal : NORMAL;
     float3 tangent : TANGENT;
+    float4 shadowPosH : TEXCOORD2;
 };
 
 ////////////////
@@ -123,6 +126,20 @@ RasterizerState FrontCounterClickwiseTrue
     FrontCounterClockwise = true;
 };
 
+RasterizerState Depth
+{
+    DepthBias = 1000;
+    DepthBiasClamp = 0.0f;
+    SlopeScaledDepthBias = 1.0f;
+};
+
+RasterizerState DepthNoCull
+{
+    DepthBias = 1000;
+    DepthBiasClamp = 0.0f;
+    SlopeScaledDepthBias = 1.0f;
+    CullMode = NONE;
+};
 
 
 BlendState AlphaBlend
@@ -208,6 +225,14 @@ DepthStencilState NoDepthWrites
 //     Macro     //
 ///////////////////
 
+#define PASS_SHADOW_V(name, vs)						\
+pass name											\
+{													\
+	SetVertexShader(CompileShader(vs_5_0, vs()));	\
+	SetPixelShader(NULL);							\
+	SetRasterizerState(Depth);						\
+}
+
 #define PASS_VP(name, vs, ps)                           \
 pass name                                               \
 {                                                       \
@@ -241,7 +266,7 @@ pass name											\
 
 float3 CameraPosition()
 {
-    return -Vinv._41_42_43;
+    return CamPos;
 }
 
 

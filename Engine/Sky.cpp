@@ -43,7 +43,7 @@ ComPtr<ID3D11ShaderResourceView> Sky::CubeMapSRV()
 	return m_texture->GetComPtr();
 }
 
-void Sky::Render(const shared_ptr<Camera>& _camera)
+void Sky::Render(Camera* _camera)
 {
 	Vec3 eyePos = _camera->GetTransform()->GetPosition();
 	if (eyePos.z > -15.0f)

@@ -25,7 +25,7 @@ void ViewportDemo::Init()
 	// Camera
 	{
 		auto camera = make_shared<GameObject>();
-		camera->GetOrAddTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
+		camera->GetTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
 		camera->AddComponent(make_shared<Camera>());
 		camera->AddComponent(make_shared<CameraScript>());
 		CURSCENE->Add(camera);
@@ -63,7 +63,7 @@ void ViewportDemo::Init()
 	for (int32 i = 0; i < 1; i++)
 	{
 		auto obj = make_shared<GameObject>();
-		obj->GetOrAddTransform()->SetLocalPosition(Vec3(0,0,0));
+		obj->GetTransform()->SetLocalPosition(Vec3(0,0,0));
 		obj->AddComponent(make_shared<MeshRenderer>());
 		{
 			obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"Veigar"));

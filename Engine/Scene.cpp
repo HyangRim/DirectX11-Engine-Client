@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "Button.h"
 #include "Sky.h"
+#include "Light.h"
 void Scene::Start()
 {
 	auto objects = m_gameObjects;
@@ -39,15 +40,50 @@ void Scene::Render()
 	for (auto camera : m_cameras) {
 		//camera->GetCamera()->SortGameObject();
 		//camera->GetCamera()->Render_Forward();
+		//GRAPHICS->ClearDepthStencilView();
 
-		const shared_ptr<Camera>& cam = camera->GetCamera();
-		cam->SortGameObject();
-		cam->Render_Forward();
-		if (cam->IsCulled(LAYER_UI) == true && m_sky)
-			m_sky->Render(cam);
-
-		cam->Render_Backward();
+		Camera* cam = camera->GetCamera().get();
+		if (cam->GetProjectionType() == ProjectionType::Perspective) {
+			RenderGameCamera(cam);
+		}
+		else {
+			RenderUICamera(cam);
+		}
 	}
+}
+
+void Scene::RenderGameCamera(Camera* cam)
+{
+	GRAPHICS->ClearShadowDepthStencilView();
+	GRAPHICS->SetShadowDepthStencilView();
+
+	Light* light = GetLight()->GetLight().get();
+
+	cam->SetStaticData();
+	cam->SortGameObject();
+
+	if (light) {
+		light->SetVPMatrix(cam, 100.0f, ::XMMatrixOrthographicLH(100, 100, 0, 200));
+		cam->Render_Forward(true);
+		Viewport& vp = GRAPHICS->GetShadowViewport();
+		cam->Render_Backward(true);
+	}
+
+	GRAPHICS->SetRTVAndDSV();
+	cam->Render_Forward(false);
+	if (m_sky)
+		m_sky->Render(cam);
+	cam->Render_Backward(false);
+}
+
+void Scene::RenderUICamera(Camera* cam)
+{
+	GRAPHICS->ClearDepthStencilView();
+
+	cam->SetStaticData();
+	cam->SortGameObject();
+	cam->Render_Forward(false);
+	cam->Render_Backward(false);
 }
 
 void Scene::Add(shared_ptr<GameObject> _object)

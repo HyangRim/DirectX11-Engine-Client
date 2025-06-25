@@ -8,12 +8,16 @@
 #include "Transform.h"
 #include "Camera.h"
 #include "ParticleSystem.h"
+#include "Billboard.h"
+#include "SnowBillboard.h"
 class GameObject;
 
 //이 게임 오브젝트들 중에서 실질적으로 인스턴싱 되어야 하는 부분만 여기서. 
-void RenderManager::Render(vector<shared_ptr<GameObject>>& _gameObjects)
+void RenderManager::Render(vector<shared_ptr<GameObject>>& _gameObjects, bool _isShadowTech)
 {
 	ClearData();
+
+	m_isShadowTech = _isShadowTech;
 
 	RenderMeshRenderer(_gameObjects);
 	RenderModelRenderer(_gameObjects);
@@ -23,10 +27,17 @@ void RenderManager::Render(vector<shared_ptr<GameObject>>& _gameObjects)
 	for (shared_ptr<GameObject>& gameObject : _gameObjects) {
 		shared_ptr<ParticleSystem> particle = gameObject->GetFixedComponent<ParticleSystem>(ComponentType::ParticleSystem);
 
-		if (particle == nullptr)
-			continue;
+		if (particle != nullptr) {
+			particle->Render(m_isShadowTech);
+		}
+		
+		shared_ptr<Billboard> billboard = gameObject->GetFixedComponent<Billboard>(ComponentType::Billboard);
+		if (billboard != nullptr)
+			billboard->Render(m_isShadowTech);
 
-		particle->Render();
+		shared_ptr<SnowBillboard> snowBillboard = gameObject->GetFixedComponent<SnowBillboard>(ComponentType::SnowBillboard);
+		if (snowBillboard != nullptr)
+			snowBillboard->Render(m_isShadowTech);
 	}
 }
 
@@ -76,7 +87,7 @@ void RenderManager::RenderMeshRenderer(vector<shared_ptr<GameObject>>& _gameObje
 			shared_ptr<InstancingBuffer>& buffer = m_buffers[instanceID];
 
 			//첫 번재 오브젝트한테, 얘가 그리도록 일 처리시키기. 
-			vec[0]->GetMeshRenderer()->RenderInstancing(buffer);
+			vec[0]->GetMeshRenderer()->RenderInstancing(buffer, m_isShadowTech);
 		}
 	}
 }
@@ -118,7 +129,7 @@ void RenderManager::RenderModelRenderer(vector<shared_ptr<GameObject>>& _gameObj
 			shared_ptr<InstancingBuffer>& buffer = m_buffers[instanceID];
 
 			//첫 번재 오브젝트한테, 얘가 그리도록 일 처리시키기. 
-			vec[0]->GetModelRenderer()->RenderInstancing(buffer);
+			vec[0]->GetModelRenderer()->RenderInstancing(buffer, m_isShadowTech);
 		}
 	}
 }
@@ -170,7 +181,7 @@ void RenderManager::RenderAnimRenderer(vector<shared_ptr<GameObject>>& _gameObje
 			shared_ptr<InstancingBuffer>& buffer = m_buffers[instanceID];
 
 			//첫 번재 오브젝트한테, 얘가 그리도록 일 처리시키기. 
-			vec[0]->GetModelAnimator()->RenderInstancing(buffer);
+			vec[0]->GetModelAnimator()->RenderInstancing(buffer, m_isShadowTech);
 		}
 	}
 }

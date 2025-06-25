@@ -6,7 +6,8 @@
 float4 PS(MeshOutput input) : SV_TARGET
 {
     //float4 color = ComputeLight(input.normal, input.uv, input.worldPosition);
-    float4 color = DiffuseMap.Sample(LinearSampler, input.uv);
+    float shadow = CalcShadowFactor(ShadowMap, input.shadowPosH);
+    float4 color = ComputeLight(input.normal, input.uv, input.worldPosition, shadow);
     return color;
 }
 
@@ -23,4 +24,11 @@ technique11 T0
     PASS_VP(P2, VS_Animation, PS)
     //PASS_RS_VP(P1, FillModeWireFrame, VS, PS_RED)
 
+};
+
+technique11 shadowTech
+{
+	PASS_SHADOW_V(P0, VS_Mesh)
+	PASS_SHADOW_V(P1, VS_Model)
+	PASS_SHADOW_V(P2, VS_Animation)
 };

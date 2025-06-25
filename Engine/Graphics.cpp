@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Graphics.h"
 
+#define SHADOWMAP_SIZE 4096
+
 void Graphics::Init(HWND hwnd)
 {
 	m_hwnd = hwnd;
@@ -26,8 +28,10 @@ void Graphics::RenderBegin()
 	
 	//스텐실이란. 원하는 뭔가에 따라서 그걸 구멍이 뚫려 그 부분만 바꾼다거나.
 	//그런 고급 기법. 
-	m_deviceContext->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
+	//m_deviceContext->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
 	//m_deviceContext->RSSetViewports(1, &m_viewport);
+
+	//스텐실 뷰는 카메라마다 초기화 하도록.  
 	m_viewport.RSSetViewport();
 }
 
@@ -37,6 +41,34 @@ void Graphics::RenderEnd()
 	HRESULT hr = m_swapChain->Present(0, 0);
 	CHECK(hr);
 }
+
+void Graphics::ClearDepthStencilView()
+{
+	m_deviceContext->ClearDepthStencilView(m_depthStencilView.Get(),
+		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
+}
+
+void Graphics::ClearShadowDepthStencilView()
+{
+	m_deviceContext->ClearDepthStencilView(m_shadowDSV.Get(),
+		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
+}
+
+void Graphics::SetShadowDepthStencilView()
+{
+	m_shadowVP.RSSetViewport();
+
+	ID3D11RenderTargetView* renderTargets[1] = { 0 };
+	m_deviceContext->OMSetRenderTargets(1, renderTargets, m_shadowDSV.Get());
+}
+
+void Graphics::SetRTVAndDSV()
+{
+	m_viewport.RSSetViewport();
+	m_deviceContext->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(),
+		m_depthStencilView.Get());
+}
+
 void Graphics::CreateDeviceAndSwapChain()
 {
 	DXGI_SWAP_CHAIN_DESC desc;
@@ -111,20 +143,47 @@ void Graphics::CreateDepthStencilView()
 
 		HRESULT hr = DEVICE->CreateTexture2D(&desc, nullptr, m_depthStencilTexture.GetAddressOf());
 		CHECK(hr);
+		desc.Width = SHADOWMAP_SIZE;
+		desc.Height = SHADOWMAP_SIZE;
+		desc.Format = DXGI_FORMAT_R24G8_TYPELESS;
+		desc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+		hr = DEVICE->CreateTexture2D(&desc, nullptr, m_shadowDSTexture.GetAddressOf());
+		CHECK(hr);
 	}
 
 	{
 		D3D11_DEPTH_STENCIL_VIEW_DESC desc;
 		ZeroMemory(&desc, sizeof(desc));
+		desc.Flags = 0;
 		desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		desc.Texture2D.MipSlice = 0;
 
 		HRESULT hr = DEVICE->CreateDepthStencilView(m_depthStencilTexture.Get(), &desc, m_depthStencilView.GetAddressOf());
+		CHECK(hr);
+
+		hr = DEVICE->CreateDepthStencilView(m_shadowDSTexture.Get(), &desc, m_shadowDSV.GetAddressOf());
+		CHECK(hr);
 	}
+
+	{
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+		srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Texture2D.MipLevels = 1;
+		srvDesc.Texture2D.MostDetailedMip = 0;
+		ComPtr<ID3D11ShaderResourceView> srv;
+		HRESULT hr = DEVICE->CreateShaderResourceView(m_shadowDSTexture.Get(), &srvDesc, srv.GetAddressOf());
+		CHECK(hr);
+
+		m_shadowMap = make_shared<Texture>();
+		m_shadowMap->SetSRV(srv);
+	}
+
 }
 
 void Graphics::SetViewport(float _width, float _height, float _x, float _y, float _minDepth, float _maxDepth)
 {
 	m_viewport.Set(_width, _height, _x, _y, _minDepth, _maxDepth);
+	m_shadowVP.Set(SHADOWMAP_SIZE, SHADOWMAP_SIZE, _x, _y, _minDepth, _maxDepth);
 }

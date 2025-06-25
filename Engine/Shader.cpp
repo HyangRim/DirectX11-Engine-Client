@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Shader.h"
 #include "Utils.h"
+#include "Camera.h"
 
 Shader::Shader(wstring _file) : m_file(L"..\\Shaders\\" + _file)
 {
@@ -339,6 +340,7 @@ void Shader::PushGlobalData(const Matrix& _view, const Matrix& _projection)
 	m_globalDesc.V = _view;
 	m_globalDesc.VP = _view * _projection;
 	m_globalDesc.Vinv = _view.Invert();
+	m_globalDesc.CamPos = Camera::s_Pos;
 
 	m_globalBuffer->CopyData(m_globalDesc);
 	m_globalEffectBuffer->SetConstantBuffer(m_globalBuffer->GetComPtr().Get());
@@ -451,4 +453,17 @@ void Shader::PushParticleData(const ParticleDesc& _desc)
 	m_particleDesc = _desc;
 	m_particleBuffer->CopyData(m_particleDesc);
 	m_particleEffectBuffer->SetConstantBuffer(m_particleBuffer->GetComPtr().Get());
+}
+
+void Shader::PushShadowData(const Matrix& _desc)
+{
+	if (m_shadowBuffer == nullptr) {
+		m_shadowBuffer = make_shared<ConstantBuffer<Matrix>>();
+		m_shadowBuffer->Create();
+		m_shadowEffectBuffer = GetConstantBuffer("ShadowBuffer");
+	}
+
+	m_shadowDesc = _desc;
+	m_shadowBuffer->CopyData(m_shadowDesc);
+	m_shadowEffectBuffer->SetConstantBuffer(m_shadowBuffer->GetComPtr().Get());
 }

@@ -9,6 +9,7 @@
 
 Matrix Camera::s_MatView = Matrix::Identity;
 Matrix Camera::s_MatProjection = Matrix::Identity;
+Vec3 Camera::s_Pos = Vec3::Zero;
 
 Camera::Camera() : Super(ComponentType::Camera)
 {
@@ -76,24 +77,31 @@ void Camera::SortGameObject()
 		switch (renderQueue) 
 		{
 		case RenderQueue::Opaque:
+		case RenderQueue::Cutout:
 			m_vecForward.push_back(object);
 			break;
 		case RenderQueue::Transparent:
 			m_vecBackward.push_back(object);
 			break;
+
 		}
 	}
 }
 
-void Camera::Render_Forward()
-{
+void Camera::SetStaticData() {
 	s_MatView = m_matView;
 	s_MatProjection = m_matProjection;
-
-	RENDER->Render(m_vecForward);
+	s_Pos = GetTransform()->GetPosition();
 }
 
-void Camera::Render_Backward()
+void Camera::Render_Forward(bool _isShadowTech)
 {
-	RENDER->Render(m_vecBackward);
+	
+
+	RENDER->Render(m_vecForward, _isShadowTech);
+}
+
+void Camera::Render_Backward(bool _isShadowTech)
+{
+	RENDER->Render(m_vecBackward, _isShadowTech);
 }

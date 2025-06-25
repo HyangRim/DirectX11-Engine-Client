@@ -60,3 +60,13 @@ technique11 T0
     }
 
 };
+technique11 ShadowTech
+{
+    pass p0
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS()));
+        SetGeometryShader(NULL);
+        SetPixelShader(CompileShader(ps_5_0, PS()));
+        SetRasterizerState(DepthNoCull);
+    }
+};

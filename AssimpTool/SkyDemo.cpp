@@ -33,7 +33,7 @@ void SkyDemo::Init()
 	{
 		// Object
 		m_obj = make_shared<GameObject>();
-		m_obj->GetOrAddTransform();
+		m_obj->GetTransform();
 		m_obj->AddComponent(make_shared<MeshRenderer>());
 		{
 			auto mesh = RESOURCES->Get<Mesh>(L"Sphere");
@@ -47,7 +47,7 @@ void SkyDemo::Init()
 
 	// Camera
 	m_camera = make_shared<GameObject>();
-	m_camera->GetOrAddTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
+	m_camera->GetTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
 	m_camera->AddComponent(make_shared<Camera>());
 	m_camera->AddComponent(make_shared<CameraScript>());
 

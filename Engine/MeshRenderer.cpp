@@ -65,16 +65,14 @@ void MeshRenderer::Update()
 	shader->DrawIndexed(0, 0, m_mesh->GetIndexBuffer()->GetCount(), 0, 0);
 }*/
 
-void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer)
+void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech)
 {
 
-	Super::Render();
+	if (Super::Render(_isShadowTech) == false)
+		return;
 
 	if (m_mesh == nullptr)
 		return;
-
-	//텍스처 업데이트. 
-	m_material->Update();
 
 	m_mesh->GetVertexBuffer()->PushData();
 	m_mesh->GetIndexBuffer()->PushData();
@@ -82,7 +80,7 @@ void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer)
 	//Instancing의 PushData는 수많은 애들의 world matrix
 	_buffer->PushData();
 
-	m_material->GetShader()->DrawIndexedInstanced(0, m_pass, m_mesh->GetIndexBuffer()->GetCount(), _buffer->GetCount());
+	m_material->GetShader()->DrawIndexedInstanced(GET_TECH(_isShadowTech), m_pass, m_mesh->GetIndexBuffer()->GetCount(), _buffer->GetCount());
 	int aa = 32323;
 	//shader->DrawIndexedInstanced(0, m_pass, m_mesh->GetIndexBuffer()->GetCount(), _buffer->GetCount());
 }

@@ -29,7 +29,7 @@ void OrthoGraphicDemo::Init()
 	// Camera
 	{
 		auto camera = make_shared<GameObject>();
-		camera->GetOrAddTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
+		camera->GetTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
 		camera->AddComponent(make_shared<Camera>());
 		camera->GetCamera()->SetProjectionType(ProjectionType::Perspective);
 		camera->AddComponent(make_shared<CameraScript>());
@@ -42,7 +42,7 @@ void OrthoGraphicDemo::Init()
 	// UI Camera
 	{
 		auto camera = make_shared<GameObject>();
-		camera->GetOrAddTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
+		camera->GetTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
 		camera->AddComponent(make_shared<Camera>());
 		camera->GetCamera()->SetProjectionType(ProjectionType::Orthographic);
 		camera->GetCamera()->SetNear(1.f);
@@ -98,8 +98,8 @@ void OrthoGraphicDemo::Init()
 	//Button
 	{
 		auto obj = make_shared<GameObject>();
-		obj->GetOrAddTransform()->SetLocalPosition(Vec3(0.f, 200.f, 0.f));
-		obj->GetOrAddTransform()->SetScale(Vec3(200.f));
+		obj->GetTransform()->SetLocalPosition(Vec3(0.f, 200.f, 0.f));
+		obj->GetTransform()->SetScale(Vec3(200.f));
 		obj->AddComponent(make_shared<MeshRenderer>());
 		
 		obj->SetLayerIndex(LAYER_UI);
@@ -116,8 +116,8 @@ void OrthoGraphicDemo::Init()
 	//Mesh
 	{
 		auto obj = make_shared<GameObject>();
-		obj->GetOrAddTransform()->SetLocalPosition(Vec3(0.1f));
-		obj->GetOrAddTransform()->SetScale(Vec3(2.f));
+		obj->GetTransform()->SetLocalPosition(Vec3(0.1f));
+		obj->GetTransform()->SetScale(Vec3(2.f));
 		obj->AddComponent(make_shared<MeshRenderer>());
 		{
 			obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"Veigar"));

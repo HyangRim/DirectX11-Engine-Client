@@ -9,7 +9,7 @@ class RenderManager
 	DECLARE_SINGLE(RenderManager);
 
 public:
-	void Render(vector<shared_ptr<GameObject>>& _gameObjects);
+	void Render(vector<shared_ptr<GameObject>>& _gameObjects, bool _isShadowTech);
 	void Clear() { m_buffers.clear(); }
 	void ClearData();
 
@@ -22,5 +22,6 @@ private:
 
 private:
 	map<InstanceID, shared_ptr<InstancingBuffer>> m_buffers;
+	bool m_isShadowTech = false;
 };
 

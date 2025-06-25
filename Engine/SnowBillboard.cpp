@@ -72,30 +72,34 @@ SnowBillboard::~SnowBillboard()
 
 }
 
-void SnowBillboard::Update()
+void SnowBillboard::SetMaterial(shared_ptr<Material> _material)
 {
+	Super::SetMaterial(_material);
+	m_material->SetCastShadow(false);
+
+}
+
+void SnowBillboard::InnerRender(bool _isShadowTech)
+{
+	assert(!_isShadowTech);
+	Super::InnerRender(_isShadowTech);
+
+
 	m_desc.m_origin = CURSCENE->GetMainCamera()->GetTransform()->GetPosition();
 	m_desc.m_time = m_elapsedTime;
 	m_elapsedTime += DT;
 
+
 	auto shader = m_material->GetShader();
-
-	// Transform
-	auto world = GetTransform()->GetWorldMatrix();
-	shader->PushTransformData(TransformDesc{ world });
-
-	// GlobalData
-	shader->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);
 
 	// SnowData
 	shader->PushSnowData(m_desc);
-
-	// Light
-	m_material->Update();
 
 	// IA
 	m_vertexBuffer->PushData();
 	m_indexBuffer->PushData();
 
-	shader->DrawIndexed(0, m_pass, m_drawCount * 6);
+	//shader->DrawIndexed(0, m_pass, m_drawCount * 6);
+
+	shader->DrawIndexed(GET_TECH(_isShadowTech), m_pass, m_drawCount * 6);
 }

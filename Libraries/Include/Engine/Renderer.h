@@ -11,7 +11,10 @@ public:
     void SetPass(uint8 _pass) { m_pass = _pass; }
     virtual void SetMaterial(shared_ptr<Material> _material) { m_material = _material; }
     shared_ptr<Material> GetMaterial() { return m_material; }
-    virtual void Render();
+    bool Render(bool _isShadowTech);
+
+protected:
+    virtual void InnerRender(bool _isShadowTech);
 
 protected:
     shared_ptr<Material> m_material;

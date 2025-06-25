@@ -1,5 +1,5 @@
 #pragma once
-#include "Component.h"
+#include "Renderer.h"
 
 struct VertexBillboard {
     Vec3 pos;
@@ -10,18 +10,17 @@ struct VertexBillboard {
 #define MAX_BILLBOARD_COUNT 500
 
 class Billboard :
-    public Component
+    public Renderer
 {
-    using Super = Component;
+    using Super = Renderer;
 
 public:
     Billboard();
     virtual ~Billboard();
 
-    void Update();
+    void InnerRender(bool _isShadowTech) override;
     void Add(Vec3 _pos, Vec2 _scale);
 
-    void SetMaterial(shared_ptr<Material> _material) { m_material = _material; }
     void SetPass(uint8 _pass) { m_pass = _pass; }
 
 private:
@@ -33,7 +32,6 @@ private:
     int32 m_drawCount = 0;
     int32 m_prevCount = 0;
 
-    shared_ptr<Material> m_material;
     uint8 m_pass = 0;
 };
 

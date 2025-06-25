@@ -51,12 +51,14 @@ private:
 public:
     static Matrix s_MatView;
     static Matrix s_MatProjection;
-
+    static Vec3 s_Pos;
 
 public:
     void SortGameObject();
-    void Render_Forward();
-    void Render_Backward();
+
+    void SetStaticData();
+    void Render_Forward(bool _isShadowTech);
+    void Render_Backward(bool _isShadowTech);
 
     void SetCullingMaskLayerOnOff(uint8 _layer, bool _on) {
         if (_on) {

@@ -28,8 +28,8 @@ void Button::Create(Vec2 _screenPos, Vec2 _size, shared_ptr<class Material> _mat
 
 	Vec3 position = Vec3(x, y, 0);
 
-	go->GetOrAddTransform()->SetPosition(position);
-	go->GetOrAddTransform()->SetScale(Vec3(_size.x, _size.y, 1));
+	go->GetTransform()->SetPosition(position);
+	go->GetTransform()->SetScale(Vec3(_size.x, _size.y, 1));
 
 	go->SetLayerIndex(LAYER_UI);
 

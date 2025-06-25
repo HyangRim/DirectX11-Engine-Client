@@ -18,7 +18,7 @@ void Static_MeshDemo::Init()
 
 	// Camera
 	m_camera = make_shared<GameObject>();
-	m_camera->GetOrAddTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
+	m_camera->GetTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
 	m_camera->AddComponent(make_shared<Camera>());
 	m_camera->AddComponent(make_shared<CameraScript>());
 
@@ -58,8 +58,8 @@ void Static_MeshDemo::CreateTower()
 	m1->ReadMaterial(L"Tower/Tower");
 
 	m_obj = make_shared<GameObject>();
-	m_obj->GetOrAddTransform()->SetPosition(Vec3(0, 0, 50));
-	m_obj->GetOrAddTransform()->SetScale(Vec3(1.0f));
+	m_obj->GetTransform()->SetPosition(Vec3(0, 0, 50));
+	m_obj->GetTransform()->SetScale(Vec3(1.0f));
 
 	m_obj->AddComponent(make_shared<ModelRenderer>(m_shader));
 	{
@@ -76,8 +76,8 @@ void Static_MeshDemo::CreateTank()
 	m1->ReadMaterial(L"Tank/Tank");
 
 	m_obj = make_shared<GameObject>();
-	m_obj->GetOrAddTransform()->SetPosition(Vec3(0, 0, 50));
-	m_obj->GetOrAddTransform()->SetScale(Vec3(1.0f));
+	m_obj->GetTransform()->SetPosition(Vec3(0, 0, 50));
+	m_obj->GetTransform()->SetScale(Vec3(1.0f));
 
 	m_obj->AddComponent(make_shared<ModelRenderer>(m_shader));
 	{

@@ -21,7 +21,7 @@ public:
 	void Reset(); 
 
 	void Update() override;
-	void Render() override;
+	void InnerRender(bool _isShadowTech) override;
 
 	void SetMaterial(shared_ptr<Material> material) override;
 

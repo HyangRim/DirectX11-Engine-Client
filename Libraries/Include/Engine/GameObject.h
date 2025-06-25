@@ -37,7 +37,6 @@ public:
 	shared_ptr<Camera> GetCamera();
 	shared_ptr<MeshRenderer> GetMeshRenderer();
 	shared_ptr<ModelRenderer> GetModelRenderer();
-	shared_ptr<Transform> GetOrAddTransform();
 	shared_ptr<ModelAnimator> GetModelAnimator();
 	shared_ptr<Renderer> GetRenderer();
 	shared_ptr<Light> GetLight();

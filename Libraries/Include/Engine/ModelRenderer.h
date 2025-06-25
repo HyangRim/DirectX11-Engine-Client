@@ -20,7 +20,7 @@ public:
     void SetModel(shared_ptr<Model> _model);
     void SetPass(uint8 _pass) { m_pass = _pass; }
 
-    void RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer);
+    void RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech);
     InstanceID GetInstanceID();
 
     void SetMaterial(shared_ptr <Material> _material) override;

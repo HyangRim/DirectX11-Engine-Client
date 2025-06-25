@@ -1,6 +1,7 @@
 #pragma once
 
 class Sky;
+class Camera;
 class Scene
 {
 public:
@@ -9,6 +10,9 @@ public:
 	virtual void LateUpdate();
 
 	virtual void Render();
+
+	void RenderGameCamera(Camera* cam);
+	void RenderUICamera(Camera* cam);
 
 
 	virtual void Add(shared_ptr<GameObject> _object);
@@ -29,7 +33,6 @@ public:
 
 private:
 	unordered_set<shared_ptr<GameObject>> m_gameObjects;
-	//일단 임시로 만들어놓음. 
 	//Cache Camera;
 	unordered_set<shared_ptr<GameObject>> m_cameras;
 

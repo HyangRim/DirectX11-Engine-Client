@@ -12,23 +12,42 @@ Renderer::~Renderer()
 {
 }
 
-void Renderer::Render()
+bool Renderer::Render(bool _isShadowTech)
 {
-
 	if (m_material == nullptr)
-		return;
+		return false;
 
-	m_material->Update();
+	if (m_material->GetCastShadow() == false && _isShadowTech == true) {
+		return false;
+	}
 
+	InnerRender(_isShadowTech);
+	return true;
+}
+
+void Renderer::InnerRender(bool _isShadowTech)
+{
+	DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	
 	const auto& shader = m_material->GetShader();
 	if (shader == nullptr)
 		return;
 
-	shader->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);
+	if (_isShadowTech == false) {
+		m_material->Update();
+		
+		//Light
+		auto lightObj = CURSCENE->GetLight();
 
-	auto lightObj = CURSCENE->GetLight();
-
-	if (lightObj) {
-		shader->PushLightData(lightObj->GetLight()->GetLightDesc());
+		if (lightObj) {
+			shader->PushLightData(lightObj->GetLight()->GetLightDesc());
+		}
+		shader->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);
+		shader->PushShadowData(Light::s_ShadowTransform);
 	}
+	else {
+		shader->PushGlobalData(Light::s_MatView, Light::s_MatProjection);
+	}
+
+	shader->PushTransformData(TransformDesc{ GetTransform()->GetWorldMatrix() });
 }

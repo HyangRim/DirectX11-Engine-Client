@@ -12,6 +12,7 @@
 #include "BillboardDemo.h"
 #include "SnowBillboardDemo.h"
 #include "ParticleDemo.h"
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd){
 	GameDesc desc;
 	desc.appName = L"GameCoding";
@@ -21,7 +22,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	desc.width = 1366;
 	desc.height = 768;
 	desc.clearColor = Color(0.5f, 0.5f, 0.5f, 0.5f);
-	desc.app = make_shared<SnowBillboardDemo>();
+	desc.app = make_shared<BillboardDemo>();
 
 	GAME->Run(desc);
 

@@ -19,7 +19,7 @@ void TweenDemo::Init()
 
 	// Camera
 	m_camera = make_shared<GameObject>();
-	m_camera->GetOrAddTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
+	m_camera->GetTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
 	m_camera->AddComponent(make_shared<Camera>());
 	m_camera->AddComponent(make_shared<CameraScript>());
 
@@ -61,8 +61,8 @@ void TweenDemo::Kachujin()
 	m1->ReadAnimation(L"Kachujin/Slash");
 
 	m_obj = make_shared<GameObject>();
-	m_obj->GetOrAddTransform()->SetPosition(Vec3(0, 0, 1));
-	m_obj->GetOrAddTransform()->SetScale(Vec3(0.01f));
+	m_obj->GetTransform()->SetPosition(Vec3(0, 0, 1));
+	m_obj->GetTransform()->SetScale(Vec3(0.01f));
 
 	m_obj->AddComponent(make_shared<ModelAnimator>(m_shader));
 	{
