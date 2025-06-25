@@ -56,7 +56,7 @@ struct VertexTextureNormal
     float3 normal : NORMAL;
 };
 
-struct VertexTextureTangentNormal
+struct VertexTextureNormalTangent
 {
     float4 position : POSITION;
     float2 uv : TEXCOORD;

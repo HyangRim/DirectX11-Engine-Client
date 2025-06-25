@@ -22,9 +22,10 @@ void Light::Update()
 void Light::SetVPMatrix(Camera* _camera, float _backDist, Matrix _matProjection)
 {
 	Vec3 camPos = _camera->GetTransform()->GetPosition();
+	Vec3 camLook = _camera->GetTransform()->GetLook();
 	Vec3 lookVec = GetTransform()->GetLook();
 
-	Vec3 eyePosition = camPos - lookVec * _backDist;
+	Vec3 eyePosition = camPos - lookVec * _backDist + camLook * 50;
 	Vec3 focusPosition = eyePosition + lookVec;
 	Vec3 upDirection = Vec3::Up;
 

@@ -17,7 +17,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	GameDesc desc;
 	desc.appName = L"GameCoding";
 	desc.hInstance = hInstance;
-	desc.vsync = false;
+	desc.vsync = true;
 	desc.hWnd = NULL;
 	desc.width = 1366;
 	desc.height = 768;

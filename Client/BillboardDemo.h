@@ -17,10 +17,3 @@ private:
 		int a = 15;
 	}
 };
-
-
-#include "MonoBehaviour.h"
-class BillboardTest : public MonoBehaviour
-{
-	virtual void Update();
-};

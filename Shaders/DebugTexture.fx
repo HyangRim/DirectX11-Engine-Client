@@ -14,7 +14,7 @@ struct VertexOut
     float2 Tex : TEXCOORD;
 };
 
-VertexOut VS(VertexTextureTangentNormal vin)
+VertexOut VS(VertexTextureNormalTangent vin)
 {
     VertexOut vout;
 	

@@ -59,7 +59,7 @@ void BillboardDemo::Init()
 		for (int32 i = 0; i < 1; i++)
 		{
 			auto obj = make_shared<GameObject>();
-			obj->GetTransform()->SetLocalPosition(Vec3(0, 1, 0));
+			obj->GetTransform()->SetLocalPosition(Vec3(0, 2.5f, 0));
 			obj->GetTransform()->SetLocalScale(Vec3(1.f));
 			obj->AddComponent(make_shared<MeshRenderer>());
 			{
@@ -96,7 +96,7 @@ void BillboardDemo::Init()
 
 	// Billboard
 	{
-		shared_ptr<Shader> shader = make_shared<Shader>(L"BillboardDemo.fx");
+		shared_ptr<Shader> shader = make_shared<Shader>(L"28. BillboardDemo.fx");
 		auto obj = make_shared<GameObject>();
 		obj->GetTransform()->SetLocalPosition(Vec3(0.f));
 		obj->AddComponent(make_shared<Billboard>());
@@ -171,7 +171,7 @@ void BillboardDemo::Init()
 	// SnowBillboard
 	{	// Billboard
 		{
-			auto snowShader = make_shared<Shader>(L"SnowBillboardDemo.fx");
+			auto snowShader = make_shared<Shader>(L"29. SnowBillboard.fx");
 			auto obj = make_shared<GameObject>();
 			obj->GetTransform()->SetLocalPosition(Vec3(0.f));
 			obj->AddComponent(make_shared<SnowBillboard>(Vec3(100, 100, 100), 10000));
@@ -289,28 +289,3 @@ void BillboardDemo::Render()
 
 //포폴을 만들 때 중요한 건 시간과 노력
 //충돌, 레이캐스팅, 애니메이션, 매쉬 로드등과 같은 것. 
-
-void BillboardTest::Update()
-{
-	auto go = GetGameObject();
-	Vec3 cameraPos = CURSCENE->GetMainCamera()->GetTransform()->GetPosition();
-
-	Vec3 myPos = GetTransform()->GetPosition();
-	Vec3 up = Vec3(0, 1, 0);
-	Vec3 forward = cameraPos - myPos;
-	forward.Normalize();
-
-	Matrix lookMatrix = Matrix::CreateWorld(myPos, forward, up);
-
-	Vec3 S, T;
-	Quaternion R;
-	lookMatrix.Decompose(S, R, T);
-
-	Vec3 rot = Transform::ToEulerAngles(R);
-
-	GetTransform()->SetRotation(rot);
-
-	//myPos -> cameraPos 는 그냥 방향 벡터 구해줘서 normalize해주면 됨
-
-	//right는 그 방향 벡터에 UpVector를 외적하면 right벡터가 구해짐. 
-}

@@ -111,7 +111,7 @@ float4 ComputeLight(float3 _normal, float2 _uv, float3 _worldPosition, float sha
         emissiveColor = Material.emissive * Material.emissive * emissive;
     }
     
-    return ambientColor + diffuseColor + specularColor + emissiveColor * shadow;
+    return ambientColor + (diffuseColor + specularColor + emissiveColor) * shadow;
     
 }
 
@@ -149,7 +149,8 @@ SamplerComparisonState samShadow
     AddressV = BORDER;
     AddressW = BORDER;
     BorderColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
-    ComparisionFunc = LESS;
+
+    ComparisonFunc = LESS_EQUAL;
 };
 
 float CalcShadowFactor(Texture2D shadowMap, float4 shadowPosH)
@@ -158,7 +159,7 @@ float CalcShadowFactor(Texture2D shadowMap, float4 shadowPosH)
 	//shadowPosH.xyz /= shadowPosH.w;
 
 	// Depth in NDC space.
-    float depth = shadowPosH.z;
+    float depth = saturate(shadowPosH.z);
 
 	// Texel size.
     const float dx = SMAP_DX;
@@ -173,7 +174,7 @@ float CalcShadowFactor(Texture2D shadowMap, float4 shadowPosH)
     };
 
 	[unroll]
-	for (int i = 0;i < 9; ++i)
+	for (int i = 0; i < 9; ++i)
 	{
 		percentLit += shadowMap.SampleCmpLevelZero(samShadow,
 			shadowPosH.xy + offsets[i], depth).r;

@@ -7,7 +7,7 @@ struct VertexBillboard {
     Vec2 scale;
 };
 
-#define MAX_BILLBOARD_COUNT 500
+#define MAX_BILLBOARD_COUNT 10000
 
 class Billboard :
     public Renderer

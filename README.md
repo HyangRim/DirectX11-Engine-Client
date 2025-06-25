@@ -15,12 +15,11 @@
 - 간단한 씬 그래프 구조
 - 충돌 관련(Sphere, AABB, OBB)
 - ImGui기반 UI
-
+- 파티클 시스템
+- Shadow
 
 ### 예정 기능
 
-- 파티클 시스템 (제작 중.)
-- Shadow
 - Rigidbody
 - 멀티스레드 로딩. 
 
