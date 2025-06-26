@@ -6,6 +6,7 @@
 #include "Button.h"
 #include "Sky.h"
 #include "Light.h"
+#include "Terrain.h"
 void Scene::Start()
 {
 	auto objects = m_gameObjects;
@@ -23,6 +24,7 @@ void Scene::Update()
 		object->Update();
 	}
 	PickUI();
+	Pick();
 
 }
 
@@ -147,8 +149,14 @@ void Scene::PickUI()
 	}
 }
 
-shared_ptr<class GameObject> Scene::Pick(int32 _screenX, int32 _screenY)
+shared_ptr<class GameObject> Scene::Pick()
 {
+	if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON) == false)
+		return nullptr;
+	//int32 _screenX, int32 _screenY
+	int screenX = INPUT->GetMousePos().x;
+	int screenY = INPUT->GetMousePos().y;
+
 	shared_ptr<Camera> camera = GetMainCamera()->GetCamera();
 
 	float width = GRAPHICS->GetViewport().GetWidth();
@@ -158,8 +166,8 @@ shared_ptr<class GameObject> Scene::Pick(int32 _screenX, int32 _screenY)
 	Matrix projectionMatrix = camera->GetProjectionMatrix();
 
 	//View좌표로 변환
-	float viewX = (+2.0f * _screenX / width - 1.0f) / projectionMatrix(0, 0);
-	float viewY = (-2.0f * _screenY / height + 1.0f) / projectionMatrix(1, 1);
+	float viewX = (+2.0f * screenX / width - 1.0f) / projectionMatrix(0, 0);
+	float viewY = (-2.0f * screenY / height + 1.0f) / projectionMatrix(1, 1);
 
 	//View로 변환하는 역행렬 구하기. 
 	Matrix viewMatrix = camera->GetViewMatrix();
@@ -171,6 +179,22 @@ shared_ptr<class GameObject> Scene::Pick(int32 _screenX, int32 _screenY)
 	float minDistance = FLT_MAX;
 	shared_ptr<GameObject> picked;
 
+	// ViewSpace에서 Ray 정의
+	// ViewSpace란 카메라의 위치가 원점이기 때문에 origin이 0벡터.
+	// rayDir은 시작점과 끝점을 구해준다는 것. 
+	Vec4 rayOrigin = Vec4(0.f, 0.f, 0.f, 1.f);
+	Vec4 rayDir = Vec4(viewX, viewY, 1.0f, 0.f);
+
+	//View시점 원점 -> world로 돌아가기. 
+	//위치와 Dir구하기. 
+	Vec3 worldRayOrigin = XMVector3TransformCoord(rayOrigin, viewMatrixInv);
+	Vec3 worldRayDir = XMVector3TransformNormal(rayDir, viewMatrixInv);
+	worldRayDir.Normalize();
+
+	Ray ray = Ray(worldRayOrigin, worldRayDir);
+
+
+
 
 	//모든 물체를 전부 다 스캔하는 무식한 방법. 
 	for (auto& gameObject : gameObjects) {
@@ -180,17 +204,6 @@ shared_ptr<class GameObject> Scene::Pick(int32 _screenX, int32 _screenY)
 		if (gameObject->GetCollider() == nullptr)
 			continue;
 
-		// ViewSpace에서 Ray 정의
-		// ViewSpace란 카메라의 위치가 원점이기 때문에 origin이 0벡터.
-		// rayDir은 시작점과 끝점을 구해준다는 것. 
-		Vec4 rayOrigin = Vec4(0.f, 0.f, 0.f, 1.f);
-		Vec4 rayDir = Vec4(viewX, viewX, 1.0f, 0.f);
-
-		//View시점 원점 -> world로 돌아가기. 
-		//위치와 Dir구하기. 
-		Vec3 worldRayOrigin = XMVector3TransformCoord(rayOrigin, viewMatrixInv);
-		Vec3 worldRayDir = XMVector3TransformNormal(rayDir, viewMatrixInv);
-		worldRayDir.Normalize();
 
 		//WorldSpace에서 연산하기. 
 		Ray ray = Ray(worldRayOrigin, worldRayDir);
@@ -205,6 +218,28 @@ shared_ptr<class GameObject> Scene::Pick(int32 _screenX, int32 _screenY)
 		}
 	}
 
+
+	//Teraain 클릭 검사. 
+	for (auto& gameObject : gameObjects) {
+		if (gameObject->GetTerrain() == nullptr)
+			continue;
+
+		Vec3 pickPos;
+		float distance = 0.0f;
+		if (gameObject->GetTerrain()->Pick(screenX, screenY, OUT pickPos, OUT distance) == false)
+			continue;
+
+		if (distance < minDistance)
+		{
+			minDistance = distance;
+			picked = gameObject;
+		}
+	}
+
+	if (picked) {
+		std::cout << "picked\n";
+	}
+
 	return picked;
 
 }
@@ -212,7 +247,6 @@ shared_ptr<class GameObject> Scene::Pick(int32 _screenX, int32 _screenY)
 void Scene::CheckCollision()
 {
 	vector<shared_ptr<BaseCollider>> colliders;
-
 	for (auto object : m_gameObjects) {
 		if (object->GetCollider() == nullptr)
 			continue;
@@ -223,11 +257,12 @@ void Scene::CheckCollision()
 	//BruteForce
 	//쿼드 트리 같은 거. 
 	for (uint32 idx = 0; idx < colliders.size(); ++idx) {
-		for (uint32 jdx = 0; jdx < colliders.size(); ++jdx) {
+		for (uint32 jdx = idx + 1; jdx < colliders.size(); ++jdx) {
 			shared_ptr<BaseCollider>& other = colliders[jdx];
 
+
 			if (colliders[idx]->Intersects(other)) {
-				int a = 3;
+				//충돌 관련 처리. 
 			}
 		}
 	}

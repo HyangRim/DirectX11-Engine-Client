@@ -17,3 +17,9 @@ private:
 		int a = 15;
 	}
 };
+
+#include "MonoBehaviour.h"
+class moveScript : public MonoBehaviour
+{
+	virtual void Update();
+};

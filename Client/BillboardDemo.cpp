@@ -56,11 +56,11 @@ void BillboardDemo::Init()
 			RESOURCES->Add(L"Veigar", material);
 		}
 
-		for (int32 i = 0; i < 1; i++)
+		//OBB 1
 		{
 			auto obj = make_shared<GameObject>();
 			obj->GetTransform()->SetLocalPosition(Vec3(0, 2.5f, 0));
-			obj->GetTransform()->SetLocalScale(Vec3(1.f));
+			obj->GetTransform()->SetLocalScale(Vec3(1.5f));
 			obj->AddComponent(make_shared<MeshRenderer>());
 			{
 				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"Veigar"));
@@ -73,10 +73,40 @@ void BillboardDemo::Init()
 			{
 				auto collider = make_shared<OBBBoxCollider>();
 				obj->AddComponent(collider);
+				//obj->GetButton()->AddOnClikedEvent([obj]() { CURSCENE->Remove(obj); });
+				
 			}
 
 			CURSCENE->Add(obj);
 		}
+
+		//OBB2
+		{
+			auto obj = make_shared<GameObject>();
+			obj->GetTransform()->SetLocalPosition(Vec3(-15.f, 2.5f, 0));
+			obj->GetTransform()->SetLocalScale(Vec3(1.5f));
+			obj->AddComponent(make_shared<MeshRenderer>());
+			{
+				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"Veigar"));
+			}
+			{
+				auto mesh = RESOURCES->Get<Mesh>(L"Cube");
+				obj->GetMeshRenderer()->SetMesh(mesh);
+				obj->GetMeshRenderer()->SetPass(0);
+			}
+			{
+				auto collider = make_shared<OBBBoxCollider>();
+				obj->AddComponent(collider);
+				//obj->GetButton()->AddOnClikedEvent([obj]() { CURSCENE->Remove(obj); });
+
+			}
+			{
+				obj->AddComponent(make_shared<moveScript>());
+			}
+
+			CURSCENE->Add(obj);
+		}
+
 	}
 
 	{
@@ -118,7 +148,7 @@ void BillboardDemo::Init()
 			}
 		}
 
-		for (int32 i = 0; i < 10000; i++)
+		for (int32 i = 0; i < 1000; i++)
 		{
 			Vec2 scale = Vec2(1 + rand() % 3, 1 + rand() % 3);
 			Vec2 position = Vec2(-100 + rand() % 200, -100 + rand() % 200);
@@ -206,7 +236,7 @@ void BillboardDemo::Init()
 		m1->ReadAnimation(L"Kachujin/Run");
 		m1->ReadAnimation(L"Kachujin/Slash");
 
-		for (int32 i = 0; i < 500; i++)
+		for (int32 i = 0; i < 250; i++)
 		{
 			auto obj = make_shared<GameObject>();
 			obj->GetTransform()->SetPosition(Vec3(rand() % 100, 0, rand() % 100));
@@ -226,7 +256,7 @@ void BillboardDemo::Init()
 		m2->ReadModel(L"Tower/Tower");
 		m2->ReadMaterial(L"Tower/Tower");
 
-		for (int32 i = 0; i < 100; i++)
+		for (int32 i = 0; i < 50; i++)
 		{
 			auto obj = make_shared<GameObject>();
 			obj->GetTransform()->SetPosition(Vec3(rand() % 100, -1, rand() % 100));
@@ -289,3 +319,12 @@ void BillboardDemo::Render()
 
 //포폴을 만들 때 중요한 건 시간과 노력
 //충돌, 레이캐스팅, 애니메이션, 매쉬 로드등과 같은 것. 
+
+void moveScript::Update()
+{
+	Vec3 pos = GetTransform()->GetPosition();
+
+	pos.x += DT * 1.5f;
+
+	GetTransform()->SetPosition(pos);
+}

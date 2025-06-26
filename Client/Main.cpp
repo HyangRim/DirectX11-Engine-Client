@@ -13,6 +13,10 @@
 #include "SnowBillboardDemo.h"
 #include "ParticleDemo.h"
 
+#ifdef _DEBUG
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+#endif
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd){
 	GameDesc desc;
 	desc.appName = L"GameCoding";

@@ -114,6 +114,7 @@ void OrthoGraphicDemo::Init()
 		CURSCENE->Add(obj);
 	}
 	//Mesh
+	/*
 	{
 		auto obj = make_shared<GameObject>();
 		obj->GetTransform()->SetLocalPosition(Vec3(0.1f));
@@ -128,12 +129,12 @@ void OrthoGraphicDemo::Init()
 			obj->GetMeshRenderer()->SetPass(0);
 		}
 		CURSCENE->Add(obj);
-	}
-	/*
-	for (int32 i = 0; i < 1; i++)
+	}*/
+	
 	{
 		auto obj = make_shared<GameObject>();
-		obj->GetOrAddTransform()->SetLocalPosition(Vec3(2.f, 0, 0));
+		obj->GetTransform()->SetLocalPosition(Vec3(2.f, 2.5f, 0));
+		obj->GetTransform()->SetScale(Vec3(3.f));
 		obj->AddComponent(make_shared<MeshRenderer>());
 		{
 			obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"Veigar"));
@@ -149,13 +150,9 @@ void OrthoGraphicDemo::Init()
 			collider->GetBoundingBox().Orientation = Quaternion::CreateFromYawPitchRoll(45, 0, 0);
 			obj->AddComponent(collider);
 		}
-		{
-			obj->AddComponent(make_shared<MoveScript>());
-		}
-
 		CURSCENE->Add(obj);
 	}
-	*/
+	
 	//RENDER->Init(_shader);
 
 }

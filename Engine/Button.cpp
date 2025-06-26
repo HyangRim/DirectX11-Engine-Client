@@ -44,11 +44,10 @@ void Button::Create(Vec2 _screenPos, Vec2 _size, shared_ptr<class Material> _mat
 	go->GetMeshRenderer()->SetPass(0);
 
 	//Picking;
-	m_rect.left = _screenPos.x - width / 2;
-	m_rect.right = _screenPos.x + width / 2;
-
-	m_rect.top = _screenPos.y - height / 2;
-	m_rect.bottom = _screenPos.y + height / 2;
+	m_rect.left = static_cast<LONG>(_screenPos.x - _size.x / 2.f);
+	m_rect.right = static_cast<LONG>(_screenPos.x + _size.x / 2.f);
+	m_rect.top = static_cast<LONG>(_screenPos.y - _size.y / 2.f);
+	m_rect.bottom = static_cast<LONG>(_screenPos.y + _size.y / 2.f);
 }
 
 

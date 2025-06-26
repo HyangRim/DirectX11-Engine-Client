@@ -78,7 +78,7 @@ void ParticleDemo::Init()
 
 void ParticleDemo::Update()
 {
-	
+	/*
 	if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON)) {
 		int32 mouseX = INPUT->GetMousePos().x;
 		int32 mouseY = INPUT->GetMousePos().y;
@@ -90,6 +90,7 @@ void ParticleDemo::Update()
 			//CURSCENE->Remove(pickObj);
 		}
 	}
+	*/
 }
 
 void ParticleDemo::Render()

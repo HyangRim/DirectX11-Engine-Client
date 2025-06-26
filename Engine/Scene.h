@@ -25,7 +25,7 @@ public:
 	shared_ptr<GameObject> GetLight() { return m_Lights.empty() ? nullptr : *m_Lights.begin(); }
 
 	void PickUI();
-	shared_ptr<class GameObject> Pick(int32 _screenX, int32 _screenY);
+	shared_ptr<class GameObject> Pick();
 
 	void SetSky(shared_ptr<Sky> _sky) { m_sky = _sky; }
 
