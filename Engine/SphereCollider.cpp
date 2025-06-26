@@ -2,6 +2,7 @@
 #include "SphereCollider.h"
 #include "AABBBoxCollider.h"
 #include "OBBBoxCollider.h"
+#include "GameObject.h"
 
 SphereCollider::SphereCollider()
 	:BaseCollider(ColliderType::Sphere)

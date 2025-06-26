@@ -9,6 +9,9 @@
 #include "Terrain.h"
 void Scene::Start()
 {
+	//충돌 판정 초기화. 
+	m_mapColInfo.clear();
+
 	auto objects = m_gameObjects;
 	for (auto object : m_gameObjects) {
 		object->Start();
@@ -246,6 +249,9 @@ shared_ptr<class GameObject> Scene::Pick()
 
 void Scene::CheckCollision()
 {
+
+	//1. m_gameObjects끼리 for문 돌려서 검사한다. 
+	//2. Collider만들 때, obj를 받는다. 
 	vector<shared_ptr<BaseCollider>> colliders;
 	for (auto object : m_gameObjects) {
 		if (object->GetCollider() == nullptr)
@@ -256,13 +262,56 @@ void Scene::CheckCollision()
 
 	//BruteForce
 	//쿼드 트리 같은 거. 
+
+	//Collider끼리 검사. -> GameObject에 Collision처리 해야하는데. 
 	for (uint32 idx = 0; idx < colliders.size(); ++idx) {
+		if (colliders[idx].get()->GetActive() == false)
+			continue;
+
 		for (uint32 jdx = idx + 1; jdx < colliders.size(); ++jdx) {
 			shared_ptr<BaseCollider>& other = colliders[jdx];
 
+			if (other.get()->GetActive() == false)
+				continue;
 
+
+			COLLIDER_ID id;
+			id.left_id = colliders[idx].get()->GetID();
+			id.right_id = colliders[jdx].get()->GetID();
+
+			auto colliderMapIter = m_mapColInfo.find(id.ID);
+
+			//충돌 정보가 미 등록 상태일 경우.(충돌하지 않았다로 입력.) 
+			if (colliderMapIter == m_mapColInfo.end()) {
+				m_mapColInfo.insert(make_pair(id.ID, false));
+				colliderMapIter = m_mapColInfo.find(id.ID);
+			}
+
+			//현재 Collider끼리 충돌했을 경우에. 
 			if (colliders[idx]->Intersects(other)) {
-				//충돌 관련 처리. 
+				
+				if (colliderMapIter->second == false) {
+					//이번 프레임에 막 충돌한 경우.
+
+					//TODO : 이벤트 후처리 시스템 어떻게? 
+					colliders[idx].get()->GetGameObject()->OnCollisionEnter(colliders[jdx].get()->GetGameObject());
+					colliders[jdx].get()->GetGameObject()->OnCollisionEnter(colliders[idx].get()->GetGameObject());
+					colliderMapIter->second = true;
+				}
+				else {
+					//이전 프레임에도 충돌하고 있던 경우. 
+					colliders[idx].get()->GetGameObject()->OnCollision(colliders[jdx].get()->GetGameObject());
+					colliders[jdx].get()->GetGameObject()->OnCollision(colliders[idx].get()->GetGameObject());
+				}
+			}
+			else {
+				//충돌하지 않았을 경우. 
+				if (colliderMapIter->second == true) {
+					//이전에 충돌하고 있었으면. 
+					colliders[idx].get()->GetGameObject()->OnCollisionExit(colliders[jdx].get()->GetGameObject());
+					colliders[jdx].get()->GetGameObject()->OnCollisionExit(colliders[idx].get()->GetGameObject());
+					colliderMapIter->second = false;
+				}
 			}
 		}
 	}

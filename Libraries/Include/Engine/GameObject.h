@@ -17,6 +17,7 @@ class Billboard;
 class SnowBillboard;
 class ParticleSystem;
 class Renderer;
+class Rigidbody;
 
 
 class GameObject : public enable_shared_from_this<GameObject>
@@ -46,6 +47,7 @@ public:
 	shared_ptr<Billboard> GetBillboard();
 	shared_ptr<SnowBillboard> GetSnowBillboard();
 	shared_ptr<ParticleSystem> GetParticleSystem();
+	shared_ptr<Rigidbody> GetRigidbody();
 
 	void AddComponent(shared_ptr<Component> _component);
 
@@ -56,6 +58,11 @@ public:
 	shared_ptr<T> GetFixedComponent(ComponentType _type) {
 		return static_pointer_cast<T>(GetFixedComponent(_type));
 	}
+
+	//Collision 관련
+	virtual void OnCollision(shared_ptr<GameObject> _other);
+	virtual void OnCollisionEnter(shared_ptr<GameObject> _other);
+	virtual void OnCollisionExit(shared_ptr<GameObject> _other);
 protected:
 
 	//고정된 배열. Component별 고정된 위치. 

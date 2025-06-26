@@ -19,6 +19,7 @@
 #include "SnowBillboard.h"
 #include "ParticleSystem.h"
 #include "Renderer.h"
+#include "Rigidbody.h"
 
 GameObject::GameObject()
 {
@@ -194,6 +195,12 @@ shared_ptr<ParticleSystem> GameObject::GetParticleSystem()
 	return static_pointer_cast<ParticleSystem>(component);
 }
 
+shared_ptr<Rigidbody> GameObject::GetRigidbody()
+{
+	shared_ptr<Component> component = GetFixedComponent(ComponentType::Rigidbody);
+	return static_pointer_cast<Rigidbody>(component);
+}
+
 
 void GameObject::AddComponent(shared_ptr<Component> _component)
 {
@@ -209,5 +216,20 @@ void GameObject::AddComponent(shared_ptr<Component> _component)
 	else {
 		m_scripts.push_back(dynamic_pointer_cast<MonoBehaviour>(_component));
 	}
+}
+
+//충돌 관련 함수. 
+void GameObject::OnCollision(shared_ptr<GameObject> _other)
+{
+}
+
+void GameObject::OnCollisionEnter(shared_ptr<GameObject> _other)
+{
+	std::cout << "CollisionEnter\n";
+}
+
+void GameObject::OnCollisionExit(shared_ptr<GameObject> _other)
+{
+	std::cout << "CollisionExit\n";
 }
 

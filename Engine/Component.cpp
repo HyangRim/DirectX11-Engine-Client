@@ -2,6 +2,7 @@
 #include "Component.h"
 #include "GameObject.h"
 #include "Transform.h"
+#include "Rigidbody.h"
 
 Component::Component(ComponentType _type)
 	: m_type(_type)
@@ -28,4 +29,9 @@ shared_ptr<GameObject> Component::GetGameObject()
 shared_ptr<Transform> Component::GetTransform()
 {
 	return m_gameObject.lock()->GetTransform();
+}
+
+shared_ptr<Rigidbody> Component::GetRigidbody()
+{
+	return m_gameObject.lock()->GetRigidbody();
 }

@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "GameObject.h"
 #include "AABBBoxCollider.h"
 #include "SphereCollider.h"
 #include "OBBBoxCollider.h"

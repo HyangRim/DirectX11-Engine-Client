@@ -2,6 +2,15 @@
 
 class Sky;
 class Camera;
+
+union COLLIDER_ID {
+	struct {
+		uint32 left_id;
+		uint32 right_id;
+	};
+	ULONG64 ID;
+};
+
 class Scene
 {
 public:
@@ -32,10 +41,16 @@ public:
 	void CheckCollision();
 
 private:
+	//충돌 관련 HashTable
+	//충돌체 간의 이전 프레임 충돌. 
+	unordered_map<ULONG64, bool> m_mapColInfo;
+
+	//그룹간의 충돌 체크? 일단 보류. 
+
+private:
 	unordered_set<shared_ptr<GameObject>> m_gameObjects;
 	//Cache Camera;
 	unordered_set<shared_ptr<GameObject>> m_cameras;
-
 	//Cache Light;
 	unordered_set<shared_ptr<GameObject>> m_Lights;
 

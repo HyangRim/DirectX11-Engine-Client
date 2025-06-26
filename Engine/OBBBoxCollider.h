@@ -1,5 +1,7 @@
 #pragma once
 #include "BaseCollider.h"
+
+class GameObject;
 class OBBBoxCollider :
     public BaseCollider
 {
