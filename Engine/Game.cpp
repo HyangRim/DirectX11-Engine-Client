@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Game.h"
 #include "IExecute.h"
+#include "Scene.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -23,6 +24,8 @@ WPARAM Game::Run(GameDesc& desc)
 	RESOURCES->Init();
 	
 	_desc.app->Init();
+
+	SCENE->ChangeScene(SCENE->GetCurScene());
 
 	MSG msg = { 0 };
 

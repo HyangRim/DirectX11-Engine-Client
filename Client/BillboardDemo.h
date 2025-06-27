@@ -23,3 +23,9 @@ class moveScript : public MonoBehaviour
 {
 	virtual void Update();
 };
+
+
+class ForceScript : public MonoBehaviour
+{
+	virtual void Start() override;
+};

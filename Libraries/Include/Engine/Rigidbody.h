@@ -1,5 +1,7 @@
 #pragma once
 #include "Component.h"
+
+class GameObject;
 class Rigidbody :
     public Component
 {
@@ -25,9 +27,18 @@ public:
     void SetMaxVelocity(Vec3 _maxVelocity) { m_maxVelocity = _maxVelocity; }
 
 private:
+    void OnCollision(shared_ptr<GameObject> _other);
+    void OnCollisionEnter(shared_ptr<GameObject> _other);
+    void OnCollisionExit(shared_ptr<GameObject> _other);
+
+
+    bool ComputePushMove(shared_ptr<BaseCollider> _my, shared_ptr<BaseCollider> _other, Vec3& _outDir, float& _outForce);
+
+private:
     void Move();
 
 private:
+    friend class GameObject;
 
     Vec3 m_Force;
     Vec3 m_Accel;           //°¡¼Óµµ 

@@ -16,6 +16,7 @@ class Scene
 public:
 	virtual void Start();
 	virtual void Update();
+	virtual void FixedUpdate();
 	virtual void LateUpdate();
 
 	virtual void Render();

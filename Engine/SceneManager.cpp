@@ -7,6 +7,7 @@ void SceneManager::Update()
 		return;
 
 	m_curScene->Update();
+	m_curScene->FixedUpdate();
 	m_curScene->LateUpdate();
 
 	m_curScene->Render();

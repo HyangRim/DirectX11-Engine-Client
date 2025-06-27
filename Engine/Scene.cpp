@@ -12,18 +12,18 @@ void Scene::Start()
 	//충돌 판정 초기화. 
 	m_mapColInfo.clear();
 
-	auto objects = m_gameObjects;
-	for (auto object : m_gameObjects) {
+	const auto& objects = m_gameObjects;
+	for (auto& object : m_gameObjects) {
 		object->Start();
 	}
 }
 
 void Scene::Update()
 {
-	auto objects = m_gameObjects;
+	const auto& objects = m_gameObjects;
 	//Update 코드 안에서 Remove를 써버리면 문제가 생기기 때문에.
 	//이벤트 후처리로 오브젝트 추가, 생성을 해야함. 
-	for (auto object : m_gameObjects) {
+	for (auto& object : m_gameObjects) {
 		object->Update();
 	}
 	PickUI();
@@ -31,10 +31,22 @@ void Scene::Update()
 
 }
 
+void Scene::FixedUpdate()
+{
+	const auto& objects = m_gameObjects;
+	//Update 코드 안에서 Remove를 써버리면 문제가 생기기 때문에.
+	//이벤트 후처리로 오브젝트 추가, 생성을 해야함. 
+	for (auto& object : m_gameObjects) {
+		object->FixedUpdate();
+	}
+}
+
+
+
 void Scene::LateUpdate()
 {
 	auto objects = m_gameObjects;
-	for (auto object : m_gameObjects) {
+	for (auto& object : m_gameObjects) {
 		object->LateUpdate();
 	}
 	CheckCollision();

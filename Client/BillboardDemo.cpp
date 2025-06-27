@@ -26,6 +26,7 @@
 #include "SnowBillboard.h"
 #include "ParticleSystem.h"
 #include "Sky.h"
+#include "Rigidbody.h"
 
 void BillboardDemo::Init()
 {
@@ -73,6 +74,7 @@ void BillboardDemo::Init()
 			{
 				auto collider = make_shared<OBBBoxCollider>();
 				obj->AddComponent(collider);
+				obj->AddComponent(make_shared<Rigidbody>());
 				//obj->GetButton()->AddOnClikedEvent([obj]() { CURSCENE->Remove(obj); });
 				
 			}
@@ -102,6 +104,37 @@ void BillboardDemo::Init()
 			}
 			{
 				obj->AddComponent(make_shared<moveScript>());
+			}
+
+			CURSCENE->Add(obj);
+		}
+
+
+		//OBB3
+		{
+			auto obj = make_shared<GameObject>();
+			obj->GetTransform()->SetLocalPosition(Vec3(15.f, 2.5f, 0));
+			obj->GetTransform()->SetLocalScale(Vec3(1.5f));
+			obj->AddComponent(make_shared<MeshRenderer>());
+			{
+				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"Veigar"));
+			}
+			{
+				auto mesh = RESOURCES->Get<Mesh>(L"Cube");
+				obj->GetMeshRenderer()->SetMesh(mesh);
+				obj->GetMeshRenderer()->SetPass(0);
+			}
+			{
+				auto collider = make_shared<OBBBoxCollider>();
+				obj->AddComponent(collider);
+				//obj->GetButton()->AddOnClikedEvent([obj]() { CURSCENE->Remove(obj); });
+
+			}
+			{
+				obj->AddComponent(make_shared<Rigidbody>());
+			}
+			{
+				obj->AddComponent(make_shared<ForceScript>());
 			}
 
 			CURSCENE->Add(obj);
@@ -327,4 +360,9 @@ void moveScript::Update()
 	pos.x += DT * 1.5f;
 
 	GetTransform()->SetPosition(pos);
+}
+
+void ForceScript::Start()
+{
+	GetRigidbody()->AddForce(Vec3(-5.f, 0.f, 0.f));
 }

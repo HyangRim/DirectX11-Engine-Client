@@ -3,6 +3,7 @@
 
 class GameObject;
 class Transform;
+class Rigidbody;
 
 enum class ComponentType : uint8 {
 	Transform,
@@ -47,6 +48,7 @@ public:
 	//GameObject 가져오기. 
 	shared_ptr<GameObject> GetGameObject();
 	shared_ptr<Transform> GetTransform();
+	shared_ptr<Rigidbody> GetRigidbody();
 
 private:
 	friend class GameObject;
