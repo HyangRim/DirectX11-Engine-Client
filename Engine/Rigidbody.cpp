@@ -75,11 +75,19 @@ void Rigidbody::OnCollision(shared_ptr<GameObject> _other)
 		Vec3 myPos = GetTransform()->GetPosition();
 		Vec3 otherPos = _other->GetTransform()->GetPosition();
 
-		myPos += correction * 0.5f;
-		otherPos -= correction * 0.5f;
+		//ºÎµúÈù ¹°Ã¼°¡ rigidbody°¡ ¾ø°Å³ª, static(º®)ÀÏ °æ¿ì. 
+		if (_other->GetRigidbody() == nullptr || _other->GetRigidbody()->GetStatic() == true) {
+			myPos -= correction * 1.f;
 
-		GetTransform()->SetPosition(myPos);
-		_other->GetTransform()->SetPosition(otherPos);
+			GetTransform()->SetPosition(myPos);
+		}
+		else {//ºÎµúÈù ¹°Ã¼°¡ º®ÀÌ ¾Æ´Ò °æ¿ì. 
+			myPos -= correction * 0.5f;
+			otherPos += correction * 0.5f;
+
+			GetTransform()->SetPosition(myPos);
+			_other->GetTransform()->SetPosition(otherPos);
+		}
 
 		m_velocity = Vec3(0, 0, 0);
 

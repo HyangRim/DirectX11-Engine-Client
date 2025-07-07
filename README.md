@@ -17,10 +17,10 @@
 - ImGui기반 UI
 - 파티클 시스템
 - Shadow
+- Rigidbody(dynamic, static)
 
 ### 예정 기능
 
-- Rigidbody
 - 멀티스레드 로딩. 
 
 ##  데모 

@@ -61,7 +61,7 @@ void BillboardDemo::Init()
 		{
 			auto obj = make_shared<GameObject>();
 			obj->GetTransform()->SetLocalPosition(Vec3(0, 2.5f, 0));
-			obj->GetTransform()->SetLocalScale(Vec3(1.5f));
+			obj->GetTransform()->SetLocalScale(Vec3(1.f));
 			obj->AddComponent(make_shared<MeshRenderer>());
 			{
 				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"Veigar"));
@@ -72,9 +72,10 @@ void BillboardDemo::Init()
 				obj->GetMeshRenderer()->SetPass(0);
 			}
 			{
-				auto collider = make_shared<OBBBoxCollider>();
+				auto collider = make_shared<SphereCollider>();
 				obj->AddComponent(collider);
 				obj->AddComponent(make_shared<Rigidbody>());
+				obj->GetRigidbody()->SetStatic(true);
 				//obj->GetButton()->AddOnClikedEvent([obj]() { CURSCENE->Remove(obj); });
 				
 			}
@@ -85,8 +86,8 @@ void BillboardDemo::Init()
 		//OBB2
 		{
 			auto obj = make_shared<GameObject>();
-			obj->GetTransform()->SetLocalPosition(Vec3(-15.f, 2.5f, 0));
-			obj->GetTransform()->SetLocalScale(Vec3(1.5f));
+			obj->GetTransform()->SetLocalPosition(Vec3(-10.f, 2.5f, 0));
+			obj->GetTransform()->SetLocalScale(Vec3(1.f));
 			obj->AddComponent(make_shared<MeshRenderer>());
 			{
 				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"Veigar"));
@@ -97,13 +98,14 @@ void BillboardDemo::Init()
 				obj->GetMeshRenderer()->SetPass(0);
 			}
 			{
-				auto collider = make_shared<OBBBoxCollider>();
+				auto collider = make_shared<SphereCollider>();
 				obj->AddComponent(collider);
+				obj->AddComponent(make_shared<Rigidbody>());
 				//obj->GetButton()->AddOnClikedEvent([obj]() { CURSCENE->Remove(obj); });
 
 			}
 			{
-				obj->AddComponent(make_shared<moveScript>());
+				obj->AddComponent(make_shared<ForceScript>());
 			}
 
 			CURSCENE->Add(obj);
@@ -114,7 +116,7 @@ void BillboardDemo::Init()
 		{
 			auto obj = make_shared<GameObject>();
 			obj->GetTransform()->SetLocalPosition(Vec3(15.f, 2.5f, 0));
-			obj->GetTransform()->SetLocalScale(Vec3(1.5f));
+			obj->GetTransform()->SetLocalScale(Vec3(1.f));
 			obj->AddComponent(make_shared<MeshRenderer>());
 			{
 				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"Veigar"));
@@ -125,7 +127,7 @@ void BillboardDemo::Init()
 				obj->GetMeshRenderer()->SetPass(0);
 			}
 			{
-				auto collider = make_shared<OBBBoxCollider>();
+				auto collider = make_shared<SphereCollider>();
 				obj->AddComponent(collider);
 				//obj->GetButton()->AddOnClikedEvent([obj]() { CURSCENE->Remove(obj); });
 
@@ -390,3 +392,10 @@ void ForceScript::Start()
 {
 	GetRigidbody()->AddForce(Vec3(-5.f, 0.f, 0.f));
 }
+
+void ForceScript::Update()
+{
+	GetRigidbody()->AddForce(Vec3(-2.5f, 0.f, 0.f));
+}
+
+

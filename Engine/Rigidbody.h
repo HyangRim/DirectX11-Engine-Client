@@ -26,6 +26,8 @@ public:
 
     void SetMaxVelocity(Vec3 _maxVelocity) { m_maxVelocity = _maxVelocity; }
 
+    void SetStatic(bool _value) { m_static = _value; }
+    bool GetStatic() { return m_static; }
 private:
     void OnCollision(shared_ptr<GameObject> _other);
     void OnCollisionEnter(shared_ptr<GameObject> _other);
@@ -49,5 +51,6 @@ private:
     float m_mass;       //강체 질량
     float m_fricCoeff;  //마찰 계수
 
+    bool m_static = false;        //벽 오브젝트인가?
 };
 
