@@ -5,29 +5,60 @@
 void AssimpTool::Init()
 {
 	
+	//{
+	//	
+	//	shared_ptr<Converter> converter = make_shared<Converter>();
+
+	//	//FBX -> Memory
+	//	converter->ReadAssetFile(L"Aya/Aya_S005.fbx");
+
+	//	//Memory ->CustomData;
+	//	converter->ExportMaterialData(L"Aya/Aya");
+	//	converter->ExportModelData(L"Aya/Aya");
+
+	//	//CustomData -> Memory;
+	//	
+	//}
+	//
+
+	//{
+	//	shared_ptr<Converter> converter = make_shared<Converter>();
+	//	converter->ReadAssetFile(L"Aya/Aya_Run.fbx");
+	//	converter->ExportAnimationData(L"Aya/Aya_Run");
+
+	//}
+
 	{
-		
+
 		shared_ptr<Converter> converter = make_shared<Converter>();
 
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Kachujin/Mesh.fbx");
+		converter->ReadAssetFile(L"Bianca/Bianca_mesh.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Kachujin/Kachujin");
-		converter->ExportModelData(L"Kachujin/Kachujin");
+		converter->ExportMaterialData(L"Bianca2/Bianca");
+		converter->ExportModelData(L"Bianca2/Bianca");
 
 		//CustomData -> Memory;
-		
+
 	}
 
+
+	//{
+	//	shared_ptr<Converter> converter = make_shared<Converter>();
+	//	converter->ReadAssetFile(L"Bianca/Bianca.fbx");
+	//	converter->ExportAnimationData(L"Bianca/Bianca_Run");
+
+	//}
+	
 	{
-
 		shared_ptr<Converter> converter = make_shared<Converter>();
-		converter->ReadAssetFile(L"Kachujin/Idle.fbx");
-		converter->ExportAnimationData(L"Kachujin/Idle");
+		converter->ReadAssetFile(L"Bianca/Bianca_atk.fbx");
+		converter->ExportAnimationData(L"Bianca2/Bianca_atk");
 
 	}
 
+	/*
 	{
 
 		shared_ptr<Converter> converter = make_shared<Converter>();
@@ -43,7 +74,7 @@ void AssimpTool::Init()
 		converter->ExportAnimationData(L"Kachujin/Slash");
 
 	}
-
+	*/
 }
 
 void AssimpTool::Update()

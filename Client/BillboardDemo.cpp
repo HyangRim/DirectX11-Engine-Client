@@ -152,7 +152,9 @@ void BillboardDemo::Init()
 		lightDesc.diffuse = Vec4(1.f);
 		lightDesc.specular = Vec4(0.1f);
 		lightDesc.direction = Vec3(1.f, -1.f, 1.f);
+		//light->GetLight()->SetLightDesc(lightDesc);
 		light->GetTransform()->SetRotation(lightDesc.direction);
+		light->GetTransform()->SetPosition(Vec3(0.f, -150.f, 0.f));
 		static_pointer_cast<Light>(light->GetFixedComponent(ComponentType::Light))->SetLightDesc(lightDesc);
 		CURSCENE->Add(light);
 	}
@@ -263,47 +265,69 @@ void BillboardDemo::Init()
 	{
 		// Animation
 		shared_ptr<Model> m1 = make_shared<Model>();
-		m1->ReadModel(L"Kachujin/Kachujin");
+		/*m1->ReadModel(L"Kachujin/Kachujin");
 		m1->ReadMaterial(L"Kachujin/Kachujin");
-		m1->ReadAnimation(L"Kachujin/Idle");
-		m1->ReadAnimation(L"Kachujin/Run");
-		m1->ReadAnimation(L"Kachujin/Slash");
+		m1->ReadAnimation(L"Kachujin/Idle");*/
 
-		for (int32 i = 0; i < 250; i++)
+		m1->ReadModel(L"Bianca2/Bianca");
+		m1->ReadMaterial(L"Bianca2/Bianca");
+		m1->ReadAnimation(L"Bianca2/Bianca_atk");
+
+		//m1->ReadModel(L"Aya/Aya");
+		//m1->ReadMaterial(L"Aya/Aya");
+		//m1->ReadAnimation(L"Aya/Aya_Run");
+		
+		//m1->ReadAnimation(L"Kachujin/Run");
+		//m1->ReadAnimation(L"Kachujin/Slash");
+
+		for (int32 i = 0; i < 1; i++)
 		{
+
 			auto obj = make_shared<GameObject>();
-			obj->GetTransform()->SetPosition(Vec3(rand() % 100, 0, rand() % 100));
-			obj->GetTransform()->SetScale(Vec3(0.01f));
+			obj->GetTransform()->SetPosition(Vec3(5.f, 1.f, 0.f));
+			obj->GetTransform()->SetScale(Vec3(1.f));
+			//obj->GetTransform()->SetRotation(Vec3(-180.f, 0.f, 0.f));
+
+			
+			/*obj->AddComponent(make_shared<ModelRenderer>(renderShader));
+			{
+				obj->GetModelRenderer()->SetModel(m1);
+				obj->GetModelRenderer()->SetPass(1);
+			}*/
+			
+			
+			
 			obj->AddComponent(make_shared<ModelAnimator>(renderShader));
 			{
 				obj->GetModelAnimator()->SetModel(m1);
 				obj->GetModelAnimator()->SetPass(2);
 			}
+			
 			CURSCENE->Add(obj);
 		}
 	}
+	
+	//{
+	//	// Model
+	//	shared_ptr<Model> m2 = make_shared<Model>();
+	//	m2->ReadModel(L"Tower/Tower");
+	//	m2->ReadMaterial(L"Tower/Tower");
 
-	{
-		// Model
-		shared_ptr<Model> m2 = make_shared<Model>();
-		m2->ReadModel(L"Tower/Tower");
-		m2->ReadMaterial(L"Tower/Tower");
+	//	for (int32 i = 0; i < 50; i++)
+	//	{
+	//		auto obj = make_shared<GameObject>();
+	//		obj->GetTransform()->SetPosition(Vec3(rand() % 100, -1, rand() % 100));
+	//		obj->GetTransform()->SetScale(Vec3(0.01f));
 
-		for (int32 i = 0; i < 50; i++)
-		{
-			auto obj = make_shared<GameObject>();
-			obj->GetTransform()->SetPosition(Vec3(rand() % 100, -1, rand() % 100));
-			obj->GetTransform()->SetScale(Vec3(0.01f));
+	//		obj->AddComponent(make_shared<ModelRenderer>(renderShader));
+	//		{
+	//			obj->GetModelRenderer()->SetModel(m2);
+	//			obj->GetModelRenderer()->SetPass(1);
+	//		}
 
-			obj->AddComponent(make_shared<ModelRenderer>(renderShader));
-			{
-				obj->GetModelRenderer()->SetModel(m2);
-				obj->GetModelRenderer()->SetPass(1);
-			}
-
-			CURSCENE->Add(obj);
-		}
-	}
+	//		CURSCENE->Add(obj);
+	//	}
+	//}
 
 	// UI
 	{

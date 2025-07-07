@@ -60,7 +60,7 @@ Texture2D ShadowMap;
 // Function   //
 ////////////////
 
-float4 ComputeLight(float3 _normal, float2 _uv, float3 _worldPosition, float shadow = 1)
+float4 ComputeLight(float3 _normal, float2 _uv, float3 _worldPosition, float shadow = 0)
 {
     float4 ambientColor = 0;
     float4 diffuseColor = 0;
@@ -79,6 +79,7 @@ float4 ComputeLight(float3 _normal, float2 _uv, float3 _worldPosition, float sha
     
         //내적의 결과물은 스칼라값이 나온다. 
         float value = dot(-GlobalLight.direction, normalize(_normal));
+        value = saturate(value);
         diffuseColor = color * value * GlobalLight.diffuse * Material.diffuse;
     }
     
@@ -108,9 +109,10 @@ float4 ComputeLight(float3 _normal, float2 _uv, float3 _worldPosition, float sha
         //min, max, x (smooth lerp느낌)
         emissive = smoothstep(0.0f, 1.0f, emissive);
         emissive = pow(emissive, 2);
-        emissiveColor = Material.emissive * Material.emissive * emissive;
+        emissiveColor = GlobalLight.emissive * Material.emissive * emissive;
     }
-    
+    if (shadow < 0.9f)
+        shadow = 0.9f;
     return ambientColor + (diffuseColor + specularColor + emissiveColor) * shadow;
     
 }

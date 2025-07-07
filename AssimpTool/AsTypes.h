@@ -10,6 +10,7 @@ struct asBone {
 	int32 m_parent = -1;
 
 	Matrix m_transform;
+	aiMatrix4x4 m_offsetMatrix;
 };
 
 struct asMesh
@@ -86,8 +87,9 @@ struct asBoneWeights {
 
 		for (uint32 i = 0; i < m_boneWeights.size(); i++)
 		{
-			if (i >= 4)
+			if (i >= 4) {
 				break;
+			}
 
 			blendWeights.Set(i, m_boneWeights[i].first, m_boneWeights[i].second);
 		}
@@ -112,10 +114,10 @@ struct asBoneWeights {
 
 };
 struct asKeyFrameData {
-	float m_time;
-	Vec3 m_scale;
-	Quaternion m_rotation;
-	Vec3 m_translation;
+	float m_time = 0.f;
+	Vec3 m_scale = Vec3(1.f, 1.f, 1.f);
+	Quaternion m_rotation = Quaternion::Identity;
+	Vec3 m_translation = Vec3(0.f, 0.f, 0.f);
 };
 
 struct asKeyFrame {

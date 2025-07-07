@@ -5,6 +5,7 @@
 #include "AsTypes.h"
 #include "tinyxml2.h"
 #include "FileUtils.h"
+#include <SimpleMath.h>
 
 Converter::Converter()
 {
@@ -29,7 +30,11 @@ void Converter::ReadAssetFile(wstring _file)
 		aiProcess_Triangulate |
 		aiProcess_GenUVCoords |
 		aiProcess_GenNormals |
-		aiProcess_CalcTangentSpace
+		aiProcess_CalcTangentSpace|
+		aiProcess_LimitBoneWeights|
+		aiProcess_OptimizeGraph|
+		aiProcess_OptimizeMeshes| 
+		aiProcess_RemoveRedundantMaterials
 	);
 
 	assert(m_scene != nullptr);
@@ -110,11 +115,25 @@ void Converter::ExportAnimationData(wstring _savePath, uint32 _index)
 
 void Converter::ReadModelData(aiNode* _node, int32 _index, int32 _parent)
 {
+	string nodeName = _node->mName.C_Str();
+
+	if (!IsValidBoneName(nodeName)) {
+		for (uint32 idx = 0; idx < _node->mNumChildren; ++idx) {
+			ReadModelData(_node->mChildren[idx], _index, _parent);
+		}
+		return;
+	}
+
+
+
+
+	int32 myIndex = static_cast<int32>(m_bones.size());
 	shared_ptr<asBone> bone = make_shared<asBone>();
-	bone->m_index = _index;
+	//수정사항. 
+	//bone->m_index = _index;
+	bone->m_index = myIndex;
 	bone->m_parent = _parent;
 	bone->m_name = _node->mName.C_Str();
-
 
 	//Relative Transform. 
 	Matrix transform(_node->mTransformation[0]);
@@ -124,6 +143,12 @@ void Converter::ReadModelData(aiNode* _node, int32 _index, int32 _parent)
 	//최종 root을 기준으로 한 게 아닌, 바로 직속 부모를 기준으로 한 transform.
 
 	bone->m_transform = transform.Transpose();
+
+	//수정 부분. 
+	//bone->m_transform._31 *= -1;
+	//bone->m_transform._32 *= -1;
+	//bone->m_transform._33 *= -1;
+	//bone->m_transform._34 *= -1;
 
 	//Local (Root) Transform으로 변환해줘야함.
 	// mat Patent는 무엇을 기준으로 하는 것? root으로 가는 직통 경로 행렬. 
@@ -135,16 +160,20 @@ void Converter::ReadModelData(aiNode* _node, int32 _index, int32 _parent)
 	}
 
 	//한 번만 변환 해주면 root node 기준. 
-	bone->m_transform = bone->m_transform * matParent;
+	// 수정사항. 
+	//bone->m_transform = bone->m_transform * matParent;
+	bone->m_transform = matParent * bone->m_transform;
 	m_bones.push_back(bone);
 
 
 	//여기까지 하나의 노드에 대한 거 읽어옴.
 	// Mesh 
-	ReadMeshData(_node, _index);
+	//ReadMeshData(_node, _index);
+	ReadMeshData(_node, myIndex);
 
 	for (uint32 idx = 0; idx < _node->mNumChildren; ++idx) {
-		ReadModelData(_node->mChildren[idx], m_bones.size(), _index);
+		//ReadModelData(_node->mChildren[idx], m_bones.size(), _index);
+		ReadModelData(_node->mChildren[idx], 0, myIndex);
 	}
 }
 
@@ -220,6 +249,14 @@ void Converter::ReadSkinData()
 			aiBone* srcMeshBone = srcMesh->mBones[bIdx];
 			uint32 boneIndex = GetBoneIndex(srcMeshBone->mName.C_Str());
 
+
+			//요 밑이 수정사항. 
+			if (boneIndex == -1)
+				continue;
+
+			auto offsetMatrix = srcMeshBone->mOffsetMatrix.Transpose();
+			m_bones[boneIndex]->m_offsetMatrix = offsetMatrix;
+
 			for (uint32 w = 0; w < srcMeshBone->mNumWeights; ++w) {
 				uint32 index = srcMeshBone->mWeights[w].mVertexId;
 				float weight = srcMeshBone->mWeights[w].mWeight;
@@ -255,18 +292,19 @@ void Converter::WriteModelFile(wstring _filePath)
 	// Bone Data
 	//본 몇개인지 넣어주고, 본마다 데이터 쓰기. 
 	file->Write<uint32>(m_bones.size());
-	for (shared_ptr<asBone>& bone : m_bones)
+	for (shared_ptr<asBone> bone : m_bones)
 	{
 		file->Write<int32>(bone->m_index);
 		file->Write<string>(bone->m_name);
 		file->Write<int32>(bone->m_parent);
 		file->Write<Matrix>(bone->m_transform);
+		file->Write<aiMatrix4x4>(bone->m_offsetMatrix);
 	}
 
 	// Mesh Data
 	//매쉬가 몇 개 있는지 넣어주고. 매쉬마다 데이터 쓰기. 
 	file->Write<uint32>(m_meshes.size());
-	for (shared_ptr<asMesh>& meshData : m_meshes)
+	for (shared_ptr<asMesh> meshData : m_meshes)
 	{
 		file->Write<string>(meshData->m_name);
 		file->Write<int32>(meshData->m_boneIndex);
@@ -308,7 +346,7 @@ void Converter::ReadMaterialData()
 
 		// Emissive
 		srcMaterial->Get(AI_MATKEY_COLOR_EMISSIVE, color);
-		material->m_emissive = Color(color.r, color.g, color.b, 1.0f);
+		material->m_emissive = Color(color.r, color.g, color.b, 1.f);
 
 		aiString file;
 
@@ -472,6 +510,8 @@ shared_ptr<asAnimation> Converter::ReadAnimationData(aiAnimation* _srcAnimation)
 	shared_ptr<asAnimation> animation = make_shared<asAnimation>();
 	animation->m_name = _srcAnimation->mName.C_Str();
 	animation->m_frameRate = (float)_srcAnimation->mTicksPerSecond;
+
+
 	animation->m_frameCount = (uint32)_srcAnimation->mDuration + 1;
 
 	map<string, shared_ptr<asAnimationnode>> cacheAnimNodes;
@@ -508,17 +548,20 @@ shared_ptr<asAnimationnode> Converter::ParseAnimationNode(shared_ptr<asAnimation
 		uint32 t = node->m_keyFrame.size();
 
 		// Position
-		if (::fabsf((float)_srcNode->mPositionKeys[k].mTime - (float)t) <= 0.0001f)
+		if (::fabsf((float)_srcNode->mPositionKeys[k].mTime - (float)t) <= 0.01f)
 		{
 			aiVectorKey key = _srcNode->mPositionKeys[k];
 			frameData.m_time = (float)key.mTime;
 			::memcpy_s(&frameData.m_translation, sizeof(Vec3), &key.mValue, sizeof(aiVector3D));
 
+			//수정 부분. 
+			//frameData.m_translation.z *= -1;
+
 			found = true;
 		}
 
 		// Rotation
-		if (::fabsf((float)_srcNode->mRotationKeys[k].mTime - (float)t) <= 0.0001f)
+		if (::fabsf((float)_srcNode->mRotationKeys[k].mTime - (float)t) <= 0.01f)
 		{
 			aiQuatKey key = _srcNode->mRotationKeys[k];
 			frameData.m_time = (float)key.mTime;
@@ -532,7 +575,7 @@ shared_ptr<asAnimationnode> Converter::ParseAnimationNode(shared_ptr<asAnimation
 		}
 
 		// Scale
-		if (::fabsf((float)_srcNode->mScalingKeys[k].mTime - (float)t) <= 0.0001f)
+		if (::fabsf((float)_srcNode->mScalingKeys[k].mTime - (float)t) <= 0.01f)
 		{
 			aiVectorKey key = _srcNode->mScalingKeys[k];
 			frameData.m_time = (float)key.mTime;
@@ -554,7 +597,6 @@ shared_ptr<asAnimationnode> Converter::ParseAnimationNode(shared_ptr<asAnimation
 		for (uint32 n = 0; n < count; n++)
 			node->m_keyFrame.push_back(keyFrame);
 	}
-
 	return node;
 }
 
@@ -563,11 +605,15 @@ void Converter::ReadKeyframeData(shared_ptr<asAnimation> _animation, aiNode* _No
 	shared_ptr<asKeyFrame> keyframe = make_shared<asKeyFrame>();
 	keyframe->m_boneName = _Node->mName.C_Str();
 
-	shared_ptr<asAnimationnode> findNode = _cache[_Node->mName.C_Str()];
+	shared_ptr<asAnimationnode> findNode = _cache[keyframe->m_boneName];
 
 	for (uint32 i = 0; i < _animation->m_frameCount; i++)
 	{
 		asKeyFrameData frameData;
+		frameData.m_rotation = Quaternion::Identity;
+		frameData.m_scale = Vec3(1.f, 1.f, 1.f);
+		frameData.m_translation = Vec3(0.f, 0.f, 0.f);
+		frameData.m_time = 0.f;
 
 		if (findNode == nullptr)
 		{
@@ -580,13 +626,19 @@ void Converter::ReadKeyframeData(shared_ptr<asAnimation> _animation, aiNode* _No
 		{
 			frameData = findNode->m_keyFrame[i];
 		}
+		
+		//frameData.m_translation.z *= -1;
 		//키 프레임에다가 넣어주기. 
 		keyframe->transform.push_back(frameData);
 	}
 
 	// KeyFrame의 데이터가 다 넣어주면.
 	// 애니메이션 키프레임 채우기. 
-	_animation->m_keyFrames.push_back(keyframe);
+
+	if (keyframe->m_boneName.find("$AssimpFbx$") == string::npos) {
+		_animation->m_keyFrames.push_back(keyframe);
+	}
+
 
 	for (uint32 i = 0; i < _Node->mNumChildren; i++)
 		ReadKeyframeData(_animation, _Node->mChildren[i], _cache);
@@ -628,4 +680,21 @@ uint32 Converter::GetBoneIndex(const string& _name)
 
 	assert(false);
 	return 0;
+}
+
+bool Converter::IsValidBoneName(const string& _name)
+{
+	// AssimpFbx 관련 임시 노드들을 필터링
+	if (_name.find("$AssimpFbx$") != string::npos)
+		return false;
+	if (_name.find("PreRotation") != string::npos)
+		return false;
+	if (_name.find("PostRotation") != string::npos)
+		return false;
+	if (_name.find("PreScale") != string::npos)
+		return false;
+	if (_name.find("PostScale") != string::npos)
+		return false;
+
+	return true;
 }

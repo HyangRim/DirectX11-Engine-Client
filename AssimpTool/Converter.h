@@ -36,6 +36,8 @@ private:
 private:
 	uint32 GetBoneIndex(const string& _name);
 
+	bool IsValidBoneName(const string& _name);
+
 private:
 	const wstring m_assetPath = L"../Resources/Assets/";
 	const wstring m_modelPath = L"../Resources/Models/";

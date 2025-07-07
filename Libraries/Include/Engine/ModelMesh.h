@@ -8,6 +8,8 @@ struct ModelBone {
 
 	Matrix m_transform;
 	vector<shared_ptr<ModelBone>> children; // Cache;
+
+	Matrix m_offsetMatrix;
 };
 struct ModelMesh
 {

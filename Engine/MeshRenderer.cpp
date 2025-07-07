@@ -81,7 +81,6 @@ void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer,
 	_buffer->PushData();
 
 	m_material->GetShader()->DrawIndexedInstanced(GET_TECH(_isShadowTech), m_pass, m_mesh->GetIndexBuffer()->GetCount(), _buffer->GetCount());
-	int aa = 32323;
 	//shader->DrawIndexedInstanced(0, m_pass, m_mesh->GetIndexBuffer()->GetCount(), _buffer->GetCount());
 }
 

@@ -82,7 +82,10 @@ void Rigidbody::OnCollision(shared_ptr<GameObject> _other)
 		_other->GetTransform()->SetPosition(otherPos);
 
 		m_velocity = Vec3(0, 0, 0);
-		_other->GetRigidbody()->SetVelocity(Vec3(0, 0, 0));
+
+		if (_other->GetRigidbody() != nullptr) {
+			_other->GetRigidbody()->SetVelocity(Vec3(0, 0, 0));
+		}
 	}
 }
 

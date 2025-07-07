@@ -11,8 +11,8 @@
 ModelAnimator::ModelAnimator(shared_ptr<Shader> _shader)
 	: Super(ComponentType::Animator), m_shader(_shader)
 {
-	m_tweenDesc.m_next.m_animIndex = rand() % 3;
-	m_tweenDesc.m_tweenSumTime += rand() % 100;
+	//m_tweenDesc.m_next.m_animIndex = rand() % 3;
+	//m_tweenDesc.m_tweenSumTime += rand() % 100;
 }
 
 ModelAnimator::~ModelAnimator()
@@ -46,7 +46,7 @@ void ModelAnimator::UpdateTweenData()
 		}
 
 	}
-
+	cout << desc.m_curr.m_animIndex << "\n";
 	//다음 애니메이션이 예약되어 있다면.
 	if (desc.m_next.m_animIndex >= 0) {
 		desc.m_tweenSumTime += DT;
@@ -269,6 +269,7 @@ void ModelAnimator::CreateAnimationTransform(uint32 _index)
 
 			int32 parentIndex = tbone->m_parentIndex;
 
+
 			//Anim과 관련된 것. 
 			Matrix matParent = Matrix::Identity;
 			if (parentIndex >= 0)
@@ -282,7 +283,10 @@ void ModelAnimator::CreateAnimationTransform(uint32 _index)
 			//정점에다가 이 부분을 곱하면, 해당 위치로 해당 뼈대가 움직인다. 
 			// 최대 4개의 뼈에 묶여 있어서, 그런 걸 생각해서 쉐이더에서 좌표 변환한다. 
 
-			m_animTransform[_index].transforms[frame][bone] = invGlobal * tempAnimBoneTransforms[bone];
+
+			//수정사항
+			//m_animTransform[_index].transforms[frame][bone] = invGlobal * tempAnimBoneTransforms[bone];
+			m_animTransform[_index].transforms[frame][bone] = tbone->m_offsetMatrix * tempAnimBoneTransforms[bone];
 		}
 	}
 }

@@ -5,7 +5,7 @@
 #include "00. Global.fx"
 #include "00. Light.fx"
 
-#define MAX_MODEL_TRANSFORMS 250
+#define MAX_MODEL_TRANSFORMS 1000
 #define MAX_MODEL_KEYFRAMES 500
 #define MAX_MODEL_INSTANCE 500
 
@@ -185,7 +185,7 @@ matrix GetAnimationWorldMatrix(VertexModel input)
         }
         
         //가중치를 곱해서 transform을 결정함. 
-        transform += mul(weights[i], curr);
+        transform += mul(weights[i], result);
     }
 
     return transform;
@@ -197,7 +197,7 @@ MeshOutput VS_Animation(VertexModel input)
     MeshOutput output;
     
     //Model Global로 해서, 모델 내부의 메쉬들 Global좌표로 변경하기. 
-    //output.position = mul(input.position, BoneTransforms[BoneIndex]);
+    output.position = mul(input.position, BoneTransforms[BoneIndex]);
     matrix m = GetAnimationWorldMatrix(input);
     
     float4 worldPos = mul(input.position, m);

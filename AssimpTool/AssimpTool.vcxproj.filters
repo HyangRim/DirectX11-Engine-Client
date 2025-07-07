@@ -30,21 +30,6 @@
     <ClCompile Include="AsTypes.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="Static_MeshDemo.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGUIDemo.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimationDemo.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="TweenDemo.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="SkyDemo.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraScript.h">
@@ -64,21 +49,6 @@
     </ClInclude>
     <ClInclude Include="AsTypes.h">
       <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="Static_MeshDemo.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGUIDemo.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimationDemo.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="TweenDemo.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="SkyDemo.h">
-      <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

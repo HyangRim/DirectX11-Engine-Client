@@ -153,6 +153,8 @@ void Model::ReadModel(wstring _filename)
 			bone->m_name = Utils::ToWString(file->Read<string>());
 			bone->m_parentIndex = file->Read<int32>();
 			bone->m_transform = file->Read<Matrix>();
+			//수정사항. 
+			bone->m_offsetMatrix = file->Read<Matrix>();
 
 			m_bones.push_back(bone);
 		}
