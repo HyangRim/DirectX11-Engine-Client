@@ -221,7 +221,7 @@ void GameObject::AddComponent(shared_ptr<Component> _component)
 //충돌 관련 함수. 
 void GameObject::OnCollision(shared_ptr<GameObject> _other)
 {
-	if (GetRigidbody() != nullptr && _other->GetRigidbody() == nullptr) {
+	if (GetRigidbody() != nullptr) {
 		GetRigidbody()->OnCollision(_other);
 	}
 }
