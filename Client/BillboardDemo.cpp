@@ -72,7 +72,7 @@ void BillboardDemo::Init()
 				obj->GetMeshRenderer()->SetPass(0);
 			}
 			{
-				auto collider = make_shared<SphereCollider>();
+				auto collider = make_shared<AABBBoxCollider>();
 				obj->AddComponent(collider);
 				obj->AddComponent(make_shared<Rigidbody>());
 				obj->GetRigidbody()->SetStatic(true);
@@ -83,39 +83,12 @@ void BillboardDemo::Init()
 			CURSCENE->Add(obj);
 		}
 
-		//OBB2
-		{
-			auto obj = make_shared<GameObject>();
-			obj->GetTransform()->SetLocalPosition(Vec3(-10.f, 2.5f, 0));
-			obj->GetTransform()->SetLocalScale(Vec3(1.f));
-			obj->AddComponent(make_shared<MeshRenderer>());
-			{
-				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"Veigar"));
-			}
-			{
-				auto mesh = RESOURCES->Get<Mesh>(L"Cube");
-				obj->GetMeshRenderer()->SetMesh(mesh);
-				obj->GetMeshRenderer()->SetPass(0);
-			}
-			{
-				auto collider = make_shared<SphereCollider>();
-				obj->AddComponent(collider);
-				obj->AddComponent(make_shared<Rigidbody>());
-				//obj->GetButton()->AddOnClikedEvent([obj]() { CURSCENE->Remove(obj); });
-
-			}
-			{
-				obj->AddComponent(make_shared<ForceScript>());
-			}
-
-			CURSCENE->Add(obj);
-		}
 
 
 		//OBB3
 		{
 			auto obj = make_shared<GameObject>();
-			obj->GetTransform()->SetLocalPosition(Vec3(15.f, 2.5f, 0));
+			obj->GetTransform()->SetLocalPosition(Vec3(7.5f, 2.5f, 0));
 			obj->GetTransform()->SetLocalScale(Vec3(1.f));
 			obj->AddComponent(make_shared<MeshRenderer>());
 			{
@@ -127,7 +100,7 @@ void BillboardDemo::Init()
 				obj->GetMeshRenderer()->SetPass(0);
 			}
 			{
-				auto collider = make_shared<SphereCollider>();
+				auto collider = make_shared<AABBBoxCollider>();
 				obj->AddComponent(collider);
 				//obj->GetButton()->AddOnClikedEvent([obj]() { CURSCENE->Remove(obj); });
 
@@ -390,12 +363,12 @@ void moveScript::Update()
 
 void ForceScript::Start()
 {
-	GetRigidbody()->AddForce(Vec3(-5.f, 0.f, 0.f));
+	GetRigidbody()->AddForce(Vec3(-8.f, 0.f, 0.f));
 }
 
 void ForceScript::Update()
 {
-	GetRigidbody()->AddForce(Vec3(-2.5f, 0.f, 0.f));
+	GetRigidbody()->AddForce(Vec3(0.f, 0.f, 0.f));
 }
 
 
