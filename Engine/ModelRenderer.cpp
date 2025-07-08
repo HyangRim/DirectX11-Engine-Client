@@ -34,6 +34,8 @@ void ModelRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer
 	if (m_model == nullptr)
 		return;
 
+	
+
 	//카메라, 빛 계산은 Render에서. 
 	if (Super::Render(_isShadowTech) == false)
 		return;

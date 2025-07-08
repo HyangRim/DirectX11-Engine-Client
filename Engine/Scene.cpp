@@ -7,6 +7,7 @@
 #include "Sky.h"
 #include "Light.h"
 #include "Terrain.h"
+
 void Scene::Start()
 {
 	//충돌 판정 초기화. 
@@ -55,7 +56,7 @@ void Scene::Render()
 {
 	for (auto camera : m_cameras) {
 		//camera->GetCamera()->SortGameObject();
-		//camera->GetCamera()->Render_Forward();
+		//camera->GetCamera()->Render_Forward(false);
 		//GRAPHICS->ClearDepthStencilView();
 
 		Camera* cam = camera->GetCamera().get();
