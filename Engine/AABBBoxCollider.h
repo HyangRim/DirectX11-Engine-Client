@@ -1,5 +1,7 @@
 #pragma once
 #include "BaseCollider.h"
+
+class GameObject;
 class AABBBoxCollider :
     public BaseCollider
 {
@@ -16,5 +18,6 @@ public:
 
 private:
     BoundingBox m_boundingBox;
+    shared_ptr<GameObject> m_DebugObject;
 };
 

@@ -72,8 +72,8 @@ void BillboardDemo::Init()
 				obj->GetMeshRenderer()->SetPass(0);
 			}
 			{
-				auto collider = make_shared<AABBBoxCollider>();
-				obj->AddComponent(collider);
+				//auto collider = make_shared<SphereCollider>();
+				obj->AddComponent(make_shared<SphereCollider>());
 				obj->AddComponent(make_shared<Rigidbody>());
 				obj->GetRigidbody()->SetStatic(true);
 				//obj->GetButton()->AddOnClikedEvent([obj]() { CURSCENE->Remove(obj); });
@@ -100,7 +100,7 @@ void BillboardDemo::Init()
 				obj->GetMeshRenderer()->SetPass(0);
 			}
 			{
-				auto collider = make_shared<AABBBoxCollider>();
+				auto collider = make_shared<SphereCollider>();
 				obj->AddComponent(collider);
 				//obj->GetButton()->AddOnClikedEvent([obj]() { CURSCENE->Remove(obj); });
 
@@ -114,6 +114,8 @@ void BillboardDemo::Init()
 
 			CURSCENE->Add(obj);
 		}
+
+
 
 	}
 
@@ -264,11 +266,6 @@ void BillboardDemo::Init()
 			//obj->GetTransform()->SetRotation(Vec3(-180.f, 0.f, 0.f));
 
 			
-			/*obj->AddComponent(make_shared<ModelRenderer>(renderShader));
-			{
-				obj->GetModelRenderer()->SetModel(m1);
-				obj->GetModelRenderer()->SetPass(1);
-			}*/
 			
 			
 			

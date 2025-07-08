@@ -1,5 +1,7 @@
 #pragma once
 #include "BaseCollider.h"
+
+class MeshRenderer;
 class SphereCollider :
     public BaseCollider
 {
@@ -18,5 +20,6 @@ public:
 private:
     float m_radius = 1.f;
     BoundingSphere m_boundingSphere;
+    shared_ptr<GameObject> m_DebugObject;
 };
 

@@ -19,5 +19,6 @@ public:
 
 private:
     BoundingOrientedBox m_boundingBox;
+    shared_ptr<GameObject> m_DebugObject;
 };
 

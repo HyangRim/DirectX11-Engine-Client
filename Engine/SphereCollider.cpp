@@ -2,11 +2,25 @@
 #include "SphereCollider.h"
 #include "AABBBoxCollider.h"
 #include "OBBBoxCollider.h"
+#include "MeshRenderer.h"
 #include "GameObject.h"
+#include "Material.h"
+#include "Mesh.h"
 
 SphereCollider::SphereCollider()
 	:BaseCollider(ColliderType::Sphere)
 {
+	m_DebugObject = make_shared<GameObject>();
+	m_DebugObject->AddComponent(make_shared<MeshRenderer>());
+
+	m_DebugObject->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"default"));
+	m_DebugObject->GetMeshRenderer()->SetMesh(RESOURCES->Get<Mesh>(L"Sphere"));
+	m_DebugObject->GetMeshRenderer()->GetMaterial()->SetCastShadow(false);
+	m_DebugObject->GetMeshRenderer()->SetPass(3);
+
+	auto temp = m_DebugObject->GetMeshRenderer()->GetInstanceID();
+	
+	CURSCENE->Add(m_DebugObject);
 }
 
 SphereCollider::~SphereCollider()
@@ -18,7 +32,15 @@ void SphereCollider::Update()
 	m_boundingSphere.Center = GetGameObject()->GetTransform()->GetPosition();
 
 	Vec3 scale = GetGameObject()->GetTransform()->GetScale();
+
 	m_boundingSphere.Radius = m_radius * max(max(scale.x, scale.y), scale.z);
+
+	m_DebugObject->GetTransform()->SetScale(GetGameObject()->GetTransform()->GetScale() * 2.f);
+	m_DebugObject->GetTransform()->SetRotation(GetGameObject()->GetTransform()->GetRotation());
+	m_DebugObject->GetTransform()->SetPosition(GetGameObject()->GetTransform()->GetPosition());
+
+
+
 }
 
 bool SphereCollider::Intersects(Ray& _ray, OUT float& _distance)

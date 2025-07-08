@@ -111,8 +111,8 @@ float4 ComputeLight(float3 _normal, float2 _uv, float3 _worldPosition, float sha
         emissive = pow(emissive, 2);
         emissiveColor = GlobalLight.emissive * Material.emissive * emissive;
     }
-    if (shadow < 0.9f)
-        shadow = 0.9f;
+    if (shadow < 0.35f)
+        shadow = 0.35f;
     return ambientColor + (diffuseColor + specularColor + emissiveColor) * shadow;
     
 }
