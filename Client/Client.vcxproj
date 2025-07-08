@@ -32,6 +32,7 @@
     <ClInclude Include="SnowBillboardDemo.h" />
     <ClInclude Include="StructuredDemo.h" />
     <ClInclude Include="TextureBufferDemo.h" />
+    <ClInclude Include="UITestDemo.h" />
     <ClInclude Include="ViewportDemo.h" />
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +52,7 @@
     <ClCompile Include="SnowBillboardDemo.cpp" />
     <ClCompile Include="StructuredDemo.cpp" />
     <ClCompile Include="TextureBufferDemo.cpp" />
+    <ClCompile Include="UITestDemo.cpp" />
     <ClCompile Include="ViewportDemo.cpp" />
   </ItemGroup>
   <ItemGroup>

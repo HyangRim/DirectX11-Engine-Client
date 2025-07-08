@@ -267,7 +267,6 @@ void Converter::ReadSkinData()
 			}
 		}
 		//최종 결과 계산
-
 		for (uint32 v = 0; v < tempVertexBoneWeights.size(); ++v) {
 			tempVertexBoneWeights[v].Normalize();
 

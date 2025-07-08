@@ -28,7 +28,6 @@ void Scene::Update()
 	}
 	PickUI();
 	Pick();
-
 }
 
 void Scene::FixedUpdate()
@@ -207,7 +206,6 @@ shared_ptr<class GameObject> Scene::Pick()
 	worldRayDir.Normalize();
 
 	Ray ray = Ray(worldRayOrigin, worldRayDir);
-
 
 
 

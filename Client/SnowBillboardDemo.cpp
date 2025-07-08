@@ -64,8 +64,8 @@ void SnowBillboardDemo::Init()
 			{
 				shared_ptr<Material> material = make_shared<Material>();
 				material->SetShader(m_shader);
-				auto texture = RESOURCES->Load<Texture>(L"Veigar", L"..\\Resources\\Textures\\grass.png");
-				//auto texture = RESOURCES->Load<Texture>(L"Veigar", L"..\\Resources\\Textures\\veigar.jpg");
+				//auto texture = RESOURCES->Load<Texture>(L"Veigar", L"..\\Resources\\Textures\\grass.png");
+				auto texture = RESOURCES->Load<Texture>(L"Veigar", L"..\\Resources\\Textures\\veigar.jpg");
 				material->SetDiffuseMap(texture);
 				MaterialDesc& desc = material->GetMaterialDesc();
 				desc.ambient = Vec4(1.f);

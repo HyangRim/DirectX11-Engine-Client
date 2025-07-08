@@ -12,6 +12,7 @@
 #include "BillboardDemo.h"
 #include "SnowBillboardDemo.h"
 #include "ParticleDemo.h"
+#include "UITestDemo.h"
 
 #ifdef _DEBUG
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
@@ -26,7 +27,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	desc.width = 1366;
 	desc.height = 768;
 	desc.clearColor = Color(0.5f, 0.5f, 0.5f, 0.5f);
-	desc.app = make_shared<BillboardDemo>();
+	desc.app = make_shared<UITestDemo>();
 
 	GAME->Run(desc);
 
