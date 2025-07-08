@@ -82,9 +82,9 @@ void Rigidbody::OnCollision(shared_ptr<GameObject> _other)
 			GetTransform()->SetPosition(myPos);
 		}
 		else {//ºÎµúÈù ¹°Ã¼°¡ º®ÀÌ ¾Æ´Ò °æ¿ì. 
-			myPos -= correction * 0.5f;
-			otherPos += correction * 0.5f;
-
+			myPos -= correction * 0.505f;
+			otherPos += correction * 0.505f;
+				
 			GetTransform()->SetPosition(myPos);
 			_other->GetTransform()->SetPosition(otherPos);
 		}
@@ -142,22 +142,37 @@ bool Rigidbody::ComputePushMove(shared_ptr<BaseCollider> _my, shared_ptr<BaseCol
 			auto& box = AABBA->GetBoundingBox();
 			auto& sphere = SphereB->GetBoundSphere();
 
-			Vec3 closest = box.Center;
+			XMVECTOR boxCenter = XMLoadFloat3(&box.Center);
+			XMVECTOR boxExtents = XMLoadFloat3(&box.Extents);
+			XMVECTOR sphereCenter = XMLoadFloat3(&sphere.Center);
 
-			closest.x = XMMax(box.Center.x - box.Extents.x, std::min(sphere.Center.x, box.Center.x + box.Extents.x));
-			closest.y = XMMax(box.Center.y - box.Extents.y, std::min(sphere.Center.y, box.Center.y + box.Extents.y));
-			closest.z = XMMax(box.Center.z - box.Extents.z, std::min(sphere.Center.z, box.Center.z + box.Extents.z));
+			XMVECTOR boxMin = XMVectorSubtract(boxCenter, boxExtents);
+			XMVECTOR boxMax = XMVectorAdd(boxCenter, boxExtents);
 
-			Vec3 dir = sphere.Center - closest;
-			float distSq = dir.LengthSquared();
+			XMVECTOR closest = XMVectorClamp(sphereCenter, boxMin, boxMax);
 
-			if (distSq > sphere.Radius * sphere.Radius)
+			XMVECTOR dirVec = XMVectorSubtract(sphereCenter, closest);
+			XMVECTOR distSQ = XMVector3LengthSq(dirVec);
+			
+			float distSq;
+			XMStoreFloat(&distSq, distSQ);
+
+			if (distSq >= sphere.Radius * sphere.Radius)
 				return false;
 
 			float dist = sqrtf(distSq);
-			dir.Normalize();
-			_outDir = dist > 0.0001f ? dir : Vec3(0, 0, 0);
-			_outForce = sphere.Radius - dist;
+
+			Vec3 dir;
+			if (dist > 0.001f) {
+				XMVECTOR norm = XMVectorScale(dirVec, 1.0f / dist);
+				XMStoreFloat3(&dir, norm);
+			}
+			else {
+				dir = Vec3(0, 0, 0);
+			}
+			
+			_outDir = dir;
+			_outForce = -(sphere.Radius - dist);
 			return true;
 		}
 
@@ -207,7 +222,7 @@ bool Rigidbody::ComputePushMove(shared_ptr<BaseCollider> _my, shared_ptr<BaseCol
 
 			Vec3 dir = sphere.Center - closest;
 			float distSq = dir.LengthSquared();
-			if (distSq > sphere.Radius * sphere.Radius)
+			if (distSq >= sphere.Radius * sphere.Radius)
 				return false;
 
 			float dist = sqrtf(distSq);
