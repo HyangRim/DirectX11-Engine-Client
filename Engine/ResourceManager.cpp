@@ -11,6 +11,7 @@ void ResourceManager::Init()
 {
 	CreateDefaultMesh();
 	CreateRandomTexture();
+	CreateDefaultMaterial();
 }
 
 
@@ -83,6 +84,23 @@ void ResourceManager::CreateRandomTexture()
 	CHECK(DEVICE->CreateShaderResourceView(randomTex.Get(), &viewDesc, randomTexSRV.GetAddressOf()));
 	texture->SetSRV(randomTexSRV);
 	Add(L"RandomTex", texture);
+}
+
+void ResourceManager::CreateDefaultMaterial()
+{
+	// Material
+	{
+		shared_ptr<Shader> renderShader = make_shared<Shader>(L"23. RenderDemo.fx");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(renderShader);
+		auto texture = RESOURCES->Load<Texture>(L"default", L"..\\Resources\\Textures\\default.png");
+		material->SetDiffuseMap(texture);
+		MaterialDesc& desc = material->GetMaterialDesc();
+		desc.ambient = Vec4(0.5f, 0.5f, 0.5f, 1.f);
+		desc.diffuse = Vec4(0.8f, 0.2f, 0.2f, 1.f);
+		//desc.specular = Vec4(1.f);
+		RESOURCES->Add(L"default", material);
+	}
 }
 
 shared_ptr<Texture> ResourceManager::GetOrAddTexture(const wstring& _key, const wstring& _path)

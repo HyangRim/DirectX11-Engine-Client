@@ -3,10 +3,24 @@
 #include "AABBBoxCollider.h"
 #include "SphereCollider.h"
 #include "OBBBoxCollider.h"
+#include "MeshRenderer.h"
+#include "Material.h"
+#include "Mesh.h"
 
 AABBBoxCollider::AABBBoxCollider()
 	: BaseCollider(ColliderType::AABB)
 {
+	m_DebugObject = make_shared<GameObject>();
+	m_DebugObject->AddComponent(make_shared<MeshRenderer>());
+
+	m_DebugObject->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"default"));
+	m_DebugObject->GetMeshRenderer()->SetMesh(RESOURCES->Get<Mesh>(L"Cube"));
+	m_DebugObject->GetMeshRenderer()->GetMaterial()->SetCastShadow(false);
+	m_DebugObject->GetMeshRenderer()->SetPass(3);
+
+	auto temp = m_DebugObject->GetMeshRenderer()->GetInstanceID();
+
+	CURSCENE->Add(m_DebugObject);
 }
 
 AABBBoxCollider::~AABBBoxCollider()

@@ -30,6 +30,7 @@ public:
 private:
 	void CreateDefaultMesh();
 	void CreateRandomTexture();
+	void CreateDefaultMaterial();
 
 private:
 	wstring m_resourcePath;

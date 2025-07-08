@@ -278,5 +278,4 @@ float3 RandUnitVec3(float gameTime, float offset)
     return normalize(v);
 }
 
-
 #endif
