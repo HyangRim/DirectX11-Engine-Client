@@ -313,7 +313,7 @@ void BillboardDemo::Init()
 		material->SetDiffuseMap(GRAPHICS->GetShadowMap());
 		material->SetShader(make_shared<Shader>(L"DebugTexture.fx"));
 		obj->GetButton()->Create(Vec2(2048 / (debugUISize * 2) + 20, 2048 / (debugUISize * 2) + 20), Vec2(2048 / debugUISize, 2048 / debugUISize), material);
-		obj->GetButton()->AddOnClikedEvent([obj]() { CURSCENE->Remove(obj); });
+		obj->GetButton()->AddOnClickedEvent([obj]() { CURSCENE->Remove(obj); });
 
 		CURSCENE->Add(obj);
 	}

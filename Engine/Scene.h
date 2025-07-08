@@ -36,6 +36,7 @@ public:
 
 	void PickUI();
 	shared_ptr<class GameObject> Pick();
+	shared_ptr<class GameObject> PickObjectOrUI();
 
 	void SetSky(shared_ptr<Sky> _sky) { m_sky = _sky; }
 

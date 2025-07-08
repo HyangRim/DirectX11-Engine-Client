@@ -55,7 +55,7 @@ void Button::Create(Vec2 _screenPos, Vec2 _size, shared_ptr<class Material> _mat
 //포인터 타입을 만약 넣어준다. 나중에 메모리가 해제되면 망할 수 있다. 
 //스마트 포인터를 사용하면, 누구라도 한 명이라도 기억하지 않으면
 //캡쳐 하는 바람에 영영 해제가 안되고 메모리 누수가 일어날 수 있음. 
-void Button::AddOnClikedEvent(std::function<void(void)> _func)
+void Button::AddOnClickedEvent(std::function<void(void)> _func)
 {
 	m_onClicked = _func;
 }

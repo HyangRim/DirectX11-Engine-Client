@@ -25,7 +25,9 @@ public:										\
 #define RENDER		GET_SINGLE(RenderManager)
 #define GUI			GET_SINGLE(ImGuiManager)
 #define SCENE		GET_SINGLE(SceneManager)
+
 #define CURSCENE	SCENE->GetCurScene()
+#define CUR_SCENE	SCENE->GetCurScene()
 
 
 #define GET_TECH(_isShadow) _isShadow == true ? 1 : 0

@@ -10,7 +10,7 @@ public:
 	bool Picked(POINT _screenPos);
 	void Create(Vec2 _screenPos, Vec2 _size, shared_ptr<class Material> _material);
 
-	void AddOnClikedEvent(std::function<void(void)> _func);
+	void AddOnClickedEvent(std::function<void(void)> _func);
 	void InvokeOnClicked();
 private:
 

@@ -63,7 +63,14 @@ public:
 	virtual void OnCollision(shared_ptr<GameObject> _other);
 	virtual void OnCollisionEnter(shared_ptr<GameObject> _other);
 	virtual void OnCollisionExit(shared_ptr<GameObject> _other);
+
+public:
+	void SetName(wstring _name) { m_Name = _name; }
+	wstring GetName() { return m_Name; }
+
 protected:
+	wstring m_Name;
+
 
 	//고정된 배열. Component별 고정된 위치. 
 	array<shared_ptr<Component>, FIXED_COMPONENT_COUNT> m_components;

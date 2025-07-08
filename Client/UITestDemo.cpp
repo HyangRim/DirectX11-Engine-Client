@@ -17,12 +17,15 @@
 #include "Rigidbody.h"
 #include "AABBBoxCollider.h"
 #include "OBBBoxCollider.h"
+#include "SphereCollider.h"
 #include "Billboard.h"
 #include "Terrain.h"
+#include "Sky.h"
+#include "Button.h"
 
 void UITestDemo::Init()
 {	
-	//CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\snowcube1024.dds", L"Sky.fx"));
+	CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\snowcube1024.dds", L"Sky.fx"));
 	shared_ptr<Shader> renderShader = make_shared<Shader>(L"23. RenderDemo.fx");
 	{
 		// Camera
@@ -56,37 +59,29 @@ void UITestDemo::Init()
 	{
 		// Animation
 		shared_ptr<Model> m1 = make_shared<Model>();
-		/*m1->ReadModel(L"Kachujin/Kachujin");
-		m1->ReadMaterial(L"Kachujin/Kachujin");
-		m1->ReadAnimation(L"Kachujin/Idle");*/
 
-		m1->ReadModel(L"Bianca2/Bianca");
-		m1->ReadMaterial(L"Bianca2/Bianca");
-		m1->ReadAnimation(L"Bianca2/Bianca_atk");
+		m1->ReadModel(L"Nicky/Nicky");
+		m1->ReadMaterial(L"Nicky/Nicky");
+		m1->ReadAnimation(L"Nicky/Nicky_Run");
 
-		//m1->ReadModel(L"Aya/Aya");
-		//m1->ReadMaterial(L"Aya/Aya");
-		//m1->ReadAnimation(L"Aya/Aya_Run");
-
-		//m1->ReadAnimation(L"Kachujin/Run");
-		//m1->ReadAnimation(L"Kachujin/Slash");
-
-		for (int32 i = 0; i < 1; i++)
+		for (int32 i = 0; i < 100; i++)
 		{
 
 			auto obj = make_shared<GameObject>();
-			obj->GetTransform()->SetPosition(Vec3(5.f, 1.f, 0.f));
+			obj->SetName(L"Nicky" + to_wstring(i));
+			obj->GetTransform()->SetPosition(Vec3(rand() % 100, 0, rand() % 100));
 			obj->GetTransform()->SetScale(Vec3(1.f));
-			//obj->GetTransform()->SetRotation(Vec3(-180.f, 0.f, 0.f));
 
+			obj->AddComponent(make_shared<SphereCollider>());
+			obj->AddComponent(make_shared<Rigidbody>());
+			obj->GetCollider()->SetOffset(Vec3(0.f, 1.f, 0.f));
+			obj->GetRigidbody()->SetStatic(true);
 
 			/*obj->AddComponent(make_shared<ModelRenderer>(renderShader));
 			{
 				obj->GetModelRenderer()->SetModel(m1);
 				obj->GetModelRenderer()->SetPass(1);
 			}*/
-
-
 
 			obj->AddComponent(make_shared<ModelAnimator>(renderShader));
 			{
@@ -98,29 +93,33 @@ void UITestDemo::Init()
 		}
 	}
 
-	//{
-	//	// Model
-	//	shared_ptr<Model> m2 = make_shared<Model>();
-	//	m2->ReadModel(L"Tower/Tower");
-	//	m2->ReadMaterial(L"Tower/Tower");
+	// UI
+	{
+		// Material
+		{
+			shared_ptr<Material> material = make_shared<Material>();
+			material->SetShader(renderShader);
+			auto texture = RESOURCES->Load<Texture>(L"BtnImg", L"..\\Resources\\Textures\\UI_Btn\\Img_Item_Slot_Legendary.png");
+			material->SetDiffuseMap(texture);
+			MaterialDesc& desc = material->GetMaterialDesc();
+			desc.ambient = Vec4(1.f);
+			desc.diffuse = Vec4(1.f);
+			desc.specular = Vec4(1.f);
+			RESOURCES->Add(L"BtnImg", material);
+		}
 
-	//	for (int32 i = 0; i < 50; i++)
-	//	{
-	//		auto obj = make_shared<GameObject>();
-	//		obj->GetTransform()->SetPosition(Vec3(rand() % 100, -1, rand() % 100));
-	//		obj->GetTransform()->SetScale(Vec3(0.01f));
+		// Mesh
+		{
+			auto obj = make_shared<GameObject>();
+			obj->AddComponent(make_shared<Button>());
+			obj->SetName(L"UI");
+			obj->GetButton()->Create(Vec2(100, 100), Vec2(100, 100), RESOURCES->Get<Material>(L"BtnImg"));
 
-	//		obj->AddComponent(make_shared<ModelRenderer>(renderShader));
-	//		{
-	//			obj->GetModelRenderer()->SetModel(m2);
-	//			obj->GetModelRenderer()->SetPass(1);
-	//		}
+			obj->GetButton()->AddOnClickedEvent([obj]() { std::wcout << obj->GetName() << " : picked\n"; });
 
-	//		CURSCENE->Add(obj);
-	//	}
-	//}
-
-	
+			CUR_SCENE->Add(obj);
+		}
+	}
 
 	{
 		// UICamera

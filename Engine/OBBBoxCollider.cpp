@@ -29,7 +29,7 @@ OBBBoxCollider::~OBBBoxCollider()
 //부모를 따라감. 
 void OBBBoxCollider::Update()
 {
-	m_boundingBox.Center = GetTransform()->GetPosition();
+	m_boundingBox.Center = GetTransform()->GetPosition() + m_offSetPos;
 	m_boundingBox.Extents = GetTransform()->GetScale() * 0.5f;
 }
 

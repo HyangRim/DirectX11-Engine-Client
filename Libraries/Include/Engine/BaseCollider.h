@@ -5,6 +5,7 @@ enum class ColliderType {
 	Sphere,
 	AABB,
 	OBB,
+	Capsule
 };
 
 class BaseCollider : public Component
@@ -24,13 +25,17 @@ public:
 
 	uint32 GetID() { return m_id; }
 
-	void SetActive(bool _active) { m_active == _active; }
+	void SetActive(bool _active) { m_active = _active; }
 	bool GetActive() { return m_active; }
+
+	void SetOffset(Vec3 _offsetPos) { m_offSetPos = _offsetPos; }
 
 protected:
 	ColliderType m_colliderType;
 
 	uint32 m_id;			//충돌체 고유한 ID값. 
 	bool m_active = true;	//충돌체 활성화 여부. 
+
+	Vec3 m_offSetPos = { 0,0,0 };
 };
 

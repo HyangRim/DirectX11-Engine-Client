@@ -46,7 +46,7 @@ void ModelAnimator::UpdateTweenData()
 		}
 
 	}
-	cout << desc.m_curr.m_animIndex << "\n";
+	//cout << desc.m_curr.m_animIndex << "\n";
 	//다음 애니메이션이 예약되어 있다면.
 	if (desc.m_next.m_animIndex >= 0) {
 		desc.m_tweenSumTime += DT;

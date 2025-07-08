@@ -102,7 +102,7 @@ void ButtonDemo::Init()
 		obj->AddComponent(make_shared<Button>());
 		obj->GetButton()->Create(Vec2(100, 100), Vec2(100, 100), RESOURCES->Get<Material>(L"Veigar"));
 	
-		obj->GetButton()->AddOnClikedEvent(ButtonDemo::Test);
+		obj->GetButton()->AddOnClickedEvent(ButtonDemo::Test);
 		CURSCENE->Add(obj);
 	}
 	//Mesh

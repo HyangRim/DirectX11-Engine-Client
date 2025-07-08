@@ -33,7 +33,7 @@ void AssimpTool::Init()
 		shared_ptr<Converter> converter = make_shared<Converter>();
 
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Nicky/Nicky_S005.fbx");
+		converter->ReadAssetFile(L"Nicky/Nicky.fbx");
 
 		//Memory ->CustomData;
 		converter->ExportMaterialData(L"Nicky/Nicky");
@@ -44,12 +44,12 @@ void AssimpTool::Init()
 	}
 
 
-	//{
-	//	shared_ptr<Converter> converter = make_shared<Converter>();
-	//	converter->ReadAssetFile(L"Bianca/Bianca.fbx");
-	//	converter->ExportAnimationData(L"Bianca/Bianca_Run");
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		converter->ReadAssetFile(L"Nicky/Nicky_Run.fbx");
+		converter->ExportAnimationData(L"Nicky/Nicky_Run");
 
-	//}
+	}
 	
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();

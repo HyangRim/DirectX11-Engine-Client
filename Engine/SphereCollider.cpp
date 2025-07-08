@@ -29,7 +29,7 @@ SphereCollider::~SphereCollider()
 
 void SphereCollider::Update()
 {
-	m_boundingSphere.Center = GetGameObject()->GetTransform()->GetPosition();
+	m_boundingSphere.Center = GetGameObject()->GetTransform()->GetPosition() + m_offSetPos;
 
 	Vec3 scale = GetGameObject()->GetTransform()->GetScale();
 
@@ -37,10 +37,7 @@ void SphereCollider::Update()
 
 	m_DebugObject->GetTransform()->SetScale(GetGameObject()->GetTransform()->GetScale() * 2.f);
 	m_DebugObject->GetTransform()->SetRotation(GetGameObject()->GetTransform()->GetRotation());
-	m_DebugObject->GetTransform()->SetPosition(GetGameObject()->GetTransform()->GetPosition());
-
-
-
+	m_DebugObject->GetTransform()->SetPosition(GetGameObject()->GetTransform()->GetPosition() + m_offSetPos);
 }
 
 bool SphereCollider::Intersects(Ray& _ray, OUT float& _distance)
