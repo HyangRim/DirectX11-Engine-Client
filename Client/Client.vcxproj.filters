@@ -25,6 +25,9 @@
     <Filter Include="Shaders\Week5">
       <UniqueIdentifier>{5f62659e-f74f-41d7-b10a-919c1fa0eb28}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\UITest">
+      <UniqueIdentifier>{2f2b6679-2636-4834-8b01-ef6f235af33b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -69,6 +72,9 @@
     <ClCompile Include="ParticleDemo.cpp">
       <Filter>Game\Week4</Filter>
     </ClCompile>
+    <ClCompile Include="UITestDemo.cpp">
+      <Filter>Game\UITest</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -112,6 +118,9 @@
     </ClInclude>
     <ClInclude Include="ParticleDemo.h">
       <Filter>Game\Week4</Filter>
+    </ClInclude>
+    <ClInclude Include="UITestDemo.h">
+      <Filter>Game\UITest</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

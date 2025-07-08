@@ -33,11 +33,11 @@ void AssimpTool::Init()
 		shared_ptr<Converter> converter = make_shared<Converter>();
 
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Bianca/Bianca_mesh.fbx");
+		converter->ReadAssetFile(L"Nicky/Nicky_S005.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Bianca2/Bianca");
-		converter->ExportModelData(L"Bianca2/Bianca");
+		converter->ExportMaterialData(L"Nicky/Nicky");
+		converter->ExportModelData(L"Nicky/Nicky");
 
 		//CustomData -> Memory;
 
@@ -53,8 +53,8 @@ void AssimpTool::Init()
 	
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
-		converter->ReadAssetFile(L"Bianca/Bianca_atk.fbx");
-		converter->ExportAnimationData(L"Bianca2/Bianca_atk");
+		//converter->ReadAssetFile(L"Bianca/Bianca_atk.fbx");
+		//converter->ExportAnimationData(L"Bianca2/Bianca_atk");
 
 	}
 
