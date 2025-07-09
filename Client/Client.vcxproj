@@ -22,7 +22,9 @@
     <ClInclude Include="BillboardDemo.h" />
     <ClInclude Include="ButtonDemo.h" />
     <ClInclude Include="CameraScript.h" />
+    <ClInclude Include="Client_Define.h" />
     <ClInclude Include="GroupBufferDemo.h" />
+    <ClInclude Include="Loader.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="OrthoGraphicDemo.h" />
     <ClInclude Include="ParticleDemo.h" />
@@ -40,6 +42,7 @@
     <ClCompile Include="ButtonDemo.cpp" />
     <ClCompile Include="CameraScript.cpp" />
     <ClCompile Include="GroupBufferDemo.cpp" />
+    <ClCompile Include="Loader.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="OrthoGraphicDemo.cpp" />
     <ClCompile Include="ParticleDemo.cpp" />

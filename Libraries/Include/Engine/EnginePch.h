@@ -68,7 +68,7 @@ using namespace Microsoft::WRL;
 
 #include "FMOD/fmod.hpp"
 #include "FMOD/fmod_errors.h"
-#pragma comment(lib, "lib/fmod_vc.lib")
+#pragma comment(lib, "FMOD/fmod_vc.lib")
 
 // Managers
 #include "Game.h"

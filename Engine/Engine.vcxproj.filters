@@ -273,6 +273,9 @@
     <ClInclude Include="SoundManager.h">
       <Filter>02. Managers</Filter>
     </ClInclude>
+    <ClInclude Include="VflyQuadTree.h">
+      <Filter>98. Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -478,6 +481,9 @@
     </ClCompile>
     <ClCompile Include="SoundManager.cpp">
       <Filter>02. Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="VflyQuadTree.cpp">
+      <Filter>98. Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
