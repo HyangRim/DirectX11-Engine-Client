@@ -364,7 +364,6 @@ shared_ptr<GameObject> Scene::PickObjectOrUI()
 
 	POINT screenPt = INPUT->GetMousePos();
 
-	
 	// UI 검사 (기존과 동일)
 	if (GetUICamera() != nullptr)
 	{
@@ -391,36 +390,55 @@ shared_ptr<GameObject> Scene::PickObjectOrUI()
 	vector<shared_ptr<GameObject>> candidates = m_quadTree->Query(ray, camera);
 	auto queryEnd = std::chrono::high_resolution_clock::now();
 
-	// 좌표 비교 디벅
-	
+	// **수정: 좌표 비교 디버깅 + 음수 좌표 필터링**
 	cout << "=== 좌표 비교 디버깅 ===" << endl;
+
+	// 유효한 후보만 저장할 벡터
+	vector<shared_ptr<GameObject>> validCandidates;
+
 	for (auto& obj : candidates)
 	{
 		Vec3 worldPos = obj->GetTransform()->GetPosition();
 		RECT objBounds = m_quadTree->GetObjectScreenBounds(obj, camera);
 
+		// 화면 좌표 중심점 계산
+		int screenCenterX = (objBounds.left + objBounds.right) / 2;
+		int screenCenterY = (objBounds.top + objBounds.bottom) / 2;
+
 		cout << "객체 " << ws2s(obj->GetName()) << ":" << endl;
 		cout << "  월드 좌표: (" << worldPos.x << ", " << worldPos.y << ", " << worldPos.z << ")" << endl;
-		cout << "  화면 좌표: (" << (objBounds.left + objBounds.right) / 2 << ", "
-			<< (objBounds.top + objBounds.bottom) / 2 << ")" << endl;
-		cout << "  마우스와 거리: " << sqrt(pow(screenPt.x - (objBounds.left + objBounds.right) / 2, 2) +
-			pow(screenPt.y - (objBounds.top + objBounds.bottom) / 2, 2)) << endl;
+		cout << "  화면 좌표: (" << screenCenterX << ", " << screenCenterY << ")" << endl;
+
+		// **추가: 음수 좌표 검사**
+		if (screenCenterX < 0 || screenCenterY < 0)
+		{
+			cout << "  -> 음수 좌표로 인해 후보에서 제외됨" << endl;
+			continue; // 이 객체는 후보에서 제외
+		}
+
+		cout << "  마우스와 거리: " << sqrt(pow(screenPt.x - screenCenterX, 2) +
+			pow(screenPt.y - screenCenterY, 2)) << endl;
+
+		// 유효한 후보에 추가
+		validCandidates.push_back(obj);
 	}
 
-	// 성능 정보 출력
+	// 성능 정보 출력 (수정된 후보 개수 반영)
 	const auto& stats = m_quadTree->GetStats();
 	cout << "=== 피킹 성능 정보 ===" << endl;
 	cout << "전체 객체 수: " << m_gameObjects.size() << endl;
-	cout << "후보 객체 수: " << candidates.size() << endl;
-	cout << "효율성: " << (100.0f * candidates.size() / (m_gameObjects.size()/2)) << "%" << endl;
+	cout << "초기 후보 객체 수: " << candidates.size() << endl;
+	cout << "유효 후보 객체 수: " << validCandidates.size() << endl;
+	cout << "필터링 효과: " << (candidates.size() - validCandidates.size()) << "개 제외" << endl;
+	cout << "효율성: " << (100.0f * validCandidates.size() / (m_gameObjects.size() / 2)) << "%" << endl;
 	cout << "쿼리 시간: " << stats.lastQueryTime.count() << "μs" << endl;
 	cout << "마우스 좌표 : " << screenPt.x << " , " << screenPt.y << endl;
 
-	// 후보 객체들 중에서 실제 교차 검사
+	// **수정: 유효한 후보들만 대상으로 교차 검사**
 	float minDistance = FLT_MAX;
 	shared_ptr<GameObject> picked;
 
-	for (auto& gameObject : candidates)
+	for (auto& gameObject : validCandidates) // candidates -> validCandidates로 변경
 	{
 		if (camera->IsCulled(gameObject->GetLayerIndex())) continue;
 		if (gameObject->GetCollider() == nullptr) continue;
@@ -452,6 +470,7 @@ shared_ptr<GameObject> Scene::PickObjectOrUI()
 
 	return picked;
 }
+
 
 //
 string Scene::ws2s(const wstring& wstr)

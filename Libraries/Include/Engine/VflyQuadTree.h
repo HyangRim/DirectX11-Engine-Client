@@ -61,6 +61,11 @@ public:
 
     // 교차 검사
     bool RayIntersectsAABB(const Ray& ray, const RECT& rect, shared_ptr<Camera> camera);
+    bool LineIntersectsRect(const Vec2& lineStart, const Vec2& lineEnd, const RECT& rect);
+    bool LineSegmentIntersect(const Vec2& p1, const Vec2& q1, const Vec2& p2, const Vec2& q2);
+    bool PointInRect(const Vec2& point, const RECT& rect);
+
+
     RECT GetObjectScreenBounds(shared_ptr<GameObject> object, shared_ptr<Camera> camera);
 
     // 유틸리티

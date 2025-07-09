@@ -209,72 +209,97 @@ void VflyQuadTree::QueryNode(const unique_ptr<QuadTreeNode>& node, const Ray& ra
         }
     }
 }
-
 bool VflyQuadTree::RayIntersectsAABB(const Ray& ray, const RECT& rect, shared_ptr<Camera> camera)
 {
-    // 화면 좌표계의 사각형을 월드 좌표계로 변환하여 Ray와 교차 검사
-    Matrix viewMatrix = camera->GetViewMatrix();
-    Matrix projMatrix = camera->GetProjectionMatrix();
+    // **새로운 방식: 2D 화면 좌표에서 직접 교차 검사**
 
-    float width = GRAPHICS->GetViewport().GetWidth();
-    float height = GRAPHICS->GetViewport().GetHeight();
+    // 1. Ray의 시작점과 끝점을 화면 좌표로 변환
+    Vec2 rayStart = WorldToScreen(ray.position, camera);
+    Vec2 rayEnd = WorldToScreen(ray.position + ray.direction * 1000.0f, camera); // 충분히 먼 거리
 
-    // 화면 좌표를 NDC로 변환
-    float left = (+2.0f * rect.left / width - 1.0f) / projMatrix(0, 0);
-    float right = (+2.0f * rect.right / width - 1.0f) / projMatrix(0, 0);
-    float top = (-2.0f * rect.top / height + 1.0f) / projMatrix(1, 1);
-    float bottom = (-2.0f * rect.bottom / height + 1.0f) / projMatrix(1, 1);
-
-    // View 공간에서 Ray 방향
-    Vec4 rayDir = Vec4(ray.direction.x, ray.direction.y, ray.direction.z, 0.f);
-    Vec3 viewRayDir = XMVector3TransformNormal(rayDir, viewMatrix);
-
-    // 개선된 AABB 교차 검사
-    float tmin = -FLT_MAX;
-    float tmax = FLT_MAX;
-
-    // X축 검사
-    if (abs(viewRayDir.x) > 1e-6f)
-    {
-        float t1 = left / viewRayDir.x;
-        float t2 = right / viewRayDir.x;
-        if (t1 > t2) swap(t1, t2);
-        tmin = max(tmin, t1);
-        tmax = min(tmax, t2);
-        if (tmin > tmax) return false;
-    }
-    else if (0 < left || 0 > right)
+    // 2. 화면 밖 Ray 제외
+    Viewport viewport = GRAPHICS->GetViewport();
+    if ((rayStart.x < -1000 && rayEnd.x < -1000) ||
+        (rayStart.x > viewport.GetWidth() + 1000 && rayEnd.x > viewport.GetWidth() + 1000) ||
+        (rayStart.y < -1000 && rayEnd.y < -1000) ||
+        (rayStart.y > viewport.GetHeight() + 1000 && rayEnd.y > viewport.GetHeight() + 1000))
     {
         return false;
     }
 
-    // Y축 검사
-    if (abs(viewRayDir.y) > 1e-6f)
+    // 3. 2D 선분-사각형 교차 검사
+    return LineIntersectsRect(rayStart, rayEnd, rect);
+}
+
+// 2D 선분-사각형 교차 검사 함수 추가
+bool VflyQuadTree::LineIntersectsRect(const Vec2& lineStart, const Vec2& lineEnd, const RECT& rect)
+{
+    // 사각형의 네 모서리와 선분의 교차 검사
+    Vec2 rectPoints[4] = {
+        Vec2(rect.left, rect.top),      // 좌상단
+        Vec2(rect.right, rect.top),     // 우상단
+        Vec2(rect.right, rect.bottom),  // 우하단
+        Vec2(rect.left, rect.bottom)    // 좌하단
+    };
+
+    // 사각형의 네 변과 선분의 교차 검사
+    for (int i = 0; i < 4; ++i)
     {
-        float t1 = bottom / viewRayDir.y;
-        float t2 = top / viewRayDir.y;
-        if (t1 > t2) swap(t1, t2);
-        tmin = max(tmin, t1);
-        tmax = min(tmax, t2);
-        if (tmin > tmax) return false;
-    }
-    else if (0 < bottom || 0 > top)
-    {
-        return false;
+        Vec2 edgeStart = rectPoints[i];
+        Vec2 edgeEnd = rectPoints[(i + 1) % 4];
+
+        if (LineSegmentIntersect(lineStart, lineEnd, edgeStart, edgeEnd))
+        {
+            return true;
+        }
     }
 
-    // Z축 검사 (깊이)
-    if (abs(viewRayDir.z) > 1e-6f)
+    // 선분의 시작점이나 끝점이 사각형 내부에 있는지 검사
+    if (PointInRect(lineStart, rect) || PointInRect(lineEnd, rect))
     {
-        float t1 = -1.0f / viewRayDir.z;  // Near plane
-        float t2 = 1.0f / viewRayDir.z;   // Far plane
-        if (t1 > t2) swap(t1, t2);
-        tmin = max(tmin, t1);
-        tmax = min(tmax, t2);
-        if (tmin > tmax) return false;
+        return true;
     }
 
-    return tmax >= 0; // Ray가 앞쪽을 향하는지 확인
+    return false;
+}
+
+// 두 선분의 교차 검사
+bool VflyQuadTree::LineSegmentIntersect(const Vec2& p1, const Vec2& q1, const Vec2& p2, const Vec2& q2)
+{
+    auto orientation = [](const Vec2& p, const Vec2& q, const Vec2& r) -> int {
+        float val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+        if (abs(val) < 1e-6f) return 0;  // 평행
+        return (val > 0) ? 1 : 2;        // 시계방향 또는 반시계방향
+        };
+
+    auto onSegment = [](const Vec2& p, const Vec2& q, const Vec2& r) -> bool {
+        return q.x <= max(p.x, r.x) && q.x >= min(p.x, r.x) &&
+            q.y <= max(p.y, r.y) && q.y >= min(p.y, r.y);
+        };
+
+    int o1 = orientation(p1, q1, p2);
+    int o2 = orientation(p1, q1, q2);
+    int o3 = orientation(p2, q2, p1);
+    int o4 = orientation(p2, q2, q1);
+
+    // 일반적인 경우
+    if (o1 != o2 && o3 != o4)
+        return true;
+
+    // 특수한 경우들
+    if (o1 == 0 && onSegment(p1, p2, q1)) return true;
+    if (o2 == 0 && onSegment(p1, q2, q1)) return true;
+    if (o3 == 0 && onSegment(p2, p1, q2)) return true;
+    if (o4 == 0 && onSegment(p2, q1, q2)) return true;
+
+    return false;
+}
+
+// 점이 사각형 내부에 있는지 검사
+bool VflyQuadTree::PointInRect(const Vec2& point, const RECT& rect)
+{
+    return point.x >= rect.left && point.x <= rect.right &&
+        point.y >= rect.top && point.y <= rect.bottom;
 }
 
 bool VflyQuadTree::IsObjectVisible(shared_ptr<GameObject> object, shared_ptr<Camera> camera)
