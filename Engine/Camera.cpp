@@ -86,6 +86,8 @@ void Camera::SortGameObject()
 
 		}
 	}
+
+	
 }
 
 void Camera::SetStaticData() {

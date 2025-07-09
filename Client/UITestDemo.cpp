@@ -25,18 +25,21 @@
 
 void UITestDemo::Init()
 {	
-	CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\snowcube1024.dds", L"Sky.fx"));
+//	CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\snowcube1024.dds", L"Sky.fx"));
 	shared_ptr<Shader> renderShader = make_shared<Shader>(L"23. RenderDemo.fx");
 	{
 		// Camera
 		auto camera = make_shared<GameObject>();
-		camera->GetTransform()->SetPosition(Vec3{ 0.f, 2.f, -15.f });
+		camera->GetTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
 		camera->AddComponent(make_shared<Camera>());
 		camera->AddComponent(make_shared<CameraScript>());
-		camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
+		camera->GetCamera()->SetNear(1.f);
+		camera->GetCamera()->SetFar(50.f);
+		camera->GetCamera()->SetProjectionType(ProjectionType::Perspective);
+		//camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
 		CURSCENE->Add(camera);
+	
 	}
-
 
 	{
 		// Light
@@ -64,35 +67,90 @@ void UITestDemo::Init()
 		m1->ReadMaterial(L"Nicky/Nicky");
 		m1->ReadAnimation(L"Nicky/Nicky_Run");
 
-		for (int32 i = 0; i < 100; i++)
+		//for (int32 i = 0; i < 500; i++)
+		//{
+
+		//	auto obj = make_shared<GameObject>();
+		//	obj->SetName(L"Nicky" + to_wstring(i));
+
+		////obj->GetTransform()->SetPosition(Vec3(rand() % 100, 0, rand() % 100));
+		//	
+		//	obj->GetTransform()->SetPosition(Vec3(
+		//		(rand() % 1000) - 500,  // -500 ~ 499
+		//		0,
+		//		(rand() % 1000) - 500   // -500 ~ 499
+		//	));
+
+
+		//	obj->GetTransform()->SetScale(Vec3(1.f));
+
+		//	obj->AddComponent(make_shared<SphereCollider>());
+		//	obj->AddComponent(make_shared<Rigidbody>());
+		//	obj->GetCollider()->SetOffset(Vec3(0.f, 1.f, 0.f));
+		//	obj->GetRigidbody()->SetStatic(true);
+
+		//	/*obj->AddComponent(make_shared<ModelRenderer>(renderShader));
+		//	{
+		//		obj->GetModelRenderer()->SetModel(m1);
+		//		obj->GetModelRenderer()->SetPass(1);
+		//	}*/
+
+		//	obj->AddComponent(make_shared<ModelAnimator>(renderShader));
+		//	{
+		//		obj->GetModelAnimator()->SetModel(m1);
+		//		obj->GetModelAnimator()->SetPass(2);
+		//	}
+
+		//	CURSCENE->Add(obj);
+		//}
+
+
+		// 여러 클러스터로 나누어 배치
+		for (int32 cluster = 0; cluster < 5; cluster++)
 		{
+			Vec3 clusterCenter = Vec3(
+				(cluster % 3 - 1) * 500,  // -200, 0, 200
+				0,
+				(cluster / 3 - 1) * 500   // -200, 0, 200
+			);
 
-			auto obj = make_shared<GameObject>();
-			obj->SetName(L"Nicky" + to_wstring(i));
-			obj->GetTransform()->SetPosition(Vec3(rand() % 100, 0, rand() % 100));
-			obj->GetTransform()->SetScale(Vec3(1.f));
-
-			obj->AddComponent(make_shared<SphereCollider>());
-			obj->AddComponent(make_shared<Rigidbody>());
-			obj->GetCollider()->SetOffset(Vec3(0.f, 1.f, 0.f));
-			obj->GetRigidbody()->SetStatic(true);
-
-			/*obj->AddComponent(make_shared<ModelRenderer>(renderShader));
+			for (int32 i = 0; i < 20; i++)
 			{
-				obj->GetModelRenderer()->SetModel(m1);
-				obj->GetModelRenderer()->SetPass(1);
-			}*/
+				auto obj = make_shared<GameObject>();
+				obj->SetName(to_wstring(cluster * 100 + i));
 
-			obj->AddComponent(make_shared<ModelAnimator>(renderShader));
-			{
-				obj->GetModelAnimator()->SetModel(m1);
-				obj->GetModelAnimator()->SetPass(2);
+				// 클러스터 중심 주변에 배치
+				obj->GetTransform()->SetPosition(clusterCenter + Vec3(
+					(rand() % 40) - 20,  // 클러스터 내 랜덤
+					0,
+					(rand() % 40) - 20
+				));
+
+				// 나머지 코드...
+				obj->GetTransform()->SetScale(Vec3(1.f));
+
+				obj->AddComponent(make_shared<SphereCollider>());
+				obj->AddComponent(make_shared<Rigidbody>());
+				obj->GetCollider()->SetOffset(Vec3(0.f, 1.f, 0.f));
+				obj->GetRigidbody()->SetStatic(true);
+
+				/*obj->AddComponent(make_shared<ModelRenderer>(renderShader));
+				{
+					obj->GetModelRenderer()->SetModel(m1);
+					obj->GetModelRenderer()->SetPass(1);
+				}*/
+
+				obj->AddComponent(make_shared<ModelAnimator>(renderShader));
+				{
+					obj->GetModelAnimator()->SetModel(m1);
+					obj->GetModelAnimator()->SetPass(2);
+				}
+
+				CURSCENE->Add(obj);
 			}
-
-			CURSCENE->Add(obj);
 		}
 	}
-
+	
 	// UI
 	{
 		// Material
@@ -122,6 +180,7 @@ void UITestDemo::Init()
 	}
 
 	{
+		/*
 		// UICamera
 		auto camera = make_shared<GameObject>();
 		camera->GetTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
@@ -131,7 +190,8 @@ void UITestDemo::Init()
 		camera->GetCamera()->SetFar(100.0f);
 		camera->GetCamera()->SetCullingMaskAll();
 		camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, false);
-		CURSCENE->Add(camera);
+		CURSCENE->Add(camera);*/
+		
 	}
 }
 

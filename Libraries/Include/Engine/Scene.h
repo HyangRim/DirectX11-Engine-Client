@@ -2,6 +2,7 @@
 
 class Sky;
 class Camera;
+#include "VflyQuadTree.h"
 
 union COLLIDER_ID {
 	struct {
@@ -41,6 +42,19 @@ public:
 	void SetSky(shared_ptr<Sky> _sky) { m_sky = _sky; }
 
 	void CheckCollision();
+
+
+///////쿼드 트리 테스트용//////////////
+
+private:
+	unique_ptr<VflyQuadTree> m_quadTree;
+	bool m_quadTreeDirty = true;
+
+public:
+	void UpdateQuadTree();
+
+	
+///////////////////////////////////////
 
 private:
 	//충돌 관련 HashTable

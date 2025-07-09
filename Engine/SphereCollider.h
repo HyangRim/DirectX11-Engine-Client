@@ -14,6 +14,7 @@ public:
     virtual bool Intersects(shared_ptr<BaseCollider>& _other) override;
 
     void SetRadius(float _radius) { m_radius = _radius; }
+    float GetRadius() { return m_radius; }
 
     BoundingSphere& GetBoundSphere() { return m_boundingSphere; }
 
