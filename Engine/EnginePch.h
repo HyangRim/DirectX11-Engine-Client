@@ -66,6 +66,10 @@ using namespace Microsoft::WRL;
 #pragma comment(lib, "Assimp/assimp-vc143-mt.lib")
 #endif
 
+#include "FMOD/fmod.hpp"
+#include "FMOD/fmod_errors.h"
+#pragma comment(lib, "lib/fmod_vc.lib")
+
 // Managers
 #include "Game.h"
 #include "Texture.h"
@@ -73,6 +77,7 @@ using namespace Microsoft::WRL;
 #include "InputManager.h"
 #include "TimeManager.h"
 #include "ResourceManager.h"
+#include "SoundManager.h"
 #include "ImGuiManager.h"
 #include "RenderManager.h"
 #include "SceneManager.h"

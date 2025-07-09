@@ -25,6 +25,7 @@ public:										\
 #define RENDER		GET_SINGLE(RenderManager)
 #define GUI			GET_SINGLE(ImGuiManager)
 #define SCENE		GET_SINGLE(SceneManager)
+#define SOUND		GET_SINGLE(SoundManager)
 
 #define CURSCENE	SCENE->GetCurScene()
 #define CUR_SCENE	SCENE->GetCurScene()

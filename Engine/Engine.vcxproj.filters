@@ -270,6 +270,9 @@
     <ClInclude Include="Delegate.h">
       <Filter>98. Utils</Filter>
     </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>02. Managers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -472,6 +475,9 @@
     </ClCompile>
     <ClCompile Include="Rigidbody.cpp">
       <Filter>04. Component</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>02. Managers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
