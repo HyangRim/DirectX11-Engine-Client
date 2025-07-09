@@ -34,7 +34,7 @@ void UITestDemo::Init()
 		camera->AddComponent(make_shared<Camera>());
 		camera->AddComponent(make_shared<CameraScript>());
 		camera->GetCamera()->SetNear(1.f);
-		camera->GetCamera()->SetFar(50.f);
+		camera->GetCamera()->SetFar(100.f);
 		camera->GetCamera()->SetProjectionType(ProjectionType::Perspective);
 		//camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
 		CURSCENE->Add(camera);
@@ -67,19 +67,19 @@ void UITestDemo::Init()
 		m1->ReadMaterial(L"Nicky/Nicky");
 		m1->ReadAnimation(L"Nicky/Nicky_Run");
 
-		//for (int32 i = 0; i < 500; i++)
+		//for (int32 i = 0; i < 100; i++)
 		//{
 
 		//	auto obj = make_shared<GameObject>();
-		//	obj->SetName(L"Nicky" + to_wstring(i));
+		//	obj->SetName(to_wstring(i));
 
-		////obj->GetTransform()->SetPosition(Vec3(rand() % 100, 0, rand() % 100));
+		//	obj->GetTransform()->SetPosition(Vec3(rand() % 100, 0, rand() % 100));
 		//	
-		//	obj->GetTransform()->SetPosition(Vec3(
-		//		(rand() % 1000) - 500,  // -500 ~ 499
-		//		0,
-		//		(rand() % 1000) - 500   // -500 ~ 499
-		//	));
+		//	//obj->GetTransform()->SetPosition(Vec3(
+		//	//	(rand() % 1000) - 500,  // -500 ~ 499
+		//	//	0,
+		//	//	(rand() % 1000) - 500   // -500 ~ 499
+		//	//));
 
 
 		//	obj->GetTransform()->SetScale(Vec3(1.f));
@@ -153,30 +153,30 @@ void UITestDemo::Init()
 	
 	// UI
 	{
-		// Material
-		{
-			shared_ptr<Material> material = make_shared<Material>();
-			material->SetShader(renderShader);
-			auto texture = RESOURCES->Load<Texture>(L"BtnImg", L"..\\Resources\\Textures\\UI_Btn\\Img_Item_Slot_Legendary.png");
-			material->SetDiffuseMap(texture);
-			MaterialDesc& desc = material->GetMaterialDesc();
-			desc.ambient = Vec4(1.f);
-			desc.diffuse = Vec4(1.f);
-			desc.specular = Vec4(1.f);
-			RESOURCES->Add(L"BtnImg", material);
-		}
+		//// Material
+		//{
+		//	shared_ptr<Material> material = make_shared<Material>();
+		//	material->SetShader(renderShader);
+		//	auto texture = RESOURCES->Load<Texture>(L"BtnImg", L"..\\Resources\\Textures\\UI_Btn\\Img_Item_Slot_Legendary.png");
+		//	material->SetDiffuseMap(texture);
+		//	MaterialDesc& desc = material->GetMaterialDesc();
+		//	desc.ambient = Vec4(1.f);
+		//	desc.diffuse = Vec4(1.f);
+		//	desc.specular = Vec4(1.f);
+		//	RESOURCES->Add(L"BtnImg", material);
+		//}
 
-		// Mesh
-		{
-			auto obj = make_shared<GameObject>();
-			obj->AddComponent(make_shared<Button>());
-			obj->SetName(L"UI");
-			obj->GetButton()->Create(Vec2(100, 100), Vec2(100, 100), RESOURCES->Get<Material>(L"BtnImg"));
+		//// Mesh
+		//{
+		//	auto obj = make_shared<GameObject>();
+		//	obj->AddComponent(make_shared<Button>());
+		//	obj->SetName(L"UI");
+		//	obj->GetButton()->Create(Vec2(100, 100), Vec2(100, 100), RESOURCES->Get<Material>(L"BtnImg"));
 
-			obj->GetButton()->AddOnClickedEvent([obj]() { std::wcout << obj->GetName() << " : picked\n"; });
+		//	obj->GetButton()->AddOnClickedEvent([obj]() { std::wcout << obj->GetName() << " : picked\n"; });
 
-			CUR_SCENE->Add(obj);
-		}
+		//	CUR_SCENE->Add(obj);
+		//}
 	}
 
 	{

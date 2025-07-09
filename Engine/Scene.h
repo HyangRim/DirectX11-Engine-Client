@@ -38,6 +38,7 @@ public:
 	void PickUI();
 	shared_ptr<class GameObject> Pick();
 	shared_ptr<class GameObject> PickObjectOrUI();
+	string ws2s(const wstring& wstr);
 
 	void SetSky(shared_ptr<Sky> _sky) { m_sky = _sky; }
 
@@ -52,6 +53,8 @@ private:
 
 public:
 	void UpdateQuadTree();
+	void GameObjectsTest();
+	Ray CreateRayFromScreen(const Vec2& screenPos, shared_ptr<Camera> camera);
 
 	
 ///////////////////////////////////////

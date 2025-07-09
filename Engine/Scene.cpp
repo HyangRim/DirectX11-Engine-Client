@@ -32,7 +32,7 @@ void Scene::Update()
 
 	//PickUI();
 	//Pick();
-
+	GameObjectsTest();
 	PickObjectOrUI();
 }
 
@@ -329,7 +329,7 @@ void Scene::CheckCollision()
 
 			//현재 Collider끼리 충돌했을 경우에. 
 			if (colliders[idx]->Intersects(other)) {
-				
+
 				if (colliderMapIter->second == false) {
 					//이번 프레임에 막 충돌한 경우.
 
@@ -356,100 +356,111 @@ void Scene::CheckCollision()
 		}
 	}
 }
-//이전꺼
-//shared_ptr<class GameObject> Scene::PickObjectOrUI()
-//{
-//	if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON) == false)
-//		return nullptr;
-//
-//	POINT screenPt = INPUT->GetMousePos();
-//
-//	// 1. UI 검사 먼저 수행
-//	if (GetUICamera() != nullptr) {
-//		const auto gameObjects = GetObjects();
-//
-//		for (auto& object : gameObjects) {
-//			if (object->GetButton() == nullptr)
-//				continue;
-//
-//			if (object->GetButton()->Picked(screenPt)) {
-//				object->GetButton()->InvokeOnClicked();
-//				// UI가 클릭되면 nullptr을 반환하여 뒤의 물체들이 Pick되지 않도록 함
-//				return nullptr;
-//			}
-//		}
-//	}
-//
-//	// 2. UI가 클릭되지 않았을 때만 일반 물체 검사 수행
-//	int screenX = screenPt.x;
-//	int screenY = screenPt.y;
-//
-//	cout << "스크린 좌표 : " << screenX << " , " << screenY << "\n";
-//
-//	shared_ptr<Camera> camera = GetMainCamera()->GetCamera();
-//
-//	float width = GRAPHICS->GetViewport().GetWidth();
-//	float height = GRAPHICS->GetViewport().GetHeight();
-//
-//	Matrix projectionMatrix = camera->GetProjectionMatrix();
-//
-//	// View좌표로 변환
-//	float viewX = (+2.0f * screenX / width - 1.0f) / projectionMatrix(0, 0);
-//	float viewY = (-2.0f * screenY / height + 1.0f) / projectionMatrix(1, 1);
-//
-//	// View로 변환하는 역행렬 구하기
-//	Matrix viewMatrix = camera->GetViewMatrix();
-//	Matrix viewMatrixInv = viewMatrix.Invert();
-//
-//	// 모든 오브젝트 구하기
-//	const auto& gameObjects = GetObjects();
-//
-//	float minDistance = FLT_MAX;
-//	shared_ptr<GameObject> picked;
-//
-//	// ViewSpace에서 Ray 정의
-//	Vec4 rayOrigin = Vec4(0.f, 0.f, 0.f, 1.f);
-//	Vec4 rayDir = Vec4(viewX, viewY, 1.0f, 0.f);
-//
-//	// View시점 원점 -> world로 돌아가기
-//	Vec3 worldRayOrigin = XMVector3TransformCoord(rayOrigin, viewMatrixInv);
-//	Vec3 worldRayDir = XMVector3TransformNormal(rayDir, viewMatrixInv);
-//	worldRayDir.Normalize();
-//
-//	Ray ray = Ray(worldRayOrigin, worldRayDir);
-//
-//	// 모든 물체를 전부 다 스캔하는 무식한 방법
-//	for (auto& gameObject : gameObjects) {
-//		if (camera->IsCulled(gameObject->GetLayerIndex()))
-//			continue;
-//
-//		// Collider 붙여야만 피격 된다
-//		if (gameObject->GetCollider() == nullptr)
-//			continue;
-//
-//		// WorldSpace에서 연산하기
-//		Ray ray = Ray(worldRayOrigin, worldRayDir);
-//
-//		float distance = 0.f;
-//		if (gameObject->GetCollider()->Intersects(ray, OUT distance) == false)
-//			continue;
-//
-//		if (distance < minDistance) {
-//			minDistance = distance;
-//			picked = gameObject;
-//		}
-//	}
-//
-//	if (picked) {
-//		wstring name = picked->GetName();
-//		
-//		std::wcout << name << " : picked\n";
-//	}
-//
-//	return picked;
-//}
 
-// Scene.cpp의 UpdateQuadTree() 수정
+shared_ptr<GameObject> Scene::PickObjectOrUI()
+{
+	if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON) == false)
+		return nullptr;
+
+	POINT screenPt = INPUT->GetMousePos();
+
+	
+	// UI 검사 (기존과 동일)
+	if (GetUICamera() != nullptr)
+	{
+		const auto gameObjects = GetObjects();
+		for (auto& object : gameObjects)
+		{
+			if (object->GetButton() == nullptr) continue;
+			if (object->GetButton()->Picked(screenPt))
+			{
+				object->GetButton()->InvokeOnClicked();
+				return nullptr;
+			}
+		}
+	}
+
+	shared_ptr<Camera> camera = GetMainCamera()->GetCamera();
+
+	// Ray 생성
+	Ray ray = CreateRayFromScreen(Vec2(screenPt.x, screenPt.y), camera);
+
+	UpdateQuadTree();
+
+	auto queryStart = std::chrono::high_resolution_clock::now();
+	vector<shared_ptr<GameObject>> candidates = m_quadTree->Query(ray, camera);
+	auto queryEnd = std::chrono::high_resolution_clock::now();
+
+	// 좌표 비교 디벅
+	
+	cout << "=== 좌표 비교 디버깅 ===" << endl;
+	for (auto& obj : candidates)
+	{
+		Vec3 worldPos = obj->GetTransform()->GetPosition();
+		RECT objBounds = m_quadTree->GetObjectScreenBounds(obj, camera);
+
+		cout << "객체 " << ws2s(obj->GetName()) << ":" << endl;
+		cout << "  월드 좌표: (" << worldPos.x << ", " << worldPos.y << ", " << worldPos.z << ")" << endl;
+		cout << "  화면 좌표: (" << (objBounds.left + objBounds.right) / 2 << ", "
+			<< (objBounds.top + objBounds.bottom) / 2 << ")" << endl;
+		cout << "  마우스와 거리: " << sqrt(pow(screenPt.x - (objBounds.left + objBounds.right) / 2, 2) +
+			pow(screenPt.y - (objBounds.top + objBounds.bottom) / 2, 2)) << endl;
+	}
+
+	// 성능 정보 출력
+	const auto& stats = m_quadTree->GetStats();
+	cout << "=== 피킹 성능 정보 ===" << endl;
+	cout << "전체 객체 수: " << m_gameObjects.size() << endl;
+	cout << "후보 객체 수: " << candidates.size() << endl;
+	cout << "효율성: " << (100.0f * candidates.size() / (m_gameObjects.size()/2)) << "%" << endl;
+	cout << "쿼리 시간: " << stats.lastQueryTime.count() << "μs" << endl;
+	cout << "마우스 좌표 : " << screenPt.x << " , " << screenPt.y << endl;
+
+	// 후보 객체들 중에서 실제 교차 검사
+	float minDistance = FLT_MAX;
+	shared_ptr<GameObject> picked;
+
+	for (auto& gameObject : candidates)
+	{
+		if (camera->IsCulled(gameObject->GetLayerIndex())) continue;
+		if (gameObject->GetCollider() == nullptr) continue;
+
+		float distance = 0.f;
+		if (gameObject->GetCollider()->Intersects(ray, OUT distance) == false) continue;
+
+		if (distance < minDistance)
+		{
+			minDistance = distance;
+			picked = gameObject;
+		}
+	}
+
+	if (picked)
+	{
+		string name = ws2s(picked->GetName());
+		cout << name << " : picked (distance: " << minDistance << ")" << endl;
+	}
+
+	// 디버그 정보
+	if (INPUT->GetButtonDown(KEY_TYPE::RBUTTON))
+	{
+		cout << "\n=== 상세 디버그 정보 ===" << endl;
+		cout.flush();
+		m_quadTree->DebugDraw(camera);
+		m_quadTree->PrintDuplicates();
+	}
+
+	return picked;
+}
+
+//
+string Scene::ws2s(const wstring& wstr)
+{
+	string str;
+	str.assign(wstr.begin(), wstr.end());
+	return str;
+}
+
 void Scene::UpdateQuadTree()
 {
 	if (!m_quadTree)
@@ -459,213 +470,88 @@ void Scene::UpdateQuadTree()
 		m_quadTree = make_unique<VflyQuadTree>(width, height);
 	}
 
-	// 카메라가 움직였는지 확인
+	// 카메라 변화 감지
 	static Vec3 lastCameraPos = Vec3::Zero;
 	static Vec3 lastCameraRot = Vec3::Zero;
+	static int lastObjectCount = 0;
 
 	Vec3 currentCameraPos = GetMainCamera()->GetTransform()->GetPosition();
 	Vec3 currentCameraRot = GetMainCamera()->GetTransform()->GetLocalRotation();
+	int currentObjectCount = (int)m_gameObjects.size();
 
-	if (lastCameraPos != currentCameraPos || lastCameraRot != currentCameraRot)
+	// 변화 감지
+	float positionDelta = Vec3::Distance(lastCameraPos, currentCameraPos);
+	float rotationDelta = Vec3::Distance(lastCameraRot, currentCameraRot);
+
+	if (positionDelta > 0.1f || rotationDelta > 0.01f || currentObjectCount != lastObjectCount)
 	{
 		m_quadTreeDirty = true;
 		lastCameraPos = currentCameraPos;
 		lastCameraRot = currentCameraRot;
+		lastObjectCount = currentObjectCount;
 	}
 
 	if (m_quadTreeDirty)
 	{
+		auto buildStart = std::chrono::high_resolution_clock::now();
+
 		m_quadTree->Clear();
-
 		shared_ptr<Camera> camera = GetMainCamera()->GetCamera();
-		Vec3 cameraPos = GetMainCamera()->GetTransform()->GetPosition();
-		Vec3 cameraLook = GetMainCamera()->GetTransform()->GetLook();
 
-		for (auto& object : m_gameObjects) 
+		// 객체 삽입 
+		int insertedCount = 0;
+		for (auto& object : m_gameObjects)
 		{
-			if (object->GetCollider()) 
+			if (object->GetCollider())
 			{
-				Vec3 objPos = object->GetTransform()->GetPosition();
-
-				//거리 기반 컬링
-				float distance = Vec3::Distance(objPos, cameraPos);
-				if (distance > 300.0f) continue; // 너무 멀면 제외
-
-				//시야각 기반 컬링
-				Vec3 dirToObj = objPos - cameraPos;
-				dirToObj.Normalize();
-				float dot = dirToObj.Dot(cameraLook);
-				if (dot < -0.3f) continue; // 뒤쪽 객체 제외
-
-				//화면 투영 검사
-				RECT screenBounds = m_quadTree->GetObjectScreenBounds(object, camera);
-				if (screenBounds.left < -5000) continue; // 화면 밖 객체 제외
-
-				m_quadTree->Insert(object);
+				// 가시성 검사
+				if (m_quadTree->IsObjectVisible(object, camera))
+				{
+					m_quadTree->Insert(object);
+					insertedCount++;
+				}
 			}
 		}
 
 		m_quadTree->Build();
 		m_quadTreeDirty = false;
+
+		auto buildEnd = std::chrono::high_resolution_clock::now();
+		auto buildTime = std::chrono::duration_cast<std::chrono::microseconds>(buildEnd - buildStart);
+
+		cout << "쿼드트리 재구성: " << insertedCount << "/" << m_gameObjects.size()
+			<< " 객체, " << buildTime.count() << "μs" << endl;
 	}
 }
 
-
-shared_ptr<GameObject> Scene::PickObjectOrUI()
+void Scene::GameObjectsTest()
 {
-	
-	if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON) == false)
-		return nullptr;
-		
-
-	POINT screenPt = INPUT->GetMousePos();
-
-	//UI 검사 먼저 수행 (기존 방식 유지)
-	if (GetUICamera() != nullptr) 
+	if (INPUT->GetButtonDown(KEY_TYPE::B))
 	{
-		const auto gameObjects = GetObjects();
-
-		for (auto& object : gameObjects)
+		string name;
+		for (auto& obj : m_gameObjects)
 		{
-			if (object->GetButton() == nullptr)
-				continue;
-
-			if (object->GetButton()->Picked(screenPt)) 
-			{
-				object->GetButton()->InvokeOnClicked();
-				return nullptr;
-			}
+			name = ws2s(obj->GetName());
+			cout << "오브젝트 이름 : " << name << endl;
 		}
 	}
+}
 
-	//쿼드 트리 피킹
-	shared_ptr<Camera> camera = GetMainCamera()->GetCamera();
-
-	float width = GRAPHICS->GetViewport().GetWidth();
-	float height = GRAPHICS->GetViewport().GetHeight();
-
-	Matrix projectionMatrix = camera->GetProjectionMatrix();
+// Ray 생성 
+Ray Scene::CreateRayFromScreen(const Vec2& screenPos, shared_ptr<Camera> camera)
+{
+	Viewport viewport = GRAPHICS->GetViewport();
+	Matrix worldMatrix = Matrix::Identity;
 	Matrix viewMatrix = camera->GetViewMatrix();
-	Matrix viewMatrixInv = viewMatrix.Invert();
+	Matrix projMatrix = camera->GetProjectionMatrix();
 
-	// 화면 좌표를 View 좌표로 변환
-	float viewX = (+2.0f * screenPt.x / width - 1.0f) / projectionMatrix(0, 0);
-	float viewY = (-2.0f * screenPt.y / height + 1.0f) / projectionMatrix(1, 1);
+	// Near plane과 Far plane의 월드 좌표 계산
+	Vec3 nearPoint = viewport.UnProject(Vec3(screenPos.x, screenPos.y, 0.0f), worldMatrix, viewMatrix, projMatrix);
+	Vec3 farPoint = viewport.UnProject(Vec3(screenPos.x, screenPos.y, 1.0f), worldMatrix, viewMatrix, projMatrix);
 
-	// Ray 생성
-	Vec4 rayOrigin = Vec4(0.f, 0.f, 0.f, 1.f);
-	Vec4 rayDir = Vec4(viewX, viewY, 1.0f, 0.f);
+	// Ray 방향 계산
+	Vec3 rayDirection = farPoint - nearPoint;
+	rayDirection.Normalize();
 
-	Vec3 worldRayOrigin = XMVector3TransformCoord(rayOrigin, viewMatrixInv);
-	Vec3 worldRayDir = XMVector3TransformNormal(rayDir, viewMatrixInv);
-	worldRayDir.Normalize();
-
-	Ray ray = Ray(worldRayOrigin, worldRayDir);
-
-	// 쿼드 트리 업데이트
-	UpdateQuadTree();
-
-
-
-	// 디버그 정보 출력 (마우스 오른쪽)
-	if (INPUT->GetButtonDown(KEY_TYPE::RBUTTON)) 
-	{
-		cout << "\n=== QuadTree Debug Info ===" << endl;
-		m_quadTree->PrintTreeStructure();
-		cout << "\n";
-		m_quadTree->DebugDraw(camera);
-
-		// 노드 경계 정보 수집
-		vector<RECT> bounds;
-		vector<int> depths;
-		m_quadTree->GetNodeBounds(bounds, depths);
-
-		cout << "\n=== Node Bounds Summary ===" << endl;
-		for (size_t i = 0; i < bounds.size(); ++i) 
-		{
-			cout << "Node " << i << " (Depth " << depths[i] << "): "
-				<< "(" << bounds[i].left << "," << bounds[i].top << ","
-				<< bounds[i].right << "," << bounds[i].bottom << ")" << endl;
-		}
-
-
-		cout << "\n=== 클러스터별 객체 분포 ===" << endl;
-
-		// 클러스터별 객체 카운트
-		map<int, int> clusterCount;
-		vector<shared_ptr<GameObject>> candidates = m_quadTree->Query(ray, camera);
-
-		for (auto& obj : candidates)
-		{
-			wstring name = obj->GetName();
-			if (!name.empty())
-			{
-				int objId = _wtoi(name.c_str());
-				int clusterId = objId / 100;
-				clusterCount[clusterId]++;
-			}
-		}
-
-		for (auto& pair : clusterCount)
-		{
-			cout << "클러스터 " << pair.first << ": " << pair.second << "개 객체" << endl;
-		}
-
-		// 카메라 정보
-		Vec3 camPos = GetMainCamera()->GetTransform()->GetPosition();
-		Vec3 camRot = GetMainCamera()->GetTransform()->GetLocalRotation();
-		cout << "카메라 위치: (" << camPos.x << ", " << camPos.y << ", " << camPos.z << ")" << endl;
-		cout << "카메라 회전: (" << camRot.x << ", " << camRot.y << ", " << camRot.z << ")" << endl;
-	}
-	
-
-	// 쿼드 트리를 사용하여 후보 오브젝트들 가져오기
-	vector<shared_ptr<GameObject>> candidates = m_quadTree->Query(ray, camera);
-
-	cout << "쿼드 트리 후보 오브젝트 수: " << candidates.size() << "\n";
-
-	cout << "=== 쿼드트리 피킹 결과 ===" << endl;
-	cout << "전체 객체 수: " << m_gameObjects.size() << endl;
-	cout << "후보 객체 수: " << candidates.size() << endl;
-	cout << "후보 번호들 : ";
-	for (auto& object : candidates)
-	{
-		wcout << object->GetName() << ",";
-	}
-	cout << "\n";
-
-
-	// 중복 검사
-	m_quadTree->PrintDuplicates();
-
-	// 후보 오브젝트들 중에서 실제 교차 검사
-	float minDistance = FLT_MAX;
-	shared_ptr<GameObject> picked;
-
-	for (auto& gameObject : candidates) 
-	{
-		if (camera->IsCulled(gameObject->GetLayerIndex()))
-			continue;
-
-		if (gameObject->GetCollider() == nullptr)
-			continue;
-
-		float distance = 0.f;
-		if (gameObject->GetCollider()->Intersects(ray, OUT distance) == false)
-			continue;
-
-		if (distance < minDistance) 
-		{
-			minDistance = distance;
-			picked = gameObject;
-		}
-	}
-
-	if (picked)
-	{
-		wstring name = picked->GetName();
-		std::wcout << name << L" : picked\n";
-	}
-
-	return picked;
+	return Ray(nearPoint, rayDirection);
 }

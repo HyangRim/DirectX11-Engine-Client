@@ -44,6 +44,16 @@ Vec3 Viewport::Project(const Vec3& pos, const Matrix& W, const Matrix& V, const 
 	p.z = p.z * (m_vp.MaxDepth - m_vp.MinDepth) + m_vp.MinDepth;
 
 	return p;
+
+	//Matrix wvp = W * V * P;
+	//Vec3 p = Vec3::Transform(pos, wvp);
+
+	//// **수정: 더 정확한 화면 좌표 변환**
+	//p.x = (p.x + 1.0f) * (m_vp.Width * 0.5f) + m_vp.TopLeftX;
+	//p.y = (-p.y + 1.0f) * (m_vp.Height * 0.5f) + m_vp.TopLeftY;
+	//p.z = p.z * (m_vp.MaxDepth - m_vp.MinDepth) + m_vp.MinDepth;
+
+	//return p;
 }
 
 Vec3 Viewport::UnProject(const Vec3& pos, const Matrix& W, const Matrix& V, const Matrix& P)
@@ -59,4 +69,16 @@ Vec3 Viewport::UnProject(const Vec3& pos, const Matrix& W, const Matrix& V, cons
 
 	p = Vec3::Transform(p, wvpInv);
 	return p;
+
+	//Vec3 p = pos;
+
+	//p.x = 2.0f * (p.x - m_vp.TopLeftX) / m_vp.Width - 1.0f;
+	//p.y = -2.0f * (p.y - m_vp.TopLeftY) / m_vp.Height + 1.0f;
+	//p.z = (p.z - m_vp.MinDepth) / (m_vp.MaxDepth - m_vp.MinDepth);
+
+	//Matrix wvp = W * V * P;
+	//Matrix wvpInv = wvp.Invert();
+
+	//p = Vec3::Transform(p, wvpInv);
+	//return p;
 }

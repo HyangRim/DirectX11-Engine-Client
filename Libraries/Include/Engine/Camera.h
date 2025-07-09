@@ -71,6 +71,8 @@ public:
     void SetCullingMask(uint32 _mask) { m_cullingMask = _mask; }
     bool IsCulled(uint8 _layer) { return (m_cullingMask & (1 << _layer)) != 0; }
 
+    float GetFOV() { return m_fov; }
+
 private:
     uint32 m_cullingMask = 0;
     vector<shared_ptr<GameObject>> m_vecForward;
