@@ -31,6 +31,10 @@ void AABBBoxCollider::Update()
 {
 	m_boundingBox.Center = GetTransform()->GetPosition() + m_offSetPos;
 	m_boundingBox.Extents = GetTransform()->GetScale() * 0.5f;
+
+	m_DebugObject->GetTransform()->SetScale(GetGameObject()->GetTransform()->GetScale());
+	m_DebugObject->GetTransform()->SetRotation(GetGameObject()->GetTransform()->GetRotation());
+	m_DebugObject->GetTransform()->SetPosition(GetGameObject()->GetTransform()->GetPosition() + m_offSetPos);
 }
 
 bool AABBBoxCollider::Intersects(Ray& _ray, OUT float& _distance)

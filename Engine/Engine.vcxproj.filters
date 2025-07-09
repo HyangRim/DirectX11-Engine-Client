@@ -267,6 +267,9 @@
     <ClInclude Include="Rigidbody.h">
       <Filter>04. Component</Filter>
     </ClInclude>
+    <ClInclude Include="Delegate.h">
+      <Filter>98. Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
