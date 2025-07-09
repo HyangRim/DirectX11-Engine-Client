@@ -351,7 +351,7 @@ bool VflyQuadTree::IsObjectVisible(shared_ptr<GameObject> object, shared_ptr<Cam
         return false;
     }
 
-    // 4. **추가: FOV 기반 시야각 검사**
+    // 4.FOV 기반 시야각 검사
     Vec3 cameraRight = camera->GetTransform()->GetRight();
     Vec3 cameraUp = camera->GetTransform()->GetUp();
 
@@ -406,7 +406,7 @@ RECT VflyQuadTree::GetObjectScreenBounds(shared_ptr<GameObject> object, shared_p
         return { -10000, -10000, -10000, -10000 };
     }
 
-    // **수정: 콜라이더 타입별 실제 바운딩 박스 계산**
+    // 콜라이더 타입별 실제 바운딩 박스 계산
     RECT screenBounds = CalculateColliderScreenBounds(object, camera);
 
     // 화면 밖 객체 제외
@@ -438,7 +438,7 @@ RECT VflyQuadTree::CalculateSphereScreenBounds(shared_ptr<GameObject> object, sh
     auto sphereCollider = dynamic_pointer_cast<SphereCollider>(object->GetCollider());
     if (!sphereCollider) return { -10000, -10000, -10000, -10000 };
 
-    // **수정: SphereCollider의 실제 BoundingSphere 사용**
+    // SphereCollider의 실제 BoundingSphere 사용
     BoundingSphere& boundingSphere = sphereCollider->GetBoundSphere();
     Vec3 sphereCenter = boundingSphere.Center;
     float radius = boundingSphere.Radius;
@@ -614,7 +614,6 @@ void VflyQuadTree::PrintDuplicates()
     cout << "총 중복 객체 수: " << duplicateCount << endl;
 }
 
-// 나머지 함수들은 기존과 동일...
 void VflyQuadTree::DebugDrawNode(const unique_ptr<QuadTreeNode>& node, int depth, shared_ptr<Camera> camera)
 {
     if (!node) return;
@@ -821,7 +820,6 @@ Vec3 VflyQuadTree::ScreenToWorld(const Vec2& screenPos, shared_ptr<Camera> camer
     return worldPos;
 }
 
-// VflyQuadTree.cpp에 추가
 void VflyQuadTree::DebugCoordinateTransform(const Vec2& mousePos, shared_ptr<Camera> camera)
 {
     cout << "=== 좌표 변환 디버깅 ===" << endl;
