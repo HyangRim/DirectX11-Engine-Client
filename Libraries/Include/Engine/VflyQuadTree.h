@@ -67,6 +67,9 @@ public:
 
 
     RECT GetObjectScreenBounds(shared_ptr<GameObject> object, shared_ptr<Camera> camera);
+    RECT CalculateColliderScreenBounds(shared_ptr<GameObject> object, shared_ptr<Camera> camera);
+    RECT CalculateSphereScreenBounds(shared_ptr<GameObject> object, shared_ptr<Camera> camera);
+    RECT CalculateDefaultScreenBounds(shared_ptr<GameObject> object, shared_ptr<Camera> camera);
 
     // 유틸리티
     bool IsObjectVisible(shared_ptr<GameObject> object, shared_ptr<Camera> camera);

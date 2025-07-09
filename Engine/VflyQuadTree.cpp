@@ -211,8 +211,6 @@ void VflyQuadTree::QueryNode(const unique_ptr<QuadTreeNode>& node, const Ray& ra
 }
 bool VflyQuadTree::RayIntersectsAABB(const Ray& ray, const RECT& rect, shared_ptr<Camera> camera)
 {
-    // **새로운 방식: 2D 화면 좌표에서 직접 교차 검사**
-
     // 1. Ray의 시작점과 끝점을 화면 좌표로 변환
     Vec2 rayStart = WorldToScreen(ray.position, camera);
     Vec2 rayEnd = WorldToScreen(ray.position + ray.direction * 1000.0f, camera); // 충분히 먼 거리
@@ -391,11 +389,16 @@ int VflyQuadTree::FindBestChildren(const unique_ptr<QuadTreeNode>& node, const R
 
 RECT VflyQuadTree::GetObjectScreenBounds(shared_ptr<GameObject> object, shared_ptr<Camera> camera)
 {
-    Vec3 worldPos = object->GetTransform()->GetPosition();
+    if (!object->GetCollider())
+    {
+        return { -10000, -10000, -10000, -10000 };
+    }
+
+    Vec3 objectPos = object->GetTransform()->GetPosition();
     Vec3 cameraPos = camera->GetTransform()->GetPosition();
 
     // 카메라 뒤에 있는 객체 제외
-    Vec3 dirToObj = worldPos - cameraPos;
+    Vec3 dirToObj = objectPos - cameraPos;
     Vec3 cameraLook = camera->GetTransform()->GetLook();
 
     if (dirToObj.Dot(cameraLook) < 0)
@@ -403,42 +406,135 @@ RECT VflyQuadTree::GetObjectScreenBounds(shared_ptr<GameObject> object, shared_p
         return { -10000, -10000, -10000, -10000 };
     }
 
-    // **수정: 통일된 좌표 변환 사용**
-    Vec2 screenCenter = WorldToScreen(worldPos, camera);
+    // **수정: 콜라이더 타입별 실제 바운딩 박스 계산**
+    RECT screenBounds = CalculateColliderScreenBounds(object, camera);
 
     // 화면 밖 객체 제외
     Viewport viewport = GRAPHICS->GetViewport();
-    if (screenCenter.x < -100 || screenCenter.x > viewport.GetWidth() + 100 ||
-        screenCenter.y < -100 || screenCenter.y > viewport.GetHeight() + 100)
+    if (screenBounds.right < -100 || screenBounds.left > viewport.GetWidth() + 100 ||
+        screenBounds.bottom < -100 || screenBounds.top > viewport.GetHeight() + 100)
     {
         return { -10000, -10000, -10000, -10000 };
     }
 
-    // **수정: 더 정확한 크기 계산**
-    float distance = Vec3::Distance(worldPos, cameraPos);
+    return screenBounds;
+}
 
-    // 실제 콜라이더 크기 기반 계산
-    float actualRadius = 1.0f;
-    if (object->GetCollider())
+RECT VflyQuadTree::CalculateColliderScreenBounds(shared_ptr<GameObject> object, shared_ptr<Camera> camera)
+{
+    auto collider = object->GetCollider();
+    ColliderType type = collider->GetColliderType();
+
+    switch (type)
     {
-        // SphereCollider의 경우 실제 반지름 사용
-        if (object->GetCollider()->GetColliderType() == ColliderType::Sphere)
+    case ColliderType::Sphere:
+        return CalculateSphereScreenBounds(object, camera);
+    default:
+        return CalculateDefaultScreenBounds(object, camera);
+    }
+}
+RECT VflyQuadTree::CalculateSphereScreenBounds(shared_ptr<GameObject> object, shared_ptr<Camera> camera)
+{
+    auto sphereCollider = dynamic_pointer_cast<SphereCollider>(object->GetCollider());
+    if (!sphereCollider) return { -10000, -10000, -10000, -10000 };
+
+    // **수정: SphereCollider의 실제 BoundingSphere 사용**
+    BoundingSphere& boundingSphere = sphereCollider->GetBoundSphere();
+    Vec3 sphereCenter = boundingSphere.Center;
+    float radius = boundingSphere.Radius;
+
+    // 구체의 경계점들을 계산 (더 정확한 투영을 위해 더 많은 점 사용)
+    vector<Vec3> boundaryPoints;
+
+    // 주요 축 방향 경계점들
+    boundaryPoints.push_back(sphereCenter + Vec3(radius, 0, 0));    // +X
+    boundaryPoints.push_back(sphereCenter + Vec3(-radius, 0, 0));   // -X
+    boundaryPoints.push_back(sphereCenter + Vec3(0, radius, 0));    // +Y
+    boundaryPoints.push_back(sphereCenter + Vec3(0, -radius, 0));   // -Y
+    boundaryPoints.push_back(sphereCenter + Vec3(0, 0, radius));    // +Z
+    boundaryPoints.push_back(sphereCenter + Vec3(0, 0, -radius));   // -Z
+
+    // 대각선 방향 경계점들 (더 정확한 바운딩을 위해)
+    float diagRadius = radius * 0.707f; // sqrt(2)/2
+    boundaryPoints.push_back(sphereCenter + Vec3(diagRadius, diagRadius, 0));
+    boundaryPoints.push_back(sphereCenter + Vec3(diagRadius, -diagRadius, 0));
+    boundaryPoints.push_back(sphereCenter + Vec3(-diagRadius, diagRadius, 0));
+    boundaryPoints.push_back(sphereCenter + Vec3(-diagRadius, -diagRadius, 0));
+    boundaryPoints.push_back(sphereCenter + Vec3(diagRadius, 0, diagRadius));
+    boundaryPoints.push_back(sphereCenter + Vec3(diagRadius, 0, -diagRadius));
+    boundaryPoints.push_back(sphereCenter + Vec3(-diagRadius, 0, diagRadius));
+    boundaryPoints.push_back(sphereCenter + Vec3(-diagRadius, 0, -diagRadius));
+    boundaryPoints.push_back(sphereCenter + Vec3(0, diagRadius, diagRadius));
+    boundaryPoints.push_back(sphereCenter + Vec3(0, diagRadius, -diagRadius));
+    boundaryPoints.push_back(sphereCenter + Vec3(0, -diagRadius, diagRadius));
+    boundaryPoints.push_back(sphereCenter + Vec3(0, -diagRadius, -diagRadius));
+
+    // 모든 경계점을 화면 좌표로 변환하여 최소/최대값 찾기
+    float minX = FLT_MAX, maxX = -FLT_MAX;
+    float minY = FLT_MAX, maxY = -FLT_MAX;
+    bool hasValidPoint = false;
+
+    for (const Vec3& point : boundaryPoints)
+    {
+        // 카메라 뒤에 있는 점 제외
+        Vec3 dirToPoint = point - camera->GetTransform()->GetPosition();
+        if (dirToPoint.Dot(camera->GetTransform()->GetLook()) < 0)
+            continue;
+
+        Vec2 screenPos = WorldToScreen(point, camera);
+
+        // 유효한 화면 좌표인지 확인
+        Viewport viewport = GRAPHICS->GetViewport();
+        if (screenPos.x >= -1000 && screenPos.x <= viewport.GetWidth() + 1000 &&
+            screenPos.y >= -1000 && screenPos.y <= viewport.GetHeight() + 1000)
         {
-            auto sphereCollider = dynamic_pointer_cast<SphereCollider>(object->GetCollider());
-            actualRadius = sphereCollider->GetRadius();
+            minX = min(minX, screenPos.x);
+            maxX = max(maxX, screenPos.x);
+            minY = min(minY, screenPos.y);
+            maxY = max(maxY, screenPos.y);
+            hasValidPoint = true;
         }
     }
 
-    // 거리 기반 스크린 크기 계산
-    float screenRadius = max(2.0f, (actualRadius * 100.0f) / distance);
+    // 유효한 점이 없으면 무효한 영역 반환
+    if (!hasValidPoint)
+    {
+        return { -10000, -10000, -10000, -10000 };
+    }
 
-    // 스케일 적용
+    // 최소 크기 보장 (너무 작은 바운딩 박스 방지)
+    float minSize = 4.0f;
+    if (maxX - minX < minSize)
+    {
+        float center = (minX + maxX) * 0.5f;
+        minX = center - minSize * 0.5f;
+        maxX = center + minSize * 0.5f;
+    }
+    if (maxY - minY < minSize)
+    {
+        float center = (minY + maxY) * 0.5f;
+        minY = center - minSize * 0.5f;
+        maxY = center + minSize * 0.5f;
+    }
+
+    return { (LONG)minX, (LONG)minY, (LONG)maxX, (LONG)maxY };
+}
+
+RECT VflyQuadTree::CalculateDefaultScreenBounds(shared_ptr<GameObject> object, shared_ptr<Camera> camera)
+{
+    // 콜라이더 타입을 알 수 없는 경우 기본 방식 사용
+    Vec3 worldPos = object->GetTransform()->GetPosition();
+    Vec2 screenCenter = WorldToScreen(worldPos, camera);
+
+    // 기본 크기 설정
+    float distance = Vec3::Distance(worldPos, camera->GetTransform()->GetPosition());
+    float screenRadius = max(5.0f, 50.0f / distance);
+
     Vec3 scale = object->GetTransform()->GetScale();
     float avgScale = (scale.x + scale.y + scale.z) / 3.0f;
     screenRadius *= avgScale;
 
-    // 최대 크기 제한
-    screenRadius = min(screenRadius, 20.0f);
+    screenRadius = min(screenRadius, 30.0f);
 
     LONG screenX = (LONG)screenCenter.x;
     LONG screenY = (LONG)screenCenter.y;
