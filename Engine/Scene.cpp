@@ -358,6 +358,8 @@ shared_ptr<class GameObject> Scene::PickObjectOrUI()
 	int screenX = screenPt.x;
 	int screenY = screenPt.y;
 
+	cout << "½ºÅ©¸° ÁÂÇ¥ : " << screenX << " , " << screenY << "\n";
+
 	shared_ptr<Camera> camera = GetMainCamera()->GetCamera();
 
 	float width = GRAPHICS->GetViewport().GetWidth();
