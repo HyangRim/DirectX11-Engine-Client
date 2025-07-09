@@ -75,6 +75,9 @@
     <ClCompile Include="UITestDemo.cpp">
       <Filter>Game\UITest</Filter>
     </ClCompile>
+    <ClCompile Include="Loader.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -121,6 +124,12 @@
     </ClInclude>
     <ClInclude Include="UITestDemo.h">
       <Filter>Game\UITest</Filter>
+    </ClInclude>
+    <ClInclude Include="Loader.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Client_Define.h">
+      <Filter>Main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

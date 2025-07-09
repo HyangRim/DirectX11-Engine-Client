@@ -52,9 +52,6 @@
     <Filter Include="06. UI &amp; Effect">
       <UniqueIdentifier>{40a25576-a952-4e0e-9400-71e6c577742e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="98. Utils\VflyQuadTree">
-      <UniqueIdentifier>{a60b91e2-7762-46f9-a5f2-15b4acb0bf35}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -277,7 +274,7 @@
       <Filter>02. Managers</Filter>
     </ClInclude>
     <ClInclude Include="VflyQuadTree.h">
-      <Filter>98. Utils\VflyQuadTree</Filter>
+      <Filter>98. Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -486,7 +483,7 @@
       <Filter>02. Managers</Filter>
     </ClCompile>
     <ClCompile Include="VflyQuadTree.cpp">
-      <Filter>98. Utils\VflyQuadTree</Filter>
+      <Filter>98. Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

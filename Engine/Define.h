@@ -12,6 +12,8 @@ public:										\
 
 #define GET_SINGLE(classname)	classname::GetInstance()
 
+#define	MSG_BOX(_message)	MessageBox(NULL, TEXT(_message), L"System Message", MB_OK)
+
 
 #define CHECK(p)	assert(SUCCEEDED(p))
 #define GAME		GET_SINGLE(Game)		
