@@ -359,7 +359,7 @@ bool QuadTree::PointInRect(const Vec2& _point, const RECT& _rect)
 
 RECT QuadTree::GetObjectScreenBounds(shared_ptr<GameObject> _object, shared_ptr<Camera> _camera)
 {
-	if (_object->GetCollider()) {
+	if (!_object->GetCollider()) {
 		return { -10000, -10000, -10000, -10000 };
 	}
 
