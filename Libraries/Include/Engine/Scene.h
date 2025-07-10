@@ -2,7 +2,7 @@
 
 class Sky;
 class Camera;
-#include "VflyQuadTree.h"
+#include "QuadTree.h"
 
 union COLLIDER_ID {
 	struct {
@@ -34,6 +34,8 @@ public:
 	shared_ptr<GameObject> GetMainCamera();
 	shared_ptr<GameObject> GetUICamera();
 	shared_ptr<GameObject> GetLight() { return m_Lights.empty() ? nullptr : *m_Lights.begin(); }
+	
+
 
 	void PickUI();
 	shared_ptr<class GameObject> Pick();
@@ -48,12 +50,13 @@ public:
 ///////쿼드 트리 테스트용//////////////
 
 private:
-	unique_ptr<VflyQuadTree> m_quadTree;
+	unique_ptr<QuadTree> m_quadTree;
 	bool m_quadTreeDirty = true;
 
 public:
 	void UpdateQuadTree();
 	void GameObjectsTest();
+	QuadTree* GetQuadTree() { return m_quadTree.get(); }
 	Ray CreateRayFromScreen(const Vec2& screenPos, shared_ptr<Camera> camera);
 
 	

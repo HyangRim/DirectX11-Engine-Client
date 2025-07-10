@@ -7,8 +7,7 @@
 #include "Sky.h"
 #include "Light.h"
 #include "Terrain.h"
-
-#include "VflyQuadTree.h"
+#include "QuadTree.h"
 
 void Scene::Start()
 {
@@ -488,7 +487,7 @@ void Scene::UpdateQuadTree()
 	{
 		float width = GRAPHICS->GetViewport().GetWidth();
 		float height = GRAPHICS->GetViewport().GetHeight();
-		m_quadTree = make_unique<VflyQuadTree>(width, height);
+		m_quadTree = make_unique<QuadTree>(width, height);
 	}
 
 	// 카메라 변화 감지

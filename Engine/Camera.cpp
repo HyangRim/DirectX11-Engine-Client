@@ -5,6 +5,7 @@
 #include "Scene.h"
 #include "Renderer.h"
 #include "Material.h"
+#include "QuadTree.h"
 
 
 Matrix Camera::s_MatView = Matrix::Identity;
@@ -59,11 +60,20 @@ void Camera::SortGameObject()
 	m_vecForward.clear();
 	m_vecBackward.clear();
 
+	int CullingObject = 0;
+	
+	//cout << "전체 오브젝트 : " << gameObjects.size() << "\n";
 	//그려줄 것 선별하기. 
 	for (auto& object : gameObjects) {
 		if (IsCulled(object->GetLayerIndex()))
 			continue;
 
+		if (scene->GetQuadTree()->IsObjectVisible(object, this) == false) {
+			CullingObject++;
+			continue;
+		}
+
+		//QuadTree - Visible가지고 Frustum Culling 가능. 
 		shared_ptr<Renderer> renderer = object->GetRenderer();
 		if (renderer == nullptr)
 			continue;
@@ -85,6 +95,9 @@ void Camera::SortGameObject()
 			break;
 
 		}
+
+		//cout << "컬링 오브젝트 : " << CullingObject << "\n";
+		//cout << "렌더링 오브젝트 : " << gameObjects.size() - CullingObject << "\n";
 	}
 
 	
