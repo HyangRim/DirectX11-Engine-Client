@@ -60,47 +60,85 @@ void Camera::SortGameObject()
 	m_vecForward.clear();
 	m_vecBackward.clear();
 
-	int CullingObject = 0;
 	
-	//cout << "전체 오브젝트 : " << gameObjects.size() << "\n";
-	//그려줄 것 선별하기. 
-	for (auto& object : gameObjects) {
-		if (IsCulled(object->GetLayerIndex()))
-			continue;
 
-		if (scene->GetQuadTree()->IsObjectVisible(object, this) == false) {
-			CullingObject++;
-			continue;
-		}
-
-		//QuadTree - Visible가지고 Frustum Culling 가능. 
-		shared_ptr<Renderer> renderer = object->GetRenderer();
-		if (renderer == nullptr)
-			continue;
-
-		shared_ptr<Material> material = renderer->GetMaterial();
-		RenderQueue renderQueue = material->GetRenderQueue();
-
-		//TODO : 컷아웃용 정렬하기
-		//TODO : 거리에 따라 정렬하기
-
-		switch (renderQueue) 
+	if (m_type == ProjectionType::Perspective) 
+	{
+		int CullingObject = 0;
+	
+	
+		cout << "전체 오브젝트 : " << gameObjects.size() << "\n";
+		//그려줄 것 선별하기. 
+		for (auto& object : gameObjects) 
 		{
-		case RenderQueue::Opaque:
-		case RenderQueue::Cutout:
-			m_vecForward.push_back(object);
-			break;
-		case RenderQueue::Transparent:
-			m_vecBackward.push_back(object);
-			break;
+			if (IsCulled(object->GetLayerIndex()))
+				continue;
 
+			
+			if (scene->GetQuadTree()->IsObjectVisible(object, this) == false) {
+				CullingObject++;
+				continue;
+			}
+
+			//QuadTree - Visible가지고 Frustum Culling 가능. 
+			shared_ptr<Renderer> renderer = object->GetRenderer();
+			if (renderer == nullptr)
+				continue;
+
+			shared_ptr<Material> material = renderer->GetMaterial();
+			RenderQueue renderQueue = material->GetRenderQueue();
+
+			//TODO : 컷아웃용 정렬하기
+			//TODO : 거리에 따라 정렬하기
+
+			switch (renderQueue)
+			{
+				case RenderQueue::Opaque:
+				case RenderQueue::Cutout:
+					m_vecForward.push_back(object);
+					break;
+				case RenderQueue::Transparent:
+					m_vecBackward.push_back(object);
+					break;
+
+			}
+
+			cout << "컬링 오브젝트 : " << CullingObject << "\n";
+			cout << "렌더링 오브젝트 : " << gameObjects.size() - CullingObject << "\n";
 		}
 
-		//cout << "컬링 오브젝트 : " << CullingObject << "\n";
-		//cout << "렌더링 오브젝트 : " << gameObjects.size() - CullingObject << "\n";
 	}
+	else
+	{
+		//그려줄 것 선별하기. 
+		for (auto& object : gameObjects) {
+			if (IsCulled(object->GetLayerIndex()))
+				continue;
 
-	
+			//QuadTree - Visible가지고 Frustum Culling 가능. 
+			shared_ptr<Renderer> renderer = object->GetRenderer();
+			if (renderer == nullptr)
+				continue;
+
+			shared_ptr<Material> material = renderer->GetMaterial();
+			RenderQueue renderQueue = material->GetRenderQueue();
+
+			//TODO : 컷아웃용 정렬하기
+			//TODO : 거리에 따라 정렬하기
+
+			switch (renderQueue)
+			{
+			case RenderQueue::Opaque:
+			case RenderQueue::Cutout:
+				m_vecForward.push_back(object);
+				break;
+			case RenderQueue::Transparent:
+				m_vecBackward.push_back(object);
+				break;
+
+			}
+		}
+	}
 }
 
 void Camera::SetStaticData() {
