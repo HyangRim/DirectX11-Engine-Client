@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Scene.h"
+#include <iostream>
 #include "GameObject.h"
 #include "BaseCollider.h"
 #include "Camera.h"
@@ -8,6 +9,8 @@
 #include "Light.h"
 #include "Terrain.h"
 #include "QuadTree.h"
+#include "SphereCollider.h"
+#include "AABBBoxCollider.h"
 
 void Scene::Start()
 {
@@ -18,6 +21,7 @@ void Scene::Start()
 	for (auto& object : m_gameObjects) {
 		object->Start();
 	}
+	UpdateQuadTree();
 }
 
 void Scene::Update()
@@ -62,7 +66,18 @@ void Scene::LateUpdate()
 	for (auto& object : m_gameObjects) {
 		object->LateUpdate();
 	}
-	CheckCollision();
+
+	// start = std::chrono::high_resolution_clock::now();
+	//BruteForce방식. 
+	//CheckCollision();
+
+	//QuadTree방식. 
+	CheckCollisionWithQuadTree();
+	//auto end = std::chrono::high_resolution_clock::now();
+	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+	//cout << "BruteForce 걸리는 시간 :" << duration.count() << "us\n";
+
+	
 }
 
 void Scene::Render()
@@ -365,6 +380,14 @@ void Scene::CheckCollision()
 	}
 }
 
+void Scene::CheckCollisionWithQuadTree()
+{
+	if (!m_quadTree) return;
+
+	m_quadTree->CheckCollisionsInTree(GetMainCamera()->GetCamera(), m_mapColInfo);
+}
+
+
 shared_ptr<GameObject> Scene::PickObjectOrUI()
 {
 	if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON) == false)
@@ -521,6 +544,9 @@ void Scene::UpdateQuadTree()
 	static Vec3 lastCameraRot = Vec3::Zero;
 	static int lastObjectCount = 0;
 
+	//객체 위치 변화 감지를 위한 해시맵
+	static unordered_map<shared_ptr<GameObject>, Vec3> lastObjectPositions;
+
 	Vec3 currentCameraPos = GetMainCamera()->GetTransform()->GetPosition();
 	Vec3 currentCameraRot = GetMainCamera()->GetTransform()->GetLocalRotation();
 	int currentObjectCount = (int)m_gameObjects.size();
@@ -529,12 +555,40 @@ void Scene::UpdateQuadTree()
 	float positionDelta = Vec3::Distance(lastCameraPos, currentCameraPos);
 	float rotationDelta = Vec3::Distance(lastCameraRot, currentCameraRot);
 
-	if (positionDelta > 0.1f || rotationDelta > 0.01f || currentObjectCount != lastObjectCount)
+	//어떤 오브젝트라도 위치가 변경되었으면, UpdateQuadTree.
+	bool objectMoved = false;
+	for (auto& object : m_gameObjects) {
+		if (!object->GetCollider()) continue;
+
+		Vec3 curPos = object->GetTransform()->GetPosition();
+		auto it = lastObjectPositions.find(object);
+		if (it != lastObjectPositions.end()) {
+			float prevCurDistance = Vec3::Distance(it->second, curPos);
+			if (prevCurDistance > 0.1f) {
+				objectMoved = true;
+				break;
+			}
+		}
+		else {
+			//새로운 객체 발견 시.
+			objectMoved = true;
+		}
+	}
+
+
+	if (objectMoved || positionDelta > 0.1f || rotationDelta > 0.01f || currentObjectCount != lastObjectCount)
 	{
 		m_quadTreeDirty = true;
 		lastCameraPos = currentCameraPos;
 		lastCameraRot = currentCameraRot;
 		lastObjectCount = currentObjectCount;
+		objectMoved = false;
+
+		for (auto& object : m_gameObjects) {
+			if (object->GetCollider()) {
+				lastObjectPositions[object] = object->GetTransform()->GetPosition();
+			}
+		}
 	}
 
 	if (m_quadTreeDirty)
