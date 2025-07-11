@@ -69,6 +69,7 @@ public:
 
     RECT GetObjectScreenBounds(shared_ptr<GameObject> _object, shared_ptr<Camera> _camera);
     RECT CalculateColliderScreenBounds(shared_ptr<GameObject> _object, shared_ptr<Camera> _camera);
+    RECT CalculateColliderAABBScreenBounds(shared_ptr<GameObject> _object, shared_ptr<Camera> _camera);
     RECT CalculateSphereScreenBounds(shared_ptr<GameObject> _object, shared_ptr<Camera> _camera);
     RECT CalculateDefaultScreenBounds(shared_ptr<GameObject> _object, shared_ptr<Camera> _camera);
 
@@ -94,6 +95,41 @@ public:
     Vec3 ScreenToWorld(const Vec2& _screenPos, shared_ptr<Camera> _camera, float _depth = 1.0f);
 
     void DebugCoordinateTransform(const Vec2& _mousePos, shared_ptr<Camera> _camera);
+
+//이 밑은 충돌 관련 함수들. 
+public:
+    void CheckCollisionsInTree(shared_ptr<Camera> _camera, unordered_map<ULONG64, bool>& _collisionMap);
+private:
+    // 노드별 충돌 검사
+    void CheckCollisionsInNode(const unique_ptr<QuadTreeNode>& _node,
+        unordered_map<ULONG64, bool>& _collisionMap,
+        unordered_set<ULONG64>& _processedPairs);
+
+    // 인접 노드와의 충돌 검사
+    void CheckCrossNodeCollisions(const unique_ptr<QuadTreeNode>& _node1,
+        const unique_ptr<QuadTreeNode>& _node2,
+        unordered_map<ULONG64, bool>& _collisionMap,
+        unordered_set<ULONG64>& _processedPairs);
+
+    //인접 노드와의 충돌 검사. 
+    void CheckBoundaryCollisions(const unique_ptr<QuadTreeNode>& _node,
+        unordered_map<ULONG64, bool>& _collisionMap,
+        unordered_set<ULONG64>& _processedPairs);
+
+    //객체와 노드끼리 충돌하는지. 
+    void CheckObjectWithNode(shared_ptr<GameObject> _object,
+        const unique_ptr<QuadTreeNode>& _node,
+        unordered_map<ULONG64, bool>& _collisionMap,
+        unordered_set<ULONG64>& _processedPairs);
+
+    //노드끼리 인접성 확인. 
+    bool AreNodesAdjacent(const RECT& rect1, const RECT& rect2);
+
+    //충돌 처리 함수. 
+    void ProcessCollisionPair(shared_ptr<BaseCollider> _collider1,
+        shared_ptr<BaseCollider> _collider2,
+        unordered_map<ULONG64, bool>& _collisionMap,
+        unordered_set<ULONG64>& _processedPairs);
 
 private:
     unique_ptr<QuadTreeNode> m_root;

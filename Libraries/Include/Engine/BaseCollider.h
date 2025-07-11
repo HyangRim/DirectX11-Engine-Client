@@ -29,6 +29,7 @@ public:
 	bool GetActive() { return m_active; }
 
 	void SetOffset(Vec3 _offsetPos) { m_offSetPos = _offsetPos; }
+	Vec3 GetOffset() { return m_offSetPos; }
 
 protected:
 	ColliderType m_colliderType;

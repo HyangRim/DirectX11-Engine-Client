@@ -1,5 +1,8 @@
 #include "pch.h"
 #include "ImGuiManager.h"
+#include "BaseCollider.h"
+#include "AABBBoxCollider.h"
+#include "SphereCollider.h"
 
 void ImGuiManager::Init()
 {
@@ -47,40 +50,69 @@ void ImGuiManager::ShowPickedObj()
 	if (!curPickedObj.expired()) {
 
 		//가져온 GameObject 정보를 ImGui에 넣기. 
-		auto vTranslate = curPickedObj.lock()->GetTransform()->GetLocalPosition();
-		auto vRotation = curPickedObj.lock()->GetTransform()->GetLocalRotation();
-		vRotation = (vRotation / XM_PI) * 180.f;
-		auto vScale = curPickedObj.lock()->GetTransform()->GetLocalScale();
+		//Transpose.
+		{
+			auto vTranslate = curPickedObj.lock()->GetTransform()->GetLocalPosition();
+			auto vRotation = curPickedObj.lock()->GetTransform()->GetLocalRotation();
+			vRotation = (vRotation / XM_PI) * 180.f;
+			auto vScale = curPickedObj.lock()->GetTransform()->GetLocalScale();
 
-		float vPos[3] = { vTranslate.x, vTranslate.y, vTranslate.z };
-		float vRot[3] = { vRotation.x, vRotation.y, vRotation.z };
-		float vSca[3] = { vScale.x, vScale.y, vScale.z };
+			float vPos[3] = { vTranslate.x, vTranslate.y, vTranslate.z };
+			float vRot[3] = { vRotation.x, vRotation.y, vRotation.z };
+			float vSca[3] = { vScale.x, vScale.y, vScale.z };
 
-		ImGui::Text("Transform");
-		ImGui::SameLine();
-		if (ImGui::InputFloat3("Local Position", vPos)) {
-			vTranslate.x = vPos[0];
-			vTranslate.y = vPos[1];
-			vTranslate.z = vPos[2];
-			curPickedObj.lock()->GetTransform()->SetLocalPosition(vTranslate);
+			ImGui::Text("Transform");
+			ImGui::SameLine();
+			if (ImGui::InputFloat3("Local Position", vPos)) {
+				vTranslate.x = vPos[0];
+				vTranslate.y = vPos[1];
+				vTranslate.z = vPos[2];
+				curPickedObj.lock()->GetTransform()->SetLocalPosition(vTranslate);
+			}
+
+			ImGui::Text("Rotation");
+			ImGui::SameLine();
+			if (ImGui::InputFloat3("Local Rotation", vRot)) {
+				vRotation.x = vRot[0];
+				vRotation.y = vRot[1];
+				vRotation.z = vRot[2];
+				curPickedObj.lock()->GetTransform()->SetLocalRotation(vRotation);
+			}
+
+			ImGui::Text("Scale");
+			ImGui::SameLine();
+			if (ImGui::InputFloat3("Local Scale", vSca)) {
+				vScale.x = vSca[0];
+				vScale.y = vSca[1];
+				vScale.z = vSca[2];
+				curPickedObj.lock()->GetTransform()->SetLocalScale(vScale);
+			}
 		}
 
-		ImGui::Text("Rotation");
-		ImGui::SameLine();
-		if (ImGui::InputFloat3("Local Rotation", vRot)) {
-			vRotation.x = vRot[0];
-			vRotation.y = vRot[1];
-			vRotation.z = vRot[2];
-			curPickedObj.lock()->GetTransform()->SetLocalRotation(vRotation);
-		}
+		//Collider Button
+		{
+			auto collider = curPickedObj.lock()->GetCollider();
 
-		ImGui::Text("Scale");
-		ImGui::SameLine();
-		if (ImGui::InputFloat3("Local Scale", vSca)) {
-			vScale.x = vSca[0];
-			vScale.y = vSca[1];
-			vScale.z = vSca[2];
-			curPickedObj.lock()->GetTransform()->SetLocalScale(vScale);
+			if (collider != nullptr) {
+				Vec3 vOffset = collider->GetOffset();
+				float vOff[3] = { vOffset.x, vOffset.y, vOffset.z };
+				ImGui::Text("Offset");
+				ImGui::SameLine();
+				if (ImGui::InputFloat3("ColliderOffset", vOff)) {
+					vOffset.x = vOff[0];
+					vOffset.y = vOff[1];
+					vOffset.z = vOff[2];
+					collider->SetOffset(vOffset);
+				}
+			}
+			else {
+				if (ImGui::Button("Create AABB Collider")) {
+					curPickedObj.lock()->AddComponent(make_shared<AABBBoxCollider>());
+				}
+				if (ImGui::Button("Create Sphere Collider")) {
+					curPickedObj.lock()->AddComponent(make_shared<SphereCollider>());
+				}
+			}
 		}
 	}
 }

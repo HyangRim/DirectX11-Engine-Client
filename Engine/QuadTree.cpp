@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "BaseCollider.h"
 #include "SphereCollider.h"
+#include "AABBBoxCollider.h"
 
 int QuadTree::s_nextNodeId = 0;
 
@@ -404,9 +405,84 @@ RECT QuadTree::CalculateColliderScreenBounds(shared_ptr<GameObject> _object, sha
 	{
 	case ColliderType::Sphere:
 		return CalculateSphereScreenBounds(_object, _camera);
+	case ColliderType::AABB:
+		return CalculateColliderAABBScreenBounds(_object, _camera);
 	default:
 		return CalculateDefaultScreenBounds(_object, _camera);
 	}
+}
+
+RECT QuadTree::CalculateColliderAABBScreenBounds(shared_ptr<GameObject> _object, shared_ptr<Camera> _camera)
+{
+	auto aabbCollider = dynamic_pointer_cast<AABBBoxCollider>(_object->GetCollider());
+	if (!aabbCollider) return { -10000, -10000, -10000, -10000 };
+
+	// AABB의 실제 BoundingBox 사용
+	BoundingBox& boundingBox = aabbCollider->GetBoundingBox();
+	Vec3 center = boundingBox.Center;
+	Vec3 extents = boundingBox.Extents;
+
+	// AABB의 8개 꼭짓점 계산
+	vector<Vec3> corners = {
+		center + Vec3(-extents.x, -extents.y, -extents.z), // 좌하후
+		center + Vec3(+extents.x, -extents.y, -extents.z), // 우하후
+		center + Vec3(-extents.x, +extents.y, -extents.z), // 좌상후
+		center + Vec3(+extents.x, +extents.y, -extents.z), // 우상후
+		center + Vec3(-extents.x, -extents.y, +extents.z), // 좌하전
+		center + Vec3(+extents.x, -extents.y, +extents.z), // 우하전
+		center + Vec3(-extents.x, +extents.y, +extents.z), // 좌상전
+		center + Vec3(+extents.x, +extents.y, +extents.z)  // 우상전
+	};
+
+	// 모든 꼭짓점을 화면 좌표로 변환하여 최소/최대값 찾기
+	float minX = FLT_MAX, maxX = -FLT_MAX;
+	float minY = FLT_MAX, maxY = -FLT_MAX;
+	bool hasValidPoint = false;
+
+	for (const Vec3& corner : corners)
+	{
+		// 카메라 뒤에 있는 점 제외
+		Vec3 dirToCorner = corner - _camera->GetTransform()->GetPosition();
+		if (dirToCorner.Dot(_camera->GetTransform()->GetLook()) < 0)
+			continue;
+
+		Vec2 screenPos = WorldToScreen(corner, _camera);
+
+		// 유효한 화면 좌표인지 확인
+		Viewport viewport = GRAPHICS->GetViewport();
+		if (screenPos.x >= -1000 && screenPos.x <= viewport.GetWidth() + 1000 &&
+			screenPos.y >= -1000 && screenPos.y <= viewport.GetHeight() + 1000)
+		{
+			minX = min(minX, screenPos.x);
+			maxX = max(maxX, screenPos.x);
+			minY = min(minY, screenPos.y);
+			maxY = max(maxY, screenPos.y);
+			hasValidPoint = true;
+		}
+	}
+
+	// 유효한 점이 없으면 무효한 영역 반환
+	if (!hasValidPoint)
+	{
+		return { -10000, -10000, -10000, -10000 };
+	}
+
+	// 최소 크기 보장
+	float minSize = 4.0f;
+	if (maxX - minX < minSize)
+	{
+		float centerX = (minX + maxX) * 0.5f;
+		minX = centerX - minSize * 0.5f;
+		maxX = centerX + minSize * 0.5f;
+	}
+	if (maxY - minY < minSize)
+	{
+		float centerY = (minY + maxY) * 0.5f;
+		minY = centerY - minSize * 0.5f;
+		maxY = centerY + minSize * 0.5f;
+	}
+
+	return { (LONG)minX, (LONG)minY, (LONG)maxX, (LONG)maxY };
 }
 
 RECT QuadTree::CalculateSphereScreenBounds(shared_ptr<GameObject> _object, shared_ptr<Camera> _camera)
@@ -860,4 +936,173 @@ void QuadTree::DebugCoordinateTransform(const Vec2& _mousePos, shared_ptr<Camera
 
 	float error = sqrt(pow(_mousePos.x - backToScreen.x, 2) + pow(_mousePos.y - backToScreen.y, 2));
 	cout << "변환 오차: " << error << " 픽셀" << endl;
+}
+
+void QuadTree::CheckCollisionsInTree(shared_ptr<Camera> _camera, unordered_map<ULONG64, bool>& _collisionMap)
+{
+	if (!m_root) return;
+
+	unordered_set<ULONG64> processedPairs;
+
+	//노드 내부 충돌
+	CheckCollisionsInNode(m_root, _collisionMap, processedPairs);
+	//노드 경계 충돌. 
+	CheckBoundaryCollisions(m_root, _collisionMap, processedPairs);
+
+}
+
+void QuadTree::CheckCollisionsInNode(const unique_ptr<QuadTreeNode>& _node, unordered_map<ULONG64, bool>& _collisionMap, unordered_set<ULONG64>& _processedPairs)
+{
+	if (!_node) return;
+
+	// 현재 노드의 객체들끼리 충돌 검사
+	//노드 안에서, 한 노드에 최대 12개 MAX = 12 * 12 = 144
+	auto& objects = _node->objects;
+	for (size_t i = 0; i < objects.size(); ++i) {
+		if (!objects[i]->GetCollider() || !objects[i]->GetCollider()->GetActive())
+			continue;
+
+		for (size_t j = i + 1; j < objects.size(); ++j) {
+			if (!objects[j]->GetCollider() || !objects[j]->GetCollider()->GetActive())
+				continue;
+
+			ProcessCollisionPair(objects[i]->GetCollider(),
+				objects[j]->GetCollider(),
+				_collisionMap, _processedPairs);
+		}
+	}
+
+	// 자식 노드들 재귀적으로 검사
+	if (!_node->isLeaf) {
+		for (int i = 0; i < 4; ++i) {
+			CheckCollisionsInNode(_node->children[i], _collisionMap, _processedPairs);
+		}
+
+		// 인접한 자식 노드들 간의 교차 충돌 검사
+		for (int i = 0; i < 4; ++i) {
+			for (int j = i + 1; j < 4; ++j) {
+				CheckCrossNodeCollisions(_node->children[i], _node->children[j],
+					_collisionMap, _processedPairs);
+			}
+		}
+	}
+}
+
+void QuadTree::CheckCrossNodeCollisions(const unique_ptr<QuadTreeNode>& _node1, const unique_ptr<QuadTreeNode>& _node2, unordered_map<ULONG64, bool>& _collisionMap, unordered_set<ULONG64>& _processedPairs)
+{
+	if (!_node1 || !_node2) return;
+
+	// 두 노드가 인접한지 확인 (경계가 닿아있는지)
+	if (!AreNodesAdjacent(_node1->bounds, _node2->bounds)) return;
+
+	// 두 노드의 모든 객체 조합 검사
+	for (auto& obj1 : _node1->objects) {
+		if (!obj1->GetCollider() || !obj1->GetCollider()->GetActive()) continue;
+
+		for (auto& obj2 : _node2->objects) {
+			if (!obj2->GetCollider() || !obj2->GetCollider()->GetActive()) continue;
+
+			ProcessCollisionPair(obj1->GetCollider(), obj2->GetCollider(),
+				_collisionMap, _processedPairs);
+		}
+	}
+}
+
+void QuadTree::CheckBoundaryCollisions(const unique_ptr<QuadTreeNode>& _node, unordered_map<ULONG64, bool>& _collisionMap, unordered_set<ULONG64>& _processedPairs)
+{
+	if (!_node || _node->isLeaf) return;
+
+	// 경계를 넘나드는 큰 객체들을 찾아서 자식 노드들과 교차 검사
+	for (auto& obj : _node->objects) {
+		if (!obj->GetCollider() || !obj->GetCollider()->GetActive()) continue;
+
+		// 이 객체와 모든 자식 노드의 객체들 검사
+		for (int i = 0; i < 4; ++i) {
+			CheckObjectWithNode(obj, _node->children[i], _collisionMap, _processedPairs);
+		}
+	}
+
+	// 자식 노드들에 대해서도 재귀적으로 실행
+	for (int i = 0; i < 4; ++i) {
+		CheckBoundaryCollisions(_node->children[i], _collisionMap, _processedPairs);
+	}
+}
+
+void QuadTree::CheckObjectWithNode(shared_ptr<GameObject> _object, const unique_ptr<QuadTreeNode>& _node, unordered_map<ULONG64, bool>& _collisionMap, unordered_set<ULONG64>& _processedPairs)
+{
+	if (!_node || !_object->GetCollider()) return;
+
+	// 노드의 모든 객체와 충돌 검사
+	for (auto& nodeObj : _node->objects) {
+		if (!nodeObj->GetCollider() || !nodeObj->GetCollider()->GetActive()) continue;
+		if (nodeObj == _object) continue; // 자기 자신 제외
+
+		ProcessCollisionPair(_object->GetCollider(), nodeObj->GetCollider(),
+			_collisionMap, _processedPairs);
+	}
+
+	// 자식 노드들과도 검사
+	if (!_node->isLeaf) {
+		for (int i = 0; i < 4; ++i) {
+			CheckObjectWithNode(_object, _node->children[i], _collisionMap, _processedPairs);
+		}
+	}
+}
+
+bool QuadTree::AreNodesAdjacent(const RECT& _rect1, const RECT& _rect2)
+{
+	// 두 사각형이 인접한지 확인 (경계가 닿거나 겹치는지)
+	return !(_rect1.right < _rect2.left || _rect2.right < _rect1.left ||
+		_rect1.bottom < _rect2.top || _rect2.bottom < _rect1.top);
+}
+
+void QuadTree::ProcessCollisionPair(shared_ptr<BaseCollider> _collider1, shared_ptr<BaseCollider> _collider2, unordered_map<ULONG64, bool>& _collisionMap, unordered_set<ULONG64>& _processedPairs)
+{
+	//실체 충돌 처리가 이루어짐. 
+	
+	// ID 정렬하여 중복 방지
+	COLLIDER_ID id;
+	if (_collider1->GetID() < _collider2->GetID()) {
+		id.left_id = _collider1->GetID();
+		id.right_id = _collider2->GetID();
+	}
+	else {
+		id.left_id = _collider2->GetID();
+		id.right_id = _collider1->GetID();
+	}
+
+	// 이미 처리된 쌍인지 확인
+	if (_processedPairs.find(id.ID) != _processedPairs.end()) return;
+	_processedPairs.insert(id.ID);
+
+	// 충돌 상태 확인
+	auto colliderMapIter = _collisionMap.find(id.ID);
+	if (colliderMapIter == _collisionMap.end()) {
+		_collisionMap.insert(make_pair(id.ID, false));
+		colliderMapIter = _collisionMap.find(id.ID);
+	}
+
+	// 실제 충돌 검사 및 이벤트 처리
+	if (_collider1->Intersects(_collider2)) {
+		if (colliderMapIter->second == false) {
+			// 새로운 충돌
+			_collider1->GetGameObject()->OnCollisionEnter(_collider2->GetGameObject());
+			_collider2->GetGameObject()->OnCollisionEnter(_collider1->GetGameObject());
+			colliderMapIter->second = true;
+		}
+		else {
+			// 지속적인 충돌
+			_collider1->GetGameObject()->OnCollision(_collider2->GetGameObject());
+			_collider2->GetGameObject()->OnCollision(_collider1->GetGameObject());
+		}
+	}
+	else {//지금 충돌X, 이전 프레임 충돌 O
+		if (colliderMapIter->second == true) {
+			// 충돌 종료
+			_collider1->GetGameObject()->OnCollisionExit(_collider2->GetGameObject());
+			_collider2->GetGameObject()->OnCollisionExit(_collider1->GetGameObject());
+			colliderMapIter->second = false;
+		}
+	}
+
 }

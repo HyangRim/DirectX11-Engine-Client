@@ -224,6 +224,9 @@ void GameObject::OnCollision(shared_ptr<GameObject> _other)
 	if (GetRigidbody() != nullptr) {
 		GetRigidbody()->OnCollision(_other);
 	}
+#ifdef _DEBUG
+	std::cout << "Collision\n";
+#endif
 }
 
 void GameObject::OnCollisionEnter(shared_ptr<GameObject> _other)

@@ -2,6 +2,7 @@
 
 class Sky;
 class Camera;
+class BaseCollider;
 #include "QuadTree.h"
 
 union COLLIDER_ID {
@@ -45,7 +46,7 @@ public:
 	void SetSky(shared_ptr<Sky> _sky) { m_sky = _sky; }
 
 	void CheckCollision();
-
+	void CheckCollisionWithQuadTree();
 
 ///////쿼드 트리 테스트용//////////////
 
