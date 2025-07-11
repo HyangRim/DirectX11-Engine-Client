@@ -10,7 +10,12 @@ int QuadTree::s_nextNodeId = 0;
 
 
 QuadTreeNode::~QuadTreeNode() {
+	objects.clear();
 
+	for (int i = 0; i < 4; ++i) {
+		if (children[i])
+			children[i].reset();
+	}
 }
 
 QuadTree::QuadTree(float _screenWidth, float _screenHeight)

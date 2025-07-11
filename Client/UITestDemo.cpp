@@ -2,6 +2,7 @@
 #include "UITestDemo.h"
 #include "GeometryHelper.h"
 #include "Camera.h"
+#include "Scene.h"
 #include "GameObject.h"
 #include "CameraScript.h"
 #include "MeshRenderer.h"
@@ -197,8 +198,10 @@ void UITestDemo::Init()
 
 void UITestDemo::Update()
 {
+	
 }
 
 void UITestDemo::Render()
 {
 }
+

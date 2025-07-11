@@ -228,11 +228,15 @@ void GameObject::OnCollision(shared_ptr<GameObject> _other)
 
 void GameObject::OnCollisionEnter(shared_ptr<GameObject> _other)
 {
+#ifdef _DEBUG
 	std::cout << "CollisionEnter\n";
+#endif
 }
 
 void GameObject::OnCollisionExit(shared_ptr<GameObject> _other)
 {
+#ifdef _DEBUG
 	std::cout << "CollisionExit\n";
+#endif
 }
 

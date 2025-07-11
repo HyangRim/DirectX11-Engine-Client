@@ -59,6 +59,7 @@ public:
 	QuadTree* GetQuadTree() { return m_quadTree.get(); }
 	Ray CreateRayFromScreen(const Vec2& screenPos, shared_ptr<Camera> camera);
 
+	weak_ptr<GameObject> GetPickedObj() { return m_curPickedObj; }
 	
 ///////////////////////////////////////
 
@@ -77,5 +78,6 @@ private:
 	unordered_set<shared_ptr<GameObject>> m_Lights;
 
 	shared_ptr<Sky> m_sky;
+	weak_ptr<GameObject> m_curPickedObj;
 };
 

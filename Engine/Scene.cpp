@@ -31,8 +31,17 @@ void Scene::Update()
 
 	//PickUI();
 	//Pick();
+#ifdef _DEBUG
 	GameObjectsTest();
+#endif
+
+
 	PickObjectOrUI();
+
+//이 밑에다가 디버그용 
+#if _DEBUG
+	GUI->ShowPickedObj();
+#endif
 }
 
 void Scene::FixedUpdate()
@@ -390,7 +399,10 @@ shared_ptr<GameObject> Scene::PickObjectOrUI()
 	auto queryEnd = std::chrono::high_resolution_clock::now();
 
 	// 좌표 비교 디버깅 + 음수 좌표 필터링
+#if _DEBUG
 	cout << "=== 좌표 비교 디버깅 ===" << endl;
+#endif
+	
 
 	// 유효한 후보만 저장할 벡터
 	vector<shared_ptr<GameObject>> validCandidates;
@@ -412,6 +424,7 @@ shared_ptr<GameObject> Scene::PickObjectOrUI()
 			continue; // 이 객체는 후보에서 제외
 		}
 		
+#if _DEBUG
 		cout << "객체 " << ws2s(obj->GetName()) << ":" << endl;
 		cout << "  월드 좌표: (" << worldPos.x << ", " << worldPos.y << ", " << worldPos.z << ")" << endl;
 		cout << "  화면 좌표: (" << screenCenterX << ", " << screenCenterY << ")" << endl;
@@ -419,11 +432,12 @@ shared_ptr<GameObject> Scene::PickObjectOrUI()
 
 		cout << "  마우스와 거리: " << sqrt(pow(screenPt.x - screenCenterX, 2) +
 			pow(screenPt.y - screenCenterY, 2)) << endl;
-
+#endif
 		// 유효한 후보에 추가
 		validCandidates.push_back(obj);
 	}
 
+#if _DEBUG
 	// 성능 정보 출력 (수정된 후보 개수 반영)
 	const auto& stats = m_quadTree->GetStats();
 	cout << "=== 피킹 성능 정보 ===" << endl;
@@ -434,7 +448,7 @@ shared_ptr<GameObject> Scene::PickObjectOrUI()
 	cout << "효율성: " << (100.0f * validCandidates.size() / (m_gameObjects.size() / 2)) << "%" << endl;
 	cout << "쿼리 시간: " << stats.lastQueryTime.count() << "μs" << endl;
 	cout << "마우스 좌표 : " << screenPt.x << " , " << screenPt.y << endl;
-
+#endif
 	// 유효한 후보들만 대상으로 교차 검사
 	float minDistance = FLT_MAX;
 	shared_ptr<GameObject> picked;
@@ -454,12 +468,24 @@ shared_ptr<GameObject> Scene::PickObjectOrUI()
 		}
 	}
 
-	if (picked)
+	if (picked)//pick된 오브젝트. 
 	{
-		string name = ws2s(picked->GetName());
-		cout << name << " : picked (distance: " << minDistance << ")" << endl;
+		if (!ImGui::IsWindowHovered()) {
+			m_curPickedObj = picked;
+#if _DEBUG
+			string name = ws2s(picked->GetName());
+			cout << name << " : picked (distance: " << minDistance << ")" << endl;
+#endif
+		}
+	}
+	else {//버튼 눌렀으나 아무것도 picked되지 않았을 때. 
+		//그러면서 Imgui창에도 클릭하지 않았을 때. 
+		if (!ImGui::IsWindowHovered()) {
+			m_curPickedObj.reset();
+		}
 	}
 
+#if _DEBUG
 	// 디버그 정보
 	if (INPUT->GetButtonDown(KEY_TYPE::RBUTTON))
 	{
@@ -468,7 +494,7 @@ shared_ptr<GameObject> Scene::PickObjectOrUI()
 		m_quadTree->DebugDraw(camera);
 		m_quadTree->PrintDuplicates();
 	}
-
+#endif
 	return picked;
 }
 
@@ -539,9 +565,11 @@ void Scene::UpdateQuadTree()
 		auto buildEnd = std::chrono::high_resolution_clock::now();
 		auto buildTime = std::chrono::duration_cast<std::chrono::microseconds>(buildEnd - buildStart);
 
+#ifdef _DEBUG
 		cout << "쿼드트리 재구성: " << insertedCount << "/" << m_gameObjects.size()
 			<< " 객체, " << buildTime.count() << "μs" << endl;
 	}
+#endif
 }
 
 void Scene::GameObjectsTest()
