@@ -282,6 +282,9 @@
     <ClInclude Include="Text.h">
       <Filter>06. UI &amp; Effect\UI</Filter>
     </ClInclude>
+    <ClInclude Include="UIPanel.h">
+      <Filter>06. UI &amp; Effect\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -492,6 +495,9 @@
       <Filter>06. UI &amp; Effect\UI</Filter>
     </ClCompile>
     <ClCompile Include="Text.cpp">
+      <Filter>06. UI &amp; Effect\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPanel.cpp">
       <Filter>06. UI &amp; Effect\UI</Filter>
     </ClCompile>
   </ItemGroup>

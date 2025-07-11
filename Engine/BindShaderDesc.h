@@ -105,7 +105,8 @@ struct ParticleDesc {
 
 struct TextDesc {
 	Vec4 textColor;      // 16바이트
-	Vec4 outlineColor;   // 16바이트  
+	Vec4 outlineColor;   // 16바이트 
+	Vec4 backgroundColor;  // 배경색 추가
 	float textAlpha;     // 4바이트
 	float outlineWidth;  // 4바이트
 	Vec2 textPadding;    // 8바이트 (총 48바이트, 16바이트 정렬)

@@ -96,6 +96,9 @@ public:
 
     void DebugCoordinateTransform(const Vec2& _mousePos, shared_ptr<Camera> _camera);
 
+public:
+    unordered_set<shared_ptr<GameObject>> GetInsertedObject() { return m_insertedObjects; }
+
 //이 밑은 충돌 관련 함수들. 
 public:
     void CheckCollisionsInTree(shared_ptr<Camera> _camera, unordered_map<ULONG64, bool>& _collisionMap);
@@ -130,6 +133,7 @@ private:
         shared_ptr<BaseCollider> _collider2,
         unordered_map<ULONG64, bool>& _collisionMap,
         unordered_set<ULONG64>& _processedPairs);
+
 
 private:
     unique_ptr<QuadTreeNode> m_root;
