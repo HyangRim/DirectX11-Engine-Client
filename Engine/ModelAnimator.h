@@ -5,7 +5,7 @@ class Model;
 
 struct AnimTransform {
 
-    // 250개의 관절 정보를 담아줄 수 있음.
+    // 200개의 관절 정보를 담아줄 수 있음.
     using TransformArrayType = array<Matrix, MAX_BONE_TRANSFORMS>;
 
     //250개의 본 * 500개의 키프레임. 

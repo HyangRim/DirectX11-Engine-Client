@@ -5,7 +5,11 @@ class ImGuiManager
 
 public:
 	void Init();
+	void End();
 	void Update();
 	void Render();
+
+
+	void ShowPickedObj();
 };
 

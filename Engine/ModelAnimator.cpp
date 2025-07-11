@@ -155,8 +155,15 @@ void ModelAnimator::CreateTexture()
 	if (m_model->GetAnimationCount() == 0)
 		return;
 
+	uint32 actualBoneCount = m_model->GetBoneCount();
+	uint32 maxFrameCount = 0;
+
+
 	m_animTransform.resize(m_model->GetAnimationCount());
+
 	for (uint32 idx = 0; idx < m_model->GetAnimationCount(); ++idx) {
+		auto anim = m_model->GetAnimationByIndex(idx);
+		maxFrameCount = max(maxFrameCount, anim->m_frameCount);
 		CreateAnimationTransform(idx);
 	}
 
@@ -165,7 +172,7 @@ void ModelAnimator::CreateTexture()
 		D3D11_TEXTURE2D_DESC desc;
 		ZeroMemory(&desc, sizeof(D3D11_TEXTURE2D_DESC));
 		desc.Width = MAX_BONE_TRANSFORMS * 4;
-		desc.Height = MAX_MODEL_KEYFRAMES;
+		desc.Height = maxFrameCount;
 		desc.ArraySize = m_model->GetAnimationCount();
 		desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT; // 16바이트(최댓값)
 		desc.Usage = D3D11_USAGE_IMMUTABLE;
@@ -174,7 +181,7 @@ void ModelAnimator::CreateTexture()
 		desc.SampleDesc.Count = 1;
 
 		const uint32 dataSize = MAX_BONE_TRANSFORMS * sizeof(Matrix);
-		const uint32 pageSize = dataSize * MAX_MODEL_KEYFRAMES;
+		const uint32 pageSize = dataSize * maxFrameCount;
 
 		//C에서 사용하는 할당. 
 		//생성자 호출하느냐 마느냐 차이. 우리는 생성자 호출 필요 없어서. 
@@ -187,7 +194,7 @@ void ModelAnimator::CreateTexture()
 
 			BYTE* pageStartPtr = reinterpret_cast<BYTE*>(mallocPtr) + startOffset;
 
-			for (uint32 f = 0; f < MAX_MODEL_KEYFRAMES; f++)
+			for (uint32 f = 0; f < maxFrameCount; f++)
 			{
 				void* ptr = pageStartPtr + dataSize * f;
 				::memcpy(ptr, m_animTransform[c].transforms[f].data(), dataSize);
