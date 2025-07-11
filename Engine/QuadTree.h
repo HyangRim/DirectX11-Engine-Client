@@ -95,6 +95,9 @@ public:
 
     void DebugCoordinateTransform(const Vec2& _mousePos, shared_ptr<Camera> _camera);
 
+public:
+    unordered_set<shared_ptr<GameObject>> GetInsertedObject() { return m_insertedObjects; }
+
 private:
     unique_ptr<QuadTreeNode> m_root;
     float m_screenWidth;
