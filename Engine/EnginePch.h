@@ -36,9 +36,19 @@ using namespace std;
 #include <DirectXTex/DirectXTex.inl>
 using namespace DirectX;
 using namespace Microsoft::WRL;
-
 #include <FX11/d3dx11effect.h>
 
+//DX2D
+#include <d2d1.h>           // Direct2D 기본 API
+#include <d2d1helper.h>     // Direct2D 헬퍼 함수들
+#include <dwrite.h>         // DirectWrite (텍스트 렌더링용)
+#include <wincodec.h>       // Windows Imaging Component
+#include <d2d1_1.h>         // Direct2D 1.1 API (Windows 8+)
+#include <d2d1effects.h>    // Direct2D 이미지 효과 (Windows 8+)
+
+#pragma comment(lib, "d2d1.lib")
+#pragma comment(lib, "dwrite.lib")
+#pragma comment(lib, "windowscodecs.lib")
 
 // Assimp
 #include <Assimp/Importer.hpp>

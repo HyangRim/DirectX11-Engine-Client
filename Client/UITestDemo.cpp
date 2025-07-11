@@ -23,6 +23,7 @@
 #include "Terrain.h"
 #include "Sky.h"
 #include "Button.h"
+#include "Text.h"
 
 void UITestDemo::Init()
 {	
@@ -170,15 +171,45 @@ void UITestDemo::Init()
 			RESOURCES->Add(L"BtnImg", material);
 		}
 
-		// Mesh
+		// Button GameObject (부모)
 		{
-			auto obj = make_shared<GameObject>();
-			obj->AddComponent(make_shared<Button>());
-			obj->SetName(L"UI");
-			obj->GetButton()->Create(Vec2(100, 100), Vec2(100, 100), RESOURCES->Get<Material>(L"BtnImg"));
-			obj->GetButton()->AddOnClickedEvent([obj]() { std::wcout << obj->GetName() << " : picked\n"; });
-			obj->SetLayerIndex(LAYER_UI);
-			CUR_SCENE->Add(obj);
+			auto buttonObj = make_shared<GameObject>();
+			buttonObj->SetName(L"UI_Button");
+
+			// Button 컴포넌트 추가
+			buttonObj->AddComponent(make_shared<Button>());
+			buttonObj->GetButton()->Create(Vec2(100, 100), Vec2(100, 100), RESOURCES->Get<Material>(L"BtnImg"));
+
+
+			buttonObj->GetButton()->AddOnClickedEvent([buttonObj]() {
+				std::wcout << buttonObj->GetName() << " : clicked\n";
+				});
+
+			buttonObj->SetLayerIndex(LAYER_UI);
+			CURSCENE->Add(buttonObj);
+		}
+
+		// Text GameObject (별도 객체)
+		{
+			auto textObj = make_shared<GameObject>();
+			textObj->SetName(L"UI_Text");
+
+			// Text 컴포넌트 추가
+			shared_ptr<Text> textComponent = make_shared<Text>();
+			textObj->AddComponent(textComponent);
+
+			textComponent->Create(
+				Vec2(300, 400),                    // Button과 같은 위치
+				L"버튼 텍스트",                     // 텍스트
+				20.0f,                            // 크기
+				Vec4(1.0f, 1.0f, 1.0f, 1.0f),     // 흰색 글자
+				1.0f,                             // 투명도
+				Vec4(0.0f, 0.0f, 0.0f, 1.0f),     // 검은색 외곽선
+				2.0f                              // 외곽선 두께
+			);
+
+			textObj->SetLayerIndex(LAYER_UI);
+			CURSCENE->Add(textObj);
 		}
 	}
 
@@ -197,7 +228,7 @@ void UITestDemo::Init()
 		CURSCENE->Add(camera);
 		
 	}
-	
+	CURSCENE->Start();
 }
 
 void UITestDemo::Update()

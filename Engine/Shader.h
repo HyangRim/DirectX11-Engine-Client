@@ -72,6 +72,7 @@ public:
 	void PushSnowData(const SnowBillboardDesc& _desc);
 	void PushParticleData(const ParticleDesc& _desc);
 	void PushShadowData(const Matrix& _desc);
+	void PushTextData(const Vec4& textColor, const Vec4& outlineColor, float alpha, float outlineWidth);
 
 	vector<Technique>& GetTechniqes() { return m_techniques; }
 private:
@@ -120,6 +121,10 @@ private:
 	Matrix m_shadowDesc;
 	shared_ptr<ConstantBuffer<Matrix>> m_shadowBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> m_shadowEffectBuffer;
+
+	TextDesc m_textDesc;
+	shared_ptr<ConstantBuffer<TextDesc>> m_textBuffer;
+	ComPtr<ID3DX11EffectConstantBuffer> m_textEffectBuffer;
 };
 
 class ShaderManager

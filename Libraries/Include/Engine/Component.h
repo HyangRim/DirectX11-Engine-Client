@@ -19,6 +19,7 @@ enum class ComponentType : uint8 {
 	SnowBillboard,
 	ParticleSystem,
 	Rigidbody,
+	Text,
 	// ...
 	Script,
 	End

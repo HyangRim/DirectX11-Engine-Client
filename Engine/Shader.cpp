@@ -467,3 +467,21 @@ void Shader::PushShadowData(const Matrix& _desc)
 	m_shadowBuffer->CopyData(m_shadowDesc);
 	m_shadowEffectBuffer->SetConstantBuffer(m_shadowBuffer->GetComPtr().Get());
 }
+
+void Shader::PushTextData(const Vec4& textColor, const Vec4& outlineColor, float alpha, float outlineWidth)
+{
+	if (m_textBuffer == nullptr) {
+		m_textBuffer = make_shared<ConstantBuffer<TextDesc>>();
+		m_textBuffer->Create();
+		m_textEffectBuffer = GetConstantBuffer("TextMaterialBuffer");
+	}
+
+	m_textDesc.textColor = textColor;
+	m_textDesc.outlineColor = outlineColor;
+	m_textDesc.textAlpha = alpha;
+	m_textDesc.outlineWidth = outlineWidth;
+	m_textDesc.textPadding = Vec2(0, 0);
+
+	m_textBuffer->CopyData(m_textDesc);
+	m_textEffectBuffer->SetConstantBuffer(m_textBuffer->GetComPtr().Get());
+}

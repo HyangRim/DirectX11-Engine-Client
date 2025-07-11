@@ -30,7 +30,6 @@ void Camera::LateUpdate()
 }
 
 
-
 //카메라랑 연관있는 건 View와 Projection.
 
 //View는 당연히 카메라 좌표 기준에서 봐야하니까.
@@ -43,11 +42,12 @@ void Camera::UpdateMatrix()
 	
 	m_matView = ::XMMatrixLookAtLH(eyePosition, focusPosition, upDirection);
 
-
-	if (m_type == ProjectionType::Perspective) {
+	if (m_type == ProjectionType::Perspective) 
+	{
 		m_matProjection = s_MatProjection = ::XMMatrixPerspectiveFovLH(m_fov, m_width / m_height, m_near, m_far);
 	}
-	else {
+	else 
+	{
 		m_matProjection = s_MatProjection = ::XMMatrixOrthographicLH(m_width, m_height, m_near, m_far);
 	}
 }
@@ -61,13 +61,12 @@ void Camera::SortGameObject()
 	m_vecBackward.clear();
 
 	
-
 	if (m_type == ProjectionType::Perspective) 
 	{
 		int CullingObject = 0;
 	
 	
-		cout << "전체 오브젝트 : " << gameObjects.size() << "\n";
+		//cout << "전체 오브젝트 : " << gameObjects.size() << "\n";
 		//그려줄 것 선별하기. 
 		for (auto& object : gameObjects) 
 		{
@@ -75,7 +74,8 @@ void Camera::SortGameObject()
 				continue;
 
 			
-			if (scene->GetQuadTree()->IsObjectVisible(object, this) == false) {
+			if (scene->GetQuadTree()->IsObjectVisible(object, this) == false) 
+			{
 				CullingObject++;
 				continue;
 			}
@@ -103,15 +103,16 @@ void Camera::SortGameObject()
 
 			}
 
-			cout << "컬링 오브젝트 : " << CullingObject << "\n";
-			cout << "렌더링 오브젝트 : " << gameObjects.size() - CullingObject << "\n";
+			//cout << "컬링 오브젝트 : " << CullingObject << "\n";
+			//cout << "렌더링 오브젝트 : " << gameObjects.size() - CullingObject << "\n";
 		}
 
 	}
 	else
 	{
 		//그려줄 것 선별하기. 
-		for (auto& object : gameObjects) {
+		for (auto& object : gameObjects) 
+		{
 			if (IsCulled(object->GetLayerIndex()))
 				continue;
 
@@ -121,21 +122,20 @@ void Camera::SortGameObject()
 				continue;
 
 			shared_ptr<Material> material = renderer->GetMaterial();
+			
 			RenderQueue renderQueue = material->GetRenderQueue();
 
 			//TODO : 컷아웃용 정렬하기
 			//TODO : 거리에 따라 정렬하기
-
 			switch (renderQueue)
 			{
-			case RenderQueue::Opaque:
-			case RenderQueue::Cutout:
-				m_vecForward.push_back(object);
-				break;
-			case RenderQueue::Transparent:
-				m_vecBackward.push_back(object);
-				break;
-
+				case RenderQueue::Opaque:
+				case RenderQueue::Cutout:
+					m_vecForward.push_back(object);
+					break;
+				case RenderQueue::Transparent:
+					m_vecBackward.push_back(object);
+					break;
 			}
 		}
 	}

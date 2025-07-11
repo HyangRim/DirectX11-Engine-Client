@@ -22,6 +22,8 @@ public:
 private:
 	void CreateBuffers();
 
+
+
 private:
 	// Mesh
 	shared_ptr<Geometry<VertexTextureNormalTangentData>> m_geometry;

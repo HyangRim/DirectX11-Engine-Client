@@ -28,6 +28,9 @@
     <Filter Include="Game\UITest">
       <UniqueIdentifier>{2f2b6679-2636-4834-8b01-ef6f235af33b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Text">
+      <UniqueIdentifier>{878a2d81-db68-493c-a70e-c7928958eea6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -171,6 +174,9 @@
     </FxCompile>
     <FxCompile Include="..\Shaders\27. StructuredDemo.fx">
       <Filter>Shaders\Week5</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\TextShader.fx">
+      <Filter>Shaders\Text</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

@@ -18,6 +18,7 @@ class SnowBillboard;
 class ParticleSystem;
 class Renderer;
 class Rigidbody;
+class Text;
 
 
 class GameObject : public enable_shared_from_this<GameObject>
@@ -48,6 +49,7 @@ public:
 	shared_ptr<SnowBillboard> GetSnowBillboard();
 	shared_ptr<ParticleSystem> GetParticleSystem();
 	shared_ptr<Rigidbody> GetRigidbody();
+	shared_ptr<Text> GetText();
 
 	void AddComponent(shared_ptr<Component> _component);
 

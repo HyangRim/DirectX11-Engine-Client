@@ -52,6 +52,9 @@
     <Filter Include="06. UI &amp; Effect">
       <UniqueIdentifier>{40a25576-a952-4e0e-9400-71e6c577742e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. UI &amp; Effect\UI">
+      <UniqueIdentifier>{f11c8109-83ae-4516-875b-70908f08123b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -246,9 +249,6 @@
     <ClInclude Include="MathUtils.h">
       <Filter>99. Headers\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Button.h">
-      <Filter>06. UI &amp; Effect</Filter>
-    </ClInclude>
     <ClInclude Include="Billboard.h">
       <Filter>06. UI &amp; Effect</Filter>
     </ClInclude>
@@ -275,6 +275,12 @@
     </ClInclude>
     <ClInclude Include="QuadTree.h">
       <Filter>01. Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>06. UI &amp; Effect\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>06. UI &amp; Effect\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -458,9 +464,6 @@
     <ClCompile Include="MathUtils.cpp">
       <Filter>99. Headers\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Button.cpp">
-      <Filter>06. UI &amp; Effect</Filter>
-    </ClCompile>
     <ClCompile Include="Billboard.cpp">
       <Filter>06. UI &amp; Effect</Filter>
     </ClCompile>
@@ -484,6 +487,12 @@
     </ClCompile>
     <ClCompile Include="QuadTree.cpp">
       <Filter>01. Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>06. UI &amp; Effect\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>06. UI &amp; Effect\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

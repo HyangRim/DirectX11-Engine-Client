@@ -51,6 +51,8 @@ public:
 
     shared_ptr<Material> Clone();
 
+
+
 private:
     friend class MeshRenderer;
     MaterialDesc m_desc;

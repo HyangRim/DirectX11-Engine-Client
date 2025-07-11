@@ -102,3 +102,11 @@ struct ParticleDesc {
 	Vec3 emitDirW = Vec3(0, 0, 0);
 	float gameTime = 0.f;
 };
+
+struct TextDesc {
+	Vec4 textColor;      // 16바이트
+	Vec4 outlineColor;   // 16바이트  
+	float textAlpha;     // 4바이트
+	float outlineWidth;  // 4바이트
+	Vec2 textPadding;    // 8바이트 (총 48바이트, 16바이트 정렬)
+};

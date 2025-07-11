@@ -71,3 +71,4 @@ shared_ptr<Material> Material::Clone()
 
 	return material;
 }
+

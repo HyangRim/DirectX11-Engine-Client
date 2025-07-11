@@ -20,6 +20,7 @@
 #include "ParticleSystem.h"
 #include "Renderer.h"
 #include "Rigidbody.h"
+#include "Text.h"
 
 GameObject::GameObject()
 {
@@ -199,6 +200,12 @@ shared_ptr<Rigidbody> GameObject::GetRigidbody()
 {
 	shared_ptr<Component> component = GetFixedComponent(ComponentType::Rigidbody);
 	return static_pointer_cast<Rigidbody>(component);
+}
+
+shared_ptr<Text> GameObject::GetText()
+{
+	shared_ptr<Component> component = GetFixedComponent(ComponentType::Text);
+	return static_pointer_cast<Text>(component);
 }
 
 
