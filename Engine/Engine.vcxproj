@@ -317,7 +317,7 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     </ClCompile>
     <ClCompile Include="Primitive3D.cpp" />
     <ClCompile Include="RawBuffer.cpp" />
-    <ClCompile Include="BindShaderDescr.cpp" />
+    <ClCompile Include="BindShaderDesc.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="ResourceBase.cpp" />
     <ClCompile Include="ResourceManager.cpp" />

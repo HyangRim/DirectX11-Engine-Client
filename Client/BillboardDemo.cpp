@@ -32,7 +32,7 @@
 void BillboardDemo::Init()
 {
 	CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\snowcube1024.dds", L"Sky.fx"));
-	shared_ptr<Shader> renderShader = make_shared<Shader>(L"23. RenderDemo.fx");
+	shared_ptr<Shader> renderShader = make_shared<Shader>(L"FOW.fx");
 	
 	// Camera
 	auto camera = make_shared<GameObject>();

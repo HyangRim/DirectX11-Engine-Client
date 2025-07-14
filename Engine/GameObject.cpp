@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "GameObject.h"
-
 #include "Transform.h"
 #include "Component.h"
 #include "MonoBehaviour.h"
@@ -22,7 +21,6 @@
 #include "Rigidbody.h"
 #include "Text.h"
 #include "UIPanel.h"
-#include "TextButton.h"
 
 GameObject::GameObject()
 {
@@ -214,12 +212,6 @@ shared_ptr<UIPanel> GameObject::GetUIPanel()
 {
 	shared_ptr<Component> component = GetFixedComponent(ComponentType::UIPanel);
 	return static_pointer_cast<UIPanel>(component);
-}
-
-shared_ptr<TextButton> GameObject::GetTextButton()
-{
-	shared_ptr<Component> component = GetFixedComponent(ComponentType::TextButton);
-	return static_pointer_cast<TextButton>(component);
 }
 
 
