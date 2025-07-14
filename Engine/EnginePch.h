@@ -91,6 +91,7 @@ using namespace Microsoft::WRL;
 #include "ImGuiManager.h"
 #include "RenderManager.h"
 #include "SceneManager.h"
+#include "FOWShaderManager.h"
 
 
 // Engine

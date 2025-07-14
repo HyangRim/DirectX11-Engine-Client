@@ -61,10 +61,24 @@ public:
 		return static_pointer_cast<T>(GetFixedComponent(_type));
 	}
 
+	vector<shared_ptr<MonoBehaviour>>& GetScripts() { return m_scripts; }
+
 	//Collision 관련
 	virtual void OnCollision(shared_ptr<GameObject> _other);
 	virtual void OnCollisionEnter(shared_ptr<GameObject> _other);
 	virtual void OnCollisionExit(shared_ptr<GameObject> _other);
+
+
+	//FOW관련
+	void SetAlpha(float _alpha) {
+		if (abs(m_alpha - _alpha) > 0.01f) {
+			m_alpha = _alpha;
+			m_alphaChanged = true;
+		}
+	}
+	float GetAlpha() const { return m_alpha; }
+	bool HasAlphaChanged() const { return m_alphaChanged; }
+	void ResetAlphaChanged() { m_alphaChanged = false; }
 
 public:
 	void SetName(wstring _name) { m_Name = _name; }
@@ -73,14 +87,20 @@ public:
 protected:
 	wstring m_Name;
 
-
 	//고정된 배열. Component별 고정된 위치. 
 	array<shared_ptr<Component>, FIXED_COMPONENT_COUNT> m_components;
 
 	//스트립트는 따로. 
 	vector<shared_ptr<MonoBehaviour>> m_scripts;
 
-
 	uint8 m_layerIndex = 0;
+
+
+	
+private:
+	//FOW관련 코드. 
+	float m_alpha = 1.0f;
+	bool m_alphaChanged = false;
+
 };
 

@@ -27,6 +27,7 @@
 #include "ParticleSystem.h"
 #include "Sky.h"
 #include "Rigidbody.h"
+#include "FogOfWar.h"
 
 void BillboardDemo::Init()
 {
@@ -39,6 +40,8 @@ void BillboardDemo::Init()
 	//camera->GetTransform()->SetLocalRotation(Vec3{45.f, 0.f, 0.f});
 	camera->AddComponent(make_shared<Camera>());
 	camera->AddComponent(make_shared<CameraScript>());
+	camera->AddComponent(make_shared<FogOfWar>());
+
 	camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
 	CURSCENE->Add(camera);
 	
@@ -243,20 +246,10 @@ void BillboardDemo::Init()
 	{
 		// Animation
 		shared_ptr<Model> m1 = make_shared<Model>();
-		/*m1->ReadModel(L"Kachujin/Kachujin");
-		m1->ReadMaterial(L"Kachujin/Kachujin");
-		m1->ReadAnimation(L"Kachujin/Idle");*/
 
 		m1->ReadModel(L"Bianca2/Bianca");
 		m1->ReadMaterial(L"Bianca2/Bianca");
 		m1->ReadAnimation(L"Bianca2/Bianca_atk");
-
-		//m1->ReadModel(L"Aya/Aya");
-		//m1->ReadMaterial(L"Aya/Aya");
-		//m1->ReadAnimation(L"Aya/Aya_Run");
-		
-		//m1->ReadAnimation(L"Kachujin/Run");
-		//m1->ReadAnimation(L"Kachujin/Slash");
 
 		for (int32 i = 0; i < 1; i++)
 		{
