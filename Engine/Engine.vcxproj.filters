@@ -220,6 +220,9 @@
     <ClCompile Include="IFogOfWar.cpp">
       <Filter>00. Engine\Interface</Filter>
     </ClCompile>
+    <ClCompile Include="ImageUI.cpp">
+      <Filter>06. UI &amp; Effect\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Types.h">
@@ -455,6 +458,9 @@
     </ClInclude>
     <ClInclude Include="IFogOfWar.h">
       <Filter>00. Engine\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageUI.h">
+      <Filter>06. UI &amp; Effect\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

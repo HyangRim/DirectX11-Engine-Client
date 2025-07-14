@@ -6,6 +6,7 @@ class Mesh;
 class Texture;
 class Button;
 class Text;
+class ImageUI;
 
 class UIPanel : public Component
 {
