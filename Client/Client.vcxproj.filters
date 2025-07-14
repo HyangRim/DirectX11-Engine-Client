@@ -193,5 +193,8 @@
     <FxCompile Include="..\Shaders\FOW.fx">
       <Filter>Shaders\Common</Filter>
     </FxCompile>
+    <FxCompile Include="..\Shaders\ImageShader.fx">
+      <Filter>Shaders\Text</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

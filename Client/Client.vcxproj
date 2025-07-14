@@ -73,6 +73,7 @@
     <FxCompile Include="..\Shaders\29. SnowBillboard.fx" />
     <FxCompile Include="..\Shaders\DebugTexture.fx" />
     <FxCompile Include="..\Shaders\FOW.fx" />
+    <FxCompile Include="..\Shaders\ImageShader.fx" />
     <FxCompile Include="..\Shaders\ParticleSystem.fx" />
     <FxCompile Include="..\Shaders\Sky.fx" />
     <FxCompile Include="..\Shaders\TextShader.fx" />

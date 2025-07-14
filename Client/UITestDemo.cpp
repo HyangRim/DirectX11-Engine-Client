@@ -26,6 +26,9 @@
 #include "Text.h"
 #include "TextButton.h"
 #include "UIPanel.h"
+#include "ImageUI.h"
+
+void CreatePanelWithImageUI();
 
 void UITestDemo::Init()
 {	
@@ -184,36 +187,36 @@ void UITestDemo::Init()
 		RESOURCES->Add(L"PanelImg", panelMaterial);
 		
 
-		
-		// UIPanel GameObject 생성
-		auto panelObj = make_shared<GameObject>();
-		panelObj->SetName(L"MainUIPanel");
+		//
+		//// UIPanel GameObject 생성
+		//auto panelObj = make_shared<GameObject>();
+		//panelObj->SetName(L"MainUIPanel");
 
-		// UIPanel 컴포넌트 추가
-		auto uiPanel = make_shared<UIPanel>();
-		panelObj->AddComponent(uiPanel);
+		//// UIPanel 컴포넌트 추가
+		//auto uiPanel = make_shared<UIPanel>();
+		//panelObj->AddComponent(uiPanel);
 
-		// 패널 생성 (화면 중앙에 300x200 크기)
-		uiPanel->Create(Vec2(600, 400), Vec2(800, 600), panelMaterial);
+		//// 패널 생성 (화면 중앙에 300x200 크기)
+		//uiPanel->Create(Vec2(600, 400), Vec2(800, 600), panelMaterial);
 
-		// 씬에 추가
-		CURSCENE->Add(panelObj);
+		//// 씬에 추가
+		//CURSCENE->Add(panelObj);
 
 
-		
-		// 패널 내부에 텍스트들 추가
-		auto titleText = uiPanel->AddText(
-			Vec2(150, 30),                          // 패널 내 로컬 위치
-			L"게임 메뉴",                           // 텍스트 내용
-			50.0f,                                  // 폰트 크기
-			Vec4(1.0f, 1.0f, 1.0f, 1.0f),          // 흰색 글자
-			1.0f,                                   // 투명도
-			Vec4(0.0f, 0.0f, 0.0f, 1.0f),          // 검은색 외곽선
-			2.0f,                                   // 외곽선 두께
-			L"TitleText"                            // 텍스트 이름
-		);
-		
-		
+		//
+		//// 패널 내부에 텍스트들 추가
+		//auto titleText = uiPanel->AddText(
+		//	Vec2(150, 30),                          // 패널 내 로컬 위치
+		//	L"게임 메뉴",                           // 텍스트 내용
+		//	50.0f,                                  // 폰트 크기
+		//	Vec4(1.0f, 1.0f, 1.0f, 1.0f),          // 흰색 글자
+		//	1.0f,                                   // 투명도
+		//	Vec4(0.0f, 0.0f, 0.0f, 1.0f),          // 검은색 외곽선
+		//	2.0f,                                   // 외곽선 두께
+		//	L"TitleText"                            // 텍스트 이름
+		//);
+		//
+		//
 
 	
 		//// Button GameObject (부모)
@@ -260,17 +263,17 @@ void UITestDemo::Init()
 
 	{
 		
-		// UICamera
-		auto camera = make_shared<GameObject>();
-		camera->SetName(L"UICamera");
-		camera->GetTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
-		camera->AddComponent(make_shared<Camera>());
-		camera->GetCamera()->SetProjectionType(ProjectionType::Orthographic);
-		camera->GetCamera()->SetNear(1.0f);
-		camera->GetCamera()->SetFar(100.0f);
-		camera->GetCamera()->SetCullingMaskAll();
-		camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, false);
-		CURSCENE->Add(camera);
+		//// UICamera
+		//auto camera = make_shared<GameObject>();
+		//camera->SetName(L"UICamera");
+		//camera->GetTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
+		//camera->AddComponent(make_shared<Camera>());
+		//camera->GetCamera()->SetProjectionType(ProjectionType::Orthographic);
+		//camera->GetCamera()->SetNear(1.0f);
+		//camera->GetCamera()->SetFar(100.0f);
+		//camera->GetCamera()->SetCullingMaskAll();
+		//camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, false);
+		//CURSCENE->Add(camera);
 		
 	}
 	CURSCENE->Start();
@@ -289,3 +292,36 @@ void UITestDemo::ShowImguiTransform()
 {
 }
 
+// UIPanel에 ImageUI 추가 사용 예제
+void CreatePanelWithImageUI()
+{
+	// UIPanel GameObject 생성
+	{
+		auto panelObj = make_shared<GameObject>();
+		panelObj->SetName(L"UI_Panel");
+
+		// UIPanel 컴포넌트 추가
+		panelObj->AddComponent(make_shared<UIPanel>());
+		panelObj->GetUIPanel()->Create(Vec2(400, 300), Vec2(600, 400),
+			nullptr);
+
+		// 패널에 ImageUI 추가
+		auto imageUI = panelObj->GetUIPanel()->AddImageUI(Vec2(0, 0), L"MainImageUI");
+
+		// ImageUI에 이미지 레이어들 추가
+		imageUI->AddImageLayer(0, Vec2(400, 200), Vec2(106, 166),
+			RESOURCES->Get<Material>(L"BackImg"), 1);
+
+		imageUI->AddImageLayer(10, Vec2(400, 200), Vec2(122, 158),
+			RESOURCES->Get<Material>(L"NickyImg"), 1);
+
+		// 패널에 버튼도 추가 가능
+		auto button = panelObj->GetUIPanel()->AddButton(Vec2(100, 100), Vec2(80, 40),
+			RESOURCES->Get<Material>(L"BtnImg"), L"TestButton");
+
+
+
+		panelObj->SetLayerIndex(LAYER_UI);
+		CURSCENE->Add(panelObj);
+	}
+}
