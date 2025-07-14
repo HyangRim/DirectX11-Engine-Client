@@ -22,6 +22,7 @@ enum class ComponentType : uint8 {
 	Text,
 	UIPanel,
 	TextButton,
+	Image,
 	// ...
 	Script,
 	End

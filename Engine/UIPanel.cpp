@@ -9,6 +9,7 @@
 #include "Button.h"
 #include "Text.h"
 #include "GameObject.h"
+#include "ImageUI.h"
 
 UIPanel::UIPanel() : Super(ComponentType::UIPanel)
 {
@@ -16,6 +17,21 @@ UIPanel::UIPanel() : Super(ComponentType::UIPanel)
 
 UIPanel::~UIPanel()
 {
+    //// Scene이 유효한지 확인
+    //if (CURSCENE) {
+    //    for (auto& child : m_childElements) {
+    //        if (child) {
+    //            // 객체가 실제로 Scene에 존재하는지 확인
+    //            const auto& objects = CURSCENE->GetObjects();
+    //            if (objects.find(child) != objects.end()) {
+    //                CURSCENE->Remove(child);
+    //            }
+    //        }
+    //    }
+    //}
+    //
+    //m_childElements.clear();
+    //m_namedElements.clear();
 }
 
 void UIPanel::Init()
@@ -61,11 +77,12 @@ void UIPanel::Create(Vec2 screenPos, Vec2 size, shared_ptr<Material> backgroundM
     // 배경 머티리얼 설정
     if (backgroundMaterial) {
         m_backgroundMaterial = backgroundMaterial;
+        go->GetMeshRenderer()->SetMaterial(m_backgroundMaterial);
     }
     else {
         // 기본 배경 머티리얼 생성
         m_backgroundMaterial = make_shared<Material>();
-        auto shader = make_shared<Shader>(L"23. RenderDemo.fx");
+        auto shader = make_shared<Shader>(L"ImageShader.fx");
         m_backgroundMaterial->SetShader(shader);
         m_backgroundMaterial->SetRenderQueue(RenderQueue::Transparent);
 
@@ -73,8 +90,8 @@ void UIPanel::Create(Vec2 screenPos, Vec2 size, shared_ptr<Material> backgroundM
         MaterialDesc& desc = m_backgroundMaterial->GetMaterialDesc();
         desc.ambient = m_backgroundColor;
         desc.diffuse = m_backgroundColor;
-        desc.specular = Vec4(0.0f, 0.0f, 0.0f, 1.0f);
-        desc.emissive = Vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        desc.specular = Vec4(0.0f, 0.0f, 0.0f, 0.0f);
+        desc.emissive = Vec4(0.0f, 0.0f, 0.0f, 0.0f);
     }
 
     go->GetMeshRenderer()->SetMaterial(m_backgroundMaterial);
@@ -195,6 +212,39 @@ shared_ptr<Text> UIPanel::AddText(Vec2 localPos, const wstring& text, float font
     return textComponent;
 }
 
+shared_ptr<ImageUI> UIPanel::AddImageUI(Vec2 localPos, const wstring& name)
+{
+    // ImageUI GameObject 생성
+    auto imageUIObj = make_shared<GameObject>();
+    imageUIObj->SetName(name);
+
+    // ImageUI 컴포넌트 추가
+    auto imageUIComponent = make_shared<ImageUI>();
+    imageUIObj->AddComponent(imageUIComponent);
+
+    // 월드 좌표로 변환하여 위치 설정
+    Vec2 worldPos = LocalToWorldPosition(localPos);
+
+    float height = GRAPHICS->GetViewport().GetHeight();
+    float width = GRAPHICS->GetViewport().GetWidth();
+
+    float x = worldPos.x - width / 2.0f;
+    float y = height / 2.0f - worldPos.y;
+
+    imageUIObj->GetTransform()->SetPosition(Vec3(x, y, -0.05f)); // 패널과 버튼 사이
+
+    imageUIObj->SetLayerIndex(LAYER_UI);
+
+    // 자식 요소로 등록
+    m_childElements.push_back(imageUIObj);
+    m_namedElements[name] = imageUIObj;
+
+    // 씬에 추가
+    CURSCENE->Add(imageUIObj);
+
+    return imageUIComponent;
+}
+
 void UIPanel::RemoveUIElement(const wstring& name)
 {
     auto it = m_namedElements.find(name);
@@ -229,6 +279,11 @@ shared_ptr<Text> UIPanel::GetText(const wstring& name)
         return it->second->GetText();
     }
     return nullptr;
+}
+
+shared_ptr<ImageUI> UIPanel::GetImageUI(const wstring& name)
+{
+    return shared_ptr<ImageUI>();
 }
 
 void UIPanel::CreatePanelBackground()

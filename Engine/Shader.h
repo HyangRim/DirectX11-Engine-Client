@@ -74,6 +74,7 @@ public:
 	void PushShadowData(const Matrix& _desc);
 	void PushTextData(const Vec4& textColor, const Vec4& outlineColor, float alpha, float outlineWidth);
 	vector<Technique>& GetTechniqes() { return m_techniques; }
+
 private:
 	//어떤 정보를 넣으려거든 이 삼총사. 
 	GlobalDesc m_globalDesc;

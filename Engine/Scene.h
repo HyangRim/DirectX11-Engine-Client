@@ -15,6 +15,7 @@ union COLLIDER_ID {
 
 class Scene
 {
+
 public:
 	virtual void Start();
 	virtual void Update();

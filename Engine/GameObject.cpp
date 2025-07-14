@@ -22,7 +22,7 @@
 #include "Rigidbody.h"
 #include "Text.h"
 #include "UIPanel.h"
-#include "TextButton.h"
+#include "ImageUI.h"
 
 GameObject::GameObject()
 {
@@ -216,11 +216,13 @@ shared_ptr<UIPanel> GameObject::GetUIPanel()
 	return static_pointer_cast<UIPanel>(component);
 }
 
-shared_ptr<TextButton> GameObject::GetTextButton()
+shared_ptr<ImageUI> GameObject::GetImageUI()
 {
-	shared_ptr<Component> component = GetFixedComponent(ComponentType::TextButton);
-	return static_pointer_cast<TextButton>(component);
+	shared_ptr<Component> component = GetFixedComponent(ComponentType::Image);
+	return static_pointer_cast<ImageUI>(component);
 }
+
+
 
 
 void GameObject::AddComponent(shared_ptr<Component> _component)

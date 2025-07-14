@@ -31,11 +31,15 @@ public:
         Vec4 color = Vec4(1, 1, 1, 1), float alpha = 1.0f,
         Vec4 outlineColor = Vec4(0, 0, 0, 1), float outlineWidth = 1.0f,
         const wstring& name = L"Text");
+    // ImageUI 추가 함수
+    shared_ptr<ImageUI> AddImageUI(Vec2 localPos, const wstring& name = L"ImageUI");
 
     // UI 요소 관리
     void RemoveUIElement(const wstring& name);
     shared_ptr<Button> GetButton(const wstring& name);
     shared_ptr<Text> GetText(const wstring& name);
+    shared_ptr<ImageUI> GetImageUI(const wstring& name);
+
 
     // Getter 함수들
     const Vec2& GetPosition() const { return m_position; }
@@ -53,7 +57,7 @@ private:
 private:
     Vec2 m_position = Vec2(0.0f, 0.0f);
     Vec2 m_size = Vec2(200.0f, 150.0f);
-    Vec4 m_backgroundColor = Vec4(0.2f, 0.2f, 0.2f, 0.8f);
+    Vec4 m_backgroundColor = Vec4(0.f);
     bool m_visible = true;
 
     // 배경 렌더링용

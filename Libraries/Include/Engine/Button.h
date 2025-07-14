@@ -8,7 +8,7 @@ public:
 	virtual ~Button();
 
 	bool Picked(POINT _screenPos);
-	void Create(Vec2 _screenPos, Vec2 _size, shared_ptr<class Material> _material);
+	void Create(Vec2 _screenPos, Vec2 _size, shared_ptr<class Material> _material, uint32 _pass = 0);
 
 	void AddOnClickedEvent(std::function<void(void)> _func);
 	void InvokeOnClicked();
@@ -16,6 +16,7 @@ private:
 
 	std::function<void(void)> m_onClicked;
 	RECT m_rect;
+	uint32 m_pass;
 };
 
 //인게임, 설계, 매니저등이 중요함

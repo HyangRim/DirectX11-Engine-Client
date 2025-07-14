@@ -2,6 +2,7 @@
 #include "Button.h"
 #include "MeshRenderer.h"
 #include "Material.h"
+#include "ImageUI.h"
 
 Button::Button() : Super(ComponentType::Button)
 {
@@ -16,7 +17,8 @@ bool Button::Picked(POINT _screenPos)
 	return ::PtInRect(&m_rect, _screenPos);
 }
 
-void Button::Create(Vec2 _screenPos, Vec2 _size, shared_ptr<class Material> _material)
+
+void Button::Create(Vec2 _screenPos, Vec2 _size, shared_ptr<class Material> _material, uint32 _pass)
 {
 	auto go = m_gameObject.lock();
 
@@ -41,7 +43,7 @@ void Button::Create(Vec2 _screenPos, Vec2 _size, shared_ptr<class Material> _mat
 	
 	auto mesh = RESOURCES->Get<Mesh>(L"Quad");
 	go->GetMeshRenderer()->SetMesh(mesh);
-	go->GetMeshRenderer()->SetPass(0);
+	go->GetMeshRenderer()->SetPass(_pass);
 
 	//Picking;
 	m_rect.left = static_cast<LONG>(_screenPos.x - _size.x / 2.f);

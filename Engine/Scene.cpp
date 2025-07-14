@@ -12,6 +12,7 @@
 #include "SphereCollider.h"
 #include "AABBBoxCollider.h"
 
+
 void Scene::Start()
 {
 	//충돌 판정 초기화. 
@@ -169,7 +170,15 @@ void Scene::Add(shared_ptr<GameObject> _object)
 
 void Scene::Remove(shared_ptr<GameObject> _object)
 {
-	m_gameObjects.erase(_object);
+	if (!_object) return;
+
+	// find를 사용하여 존재 여부 확인 후 제거
+	auto it = m_gameObjects.find(_object);
+	if (it != m_gameObjects.end()) {
+		m_gameObjects.erase(it);
+	}
+
+	// 카메라와 라이트는 erase가 안전함 (존재하지 않으면 무시)
 	m_cameras.erase(_object);
 	m_Lights.erase(_object);
 }

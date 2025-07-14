@@ -220,7 +220,6 @@ DepthStencilState NoDepthWrites
 };
 
 
-
 ///////////////////
 //     Macro     //
 ///////////////////
