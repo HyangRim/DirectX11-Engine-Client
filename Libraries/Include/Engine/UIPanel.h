@@ -1,0 +1,67 @@
+#pragma once
+#include "Component.h"
+
+class Material;
+class Mesh;
+class Texture;
+class Button;
+class Text;
+
+class UIPanel : public Component
+{
+    using Super = Component;
+
+public:
+    UIPanel();
+    virtual ~UIPanel();
+
+    virtual void Init() override;
+    virtual void Update() override;
+
+    // 패널 설정 함수들
+    void SetPosition(const Vec2& position);
+    void SetSize(const Vec2& size);
+    void SetBackgroundColor(const Vec4& color);
+    void SetBackgroundTexture(shared_ptr<Texture> texture);
+    void SetVisible(bool visible);
+
+    // UI 요소 추가 함수들
+    shared_ptr<Button> AddButton(Vec2 localPos, Vec2 size, shared_ptr<Material> material, const wstring& name = L"Button");
+    shared_ptr<Text> AddText(Vec2 localPos, const wstring& text, float fontSize = 16.0f,
+        Vec4 color = Vec4(1, 1, 1, 1), float alpha = 1.0f,
+        Vec4 outlineColor = Vec4(0, 0, 0, 1), float outlineWidth = 1.0f,
+        const wstring& name = L"Text");
+
+    // UI 요소 관리
+    void RemoveUIElement(const wstring& name);
+    shared_ptr<Button> GetButton(const wstring& name);
+    shared_ptr<Text> GetText(const wstring& name);
+
+    // Getter 함수들
+    const Vec2& GetPosition() const { return m_position; }
+    const Vec2& GetSize() const { return m_size; }
+    bool IsVisible() const { return m_visible; }
+
+    // 패널 생성 함수
+    void Create(Vec2 screenPos, Vec2 size, shared_ptr<Material> backgroundMaterial = nullptr);
+
+private:
+    void CreatePanelBackground();
+    void UpdateChildPositions();
+    Vec2 LocalToWorldPosition(const Vec2& localPos);
+
+private:
+    Vec2 m_position = Vec2(0.0f, 0.0f);
+    Vec2 m_size = Vec2(200.0f, 150.0f);
+    Vec4 m_backgroundColor = Vec4(0.2f, 0.2f, 0.2f, 0.8f);
+    bool m_visible = true;
+
+    // 배경 렌더링용
+    shared_ptr<Texture> m_backgroundTexture;
+    shared_ptr<Material> m_backgroundMaterial;
+    shared_ptr<Mesh> m_backgroundMesh;
+
+    // 자식 UI 요소들
+    vector<shared_ptr<GameObject>> m_childElements;
+    map<wstring, shared_ptr<GameObject>> m_namedElements;
+};

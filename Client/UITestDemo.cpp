@@ -24,6 +24,8 @@
 #include "Sky.h"
 #include "Button.h"
 #include "Text.h"
+#include "TextButton.h"
+#include "UIPanel.h"
 
 void UITestDemo::Init()
 {	
@@ -160,58 +162,100 @@ void UITestDemo::Init()
 	// UI
 	{
 		// Material
-		{
-			shared_ptr<Material> material = make_shared<Material>();
-			material->SetShader(renderShader);
-			auto texture = RESOURCES->Load<Texture>(L"BtnImg", L"..\\Resources\\Textures\\UI_Btn\\Img_Item_Slot_Legendary.png");
-			material->SetDiffuseMap(texture);
-			MaterialDesc& desc = material->GetMaterialDesc();
-			desc.ambient = Vec4(1.f);
-			desc.diffuse = Vec4(1.f);
-			desc.specular = Vec4(1.f);
-			RESOURCES->Add(L"BtnImg", material);
-		}
+		
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(renderShader);
+		auto texture = RESOURCES->Load<Texture>(L"BtnImg", L"..\\Resources\\Textures\\UI_Btn\\Img_Item_Slot_Legendary.png");
+		material->SetDiffuseMap(texture);
+		MaterialDesc& desc = material->GetMaterialDesc();
+		desc.ambient = Vec4(1.f);
+		desc.diffuse = Vec4(1.f);
+		desc.specular = Vec4(1.f);
+		RESOURCES->Add(L"BtnImg", material);
 
-		// Button GameObject (부모)
-		{
-			auto buttonObj = make_shared<GameObject>();
-			buttonObj->SetName(L"UI_Button");
+		shared_ptr<Material> panelMaterial = make_shared<Material>();
+		panelMaterial->SetShader(renderShader);
+		auto texture2 = RESOURCES->Load<Texture>(L"PanelImg", L"..\\Resources\\Textures\\UI_Btn\\Img_Item_Slot_Common_MouseOver.png");
+		panelMaterial->SetDiffuseMap(texture2);
+		MaterialDesc& panelDesc = panelMaterial->GetMaterialDesc();
+		panelDesc.ambient = Vec4(0.3f, 0.3f, 0.3f, 0.9f);
+		panelDesc.diffuse = Vec4(0.3f, 0.3f, 0.3f, 0.9f);
+		panelDesc.specular = Vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		RESOURCES->Add(L"PanelImg", panelMaterial);
+		
 
-			// Button 컴포넌트 추가
-			buttonObj->AddComponent(make_shared<Button>());
-			buttonObj->GetButton()->Create(Vec2(100, 100), Vec2(100, 100), RESOURCES->Get<Material>(L"BtnImg"));
+		
+		// UIPanel GameObject 생성
+		auto panelObj = make_shared<GameObject>();
+		panelObj->SetName(L"MainUIPanel");
+
+		// UIPanel 컴포넌트 추가
+		auto uiPanel = make_shared<UIPanel>();
+		panelObj->AddComponent(uiPanel);
+
+		// 패널 생성 (화면 중앙에 300x200 크기)
+		uiPanel->Create(Vec2(600, 400), Vec2(800, 600), panelMaterial);
+
+		// 씬에 추가
+		CURSCENE->Add(panelObj);
 
 
-			buttonObj->GetButton()->AddOnClickedEvent([buttonObj]() {
-				std::wcout << buttonObj->GetName() << " : clicked\n";
-				});
+		
+		// 패널 내부에 텍스트들 추가
+		auto titleText = uiPanel->AddText(
+			Vec2(150, 30),                          // 패널 내 로컬 위치
+			L"게임 메뉴",                           // 텍스트 내용
+			50.0f,                                  // 폰트 크기
+			Vec4(1.0f, 1.0f, 1.0f, 1.0f),          // 흰색 글자
+			1.0f,                                   // 투명도
+			Vec4(0.0f, 0.0f, 0.0f, 1.0f),          // 검은색 외곽선
+			2.0f,                                   // 외곽선 두께
+			L"TitleText"                            // 텍스트 이름
+		);
+		
+		
 
-			buttonObj->SetLayerIndex(LAYER_UI);
-			CURSCENE->Add(buttonObj);
-		}
+	
+		//// Button GameObject (부모)
+		//{
+		//	auto buttonObj = make_shared<GameObject>();
+		//	buttonObj->SetName(L"UI_Button");
 
-		// Text GameObject (별도 객체)
-		{
-			auto textObj = make_shared<GameObject>();
-			textObj->SetName(L"UI_Text");
+		//	// Button 컴포넌트 추가
+		//	buttonObj->AddComponent(make_shared<Button>());
+		//	buttonObj->GetButton()->Create(Vec2(100, 100), Vec2(100, 100), RESOURCES->Get<Material>(L"BtnImg"));
 
-			// Text 컴포넌트 추가
-			shared_ptr<Text> textComponent = make_shared<Text>();
-			textObj->AddComponent(textComponent);
 
-			textComponent->Create(
-				Vec2(300, 400),                    // Button과 같은 위치
-				L"버튼 텍스트",                     // 텍스트
-				20.0f,                            // 크기
-				Vec4(1.0f, 1.0f, 1.0f, 1.0f),     // 흰색 글자
-				1.0f,                             // 투명도
-				Vec4(0.0f, 0.0f, 0.0f, 1.0f),     // 검은색 외곽선
-				2.0f                              // 외곽선 두께
-			);
+		//	buttonObj->GetButton()->AddOnClickedEvent([buttonObj]() {
+		//		std::wcout << buttonObj->GetName() << " : clicked\n";
+		//		});
 
-			textObj->SetLayerIndex(LAYER_UI);
-			CURSCENE->Add(textObj);
-		}
+		//	buttonObj->SetLayerIndex(LAYER_UI);
+		//	CURSCENE->Add(buttonObj);
+		//}
+
+		//// Text GameObject (별도 객체)
+		//{
+		//	auto textObj = make_shared<GameObject>();
+		//	textObj->SetName(L"UI_Text");
+
+		//	// Text 컴포넌트 추가
+		//	shared_ptr<Text> textComponent = make_shared<Text>();
+		//	textObj->AddComponent(textComponent);
+
+		//	textComponent->Create(
+		//		Vec2(300, 400),                    // Button과 같은 위치
+		//		L"버튼 텍스트",                     // 텍스트
+		//		20.0f,                            // 크기
+		//		Vec4(1.0f, 1.0f, 1.0f, 1.0f),     // 흰색 글자
+		//		1.0f,                             // 투명도
+		//		Vec4(0.0f, 0.0f, 0.0f, 1.0f),     // 검은색 외곽선
+		//		2.0f                              // 외곽선 두께
+		//	);
+
+		//	textObj->SetLayerIndex(LAYER_UI);
+		//	CURSCENE->Add(textObj);
+		//}
 	}
 
 	{
@@ -238,6 +282,10 @@ void UITestDemo::Update()
 }
 
 void UITestDemo::Render()
+{
+}
+
+void UITestDemo::ShowImguiTransform()
 {
 }
 

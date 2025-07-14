@@ -20,6 +20,8 @@ enum class ComponentType : uint8 {
 	ParticleSystem,
 	Rigidbody,
 	Text,
+	UIPanel,
+	TextButton,
 	// ...
 	Script,
 	End

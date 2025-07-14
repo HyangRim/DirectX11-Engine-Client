@@ -108,7 +108,7 @@ float4 PS_OutlineText(PixelInput input) : SV_TARGET
     }
     else
     {
-        // 완전 투명 영역
+       
         discard;
     }
     

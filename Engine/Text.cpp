@@ -224,8 +224,8 @@ void Text::CreateTextTexture()
     memset(pixels, 0, m_textWidth * m_textHeight * 4);
 
     // 텍스트 렌더링 설정 (흰색으로 렌더링)
-    SetTextColor(hdc, RGB(255, 255, 255));
-    SetBkMode(hdc, TRANSPARENT);
+    ::SetTextColor(hdc, RGB(255, 255, 255));
+    ::SetBkMode(hdc, TRANSPARENT);
 
     // 텍스트를 중앙에 그리기
     int textX = (m_textWidth - textSize.cx) / 2;
