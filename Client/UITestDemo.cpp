@@ -26,16 +26,12 @@
 #include "Text.h"
 #include "TextButton.h"
 #include "UIPanel.h"
-#include "ImageUI.h"
-
-void CreateImageUIExample();
-void CreatePanelWithImageUI();
 
 void UITestDemo::Init()
 {	
 //	CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\snowcube1024.dds", L"Sky.fx"));
-	shared_ptr<Shader> renderShader = make_shared<Shader>(L"23. RenderDemo.fx");
-	shared_ptr<Shader> imageShader = make_shared<Shader>(L"ImageShader.fx");
+	//shared_ptr<Shader> renderShader = make_shared<Shader>(L"23. RenderDemo.fx");
+	shared_ptr<Shader> renderShader = make_shared<Shader>(L"FOW.fx");
 	{
 		// Camera
 		auto camera = make_shared<GameObject>();
@@ -186,34 +182,40 @@ void UITestDemo::Init()
 		panelDesc.diffuse = Vec4(0.3f, 0.3f, 0.3f, 0.9f);
 		panelDesc.specular = Vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		RESOURCES->Add(L"PanelImg", panelMaterial);
+		
 
-		shared_ptr<Material> nicky = make_shared<Material>();
-		nicky->SetShader(imageShader);
-		auto texture3 = RESOURCES->Load<Texture>(L"NickyImg", L"..\\Resources\\Textures\\UI_Select\\CharLobby_Nicky_S000.png");
-		nicky->SetDiffuseMap(texture3);
-		MaterialDesc& nickyDesc = nicky->GetMaterialDesc();
-		nickyDesc.ambient = Vec4(1.f);
-		nickyDesc.diffuse = Vec4(1.f);
-		nickyDesc.specular = Vec4(1.0f);
-		RESOURCES->Add(L"NickyImg", nicky);
+		
+		// UIPanel GameObject 생성
+		auto panelObj = make_shared<GameObject>();
+		panelObj->SetName(L"MainUIPanel");
 
-		shared_ptr<Material> backGround = make_shared<Material>();
-		backGround->SetShader(imageShader);
-		auto texture4 = RESOURCES->Load<Texture>(L"BackImg", L"..\\Resources\\Textures\\UI_Select\\Img_Slot_Character_Route.png");
-		backGround->SetDiffuseMap(texture4);
-		MaterialDesc& backGroundDesc = backGround->GetMaterialDesc();
-		backGroundDesc.ambient = Vec4(1.f);
-		backGroundDesc.diffuse = Vec4(1.f);
-		backGroundDesc.specular = Vec4(1.0f);
-		RESOURCES->Add(L"BackImg", backGround);
+		// UIPanel 컴포넌트 추가
+		auto uiPanel = make_shared<UIPanel>();
+		panelObj->AddComponent(uiPanel);
+
+		// 패널 생성 (화면 중앙에 300x200 크기)
+		uiPanel->Create(Vec2(600, 400), Vec2(800, 600), panelMaterial);
+
+		// 씬에 추가
+		CURSCENE->Add(panelObj);
 
 
+		
+		// 패널 내부에 텍스트들 추가
+		auto titleText = uiPanel->AddText(
+			Vec2(150, 30),                          // 패널 내 로컬 위치
+			L"게임 메뉴",                           // 텍스트 내용
+			50.0f,                                  // 폰트 크기
+			Vec4(1.0f, 1.0f, 1.0f, 1.0f),          // 흰색 글자
+			1.0f,                                   // 투명도
+			Vec4(0.0f, 0.0f, 0.0f, 1.0f),          // 검은색 외곽선
+			2.0f,                                   // 외곽선 두께
+			L"TitleText"                            // 텍스트 이름
+		);
+		
+		
 
-		CreatePanelWithImageUI();
-
-
-
-
+	
 		//// Button GameObject (부모)
 		//{
 		//	auto buttonObj = make_shared<GameObject>();
@@ -221,7 +223,7 @@ void UITestDemo::Init()
 
 		//	// Button 컴포넌트 추가
 		//	buttonObj->AddComponent(make_shared<Button>());
-		//	buttonObj->GetButton()->Create(Vec2(100, 100), Vec2(106, 166), RESOURCES->Get<Material>(L"BackImg"), 1);
+		//	buttonObj->GetButton()->Create(Vec2(100, 100), Vec2(100, 100), RESOURCES->Get<Material>(L"BtnImg"));
 
 
 		//	buttonObj->GetButton()->AddOnClickedEvent([buttonObj]() {
@@ -231,27 +233,6 @@ void UITestDemo::Init()
 		//	buttonObj->SetLayerIndex(LAYER_UI);
 		//	CURSCENE->Add(buttonObj);
 		//}
-
-
-		//// Button GameObject (자식)
-		//{
-		//	auto buttonObj = make_shared<GameObject>();
-		//	buttonObj->SetName(L"UI_Button2");
-
-		//	// Button 컴포넌트 추가
-		//	buttonObj->AddComponent(make_shared<Button>());
-		//	buttonObj->GetButton()->Create(Vec2(100, 100), Vec2(122, 158), RESOURCES->Get<Material>(L"NickyImg"), 1);
-
-
-		//	buttonObj->GetButton()->AddOnClickedEvent([buttonObj]() {
-		//		std::wcout << buttonObj->GetName() << " : clicked\n";
-		//		});
-
-		//	buttonObj->SetLayerIndex(LAYER_UI);
-		//	CURSCENE->Add(buttonObj);
-		//}
-
-	
 
 		//// Text GameObject (별도 객체)
 		//{
@@ -308,55 +289,3 @@ void UITestDemo::ShowImguiTransform()
 {
 }
 
-
-// ImageUI 사용 예제
-void CreateImageUIExample()
-{
-	auto imageUIObject = make_shared<GameObject>();
-	imageUIObject->SetName(L"ImageUIManager");
-
-	auto imageUI = make_shared<ImageUI>();
-	imageUIObject->AddComponent(imageUI);
-
-	// 배경 이미지
-	imageUI->AddImageLayer(0, Vec2(100, 100), Vec2(106, 166),
-		RESOURCES->Get<Material>(L"BackImg"), 1);
-
-	imageUI->AddImageLayer(1, Vec2(100, 100), Vec2(122 * 0.8f, 158 * 0.8f),
-		RESOURCES->Get<Material>(L"NickyImg"), 1);
-
-	// 씬에 추가
-	CURSCENE->Add(imageUIObject);
-}
-
-// UIPanel에 ImageUI 추가 사용 예제
-void CreatePanelWithImageUI()
-{
-	// UIPanel GameObject 생성
-	{
-		auto panelObj = make_shared<GameObject>();
-		panelObj->SetName(L"UI_Panel");
-
-		// UIPanel 컴포넌트 추가
-		panelObj->AddComponent(make_shared<UIPanel>());
-		panelObj->GetUIPanel()->Create(Vec2(400, 300), Vec2(600, 400),
-			nullptr);
-
-		// 패널에 ImageUI 추가
-		auto imageUI = panelObj->GetUIPanel()->AddImageUI(Vec2(0, 0), L"MainImageUI");
-
-		// ImageUI에 이미지 레이어들 추가
-		imageUI->AddImageLayer(0, Vec2(400, 200), Vec2(106, 166),
-			RESOURCES->Get<Material>(L"BackImg"), 1);
-
-		imageUI->AddImageLayer(10, Vec2(400, 200), Vec2(122, 158),
-			RESOURCES->Get<Material>(L"NickyImg"), 1);
-
-		// 패널에 버튼도 추가 가능
-		auto button = panelObj->GetUIPanel()->AddButton(Vec2(100, 100), Vec2(80, 40),
-			RESOURCES->Get<Material>(L"BtnImg"), L"TestButton");
-
-		panelObj->SetLayerIndex(LAYER_UI);
-		CURSCENE->Add(panelObj);
-	}
-}

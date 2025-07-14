@@ -10,9 +10,6 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{ec1fc7a4-e083-4ffe-aa6f-9f1c2c16b5c4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Main\Camera">
-      <UniqueIdentifier>{10bf8da9-c58d-45fe-b41c-357dc5245b2b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shaders\Common">
       <UniqueIdentifier>{52931e45-58c0-4b5f-82bd-b79f029791a5}</UniqueIdentifier>
     </Filter>
@@ -31,6 +28,15 @@
     <Filter Include="Shaders\Text">
       <UniqueIdentifier>{878a2d81-db68-493c-a70e-c7928958eea6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\Scripts">
+      <UniqueIdentifier>{1f7c04bf-b597-483a-87a0-71490610d009}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Scripts\Camera">
+      <UniqueIdentifier>{10bf8da9-c58d-45fe-b41c-357dc5245b2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Scripts\FOW">
+      <UniqueIdentifier>{67440155-896d-4476-9eb0-00678c005e9a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -40,7 +46,7 @@
       <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="CameraScript.cpp">
-      <Filter>Main\Camera</Filter>
+      <Filter>Main\Scripts\Camera</Filter>
     </ClCompile>
     <ClCompile Include="SceneDemo.cpp">
       <Filter>Game\Week3</Filter>
@@ -81,6 +87,9 @@
     <ClCompile Include="Loader.cpp">
       <Filter>Main</Filter>
     </ClCompile>
+    <ClCompile Include="FogOfWar.cpp">
+      <Filter>Main\Scripts\FOW</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -90,7 +99,7 @@
       <Filter>Main</Filter>
     </ClInclude>
     <ClInclude Include="CameraScript.h">
-      <Filter>Main\Camera</Filter>
+      <Filter>Main\Scripts\Camera</Filter>
     </ClInclude>
     <ClInclude Include="SceneDemo.h">
       <Filter>Game\Week3</Filter>
@@ -133,6 +142,9 @@
     </ClInclude>
     <ClInclude Include="Client_Define.h">
       <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="FogOfWar.h">
+      <Filter>Main\Scripts\FOW</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -178,8 +190,8 @@
     <FxCompile Include="..\Shaders\TextShader.fx">
       <Filter>Shaders\Text</Filter>
     </FxCompile>
-    <FxCompile Include="..\Shaders\ImageShader.fx">
-      <Filter>Shaders\Text</Filter>
+    <FxCompile Include="..\Shaders\FOW.fx">
+      <Filter>Shaders\Common</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

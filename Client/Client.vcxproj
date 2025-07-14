@@ -23,6 +23,7 @@
     <ClInclude Include="ButtonDemo.h" />
     <ClInclude Include="CameraScript.h" />
     <ClInclude Include="Client_Define.h" />
+    <ClInclude Include="FogOfWar.h" />
     <ClInclude Include="GroupBufferDemo.h" />
     <ClInclude Include="Loader.h" />
     <ClInclude Include="Main.h" />
@@ -41,6 +42,7 @@
     <ClCompile Include="BillboardDemo.cpp" />
     <ClCompile Include="ButtonDemo.cpp" />
     <ClCompile Include="CameraScript.cpp" />
+    <ClCompile Include="FogOfWar.cpp" />
     <ClCompile Include="GroupBufferDemo.cpp" />
     <ClCompile Include="Loader.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -70,7 +72,7 @@
     <FxCompile Include="..\Shaders\28. BillboardDemo.fx" />
     <FxCompile Include="..\Shaders\29. SnowBillboard.fx" />
     <FxCompile Include="..\Shaders\DebugTexture.fx" />
-    <FxCompile Include="..\Shaders\ImageShader.fx" />
+    <FxCompile Include="..\Shaders\FOW.fx" />
     <FxCompile Include="..\Shaders\ParticleSystem.fx" />
     <FxCompile Include="..\Shaders\Sky.fx" />
     <FxCompile Include="..\Shaders\TextShader.fx" />

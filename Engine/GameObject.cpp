@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "GameObject.h"
-
 #include "Transform.h"
 #include "Component.h"
 #include "MonoBehaviour.h"
@@ -22,7 +21,6 @@
 #include "Rigidbody.h"
 #include "Text.h"
 #include "UIPanel.h"
-#include "ImageUI.h"
 
 GameObject::GameObject()
 {
@@ -215,14 +213,6 @@ shared_ptr<UIPanel> GameObject::GetUIPanel()
 	shared_ptr<Component> component = GetFixedComponent(ComponentType::UIPanel);
 	return static_pointer_cast<UIPanel>(component);
 }
-
-shared_ptr<ImageUI> GameObject::GetImageUI()
-{
-	shared_ptr<Component> component = GetFixedComponent(ComponentType::Image);
-	return static_pointer_cast<ImageUI>(component);
-}
-
-
 
 
 void GameObject::AddComponent(shared_ptr<Component> _component)

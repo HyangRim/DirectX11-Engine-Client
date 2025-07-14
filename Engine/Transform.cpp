@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Transform.h"
+#include "SimpleMath.h"
 
 Transform::Transform() : Super(ComponentType::Transform)
 {
@@ -18,15 +19,32 @@ Vec3 Transform::ToEulerAngles(Quaternion q)
 	double cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
 	angles.x = std::atan2(sinr_cosp, cosr_cosp);
 
-	// pitch (y-axis rotation)
-	double sinp = std::sqrt(1 + 2 * (q.w * q.y - q.x * q.z));
-	double cosp = std::sqrt(1 - 2 * (q.w * q.y - q.x * q.z));
-	angles.y = 2 * std::atan2(sinp, cosp) - 3.14159f / 2;
+	//// pitch (y-axis rotation)
+	//double sinp = std::sqrt(1 + 2 * (q.w * q.y - q.x * q.z));
+	//double cosp = std::sqrt(1 - 2 * (q.w * q.y - q.x * q.z));
+	//angles.y = 2 * std::atan2(sinp, cosp) - 3.14159f * 0.5f;
 
-	// yaw (z-axis rotation)
+	//// yaw (z-axis rotation)
+	//double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
+	//double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+	//angles.z = std::atan2(siny_cosp, cosy_cosp);
+
+	// Pitch (Y축 회전) - 수정된 공식
+	double sinp = 2 * (q.w * q.y - q.z * q.x);
+	if (std::abs(sinp) >= 1)
+		angles.y = std::copysign(XM_PI / 2, sinp); // 짐벌락 처리
+	else
+		angles.y = std::asin(sinp);
+
+	// Yaw (Z축 회전)
 	double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
 	double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
 	angles.z = std::atan2(siny_cosp, cosy_cosp);
+
+	// 라디안 → 도 변환
+	angles.x = XMConvertToDegrees(angles.x);
+	angles.y = XMConvertToDegrees(angles.y);
+	angles.z = XMConvertToDegrees(angles.z);
 
 	return angles;
 }
@@ -50,6 +68,7 @@ void Transform::UpdateTransform()
 	Matrix matTranslation = Matrix::CreateTranslation(m_localPosition);
 
 	m_matLocal = matScale * matRotation * matTranslation;
+
 
 	//부모가 없으면 local행렬이 world와 같음. 
 
@@ -98,11 +117,31 @@ void Transform::SetScale(const Vec3& _Scale)
 void Transform::SetRotation(const Vec3& _Rotation)
 {
 	if (HasParent()) {
-		Matrix worldToParentLocalMatrix = m_parent->GetWorldMatrix().Invert();
-		Vec3 rotation;
+		// X-Y-Z 순서로 회전 행렬 생성
+		XMMATRIX rotX = XMMatrixRotationX(XMConvertToRadians(_Rotation.x));
+		XMMATRIX rotY = XMMatrixRotationY(XMConvertToRadians(_Rotation.y));
+		XMMATRIX rotZ = XMMatrixRotationZ(XMConvertToRadians(_Rotation.z));
 
-		rotation.Transform(m_WorldRotation, worldToParentLocalMatrix);
-		SetLocalPosition(rotation);
+		XMMATRIX worldRotMatrix = rotX * rotY * rotZ;
+		XMVECTOR worldQuatVec = XMQuaternionRotationMatrix(worldRotMatrix);
+
+		// 부모 회전
+		Vec3 parentRot = m_parent->GetRotation();
+		XMMATRIX parentRotX = XMMatrixRotationX(XMConvertToRadians(parentRot.x));
+		XMMATRIX parentRotY = XMMatrixRotationY(XMConvertToRadians(parentRot.y));
+		XMMATRIX parentRotZ = XMMatrixRotationZ(XMConvertToRadians(parentRot.z));
+
+		XMMATRIX parentRotMatrix = parentRotX * parentRotY * parentRotZ;
+		XMVECTOR parentQuatVec = XMQuaternionRotationMatrix(parentRotMatrix);
+
+		XMVECTOR parentInverseVec = XMQuaternionInverse(parentQuatVec);
+		XMVECTOR localQuatVec = XMQuaternionMultiply(worldQuatVec, parentInverseVec);
+
+		Quaternion localQuat;
+		XMStoreFloat4(&localQuat, localQuatVec);
+
+		Vec3 localRotation = ToEulerAngles(localQuat);
+		SetLocalRotation(localRotation);
 	}
 	else {
 		SetLocalRotation(_Rotation);
@@ -114,9 +153,9 @@ void Transform::SetPosition(const Vec3& _Position)
 	if (HasParent()) {
 		//World -> Parent좌표계로 변경. 
 		Matrix worldToParentLocalMatrix = m_parent->GetWorldMatrix().Invert();
-		Vec3 position;
 
-		position.Transform(m_WorldPosition, worldToParentLocalMatrix);
+
+		Vec3 position = Vec3::Transform(_Position, worldToParentLocalMatrix);
 		SetLocalPosition(position);
 	}
 	else {

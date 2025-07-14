@@ -27,20 +27,24 @@
 #include "ParticleSystem.h"
 #include "Sky.h"
 #include "Rigidbody.h"
+#include "FogOfWar.h"
 
 void BillboardDemo::Init()
 {
 	CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\snowcube1024.dds", L"Sky.fx"));
-	shared_ptr<Shader> renderShader = make_shared<Shader>(L"23. RenderDemo.fx");
-	{
-		// Camera
-		auto camera = make_shared<GameObject>();
-		camera->GetTransform()->SetPosition(Vec3{ 0.f, 2.f, -15.f });
-		camera->AddComponent(make_shared<Camera>());
-		camera->AddComponent(make_shared<CameraScript>());
-		camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
-		CURSCENE->Add(camera);
-	}
+	shared_ptr<Shader> renderShader = make_shared<Shader>(L"FOW.fx");
+	
+	// Camera
+	auto camera = make_shared<GameObject>();
+	//camera->GetTransform()->SetLocalPosition(Vec3{ 0.f, 12.f, -7.5f });
+	//camera->GetTransform()->SetLocalRotation(Vec3{45.f, 0.f, 0.f});
+	camera->AddComponent(make_shared<Camera>());
+	camera->AddComponent(make_shared<CameraScript>());
+	camera->AddComponent(make_shared<FogOfWar>());
+
+	camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
+	CURSCENE->Add(camera);
+	
 
 	{
 		// Mesh
@@ -193,7 +197,7 @@ void BillboardDemo::Init()
 	}
 
 	//Particle
-	{
+	/*{
 		auto particleShader = make_shared<Shader>(L"ParticleSystem.fx");
 		auto obj = make_shared<GameObject>();
 		obj->GetTransform()->SetLocalPosition(Vec3(0.f, 5.f, 0.f));
@@ -208,7 +212,7 @@ void BillboardDemo::Init()
 		material->SetRandomTex(RESOURCES->Get<Texture>(L"RandomTex"));
 		particleSystem->SetMaterial(material);
 		CURSCENE->Add(obj);
-	}
+	}*/
 
 	// SnowBillboard
 	{	// Billboard
@@ -242,26 +246,16 @@ void BillboardDemo::Init()
 	{
 		// Animation
 		shared_ptr<Model> m1 = make_shared<Model>();
-		/*m1->ReadModel(L"Kachujin/Kachujin");
-		m1->ReadMaterial(L"Kachujin/Kachujin");
-		m1->ReadAnimation(L"Kachujin/Idle");*/
 
 		m1->ReadModel(L"Bianca2/Bianca");
 		m1->ReadMaterial(L"Bianca2/Bianca");
 		m1->ReadAnimation(L"Bianca2/Bianca_atk");
 
-		//m1->ReadModel(L"Aya/Aya");
-		//m1->ReadMaterial(L"Aya/Aya");
-		//m1->ReadAnimation(L"Aya/Aya_Run");
-		
-		//m1->ReadAnimation(L"Kachujin/Run");
-		//m1->ReadAnimation(L"Kachujin/Slash");
-
 		for (int32 i = 0; i < 1; i++)
 		{
 
 			auto obj = make_shared<GameObject>();
-			obj->GetTransform()->SetPosition(Vec3(5.f, 1.f, 0.f));
+			obj->GetTransform()->SetPosition(Vec3(0.f, 0.f, 0.f));
 			obj->GetTransform()->SetScale(Vec3(1.f));
 			//obj->GetTransform()->SetRotation(Vec3(-180.f, 0.f, 0.f));
 
@@ -276,6 +270,11 @@ void BillboardDemo::Init()
 			}
 			
 			CURSCENE->Add(obj);
+
+
+			camera->GetTransform()->SetParent(obj->GetTransform());
+			camera->GetTransform()->SetLocalPosition(Vec3{ 0.f, 12.f, -7.5f });
+			camera->GetTransform()->SetLocalRotation(Vec3{ 45.f, 0.f, 0.f });
 		}
 	}
 	
@@ -302,21 +301,21 @@ void BillboardDemo::Init()
 	//}
 
 	// UI
-	{
-		const int debugUISize = 5;
-		auto obj = make_shared<GameObject>();
-		obj->SetLayerIndex(LAYER_UI);
-		obj->AddComponent(make_shared<Button>());
-		auto material = make_shared<Material>();
-		//auto texture = make_shared<Texture>();
-		//texture->SetSRV(GRAPHICS->GetShadowMapSRV());
-		material->SetDiffuseMap(GRAPHICS->GetShadowMap());
-		material->SetShader(make_shared<Shader>(L"DebugTexture.fx"));
-		obj->GetButton()->Create(Vec2(2048 / (debugUISize * 2) + 20, 2048 / (debugUISize * 2) + 20), Vec2(2048 / debugUISize, 2048 / debugUISize), material);
-		obj->GetButton()->AddOnClickedEvent([obj]() { CURSCENE->Remove(obj); });
+	//{
+	//	const int debugUISize = 5;
+	//	auto obj = make_shared<GameObject>();
+	//	obj->SetLayerIndex(LAYER_UI);
+	//	obj->AddComponent(make_shared<Button>());
+	//	auto material = make_shared<Material>();
+	//	//auto texture = make_shared<Texture>();
+	//	//texture->SetSRV(GRAPHICS->GetShadowMapSRV());
+	//	material->SetDiffuseMap(GRAPHICS->GetShadowMap());
+	//	material->SetShader(make_shared<Shader>(L"DebugTexture.fx"));
+	//	obj->GetButton()->Create(Vec2(2048 / (debugUISize * 2) + 20, 2048 / (debugUISize * 2) + 20), Vec2(2048 / debugUISize, 2048 / debugUISize), material);
+	//	obj->GetButton()->AddOnClickedEvent([obj]() { CURSCENE->Remove(obj); });
 
-		CURSCENE->Add(obj);
-	}
+	//	CURSCENE->Add(obj);
+	//}
 
 	{
 		// UICamera

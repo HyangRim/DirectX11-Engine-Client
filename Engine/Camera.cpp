@@ -6,6 +6,9 @@
 #include "Renderer.h"
 #include "Material.h"
 #include "QuadTree.h"
+#include "GameObject.h"
+#include "IFogOfWar.h"
+#include "MonoBehaviour.h"
 
 
 Matrix Camera::s_MatView = Matrix::Identity;
@@ -60,25 +63,66 @@ void Camera::SortGameObject()
 	m_vecForward.clear();
 	m_vecBackward.clear();
 
-	
+	// FOW 인터페이스 캐싱 시스템 (성능 최적화)
+	static IFogOfWar* cachedFogOfWar = nullptr;
+	static int lastFrameCheck = -1;
+	int currentFrame = GetTickCount64() / 16; // 60FPS 기준
+
+	if (lastFrameCheck != currentFrame) {
+		cachedFogOfWar = nullptr;
+
+		// IFogOfWar 인터페이스 구현체 찾기
+		for (auto& obj : gameObjects) {
+			auto scripts = obj->GetScripts();
+			for (auto& comp : scripts) {
+				IFogOfWar* fogInterface = dynamic_cast<IFogOfWar*>(comp.get());
+				if (fogInterface) {
+					cachedFogOfWar = fogInterface;
+					break;
+				}
+			}
+			if (cachedFogOfWar) break;
+		}
+		lastFrameCheck = currentFrame;
+	}
+
+	// FOW 시스템 업데이트 (엔진에서 호출)
+	if (cachedFogOfWar) {
+		cachedFogOfWar->UpdateFOWSystem();
+	}
+
+	FOW->UpdateShaderConstants();
+
 	if (m_type == ProjectionType::Perspective) 
 	{
 		int CullingObject = 0;
-	
+		
 	
 		//cout << "전체 오브젝트 : " << gameObjects.size() << "\n";
 		//그려줄 것 선별하기. 
 		for (auto& object : gameObjects) 
 		{
+			//레이어 컬링. 
 			if (IsCulled(object->GetLayerIndex()))
 				continue;
 
-			
+			// QuadTree를 통한 Frustum Culling.
 			if (scene->GetQuadTree()->IsObjectVisible(object, this) == false) 
 			{
 				CullingObject++;
 				continue;
 			}
+
+			//FOW통한 컬링. 
+			if (cachedFogOfWar) {
+				if (!cachedFogOfWar->ShouldRenderObject(object)) {
+					continue;
+				}
+
+				float alpha = cachedFogOfWar->GetObjectAlpha(object);
+				object->SetAlpha(alpha);
+			}
+
 
 			//QuadTree - Visible가지고 Frustum Culling 가능. 
 			shared_ptr<Renderer> renderer = object->GetRenderer();
