@@ -1,7 +1,7 @@
 #pragma once
 #include "Component.h"
 class Transform :
-    public Component
+    public Component, public std::enable_shared_from_this<Transform>
 {
 	using Super = Component;
 public:
@@ -43,7 +43,13 @@ public:
 
 	bool HasParent() { return  m_parent != nullptr; }
 	shared_ptr<Transform> GetParent() { return m_parent; }
-	void SetParent(shared_ptr<Transform> _parent) { m_parent = _parent; }
+	void SetParent(shared_ptr<Transform> _parent) { 
+		m_parent = _parent; 
+		if (m_parent) {
+			m_parent->AddChild(shared_from_this());
+		}
+	
+	}
 
 	const vector<shared_ptr<Transform>>& GetChildren() { return m_children; }
 	void AddChild(shared_ptr<Transform> _child) {

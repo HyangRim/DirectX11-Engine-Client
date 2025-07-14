@@ -74,11 +74,11 @@ void Camera::SortGameObject()
 				continue;
 
 			
-			if (scene->GetQuadTree()->IsObjectVisible(object, this) == false) 
+			/*if (scene->GetQuadTree()->IsObjectVisible(object, this) == false) 
 			{
 				CullingObject++;
 				continue;
-			}
+			}*/
 
 			//QuadTree - Visible가지고 Frustum Culling 가능. 
 			shared_ptr<Renderer> renderer = object->GetRenderer();
