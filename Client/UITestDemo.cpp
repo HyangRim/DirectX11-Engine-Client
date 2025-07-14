@@ -35,6 +35,8 @@ void UITestDemo::Init()
 //	CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\snowcube1024.dds", L"Sky.fx"));
 	//shared_ptr<Shader> renderShader = make_shared<Shader>(L"23. RenderDemo.fx");
 	shared_ptr<Shader> renderShader = make_shared<Shader>(L"FOW.fx");
+	shared_ptr<Shader> imageShader = make_shared<Shader>(L"ImageShader.fx");
+
 	{
 		// Camera
 		auto camera = make_shared<GameObject>();
@@ -167,7 +169,7 @@ void UITestDemo::Init()
 		// Material
 		
 		shared_ptr<Material> material = make_shared<Material>();
-		material->SetShader(renderShader);
+		material->SetShader(imageShader);
 		auto texture = RESOURCES->Load<Texture>(L"BtnImg", L"..\\Resources\\Textures\\UI_Btn\\Img_Item_Slot_Legendary.png");
 		material->SetDiffuseMap(texture);
 		MaterialDesc& desc = material->GetMaterialDesc();
@@ -185,8 +187,32 @@ void UITestDemo::Init()
 		panelDesc.diffuse = Vec4(0.3f, 0.3f, 0.3f, 0.9f);
 		panelDesc.specular = Vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		RESOURCES->Add(L"PanelImg", panelMaterial);
-		
 
+		shared_ptr<Material> nicky = make_shared<Material>();
+		nicky->SetShader(imageShader);
+		auto texture3 = RESOURCES->Load<Texture>(L"NickyImg", L"..\\Resources\\Textures\\UI_Select\\CharLobby_Nicky_S000.png");
+		nicky->SetDiffuseMap(texture3);
+		MaterialDesc& nickyDesc = nicky->GetMaterialDesc();
+		nickyDesc.ambient = Vec4(1.f);
+		nickyDesc.diffuse = Vec4(1.f);
+		nickyDesc.specular = Vec4(1.0f);
+		RESOURCES->Add(L"NickyImg", nicky);
+
+		shared_ptr<Material> backGround = make_shared<Material>();
+		backGround->SetShader(imageShader);
+		auto texture4 = RESOURCES->Load<Texture>(L"BackImg", L"..\\Resources\\Textures\\UI_Select\\Img_Slot_Character_Route.png");
+		backGround->SetDiffuseMap(texture4);
+		MaterialDesc& backGroundDesc = backGround->GetMaterialDesc();
+		backGroundDesc.ambient = Vec4(1.f);
+		backGroundDesc.diffuse = Vec4(1.f);
+		backGroundDesc.specular = Vec4(1.0f);
+		RESOURCES->Add(L"BackImg", backGround);
+
+
+
+		CreatePanelWithImageUI();
+
+	
 		//
 		//// UIPanel GameObject 생성
 		//auto panelObj = make_shared<GameObject>();
@@ -263,17 +289,17 @@ void UITestDemo::Init()
 
 	{
 		
-		//// UICamera
-		//auto camera = make_shared<GameObject>();
-		//camera->SetName(L"UICamera");
-		//camera->GetTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
-		//camera->AddComponent(make_shared<Camera>());
-		//camera->GetCamera()->SetProjectionType(ProjectionType::Orthographic);
-		//camera->GetCamera()->SetNear(1.0f);
-		//camera->GetCamera()->SetFar(100.0f);
-		//camera->GetCamera()->SetCullingMaskAll();
-		//camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, false);
-		//CURSCENE->Add(camera);
+		// UICamera
+		auto camera = make_shared<GameObject>();
+		camera->SetName(L"UICamera");
+		camera->GetTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
+		camera->AddComponent(make_shared<Camera>());
+		camera->GetCamera()->SetProjectionType(ProjectionType::Orthographic);
+		camera->GetCamera()->SetNear(1.0f);
+		camera->GetCamera()->SetFar(100.0f);
+		camera->GetCamera()->SetCullingMaskAll();
+		camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, false);
+		CURSCENE->Add(camera);
 		
 	}
 	CURSCENE->Start();
@@ -298,7 +324,7 @@ void CreatePanelWithImageUI()
 	// UIPanel GameObject 생성
 	{
 		auto panelObj = make_shared<GameObject>();
-		panelObj->SetName(L"UI_Panel");
+		panelObj->SetName(L"UI_Pane2l");
 
 		// UIPanel 컴포넌트 추가
 		panelObj->AddComponent(make_shared<UIPanel>());
