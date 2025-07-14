@@ -17,7 +17,17 @@ Shader::Shader(wstring _file) : m_file(L"..\\Shaders\\" + _file)
 
 Shader::~Shader()
 {
-	
+	m_globalEffectBuffer.Reset();
+	m_transformEffectBuffer.Reset();
+	m_lightEffectBuffer.Reset();
+	m_materialEffectBuffer.Reset();
+	m_tweenEffectBuffer.Reset();
+	m_snowEffectBuffer.Reset();
+	m_particleEffectBuffer.Reset();
+	m_shadowEffectBuffer.Reset();
+	m_textEffectBuffer.Reset();
+	m_boneEffectBuffer.Reset();
+	m_keyframeEffectBuffer.Reset();
 }
 
 

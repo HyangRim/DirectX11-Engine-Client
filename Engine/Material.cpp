@@ -7,6 +7,12 @@ Material::Material() : Super(ResourceType::Material)
 
 Material::~Material()
 {
+	m_diffuseEffectBuffer.Reset();
+	m_normalEffectBuffer.Reset();
+	m_specularEffectBuffer.Reset();
+	m_randomEffectBuffer.Reset();
+	m_cubeMapEffectBuffer.Reset();
+	m_shadowMapEffectBuffer.Reset();
 }
 
 void Material::SetShader(shared_ptr<Shader> _shader)

@@ -9,7 +9,7 @@ Texture::Texture() : Super(ResourceType::Texture)
 
 Texture::~Texture()
 {
-
+	m_shaderResourveView.Reset();
 }
 
 void Texture::Load(const wstring& _path)
@@ -40,6 +40,7 @@ void Texture::Load(const wstring& _path)
 ComPtr<ID3D11Texture2D> Texture::GetTexture2D()
 {
 	ComPtr<ID3D11Texture2D> texture;
+	
 	m_shaderResourveView->GetResource((ID3D11Resource**)texture.GetAddressOf());
 
 	return texture;

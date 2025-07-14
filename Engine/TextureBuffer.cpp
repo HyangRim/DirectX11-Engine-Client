@@ -10,6 +10,11 @@ TextureBuffer::TextureBuffer(ComPtr<ID3D11Texture2D> _src)
 
 TextureBuffer::~TextureBuffer()
 {
+	m_input.Reset();
+	m_srv.Reset();
+	m_output.Reset();
+	m_uav.Reset();
+	m_outputSRV.Reset();
 }
 
 void TextureBuffer::CreateBuffer()

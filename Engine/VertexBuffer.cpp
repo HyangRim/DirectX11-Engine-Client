@@ -8,5 +8,5 @@ VertexBuffer::VertexBuffer()
 
 VertexBuffer::~VertexBuffer()
 {
-
+	_vertexBuffer.Reset();
 }

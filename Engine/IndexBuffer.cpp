@@ -8,7 +8,7 @@ IndexBuffer::IndexBuffer()
 
 IndexBuffer::~IndexBuffer()
 {
-
+	_indexBuffer.Reset();
 }
 
 void IndexBuffer::Create(const vector<uint32>& _indices)
@@ -28,7 +28,6 @@ void IndexBuffer::Create(const vector<uint32>& _indices)
 	data.pSysMem = _indices.data();
 
 	HRESULT hr = DEVICE->CreateBuffer(&desc, &data, _indexBuffer.GetAddressOf());
-
 
 	CHECK(hr);
 }

@@ -12,6 +12,11 @@ RawBuffer::RawBuffer(void* _inputData, uint32 _inputByte, uint32 _outputByte)
 
 RawBuffer::~RawBuffer()
 {
+	m_input.Reset();
+	m_srv.Reset();
+	m_output.Reset();
+	m_uav.Reset();
+	m_result.Reset();
 }
 
 void RawBuffer::CreateBuffer()
