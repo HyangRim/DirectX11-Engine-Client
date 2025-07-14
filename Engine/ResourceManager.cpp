@@ -7,12 +7,15 @@
 #include "MathUtils.h"
 #include <filesystem>
 
+
+
 void ResourceManager::Init()
 {
 	CreateDefaultMesh();
 	CreateRandomTexture();
 	CreateDefaultMaterial();
 }
+
 
 
 void ResourceManager::CreateDefaultMesh()

@@ -12,6 +12,7 @@ Light::Light() : Component(ComponentType::Light)
 
 Light::~Light()
 {
+   
 }
 
 void Light::Update()

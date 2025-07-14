@@ -23,6 +23,7 @@ Camera::Camera() : Super(ComponentType::Camera)
 
 Camera::~Camera()
 {
+
 }
 
 void Camera::LateUpdate()

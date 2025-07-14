@@ -132,6 +132,7 @@ class ShaderManager
 public:
 	static ShaderDesc GetEffect(wstring _fileName);
 
+
 private:
 	static unordered_map<wstring, ShaderDesc> m_shaders;
 };

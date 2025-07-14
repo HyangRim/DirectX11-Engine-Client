@@ -10,6 +10,8 @@
 #include "Text.h"
 #include "GameObject.h"
 #include "ImageUI.h"
+#include "SceneManager.h"
+#include "Scene.h"
 
 UIPanel::UIPanel() : Super(ComponentType::UIPanel)
 {
@@ -17,21 +19,20 @@ UIPanel::UIPanel() : Super(ComponentType::UIPanel)
 
 UIPanel::~UIPanel()
 {
-    //// Scene이 유효한지 확인
-    //if (CURSCENE) {
-    //    for (auto& child : m_childElements) {
-    //        if (child) {
-    //            // 객체가 실제로 Scene에 존재하는지 확인
-    //            const auto& objects = CURSCENE->GetObjects();
-    //            if (objects.find(child) != objects.end()) {
-    //                CURSCENE->Remove(child);
-    //            }
-    //        }
-    //    }
-    //}
-    //
-    //m_childElements.clear();
-    //m_namedElements.clear();
+    try {
+        // OnDestroy가 아직 호출되지 않았다면 호출
+        OnDestroy();
+
+#ifdef _DEBUG
+        std::cout << "UIPanel 소멸자 완료" << std::endl;
+#endif
+
+    }
+    catch (...) {
+#ifdef _DEBUG
+        std::cout << "UIPanel 소멸자에서 예외 발생" << std::endl;
+#endif
+    }
 }
 
 void UIPanel::Init()
@@ -54,11 +55,16 @@ void UIPanel::Update()
 {
     Super::Update();
 
-    // 자식 요소들의 가시성 업데이트
-    for (auto& child : m_childElements) {
-        if (child) {
+    // 자식 요소들의 가시성 업데이트 (weak_ptr 사용)
+    for (auto it = m_childElements.begin(); it != m_childElements.end();) {
+        if (auto child = it->lock()) {
             // 패널이 보이지 않으면 자식들도 숨김
             // 실제로는 Transform의 활성화/비활성화로 처리
+            ++it;
+        }
+        else {
+            // 만료된 weak_ptr 제거
+            it = m_childElements.erase(it);
         }
     }
 }
@@ -97,6 +103,47 @@ void UIPanel::Create(Vec2 screenPos, Vec2 size, shared_ptr<Material> backgroundM
     go->GetMeshRenderer()->SetMaterial(m_backgroundMaterial);
     go->SetLayerIndex(LAYER_UI);
 }
+
+void UIPanel::OnDestroy()
+{
+    try {
+        for (auto it = m_childElements.begin(); it != m_childElements.end();) {
+            if (auto child = it->lock()) {
+                CURSCENE->Remove(child);
+                child->OnDestroy(); // 명시적 소멸 호출
+                ++it;
+            }
+            else {
+                it = m_childElements.erase(it);
+            }
+        }
+
+        // 2. 컨테이너 완전 정리
+        m_childElements.clear();
+        m_namedElements.clear();
+
+        // 3. 배경 리소스 정리
+        if (m_backgroundMaterial) {
+            m_backgroundMaterial.reset();
+        }
+        if (m_backgroundTexture) {
+            m_backgroundTexture.reset();
+        }
+        if (m_backgroundMesh) {
+            m_backgroundMesh.reset();
+        }
+
+        Super::OnDestroy();
+
+    }
+    catch (...) {
+#ifdef _DEBUG
+        std::cout << "UIPanel::OnDestroy에서 예외 발생" << std::endl;
+#endif
+    }
+}
+
+
 
 void UIPanel::SetPosition(const Vec2& position)
 {
@@ -137,9 +184,9 @@ void UIPanel::SetVisible(bool visible)
         // 실제 구현에서는 렌더링 활성화/비활성화 처리
     }
 
-    // 자식 요소들의 가시성도 함께 설정
-    for (auto& child : m_childElements) {
-        if (child) {
+    // 자식 요소들의 가시성도 함께 설정 (weak_ptr 사용)
+    for (auto& weakChild : m_childElements) {
+        if (auto child = weakChild.lock()) {
             // 자식 요소들의 가시성 설정
         }
     }
@@ -168,7 +215,7 @@ shared_ptr<Button> UIPanel::AddButton(Vec2 localPos, Vec2 size, shared_ptr<Mater
 
     buttonObj->SetLayerIndex(LAYER_UI);
 
-    // 자식 요소로 등록
+    // 자식 요소로 등록 (weak_ptr 사용)
     m_childElements.push_back(buttonObj);
     m_namedElements[name] = buttonObj;
 
@@ -202,7 +249,7 @@ shared_ptr<Text> UIPanel::AddText(Vec2 localPos, const wstring& text, float font
 
     textObj->SetLayerIndex(LAYER_UI);
 
-    // 자식 요소로 등록
+    // 자식 요소로 등록 (weak_ptr 사용)
     m_childElements.push_back(textObj);
     m_namedElements[name] = textObj;
 
@@ -235,7 +282,7 @@ shared_ptr<ImageUI> UIPanel::AddImageUI(Vec2 localPos, const wstring& name)
 
     imageUIObj->SetLayerIndex(LAYER_UI);
 
-    // 자식 요소로 등록
+    // 자식 요소로 등록 (weak_ptr 사용)
     m_childElements.push_back(imageUIObj);
     m_namedElements[name] = imageUIObj;
 
@@ -249,14 +296,21 @@ void UIPanel::RemoveUIElement(const wstring& name)
 {
     auto it = m_namedElements.find(name);
     if (it != m_namedElements.end()) {
-        // 벡터에서 제거
-        auto vecIt = std::find(m_childElements.begin(), m_childElements.end(), it->second);
-        if (vecIt != m_childElements.end()) {
-            m_childElements.erase(vecIt);
-        }
+        // weak_ptr을 shared_ptr로 변환
+        if (auto child = it->second.lock()) {
+            // 벡터에서 제거 (weak_ptr 비교)
+            auto vecIt = std::find_if(m_childElements.begin(), m_childElements.end(),
+                [&child](const weak_ptr<GameObject>& weakPtr) {
+                    return !weakPtr.owner_before(child) && !child.owner_before(weakPtr);
+                });
 
-        // 씬에서 제거
-        CURSCENE->Remove(it->second);
+            if (vecIt != m_childElements.end()) {
+                m_childElements.erase(vecIt);
+            }
+
+            // 씬에서 제거
+            CURSCENE->Remove(child);
+        }
 
         // 맵에서 제거
         m_namedElements.erase(it);
@@ -267,7 +321,9 @@ shared_ptr<Button> UIPanel::GetButton(const wstring& name)
 {
     auto it = m_namedElements.find(name);
     if (it != m_namedElements.end()) {
-        return it->second->GetButton();
+        if (auto child = it->second.lock()) {
+            return child->GetButton();
+        }
     }
     return nullptr;
 }
@@ -276,14 +332,22 @@ shared_ptr<Text> UIPanel::GetText(const wstring& name)
 {
     auto it = m_namedElements.find(name);
     if (it != m_namedElements.end()) {
-        return it->second->GetText();
+        if (auto child = it->second.lock()) {
+            return child->GetText();
+        }
     }
     return nullptr;
 }
 
 shared_ptr<ImageUI> UIPanel::GetImageUI(const wstring& name)
 {
-    return shared_ptr<ImageUI>();
+    auto it = m_namedElements.find(name);
+    if (it != m_namedElements.end()) {
+        if (auto child = it->second.lock()) {
+            return child->GetImageUI();
+        }
+    }
+    return nullptr;
 }
 
 void UIPanel::CreatePanelBackground()
@@ -300,7 +364,17 @@ void UIPanel::CreatePanelBackground()
 void UIPanel::UpdateChildPositions()
 {
     // 패널 위치가 변경되면 자식 요소들의 위치도 업데이트
-    // 실제로는 각 자식의 로컬 위치를 기억해두고 다시 계산해야 함
+    // weak_ptr을 사용하여 안전하게 접근
+    for (auto it = m_childElements.begin(); it != m_childElements.end();) {
+        if (auto child = it->lock()) {
+            // 자식 위치 업데이트 로직
+            ++it;
+        }
+        else {
+            // 만료된 weak_ptr 제거
+            it = m_childElements.erase(it);
+        }
+    }
 }
 
 Vec2 UIPanel::LocalToWorldPosition(const Vec2& localPos)

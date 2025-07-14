@@ -16,6 +16,10 @@ struct GameDesc
 class Game
 {
 	DECLARE_SINGLE(Game);
+
+private:
+	~Game();
+
 public:
 	WPARAM Run(GameDesc& desc);
 

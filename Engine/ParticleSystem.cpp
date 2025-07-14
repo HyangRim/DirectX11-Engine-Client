@@ -10,8 +10,19 @@ ParticleSystem::ParticleSystem() : Super(ComponentType::ParticleSystem)
 }
 
 
-ParticleSystem::~ParticleSystem()
-{
+ParticleSystem::~ParticleSystem() {
+	Cleanup();
+}
+
+void ParticleSystem::Cleanup() {
+	if (_inputLayout) {
+		_inputLayout.Reset();
+	}
+
+	// VertexBuffer Á¤¸®
+	if (_initVB) _initVB.reset();
+	if (_drawVB) _drawVB.reset();
+	if (_streamOutVB) _streamOutVB.reset();
 }
 
 void ParticleSystem::Reset()

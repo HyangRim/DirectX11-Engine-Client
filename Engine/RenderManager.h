@@ -13,6 +13,8 @@ public:
 	void Clear() { m_buffers.clear(); }
 	void ClearData();
 
+	
+
 private:
 	void RenderMeshRenderer(vector<shared_ptr<GameObject>>& _gameObjects);
 	void RenderModelRenderer(vector<shared_ptr<GameObject>>& _gameObjects);

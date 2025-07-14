@@ -11,7 +11,61 @@
 #include "QuadTree.h"
 #include "SphereCollider.h"
 #include "AABBBoxCollider.h"
+#include "UIPanel.h"
 
+
+Scene::Scene()
+{
+
+}
+
+Scene::~Scene()
+{
+	try {
+		// 1. 현재 선택된 객체 참조 해제
+		m_curPickedObj.reset();
+
+		// 2. 충돌 정보 맵 정리
+		m_mapColInfo.clear();
+
+		// 3. 쿼드트리 정리 (unique_ptr이므로 자동 해제되지만 명시적으로)
+		m_quadTree.reset();
+
+		// 4. Sky 객체 해제
+		m_sky.reset();
+
+		// 5. GameObject들에게 소멸 알림 (컴포넌트 정리를 위해)
+		for (auto& gameObject : m_gameObjects) {
+			if (gameObject && gameObject.use_count() > 1) {
+				// GameObject의 컴포넌트들이 서로 참조하고 있을 수 있으므로
+				// 명시적으로 정리 메서드 호출 (만약 있다면)
+				gameObject->OnDestroy();
+			}
+		}
+
+		// 6. 캐시 컨테이너들 정리 (참조만 제거)
+		m_cameras.clear();
+		m_Lights.clear();
+
+		// 7. 메인 GameObject 컨테이너 정리 (가장 마지막에)
+		m_gameObjects.clear();
+
+#ifdef _DEBUG
+		std::cout << "Scene 소멸자: 모든 리소스 해제 완료" << std::endl;
+#endif
+
+	}
+	catch (const std::exception& e) {
+#ifdef _DEBUG
+		std::cout << "Scene 소멸자 예외: " << e.what() << std::endl;
+#endif
+	}
+	catch (...) {
+#ifdef _DEBUG
+		std::cout << "Scene 소멸자에서 알 수 없는 예외 발생" << std::endl;
+#endif
+	}
+}
 
 void Scene::Start()
 {
@@ -36,9 +90,9 @@ void Scene::Update()
 
 	//PickUI();
 	//Pick();
-#ifdef _DEBUG
+
 	GameObjectsTest();
-#endif
+
 
 
 	PickObjectOrUI();
@@ -172,15 +226,28 @@ void Scene::Remove(shared_ptr<GameObject> _object)
 {
 	if (!_object) return;
 
-	// find를 사용하여 존재 여부 확인 후 제거
-	auto it = m_gameObjects.find(_object);
-	if (it != m_gameObjects.end()) {
-		m_gameObjects.erase(it);
-	}
+	try {
+		// GameObject에 소멸 알림
+		_object->OnDestroy();
 
-	// 카메라와 라이트는 erase가 안전함 (존재하지 않으면 무시)
-	m_cameras.erase(_object);
-	m_Lights.erase(_object);
+		// 참조 카운트 확인
+		if (_object.use_count() > 1) {
+			// 안전한 제거
+			auto it = m_gameObjects.find(_object);
+			if (it != m_gameObjects.end()) {
+				m_gameObjects.erase(it);
+			}
+
+			m_cameras.erase(_object);
+			m_Lights.erase(_object);
+		}
+
+	}
+	catch (...) {
+#ifdef _DEBUG
+		std::cout << "Scene::Remove에서 예외 발생" << std::endl;
+#endif
+	}
 }
 
 shared_ptr<GameObject> Scene::GetMainCamera()
@@ -642,6 +709,13 @@ void Scene::GameObjectsTest()
 		string name;
 		for (auto& obj : m_gameObjects)
 		{
+			int count = obj.use_count();
+			if (obj.use_count() > 2) {  // Scene + 다른 참조
+				std::wcout << L"Warning: " << obj->GetName()
+					<< L" has high reference count: "
+					<< obj.use_count() << std::endl;
+			}
+
 			name = ws2s(obj->GetName());
 			cout << "오브젝트 이름 : " << name << endl;
 		}

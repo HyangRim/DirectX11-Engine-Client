@@ -5,7 +5,11 @@ class ConstantBuffer
 {
 public:
 	ConstantBuffer() { }
-	~ConstantBuffer() { }
+	~ConstantBuffer()
+	{
+		m_constantBuffer.Reset();
+	}
+	
 
 	ComPtr<ID3D11Buffer> GetComPtr() { return m_constantBuffer; }
 	//템플릿 함수는 컴파일러가 컴파일 타임에 

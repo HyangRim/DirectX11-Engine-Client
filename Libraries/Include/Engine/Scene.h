@@ -15,6 +15,9 @@ union COLLIDER_ID {
 
 class Scene
 {
+public:
+	Scene();
+	~Scene();
 
 public:
 	virtual void Start();
@@ -32,7 +35,7 @@ public:
 	virtual void Remove(shared_ptr<GameObject> _object);
 
 
-	const unordered_set<shared_ptr<GameObject>>& GetObjects() { return m_gameObjects; }
+	unordered_set<shared_ptr<GameObject>>& GetObjects() { return m_gameObjects; }
 	shared_ptr<GameObject> GetMainCamera();
 	shared_ptr<GameObject> GetUICamera();
 	shared_ptr<GameObject> GetLight() { return m_Lights.empty() ? nullptr : *m_Lights.begin(); }
@@ -72,7 +75,7 @@ private:
 
 	//그룹간의 충돌 체크? 일단 보류. 
 
-private:
+public:
 	unordered_set<shared_ptr<GameObject>> m_gameObjects;
 	//Cache Camera;
 	unordered_set<shared_ptr<GameObject>> m_cameras;

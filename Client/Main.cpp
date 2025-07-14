@@ -13,12 +13,37 @@
 #include "SnowBillboardDemo.h"
 #include "ParticleDemo.h"
 #include "UITestDemo.h"
+#include "dxgidebug.h"
 
 #ifdef _DEBUG
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+
+void D3DMemoryLickCheck()
+{
+	HMODULE dxgidebugdll = GetModuleHandleW(L"dxgidebug.dll");
+	decltype(&DXGIGetDebugInterface) GetDebugInterface = reinterpret_cast<decltype(&DXGIGetDebugInterface)>(GetProcAddress(dxgidebugdll, "DXGIGetDebugInterface"));
+
+	IDXGIDebug* debug;
+
+	GetDebugInterface(IID_PPV_ARGS(&debug));
+
+
+	OutputDebugStringW(L"▼▼▼▼▼▼▼▼▼▼▼▼▼Direct3D Object ref count 메모리 누수 체크 ▼▼▼▼▼▼▼▼▼▼▼▼\r\n");
+
+	debug->ReportLiveObjects(DXGI_DEBUG_D3D11, DXGI_DEBUG_RLO_DETAIL);
+
+	OutputDebugStringW(L"▲▲▲▲▲▲▲▲▲▲▲▲▲반환되지 않은 IUnknown 객체가 있을경우 위에 나타남 ▲▲▲▲▲▲▲▲▲▲▲▲\r\n");
+
+	debug->Release();
+}
+
+
+
+
 #endif
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd){
+	
 	GameDesc desc;
 	desc.appName = L"GameCoding";
 	desc.hInstance = hInstance;
@@ -30,6 +55,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	desc.app = make_shared<UITestDemo>();
 
 	GAME->Run(desc);
+
+
+#ifdef _DEBUG
+	D3DMemoryLickCheck();
+#endif
 
 	return 0;
 }

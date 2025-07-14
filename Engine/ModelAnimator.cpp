@@ -17,6 +17,8 @@ ModelAnimator::ModelAnimator(shared_ptr<Shader> _shader)
 
 ModelAnimator::~ModelAnimator()
 {
+	m_srv.Reset();
+	m_texture.Reset();
 }
 
 void ModelAnimator::Update()
@@ -228,6 +230,7 @@ void ModelAnimator::CreateTexture()
 		desc.Texture2DArray.ArraySize = m_model->GetAnimationCount();
 
 		HRESULT hr = DEVICE->CreateShaderResourceView(m_texture.Get(), &desc, m_srv.GetAddressOf());
+		
 		CHECK(hr);
 	}
 	//결국 셰이더 리소스 뷰가 우리의 저런 잡동사니를 들고 있고.

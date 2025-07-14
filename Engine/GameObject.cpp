@@ -21,6 +21,7 @@
 #include "Rigidbody.h"
 #include "Text.h"
 #include "UIPanel.h"
+#include "ImageUI.h"
 
 GameObject::GameObject()
 {
@@ -29,6 +30,7 @@ GameObject::GameObject()
 
 GameObject::~GameObject()
 {
+	
 }
 
 void GameObject::Init()
@@ -214,6 +216,12 @@ shared_ptr<UIPanel> GameObject::GetUIPanel()
 	return static_pointer_cast<UIPanel>(component);
 }
 
+shared_ptr<ImageUI> GameObject::GetImageUI()
+{
+	shared_ptr<Component> component = GetFixedComponent(ComponentType::Image);
+	return static_pointer_cast<ImageUI>(component);
+}
+
 
 void GameObject::AddComponent(shared_ptr<Component> _component)
 {
@@ -254,5 +262,79 @@ void GameObject::OnCollisionExit(shared_ptr<GameObject> _other)
 #ifdef _DEBUG
 	std::cout << "CollisionExit\n";
 #endif
+}
+
+void GameObject::OnDestroy()
+{
+	try {
+
+		std::wcout << L"GameObject '" << m_Name << L"' OnDestroy 호출" << std::endl;
+
+
+		// 1. 모든 컴포넌트들에게 OnDestroy 알림
+		for (auto& component : m_components) {
+			if (component) {
+				// Component에 OnDestroy 메서드가 있다면 호출
+				component->OnDestroy();
+			}
+		}
+
+		//// 2. 스크립트들에게 OnDestroy 알림
+		//for (auto& script : m_scripts) {
+		//	if (script) {
+		//		script->OnDestroy();
+		//	}
+		//}
+
+		// 3. 충돌 중인 다른 객체들에게 CollisionExit 이벤트 발생
+		// (실제 구현에서는 Scene의 충돌 관리자를 통해 처리)
+
+		// 4. 참조 해제
+		ClearReferences();
+
+	}
+	catch (...) {
+
+		std::cout << "GameObject::OnDestroy에서 예외 발생" << std::endl;
+
+	}
+}
+
+void GameObject::ClearReferences()
+{
+	try {
+		// 1. 컴포넌트들의 GameObject 참조 해제
+		for (auto& component : m_components) {
+			if (component) {
+				// Component의 GameObject 참조를 nullptr로 설정
+				// 또는 weak_ptr을 사용하는 경우 reset() 호출
+				component->ClearGameObjectRef();
+			}
+		}
+
+		//// 2. 스크립트들의 GameObject 참조 해제
+		//for (auto& script : m_scripts) {
+		//	if (script) {
+		//		script->ClearGameObjectRef();
+		//	}
+		//}
+
+		// 3. 이름 정리
+		m_Name.clear();
+
+		// 4. FOW 관련 데이터 초기화
+		m_alpha = 1.0f;
+		m_alphaChanged = false;
+
+#ifdef _DEBUG
+		std::cout << "GameObject::ClearReferences 완료" << std::endl;
+#endif
+
+	}
+	catch (...) {
+#ifdef _DEBUG
+		std::cout << "GameObject::ClearReferences에서 예외 발생" << std::endl;
+#endif
+	}
 }
 

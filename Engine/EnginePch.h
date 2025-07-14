@@ -50,6 +50,7 @@ using namespace Microsoft::WRL;
 #pragma comment(lib, "dwrite.lib")
 #pragma comment(lib, "windowscodecs.lib")
 
+
 // Assimp
 #include <Assimp/Importer.hpp>
 #include <Assimp/scene.h>

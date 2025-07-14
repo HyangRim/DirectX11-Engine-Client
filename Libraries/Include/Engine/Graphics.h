@@ -8,6 +8,9 @@ class Graphics
 	DECLARE_SINGLE(Graphics);
 
 public:
+	~Graphics();
+
+public:
 	void Init(HWND hwnd);
 
 	void RenderBegin();
@@ -20,6 +23,8 @@ public:
 	void ClearShadowDepthStencilView();
 	void SetShadowDepthStencilView();
 	void SetRTVAndDSV();
+
+	void Cleanup();
 
 private:
 	void CreateDeviceAndSwapChain();

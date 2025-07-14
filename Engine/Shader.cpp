@@ -20,6 +20,7 @@ Shader::~Shader()
 	
 }
 
+
 void Shader::CreateEffect()
 {
 	m_shaderDesc = ShaderManager::GetEffect(m_file);

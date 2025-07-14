@@ -50,6 +50,15 @@ public:
     // 패널 생성 함수
     void Create(Vec2 screenPos, Vec2 size, shared_ptr<Material> backgroundMaterial = nullptr);
 
+public:
+    // 소멸 관련 메서드
+    virtual void OnDestroy() override;
+    void ClearChildReferences() {
+        // weak_ptr은 순환 참조를 만들지 않음
+        m_childElements.clear();
+        m_namedElements.clear();
+    }
+
 private:
     void CreatePanelBackground();
     void UpdateChildPositions();
@@ -67,6 +76,6 @@ private:
     shared_ptr<Mesh> m_backgroundMesh;
 
     // 자식 UI 요소들
-    vector<shared_ptr<GameObject>> m_childElements;
-    map<wstring, shared_ptr<GameObject>> m_namedElements;
+    vector<weak_ptr<GameObject>> m_childElements;
+    map<wstring, weak_ptr<GameObject>> m_namedElements;
 };

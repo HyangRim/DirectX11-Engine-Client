@@ -3,6 +3,26 @@
 
 #define SHADOWMAP_SIZE 4096
 
+Graphics::~Graphics()
+{
+	
+
+
+	m_deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+	
+	m_renderTargetView.Reset();
+	m_depthStencilView.Reset();
+	m_depthStencilTexture.Reset(); 
+	m_shadowDSTexture.Reset();
+	m_shadowDSV.Reset();
+
+
+	m_deviceContext->Flush();
+	
+}
+
+
+
 void Graphics::Init(HWND hwnd)
 {
 	m_hwnd = hwnd;
@@ -181,6 +201,8 @@ void Graphics::CreateDepthStencilView()
 	}
 
 }
+
+
 
 void Graphics::SetViewport(float _width, float _height, float _x, float _y, float _minDepth, float _maxDepth)
 {

@@ -17,6 +17,8 @@ class ParticleSystem : public Renderer
 public:
     ParticleSystem();
     virtual ~ParticleSystem();
+	void Cleanup(); // 명시적 정리 함수
+
 
 	void Reset(); 
 

@@ -45,6 +45,13 @@ public:
 	virtual void LateUpdate() {}
 	virtual void FixedUpdate() {}
 
+	virtual void OnDestroy() {} // 가상 소멸 전 정리 메서드
+	virtual void ClearGameObjectRef() {
+		// GameObject 참조 해제
+		m_gameObject.reset(); // weak_ptr인 경우
+		// 또는 m_gameObject = nullptr; // shared_ptr인 경우
+	}
+
 public:
 	ComponentType GetType() { return m_type; }
 
@@ -62,6 +69,5 @@ protected:
 	ComponentType m_type;
 	//자신을 소유한 오브젝트. 
 	weak_ptr<GameObject> m_gameObject;
-
 };
 
