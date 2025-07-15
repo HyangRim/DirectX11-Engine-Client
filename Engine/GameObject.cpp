@@ -267,37 +267,31 @@ void GameObject::OnCollisionExit(shared_ptr<GameObject> _other)
 
 void GameObject::OnDestroy()
 {
-	try {
+	m_isDestroyed = true;
+	std::wcout << L"GameObject '" << m_Name << L"' OnDestroy 호출" << std::endl;
 
-		std::wcout << L"GameObject '" << m_Name << L"' OnDestroy 호출" << std::endl;
-
-		// 1. 모든 컴포넌트들에게 OnDestroy 알림
-		for (auto& component : m_components) {
-			if (component) {
-				// Component에 OnDestroy 메서드가 있다면 호출
-				component->OnDestroy();
-			}
+	// 1. 모든 컴포넌트들에게 OnDestroy 알림
+	for (auto& component : m_components) {
+		if (component) {
+			// Component에 OnDestroy 메서드가 있다면 호출
+			component->OnDestroy();
 		}
-
-		//// 2. 스크립트들에게 OnDestroy 알림
-		//for (auto& script : m_scripts) {
-		//	if (script) {
-		//		script->OnDestroy();
-		//	}
-		//}
-
-		// 3. 충돌 중인 다른 객체들에게 CollisionExit 이벤트 발생
-		// (실제 구현에서는 Scene의 충돌 관리자를 통해 처리)
-
-		// 4. 참조 해제
-		ClearReferences();
-
 	}
-	catch (...) {
 
-		std::cout << "GameObject::OnDestroy에서 예외 발생" << std::endl;
+	//// 2. 스크립트들에게 OnDestroy 알림
+	//for (auto& script : m_scripts) {
+	//	if (script) {
+	//		script->OnDestroy();
+	//	}
+	//}
 
-	}
+	// 3. 충돌 중인 다른 객체들에게 CollisionExit 이벤트 발생
+	// (실제 구현에서는 Scene의 충돌 관리자를 통해 처리)
+
+	// 4. 참조 해제
+	ClearReferences();
+
+	
 }
 
 void GameObject::ClearReferences()

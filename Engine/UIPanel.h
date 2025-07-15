@@ -59,6 +59,12 @@ public:
         m_namedElements.clear();
     }
 
+public:
+    const vector<weak_ptr<GameObject>>& GetChildElements() const { return m_childElements; }
+
+    // 더 안전한 자식 제거 메서드
+    void RemoveUIElementSafely(const wstring& name);
+
 private:
     void CreatePanelBackground();
     void UpdateChildPositions();
@@ -78,4 +84,7 @@ private:
     // 자식 UI 요소들
     vector<weak_ptr<GameObject>> m_childElements;
     map<wstring, weak_ptr<GameObject>> m_namedElements;
+
+private:
+    bool m_isDestroying = false;  // 소멸 중 플래그 추가
 };

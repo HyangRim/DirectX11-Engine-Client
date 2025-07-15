@@ -8,6 +8,7 @@
 #include "Shader.h"
 #include "GameObject.h"
 #include "Scene.h"
+#include "SceneObjectManager.h"
 
 ImageUI::ImageUI() : Super(ComponentType::Image), m_needsSort(false), m_isDestroying(false)
 {
@@ -15,23 +16,8 @@ ImageUI::ImageUI() : Super(ComponentType::Image), m_needsSort(false), m_isDestro
 
 ImageUI::~ImageUI()
 {
-    //m_isDestroying = true;
-
-    //// Scene이 유효한지 확인
-    //if (CURSCENE) {
-    //    for (auto& pair : m_imageLayers) {
-    //        if (pair.second.gameObject) {
-    //            const auto& objects = CURSCENE->GetObjects();
-    //            if (objects.find(pair.second.gameObject) != objects.end()) {
-    //                CURSCENE->Remove(pair.second.gameObject);
-    //            }
-    //            pair.second.gameObject = nullptr;
-    //        }
-    //    }
-    //}
-
-    //m_imageLayers.clear();
-    //m_sortedLayers.clear();
+    m_isDestroying = true;
+    ClearAllLayers();
 }
 
 void ImageUI::ClearAllLayers()
@@ -46,7 +32,7 @@ void ImageUI::ClearAllLayers()
             if (CURSCENE)
             {
                 // UI 객체 컨테이너에서 제거
-                auto& uiObjects = CURSCENE->m_uiObjects;
+                auto& uiObjects = CURSCENE->GetUIObjects();
 
 
                 auto it = uiObjects.find(pair.second.gameObject);
@@ -55,7 +41,7 @@ void ImageUI::ClearAllLayers()
                 }
 
                 // UI 자식 컨테이너에서도 제거
-                auto& uiChildren = CURSCENE->m_uiChildren;
+                auto& uiChildren = CURSCENE->GetUIChildren();
                 auto childIt = std::find(uiChildren.begin(), uiChildren.end(), pair.second.gameObject);
                 if (childIt != uiChildren.end()) {
                     uiChildren.erase(childIt);
@@ -70,32 +56,26 @@ void ImageUI::ClearAllLayers()
 
 void ImageUI::OnDestroy()
 {
-    try {
-        m_isDestroying = true;
+    m_isDestroying = true;
 
-        // 지연 삭제 방식으로 레이어 객체들 삭제
-        for (auto& pair : m_imageLayers)
+    // 모든 레이어 객체들을 지연 삭제로 처리
+    for (auto& pair : m_imageLayers)
+    {
+        if (pair.second.gameObject)
         {
-            if (pair.second.gameObject)
-            {
-                // Scene의 지연 삭제 시스템 사용
-                if (CURSCENE && !CURSCENE->m_isDestroying) {
-                    CURSCENE->MarkUIObjectForDestroy(pair.second.gameObject);
-                }
-                pair.second.gameObject = nullptr;
+            // Scene의 지연 삭제 시스템 사용
+            if (CURSCENE && !CURSCENE->IsDestroying()) {
+                CURSCENE->GetObjectManager()->MarkUIObjectForDestroy(pair.second.gameObject);
             }
+            pair.second.gameObject = nullptr;
         }
-
-        // 레이어 정보 정리
-        m_imageLayers.clear();
-        m_sortedLayers.clear();
-
-        Super::OnDestroy();
-
     }
-    catch (...) {
-        // 예외 무시
-    }
+
+    // 레이어 정보 정리
+    m_imageLayers.clear();
+    m_sortedLayers.clear();
+
+    Super::OnDestroy();
 }
 
 void ImageUI::AddImageLayer(int layer, Vec2 screenPos, Vec2 size,
@@ -131,7 +111,7 @@ void ImageUI::RemoveImageLayer(int layer)
         if (it->second.gameObject && CURSCENE && !m_isDestroying)
         {
             // 지연 삭제 시스템 사용
-            CURSCENE->MarkUIObjectForDestroy(it->second.gameObject);
+            CURSCENE->GetObjectManager()->MarkUIObjectForDestroy(it->second.gameObject);
         }
         m_imageLayers.erase(it);
         m_needsSort = true;
@@ -263,15 +243,6 @@ void ImageUI::SortLayersByOrder()
             imageLayer.gameObject->GetTransform()->SetPosition(pos);
         }
     }
-
-    //// 디버깅용 로그
-    //for (const auto& layer : m_sortedLayers) {
-    //    auto& imageLayer = m_imageLayers[layer];
-    //    if (imageLayer.gameObject) {
-    //        Vec3 pos = imageLayer.gameObject->GetTransform()->GetPosition();
-    //        std::wcout << L"Layer " << layer << L" Z: " << pos.z << std::endl;
-    //    }
-    //}
 
     m_needsSort = false;
 }

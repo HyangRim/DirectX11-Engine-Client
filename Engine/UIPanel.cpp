@@ -1,84 +1,3 @@
-#pragma once
-#include "Component.h"
-
-class Material;
-class Mesh;
-class Texture;
-class Button;
-class Text;
-class ImageUI;
-
-class UIPanel : public Component
-{
-    using Super = Component;
-
-public:
-    UIPanel();
-    virtual ~UIPanel();
-
-    virtual void Init() override;
-    virtual void Update() override;
-
-    // 패널 설정 함수들
-    void SetPosition(const Vec2& position);
-    void SetSize(const Vec2& size);
-    void SetBackgroundColor(const Vec4& color);
-    void SetBackgroundTexture(shared_ptr<Texture> texture);
-    void SetVisible(bool visible);
-
-    // UI 요소 추가 함수들
-    shared_ptr<Button> AddButton(Vec2 localPos, Vec2 size, shared_ptr<Material> material, const wstring& name = L"Button");
-    shared_ptr<Text> AddText(Vec2 localPos, const wstring& text, float fontSize = 16.0f,
-        Vec4 color = Vec4(1, 1, 1, 1), float alpha = 1.0f,
-        Vec4 outlineColor = Vec4(0, 0, 0, 1), float outlineWidth = 1.0f,
-        const wstring& name = L"Text");
-    // ImageUI 추가 함수
-    shared_ptr<ImageUI> AddImageUI(Vec2 localPos, const wstring& name = L"ImageUI");
-
-    // UI 요소 관리
-    void RemoveUIElement(const wstring& name);
-    shared_ptr<Button> GetButton(const wstring& name);
-    shared_ptr<Text> GetText(const wstring& name);
-    shared_ptr<ImageUI> GetImageUI(const wstring& name);
-
-
-    // Getter 함수들
-    const Vec2& GetPosition() const { return m_position; }
-    const Vec2& GetSize() const { return m_size; }
-    bool IsVisible() const { return m_visible; }
-
-    // 패널 생성 함수
-    void Create(Vec2 screenPos, Vec2 size, shared_ptr<Material> backgroundMaterial = nullptr);
-
-public:
-    // 소멸 관련 메서드
-    virtual void OnDestroy() override;
-    void ClearChildReferences() {
-        // weak_ptr은 순환 참조를 만들지 않음
-        m_childElements.clear();
-        m_namedElements.clear();
-    }
-
-private:
-    void CreatePanelBackground();
-    void UpdateChildPositions();
-    Vec2 LocalToWorldPosition(const Vec2& localPos);
-
-private:
-    Vec2 m_position = Vec2(0.0f, 0.0f);
-    Vec2 m_size = Vec2(200.0f, 150.0f);
-    Vec4 m_backgroundColor = Vec4(0.f);
-    bool m_visible = true;
-
-    // 배경 렌더링용
-    shared_ptr<Texture> m_backgroundTexture;
-    shared_ptr<Material> m_backgroundMaterial;
-    shared_ptr<Mesh> m_backgroundMesh;
-
-    // 자식 UI 요소들
-    vector<weak_ptr<GameObject>> m_childElements;
-    map<wstring, weak_ptr<GameObject>> m_namedElements;
-};
 #include "pch.h"
 #include "UIPanel.h"
 #include "Transform.h"
@@ -93,6 +12,7 @@ private:
 #include "ImageUI.h"
 #include "SceneManager.h"
 #include "Scene.h"
+#include "SceneObjectManager.h"
 
 UIPanel::UIPanel() : Super(ComponentType::UIPanel)
 {
@@ -100,15 +20,8 @@ UIPanel::UIPanel() : Super(ComponentType::UIPanel)
 
 UIPanel::~UIPanel()
 {
-    try
-    {
-        // OnDestroy가 아직 호출되지 않았다면 호출
-        //OnDestroy();
-    }
-    catch (...)
-    {
-
-    }
+    m_isDestroying = true;
+    ClearChildReferences();
 }
 
 void UIPanel::Init()
@@ -182,41 +95,41 @@ void UIPanel::Create(Vec2 screenPos, Vec2 size, shared_ptr<Material> backgroundM
 
 void UIPanel::OnDestroy()
 {
-    try {
-        // 자식 요소들 정리만 하면 됨 (Scene에서 알아서 순서대로 소멸)
-        for (auto it = m_childElements.begin(); it != m_childElements.end();)
-        {
-            if (auto child = it->lock())
-            {
-                ++it;
-            }
-            else {
-                it = m_childElements.erase(it);
-            }
-        }
-
-        // 컨테이너들 정리
-        m_childElements.clear();
-        m_namedElements.clear();
-
-        // 리소스 해제
-        if (m_backgroundMaterial) {
-            m_backgroundMaterial.reset();
-        }
-        if (m_backgroundTexture) {
-            m_backgroundTexture.reset();
-        }
-        if (m_backgroundMesh) {
-            m_backgroundMesh.reset();
-        }
-
-        Super::OnDestroy();
-
-    }
-    catch (...)
+    
+    // 자식 요소들 정리만 하면 됨 (Scene에서 알아서 순서대로 소멸)
+    for (auto it = m_childElements.begin(); it != m_childElements.end();)
     {
-
+        if (auto child = it->lock())
+        {
+            // 자식을 Scene에서 삭제 요청
+            if (CURSCENE && !CURSCENE->IsDestroying()) {
+                CURSCENE->GetObjectManager()->MarkUIObjectForDestroy(child);
+            }
+            ++it;
+        }
+        else {
+            it = m_childElements.erase(it);
+        }
     }
+
+    // 컨테이너들 정리
+    m_childElements.clear();
+    m_namedElements.clear();
+
+    // 리소스 해제
+    if (m_backgroundMaterial) {
+        m_backgroundMaterial.reset();
+    }
+    if (m_backgroundTexture) {
+        m_backgroundTexture.reset();
+    }
+    if (m_backgroundMesh) {
+        m_backgroundMesh.reset();
+    }
+
+    Super::OnDestroy();
+
+   
 }
 
 
@@ -383,8 +296,8 @@ void UIPanel::RemoveUIElement(const wstring& name)
             }
 
             // 지연 삭제 시스템 사용
-            if (CURSCENE && !CURSCENE->m_isDestroying) {
-                CURSCENE->MarkUIObjectForDestroy(child);
+            if (CURSCENE && !CURSCENE->IsDestroying()) {
+                CURSCENE->GetObjectManager()->MarkUIObjectForDestroy(child);
             }
         }
         m_namedElements.erase(it);
@@ -422,6 +335,33 @@ shared_ptr<ImageUI> UIPanel::GetImageUI(const wstring& name)
         }
     }
     return nullptr;
+}
+
+// UIPanel.cpp에 구현
+void UIPanel::RemoveUIElementSafely(const wstring& name)
+{
+    if (m_isDestroying) return;
+
+    auto it = m_namedElements.find(name);
+    if (it != m_namedElements.end()) {
+        if (auto child = it->second.lock()) {
+            // 계층적 삭제 사용
+            if (CURSCENE && !CURSCENE->IsDestroying()) {
+                CURSCENE->GetObjectManager()->MarkUIObjectForDestroyWithChildren(child);
+            }
+
+            // 벡터에서 제거
+            auto vecIt = std::find_if(m_childElements.begin(), m_childElements.end(),
+                [&child](const weak_ptr<GameObject>& weakPtr) {
+                    return !weakPtr.owner_before(child) && !child.owner_before(weakPtr);
+                });
+
+            if (vecIt != m_childElements.end()) {
+                m_childElements.erase(vecIt);
+            }
+        }
+        m_namedElements.erase(it);
+    }
 }
 
 void UIPanel::CreatePanelBackground()

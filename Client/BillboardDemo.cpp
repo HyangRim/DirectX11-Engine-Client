@@ -28,6 +28,7 @@
 #include "Rigidbody.h"
 #include "FogOfWar.h"
 #include "CameraScript.h"
+#include "SceneObjectManager.h"
 
 void BillboardDemo::Init()
 {

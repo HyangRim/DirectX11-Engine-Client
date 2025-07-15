@@ -13,204 +13,30 @@
 #include "AABBBoxCollider.h"
 #include "UIPanel.h"
 
+#include "SceneObjectManager.h"
+
 
 Scene::Scene()
 {
-    int a = 0;
+    m_objectManager = make_unique<SceneObjectManager>();
 }
 
 Scene::~Scene()
 {
-    try
-    {
-        // 1. 현재 선택된 객체 참조 해제
-        m_curPickedObj.reset();
-
-        // 2. 충돌 정보 맵 정리
-        m_mapColInfo.clear();
-
-        // 3. 쿼드트리 정리
-        m_quadTree.reset();
-
-        // 4. Sky 객체 해제
-        m_sky.reset();
-
-        // 5. UI 객체들 먼저 소멸
-        DestroyUIObjects();
-
-        // 6. 일반 객체들 소멸
-        DestroyNormalObjects();
-    }
-    catch (const std::exception& e)
-    {
-
-    }
-}
-
-// 지연 삭제 함수들 구현
-void Scene::MarkForDestroy(shared_ptr<GameObject> obj)
-{
-    if (!obj || m_isDestroying) return;
-
-    // 중복 체크
-    auto it = std::find(m_pendingDestroyNormal.begin(), m_pendingDestroyNormal.end(), obj);
-    if (it == m_pendingDestroyNormal.end())
-    {
-        m_pendingDestroyNormal.push_back(obj);
-    }
-}
-
-void Scene::MarkUIObjectForDestroy(shared_ptr<GameObject> obj)
-{
-    if (!obj || m_isDestroying) return;
-
-    // 중복 체크
-    auto it = std::find(m_pendingDestroyUI.begin(), m_pendingDestroyUI.end(), obj);
-    if (it == m_pendingDestroyUI.end())
-    {
-        m_pendingDestroyUI.push_back(obj);
-    }
-}
-
-void Scene::ProcessPendingDestroy()
-{
-    if (m_isDestroying) return;
-
-    // UI 객체 먼저 처리
-    ProcessPendingUIObjects();
-
-    // 일반 객체 처리
-    ProcessPendingNormalObjects();
-}
-
-void Scene::ProcessPendingNormalObjects()
-{
-    if (m_pendingDestroyNormal.empty()) return;
-
-    try {
-        // 임시 벡터에 복사
-        vector<shared_ptr<GameObject>> objectsToDestroy = m_pendingDestroyNormal;
-        m_pendingDestroyNormal.clear();
-
-        for (auto& obj : objectsToDestroy)
-        {
-            if (obj && obj.use_count() > 1)
-            {
-                // OnDestroy 호출
-                obj->OnDestroy();
-            }
-
-            // 각 컨테이너에서 제거
-            m_gameObjects.erase(obj);
-            m_cameras.erase(obj);
-            m_Lights.erase(obj);
-        }
-    }
-    catch (const std::exception& e)
-    {
-
-    }
-}
-
-void Scene::ProcessPendingUIObjects()
-{
-    if (m_pendingDestroyUI.empty()) return;
-
-    try {
-        // 임시 벡터에 복사
-        vector<shared_ptr<GameObject>> objectsToDestroy = m_pendingDestroyUI;
-        m_pendingDestroyUI.clear();
-
-        for (auto& obj : objectsToDestroy)
-        {
-            if (obj && obj.use_count() > 1)
-            {
-                // OnDestroy 호출
-                obj->OnDestroy();
-            }
-
-            // UI 컨테이너들에서 제거
-            m_uiObjects.erase(obj);
-
-            // vector에서 제거
-            m_uiChildren.erase(std::remove(m_uiChildren.begin(), m_uiChildren.end(), obj), m_uiChildren.end());
-            m_uiParents.erase(std::remove(m_uiParents.begin(), m_uiParents.end(), obj), m_uiParents.end());
-        }
-    }
-    catch (const std::exception& e)
-    {
-
-    }
+   
 }
 
 
 void Scene::RegisterUIParent(shared_ptr<GameObject> parent)
 {
-    auto it = std::find(m_uiParents.begin(), m_uiParents.end(), parent);
-    if (it == m_uiParents.end())
-    {
-        m_uiParents.push_back(parent);
-    }
+    m_objectManager->RegisterUIParent(parent);
 }
 
 void Scene::RegisterUIChild(shared_ptr<GameObject> child)
 {
-    auto it = std::find(m_uiChildren.begin(), m_uiChildren.end(), child);
-    if (it == m_uiChildren.end())
-    {
-        m_uiChildren.push_back(child);
-    }
+    m_objectManager->RegisterUIChild(child);
 }
 
-void Scene::DestroyUIObjects()
-{
-    try {
-        // 모든 UI 객체를 삭제 대기열에 추가
-        for (auto& child : m_uiChildren) {
-            MarkUIObjectForDestroy(child);
-        }
-        for (auto& parent : m_uiParents) {
-            MarkUIObjectForDestroy(parent);
-        }
-        for (auto& uiObj : m_uiObjects) {
-            MarkUIObjectForDestroy(uiObj);
-        }
-
-        // 컨테이너들 먼저 정리
-        m_uiChildren.clear();
-        m_uiParents.clear();
-        m_uiObjects.clear();
-
-        // 실제 삭제 처리
-        ProcessPendingUIObjects();
-
-    }
-    catch (const std::exception& e) {
-
-    }
-}
-
-void Scene::DestroyNormalObjects()
-{
-    try {
-        // 모든 일반 객체를 삭제 대기열에 추가
-        for (auto& gameObject : m_gameObjects) {
-            MarkForDestroy(gameObject);
-        }
-
-        // 컨테이너들 먼저 정리
-        m_cameras.clear();
-        m_Lights.clear();
-        m_gameObjects.clear();
-
-        // 실제 삭제 처리
-        ProcessPendingNormalObjects();
-    }
-    catch (const std::exception& e)
-    {
-
-    }
-}
 
 
 void Scene::Start()
@@ -218,41 +44,18 @@ void Scene::Start()
     //충돌 판정 초기화. 
     m_mapColInfo.clear();
 
-    const auto& objects = m_gameObjects;
-    for (auto& object : m_gameObjects) {
-        object->Start();
-    }
+    m_objectManager->Start();
 
-    const auto& uiObjects = m_uiObjects;
-    for (auto& object : uiObjects) {
-        object->Start();
-    }
-
-    UpdateQuadTree();
+    m_objectManager->UpdateQuadTree();
 }
 
 void Scene::Update()
 {
-    const auto& objects = m_gameObjects;
-    const auto& uiObjects = m_uiObjects;
-    //Update 코드 안에서 Remove를 써버리면 문제가 생기기 때문에.
-    //이벤트 후처리로 오브젝트 추가, 생성을 해야함. 
-    for (auto& object : m_gameObjects) {
-        object->Update();
-    }
+    m_objectManager->Update();
 
-    for (auto& object : m_uiObjects) {
-        object->Update();
-    }
+    m_objectManager->UpdateQuadTree();
 
-    //PickUI();
-    //Pick();
-
-    //GameObjectsTest();
-
-    UpdateQuadTree();
-
-    PickObjectOrUI();
+    m_objectManager->PickObjectOrUI();
 
     //이 밑에다가 디버그용 
 #if _DEBUG
@@ -262,36 +65,12 @@ void Scene::Update()
 
 void Scene::FixedUpdate()
 {
-    const auto& objects = m_gameObjects;
-    //Update 코드 안에서 Remove를 써버리면 문제가 생기기 때문에.
-    //이벤트 후처리로 오브젝트 추가, 생성을 해야함. 
-    for (auto& object : m_gameObjects) {
-        object->FixedUpdate();
-    }
-
-    const auto& uiObjects = m_uiObjects;
-    //Update 코드 안에서 Remove를 써버리면 문제가 생기기 때문에.
-    //이벤트 후처리로 오브젝트 추가, 생성을 해야함. 
-    for (auto& object : uiObjects) {
-        object->FixedUpdate();
-    }
+    m_objectManager->FixedUpdate();
 }
-
-
 
 void Scene::LateUpdate()
 {
-    auto objects = m_gameObjects;
-    for (auto& object : m_gameObjects) {
-        object->LateUpdate();
-    }
-
-    const auto& uiObjects = m_uiObjects;
-    //Update 코드 안에서 Remove를 써버리면 문제가 생기기 때문에.
-    //이벤트 후처리로 오브젝트 추가, 생성을 해야함. 
-    for (auto& object : uiObjects) {
-        object->LateUpdate();
-    }
+    m_objectManager->LateUpdate();
 
     // start = std::chrono::high_resolution_clock::now();
     //BruteForce방식. 
@@ -303,12 +82,14 @@ void Scene::LateUpdate()
     //auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
     //cout << "BruteForce 걸리는 시간 :" << duration.count() << "us\n";
 
-
+    // 지연 삭제 처리 추가
+    m_objectManager->ProcessPendingDestroy();
 }
 
 void Scene::Render()
 {
-    for (auto camera : m_cameras) {
+    const auto& cameras = m_objectManager->GetCameras();
+    for (auto camera : cameras) {
         //camera->GetCamera()->SortGameObject();
         //camera->GetCamera()->Render_Forward(false);
         //GRAPHICS->ClearDepthStencilView();
@@ -344,8 +125,8 @@ void Scene::RenderGameCamera(Camera* cam)
     GRAPHICS->ClearDepthStencilView(); // 이 줄 추가!
 
     cam->Render_Forward(false);
-    if (m_sky)
-        m_sky->Render(cam);
+    if (m_objectManager->m_sky)
+        m_objectManager->m_sky->Render(cam);
     cam->Render_Backward(false);
 }
 
@@ -361,187 +142,42 @@ void Scene::RenderUICamera(Camera* cam)
 
 void Scene::Add(shared_ptr<GameObject> _object)
 {
-    // 일반 객체만 저장
-    m_gameObjects.insert(_object);
-
-    if (_object->GetCamera() != nullptr) {
-        m_cameras.insert(_object);
-    }
-
-    if (_object->GetLight() != nullptr) {
-        m_Lights.insert(_object);
-    }
+    m_objectManager->Add(_object);
 }
 
 void Scene::AddUIObject(shared_ptr<GameObject> _object, bool isParent)
 {
-    // UI 객체 컨테이너에 저장
-    m_uiObjects.insert(_object);
-
-    // 부모/자식 분류
-    if (isParent) {
-        m_uiParents.push_back(_object);
-    }
-    else {
-        m_uiChildren.push_back(_object);
-    }
+    m_objectManager->AddUIObject(_object, isParent);
 }
 
 void Scene::Remove(shared_ptr<GameObject> _object)
 {
-    if (!_object || m_isDestroying) return;
-
-    // UI 객체인지 확인
-    bool isUIObject = (m_uiObjects.find(_object) != m_uiObjects.end());
-
-    if (isUIObject) {
-        MarkUIObjectForDestroy(_object);
+    // UI 객체의 경우 계층적 삭제 사용
+    if (m_objectManager->GetUIObjects().find(_object) != m_objectManager->GetUIObjects().end()) {
+        m_objectManager->MarkUIObjectForDestroyWithChildren(_object);
     }
     else {
-        MarkForDestroy(_object);
+        m_objectManager->Remove(_object);
     }
 }
 
 shared_ptr<GameObject> Scene::GetMainCamera()
 {
-    for (auto camera : m_cameras) {
-        if (camera->GetCamera()->GetProjectionType() == ProjectionType::Perspective)
-            return camera;
-    }
-    return nullptr;
+    return m_objectManager->GetMainCamera();
 }
 
 shared_ptr<GameObject> Scene::GetUICamera()
 {
-    for (auto camera : m_cameras) {
-        if (camera->GetCamera()->GetProjectionType() == ProjectionType::Orthographic)
-            return camera;
-    }
-    return nullptr;
-}
-
-void Scene::PickUI()
-{
-    if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON) == false) {
-        return;
-    }
-
-    if (GetUICamera() == nullptr)
-        return;
-
-    POINT screenpPt = INPUT->GetMousePos();
-
-    shared_ptr<Camera> camera = GetUICamera()->GetCamera();
-    const auto gameObjects = GetObjects();
-
-    for (auto& object : gameObjects) {
-        if (object->GetButton() == nullptr)
-            continue;
-
-        if (object->GetButton()->Picked(screenpPt))
-            object->GetButton()->InvokeOnClicked();
-    }
-}
-
-shared_ptr<class GameObject> Scene::Pick()
-{
-    if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON) == false)
-        return nullptr;
-    //int32 _screenX, int32 _screenY
-    int screenX = INPUT->GetMousePos().x;
-    int screenY = INPUT->GetMousePos().y;
-
-    shared_ptr<Camera> camera = GetMainCamera()->GetCamera();
-
-    float width = GRAPHICS->GetViewport().GetWidth();
-    float height = GRAPHICS->GetViewport().GetHeight();
-
-    Matrix projectionMatrix = camera->GetProjectionMatrix();
-
-    //View좌표로 변환
-    float viewX = (+2.0f * screenX / width - 1.0f) / projectionMatrix(0, 0);
-    float viewY = (-2.0f * screenY / height + 1.0f) / projectionMatrix(1, 1);
-
-    //View로 변환하는 역행렬 구하기. 
-    Matrix viewMatrix = camera->GetViewMatrix();
-    Matrix viewMatrixInv = viewMatrix.Invert();
-
-    //모든 오브젝트 구하기. 
-    const auto& gameObjects = GetObjects();
-
-    float minDistance = FLT_MAX;
-    shared_ptr<GameObject> picked;
-
-    // ViewSpace에서 Ray 정의
-    // ViewSpace란 카메라의 위치가 원점이기 때문에 origin이 0벡터.
-    // rayDir은 시작점과 끝점을 구해준다는 것. 
-    Vec4 rayOrigin = Vec4(0.f, 0.f, 0.f, 1.f);
-    Vec4 rayDir = Vec4(viewX, viewY, 1.0f, 0.f);
-
-    //View시점 원점 -> world로 돌아가기. 
-    //위치와 Dir구하기. 
-    Vec3 worldRayOrigin = XMVector3TransformCoord(rayOrigin, viewMatrixInv);
-    Vec3 worldRayDir = XMVector3TransformNormal(rayDir, viewMatrixInv);
-    worldRayDir.Normalize();
-
-    Ray ray = Ray(worldRayOrigin, worldRayDir);
-
-    //모든 물체를 전부 다 스캔하는 무식한 방법. 
-    for (auto& gameObject : gameObjects) {
-        if (camera->IsCulled(gameObject->GetLayerIndex()))
-            continue;
-
-        //Collider 붙여야만 피격 된다. 
-        if (gameObject->GetCollider() == nullptr)
-            continue;
-
-
-        //WorldSpace에서 연산하기. 
-        Ray ray = Ray(worldRayOrigin, worldRayDir);
-
-        float distance = 0.f;
-        if (gameObject->GetCollider()->Intersects(ray, OUT distance) == false)
-            continue;
-
-        if (distance < minDistance) {
-            minDistance = distance;
-            picked = gameObject;
-        }
-    }
-
-
-    //Teraain 클릭 검사. 
-    for (auto& gameObject : gameObjects) {
-        if (gameObject->GetTerrain() == nullptr)
-            continue;
-
-        Vec3 pickPos;
-        float distance = 0.0f;
-        if (gameObject->GetTerrain()->Pick(screenX, screenY, OUT pickPos, OUT distance) == false)
-            continue;
-
-        if (distance < minDistance)
-        {
-            minDistance = distance;
-            picked = gameObject;
-        }
-    }
-
-    if (picked) {
-        std::cout << "picked\n";
-    }
-
-    return picked;
-
+    return m_objectManager->GetUICamera();
 }
 
 void Scene::CheckCollision()
 {
-
     //1. m_gameObjects끼리 for문 돌려서 검사한다. 
     //2. Collider만들 때, obj를 받는다. 
     vector<shared_ptr<BaseCollider>> colliders;
-    for (auto object : m_gameObjects) {
+    const auto& objects = m_objectManager->GetObjects();
+    for (auto object : objects) {
         if (object->GetCollider() == nullptr)
             continue;
 
@@ -607,283 +243,10 @@ void Scene::CheckCollision()
 
 void Scene::CheckCollisionWithQuadTree()
 {
-    if (!m_quadTree) return;
+    auto quadTree = m_objectManager->GetQuadTree();
+    if (!quadTree) return;
 
-    m_quadTree->CheckCollisionsInTree(GetMainCamera()->GetCamera(), m_mapColInfo);
+    quadTree->CheckCollisionsInTree(GetMainCamera()->GetCamera(), m_mapColInfo);
 }
 
 
-shared_ptr<GameObject> Scene::PickObjectOrUI()
-{
-    if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON) == false)
-        return nullptr;
-
-    POINT screenPt = INPUT->GetMousePos();
-
-    // UI 검사 (기존과 동일)
-    if (GetUICamera() != nullptr)
-    {
-        const auto gameObjects = m_uiObjects;
-        for (auto& object : gameObjects)
-        {
-            if (object->GetButton() == nullptr) continue;
-            if (object->GetButton()->Picked(screenPt))
-            {
-                object->GetButton()->InvokeOnClicked();
-                return nullptr;
-            }
-        }
-    }
-
-    shared_ptr<Camera> camera = GetMainCamera()->GetCamera();
-
-    // Ray 생성
-    Ray ray = CreateRayFromScreen(Vec2(screenPt.x, screenPt.y), camera);
-
-    auto queryStart = std::chrono::high_resolution_clock::now();
-    vector<shared_ptr<GameObject>> candidates = m_quadTree->Query(ray, camera);
-    auto queryEnd = std::chrono::high_resolution_clock::now();
-
-    // 좌표 비교 디버깅 + 음수 좌표 필터링
-#if _DEBUG
-    cout << "=== 좌표 비교 디버깅 ===" << endl;
-#endif
-
-
-    // 유효한 후보만 저장할 벡터
-    vector<shared_ptr<GameObject>> validCandidates;
-
-    for (auto& obj : candidates)
-    {
-        Vec3 worldPos = obj->GetTransform()->GetPosition();
-        RECT objBounds = m_quadTree->GetObjectScreenBounds(obj, camera);
-
-        // 화면 좌표 중심점 계산
-        int screenCenterX = (objBounds.left + objBounds.right) / 2;
-        int screenCenterY = (objBounds.top + objBounds.bottom) / 2;
-
-
-        // 음수 좌표 검사
-        if (screenCenterX < 0 || screenCenterY < 0)
-        {
-            //cout << "  -> 음수 좌표로 인해 후보에서 제외됨" << endl;
-            continue; // 이 객체는 후보에서 제외
-        }
-
-#if _DEBUG
-        cout << "객체 " << ws2s(obj->GetName()) << ":" << endl;
-        cout << "  월드 좌표: (" << worldPos.x << ", " << worldPos.y << ", " << worldPos.z << ")" << endl;
-        cout << "  화면 좌표: (" << screenCenterX << ", " << screenCenterY << ")" << endl;
-
-
-        cout << "  마우스와 거리: " << sqrt(pow(screenPt.x - screenCenterX, 2) +
-            pow(screenPt.y - screenCenterY, 2)) << endl;
-#endif
-        // 유효한 후보에 추가
-        validCandidates.push_back(obj);
-    }
-
-#if _DEBUG
-    // 성능 정보 출력 (수정된 후보 개수 반영)
-    const auto& stats = m_quadTree->GetStats();
-    cout << "=== 피킹 성능 정보 ===" << endl;
-    cout << "전체 객체 수: " << m_gameObjects.size() << endl;
-    cout << "초기 후보 객체 수: " << candidates.size() << endl;
-    cout << "유효 후보 객체 수: " << validCandidates.size() << endl;
-    cout << "필터링 효과: " << (candidates.size() - validCandidates.size()) << "개 제외" << endl;
-    cout << "효율성: " << (100.0f * validCandidates.size() / (m_gameObjects.size() / 2)) << "%" << endl;
-    cout << "쿼리 시간: " << stats.lastQueryTime.count() << "μs" << endl;
-    cout << "마우스 좌표 : " << screenPt.x << " , " << screenPt.y << endl;
-#endif
-    // 유효한 후보들만 대상으로 교차 검사
-    float minDistance = FLT_MAX;
-    shared_ptr<GameObject> picked;
-
-    for (auto& gameObject : validCandidates) // candidates -> validCandidates로 변경
-    {
-        if (camera->IsCulled(gameObject->GetLayerIndex())) continue;
-        if (gameObject->GetCollider() == nullptr) continue;
-
-        float distance = 0.f;
-        if (gameObject->GetCollider()->Intersects(ray, OUT distance) == false) continue;
-
-        if (distance < minDistance)
-        {
-            minDistance = distance;
-            picked = gameObject;
-        }
-    }
-
-    if (picked)//pick된 오브젝트. 
-    {
-        if (!ImGui::IsWindowHovered()) {
-            m_curPickedObj = picked;
-#if _DEBUG
-            string name = ws2s(picked->GetName());
-            cout << name << " : picked (distance: " << minDistance << ")" << endl;
-#endif
-        }
-    }
-    else {//버튼 눌렀으나 아무것도 picked되지 않았을 때. 
-        //그러면서 Imgui창에도 클릭하지 않았을 때. 
-        if (!ImGui::IsWindowHovered()) {
-            m_curPickedObj.reset();
-        }
-    }
-
-#if _DEBUG
-    // 디버그 정보
-    if (INPUT->GetButtonDown(KEY_TYPE::RBUTTON))
-    {
-        cout << "\n=== 상세 디버그 정보 ===" << endl;
-        cout.flush();
-        m_quadTree->DebugDraw(camera);
-        m_quadTree->PrintDuplicates();
-    }
-#endif
-    return picked;
-}
-
-
-//
-string Scene::ws2s(const wstring& wstr)
-{
-    string str;
-    str.assign(wstr.begin(), wstr.end());
-    return str;
-}
-
-void Scene::UpdateQuadTree()
-{
-    if (!m_quadTree)
-    {
-        float width = GRAPHICS->GetViewport().GetWidth();
-        float height = GRAPHICS->GetViewport().GetHeight();
-        m_quadTree = make_unique<QuadTree>(width, height);
-    }
-
-    // 카메라 변화 감지
-    static Vec3 lastCameraPos = Vec3::Zero;
-    static Vec3 lastCameraRot = Vec3::Zero;
-    static int lastObjectCount = 0;
-
-    //객체 위치 변화 감지를 위한 해시맵
-    static unordered_map<shared_ptr<GameObject>, Vec3> lastObjectPositions;
-
-    Vec3 currentCameraPos = GetMainCamera()->GetTransform()->GetPosition();
-    Vec3 currentCameraRot = GetMainCamera()->GetTransform()->GetLocalRotation();
-    int currentObjectCount = (int)m_gameObjects.size();
-
-    // 변화 감지
-    float positionDelta = Vec3::Distance(lastCameraPos, currentCameraPos);
-    float rotationDelta = Vec3::Distance(lastCameraRot, currentCameraRot);
-
-    //어떤 오브젝트라도 위치가 변경되었으면, UpdateQuadTree.
-    bool objectMoved = false;
-    for (auto& object : m_gameObjects) {
-        if (!object->GetCollider()) continue;
-
-        Vec3 curPos = object->GetTransform()->GetPosition();
-        auto it = lastObjectPositions.find(object);
-        if (it != lastObjectPositions.end()) {
-            float prevCurDistance = Vec3::Distance(it->second, curPos);
-            if (prevCurDistance > 0.1f) {
-                objectMoved = true;
-                break;
-            }
-        }
-        else {
-            //새로운 객체 발견 시.
-            objectMoved = true;
-        }
-    }
-
-
-    if (objectMoved || positionDelta > 0.1f || rotationDelta > 0.01f || currentObjectCount != lastObjectCount)
-    {
-        m_quadTreeDirty = true;
-        lastCameraPos = currentCameraPos;
-        lastCameraRot = currentCameraRot;
-        lastObjectCount = currentObjectCount;
-        objectMoved = false;
-
-        for (auto& object : m_gameObjects) {
-            if (object->GetCollider()) {
-                lastObjectPositions[object] = object->GetTransform()->GetPosition();
-            }
-        }
-    }
-
-    if (m_quadTreeDirty)
-    {
-        auto buildStart = std::chrono::high_resolution_clock::now();
-
-        m_quadTree->Clear();
-        shared_ptr<Camera> camera = GetMainCamera()->GetCamera();
-
-        // 객체 삽입 
-        int insertedCount = 0;
-        for (auto& object : m_gameObjects)
-        {
-            if (object->GetCollider())
-            {
-                // 가시성 검사
-                if (m_quadTree->IsObjectVisible(object, camera))
-                {
-                    m_quadTree->Insert(object);
-                    insertedCount++;
-                }
-            }
-        }
-
-        m_quadTree->Build();
-        m_quadTreeDirty = false;
-
-        auto buildEnd = std::chrono::high_resolution_clock::now();
-        auto buildTime = std::chrono::duration_cast<std::chrono::microseconds>(buildEnd - buildStart);
-
-#ifdef _DEBUG
-        cout << "쿼드트리 재구성: " << insertedCount << "/" << m_gameObjects.size()
-            << " 객체, " << buildTime.count() << "μs" << endl;
-    }
-#endif
-}
-
-void Scene::GameObjectsTest()
-{
-    if (INPUT->GetButtonDown(KEY_TYPE::B))
-    {
-        string name;
-        for (auto& obj : m_gameObjects)
-        {
-            int count = obj.use_count();
-            if (obj.use_count() > 2) {  // Scene + 다른 참조
-                std::wcout << L"Warning: " << obj->GetName()
-                    << L" has high reference count: "
-                    << obj.use_count() << std::endl;
-            }
-
-            name = ws2s(obj->GetName());
-            cout << "오브젝트 이름 : " << name << endl;
-        }
-    }
-}
-
-// Ray 생성 
-Ray Scene::CreateRayFromScreen(const Vec2& screenPos, shared_ptr<Camera> camera)
-{
-    Viewport viewport = GRAPHICS->GetViewport();
-    Matrix worldMatrix = Matrix::Identity;
-    Matrix viewMatrix = camera->GetViewMatrix();
-    Matrix projMatrix = camera->GetProjectionMatrix();
-
-    // Near plane과 Far plane의 월드 좌표 계산
-    Vec3 nearPoint = viewport.UnProject(Vec3(screenPos.x, screenPos.y, 0.0f), worldMatrix, viewMatrix, projMatrix);
-    Vec3 farPoint = viewport.UnProject(Vec3(screenPos.x, screenPos.y, 1.0f), worldMatrix, viewMatrix, projMatrix);
-
-    // Ray 방향 계산
-    Vec3 rayDirection = farPoint - nearPoint;
-    rayDirection.Normalize();
-
-    return Ray(nearPoint, rayDirection);
-}

@@ -158,7 +158,7 @@ void Camera::SortUIObjects()
 {
     shared_ptr<Scene> scene = CURSCENE;
 
-    const unordered_set<shared_ptr<GameObject>>& uiObjects = scene->m_uiObjects;
+    const unordered_set<shared_ptr<GameObject>>& uiObjects = scene->GetUIObjects();
 
     m_vecForward.clear();
     m_vecBackward.clear();

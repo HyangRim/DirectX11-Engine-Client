@@ -223,6 +223,9 @@
     <ClCompile Include="Scene.cpp">
       <Filter>02. Managers\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="SceneObjectManager.cpp">
+      <Filter>02. Managers\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Types.h">
@@ -460,6 +463,9 @@
       <Filter>02. Managers\Scene</Filter>
     </ClInclude>
     <ClInclude Include="SceneManager.h">
+      <Filter>02. Managers\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneObjectManager.h">
       <Filter>02. Managers\Scene</Filter>
     </ClInclude>
   </ItemGroup>

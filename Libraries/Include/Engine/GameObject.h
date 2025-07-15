@@ -126,5 +126,7 @@ private:
 	bool m_alphaChanged = false;
 	OBJECTTYPE m_objType = OBJECTTYPE::DEFAULT;
 
+	bool m_isDestroyed = false;
+
 };
 

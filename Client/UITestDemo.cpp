@@ -79,13 +79,13 @@ void UITestDemo::Init()
 		m1->ReadMaterial(L"Nicky/Nicky");
 		m1->ReadAnimation(L"Nicky/Nicky_Run");
 
-		for (int32 i = 0; i < 20; i++)
+		for (int32 i = 0; i < 1; i++)
 		{
 
-			auto obj = make_shared<GameObject>();
-			obj->SetName(to_wstring(i));
+			nicky = make_shared<GameObject>();
+			nicky->SetName(to_wstring(i));
 
-			obj->GetTransform()->SetPosition(Vec3(rand() % 100, 0, rand() % 100));
+			nicky->GetTransform()->SetPosition(Vec3(rand() % 100, 0, rand() % 100));
 			
 			//obj->GetTransform()->SetPosition(Vec3(
 			//	(rand() % 1000) - 500,  // -500 ~ 499
@@ -94,12 +94,12 @@ void UITestDemo::Init()
 			//));
 
 
-			obj->GetTransform()->SetScale(Vec3(1.f));
+			nicky->GetTransform()->SetScale(Vec3(1.f));
 
-			obj->AddComponent(make_shared<SphereCollider>());
-			obj->AddComponent(make_shared<Rigidbody>());
-			obj->GetCollider()->SetOffset(Vec3(0.f, 1.f, 0.f));
-			obj->GetRigidbody()->SetStatic(true);
+			nicky->AddComponent(make_shared<SphereCollider>());
+			nicky->AddComponent(make_shared<Rigidbody>());
+			nicky->GetCollider()->SetOffset(Vec3(0.f, 1.f, 0.f));
+			nicky->GetRigidbody()->SetStatic(true);
 
 			/*obj->AddComponent(make_shared<ModelRenderer>(renderShader));
 			{
@@ -107,13 +107,13 @@ void UITestDemo::Init()
 				obj->GetModelRenderer()->SetPass(1);
 			}*/
 
-			obj->AddComponent(make_shared<ModelAnimator>(renderShader));
+			nicky->AddComponent(make_shared<ModelAnimator>(renderShader));
 			{
-				obj->GetModelAnimator()->SetModel(m1);
-				obj->GetModelAnimator()->SetPass(2);
+				nicky->GetModelAnimator()->SetModel(m1);
+				nicky->GetModelAnimator()->SetPass(2);
 			}
 
-			CURSCENE->Add(obj);
+			CURSCENE->Add(nicky);
 		}
 
 
@@ -309,7 +309,11 @@ void UITestDemo::Init()
 
 void UITestDemo::Update()
 {
-	
+	if (INPUT->GetButtonDown(KEY_TYPE::RBUTTON))
+	{// 또는 명시적으로
+		//CURSCENE->GetObjectManager()->MarkUIObjectForDestroyWithChildren(panelObj);
+		CURSCENE->Remove(nicky);
+	}
 }
 
 void UITestDemo::Render()
@@ -321,11 +325,11 @@ void UITestDemo::ShowImguiTransform()
 }
 
 // UIPanel에 ImageUI 추가 사용 예제
-void CreatePanelWithImageUI()
+void UITestDemo::CreatePanelWithImageUI()
 {
 	// UIPanel GameObject 생성
 	{
-		auto panelObj = make_shared<GameObject>();
+		panelObj = make_shared<GameObject>();
 		panelObj->SetName(L"UI_Panel2");
 
 		// UIPanel 컴포넌트 추가
