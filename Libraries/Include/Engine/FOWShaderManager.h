@@ -1,14 +1,6 @@
 #pragma once
 #include "Shader.h"
 
-struct FogOfWarData {
-    Vec3 playerWorldPos;
-    float sightRange;
-    float darkness;
-    float fadeDistance;
-    float smoothness;
-    float time;
-};
 
 constexpr float UPDATETIME = 0.016f;
 
@@ -16,6 +8,7 @@ class FOWShaderManager
 {
     DECLARE_SINGLE(FOWShaderManager);
 
+    ~FOWShaderManager();
 
 public:
     void Init();

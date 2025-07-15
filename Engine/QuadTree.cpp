@@ -604,7 +604,7 @@ bool QuadTree::IsObjectVisible(shared_ptr<GameObject> _object, shared_ptr<Camera
 	Vec3 screenPos = viewport.Project(worldPos, worldMatrix, viewMatrix, projMatrix);
 
 	//화면 경계 검사. (여유 공간 최소화)
-	float margin = 50.0f; // 여유 공간 줄임
+	float margin = 150.0f; // 여유 공간 줄임
 	if (screenPos.x < -margin || screenPos.x > viewport.GetWidth() + margin ||
 		screenPos.y < -margin || screenPos.y > viewport.GetHeight() + margin ||
 		screenPos.z < 0 || screenPos.z > 1)
@@ -622,7 +622,7 @@ bool QuadTree::IsObjectVisible(shared_ptr<GameObject> _object, shared_ptr<Camera
 	float right = localPos.Dot(cameraRight);
 	float up = localPos.Dot(cameraUp);
 
-	if (forward <= 0.1f) return false; // 너무 가까운 객체 제외
+	if (forward <= 0.05f) return false; // 너무 가까운 객체 제외
 
 	// FOV 기반 시야각 검사
 	float fov = XMConvertToDegrees(_camera->GetFOV());
@@ -634,8 +634,8 @@ bool QuadTree::IsObjectVisible(shared_ptr<GameObject> _object, shared_ptr<Camera
 	float horizontalAngle = XMConvertToDegrees(atan2(abs(right), forward));
 	float verticalAngle = XMConvertToDegrees(atan2(abs(up), forward));
 
-	if (horizontalAngle > horizontalFOV / 2.0f + 10.0f || // 10도 여유
-		verticalAngle > verticalFOV / 2.0f + 10.0f)
+	if (horizontalAngle > horizontalFOV / 2.0f + 20.0f || // 10도 여유
+		verticalAngle > verticalFOV / 2.0f + 20.0f)
 	{
 		return false;
 	}
@@ -646,6 +646,8 @@ bool QuadTree::IsObjectVisible(shared_ptr<GameObject> _object, shared_ptr<Camera
 
 bool QuadTree::IsObjectVisible(shared_ptr<GameObject> _object, Camera* _camera)
 {
+	//MAP오브젝트면 무조건 보이도록. 
+
 	Vec3 worldPos = _object->GetTransform()->GetPosition();
 	Vec3 cameraPos = _camera->GetTransform()->GetPosition();
 
@@ -688,7 +690,7 @@ bool QuadTree::IsObjectVisible(shared_ptr<GameObject> _object, Camera* _camera)
 	float right = localPos.Dot(cameraRight);
 	float up = localPos.Dot(cameraUp);
 
-	if (forward <= 0.1f) return false; // 너무 가까운 객체 제외
+	if (forward <= 0.05f) return false; // 너무 가까운 객체 제외
 
 	// FOV 기반 시야각 검사
 	float fov = XMConvertToDegrees(_camera->GetFOV());
@@ -700,8 +702,8 @@ bool QuadTree::IsObjectVisible(shared_ptr<GameObject> _object, Camera* _camera)
 	float horizontalAngle = XMConvertToDegrees(atan2(abs(right), forward));
 	float verticalAngle = XMConvertToDegrees(atan2(abs(up), forward));
 
-	if (horizontalAngle > horizontalFOV / 2.0f + 15.0f || // 15도 여유
-		verticalAngle > verticalFOV / 2.0f + 15.0f)
+	if (horizontalAngle > horizontalFOV / 2.0f + 20.0f || // 15도 여유
+		verticalAngle > verticalFOV / 2.0f + 20.0f)
 	{
 		return false;
 	}

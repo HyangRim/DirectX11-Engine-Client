@@ -4,7 +4,6 @@
 #include "Camera.h"
 #include "Scene.h"
 #include "GameObject.h"
-#include "CameraScript.h"
 #include "MeshRenderer.h"
 #include "Mesh.h"
 #include "Material.h"
@@ -43,7 +42,6 @@ void UITestDemo::Init()
 		camera->SetName(L"MainCamera");
 		camera->GetTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
 		camera->AddComponent(make_shared<Camera>());
-		camera->AddComponent(make_shared<CameraScript>());
 		camera->GetCamera()->SetNear(1.f);
 		camera->GetCamera()->SetFar(100.f);
 		camera->GetCamera()->SetProjectionType(ProjectionType::Perspective);

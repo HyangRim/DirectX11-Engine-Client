@@ -92,8 +92,6 @@ void Camera::SortGameObject()
 		cachedFogOfWar->UpdateFOWSystem();
 	}
 
-	FOW->UpdateShaderConstants();
-
 	if (m_type == ProjectionType::Perspective) 
 	{
 		int CullingObject = 0;
@@ -103,25 +101,27 @@ void Camera::SortGameObject()
 		//그려줄 것 선별하기. 
 		for (auto& object : gameObjects) 
 		{
-			//레이어 컬링. 
-			if (IsCulled(object->GetLayerIndex()))
-				continue;
+			if (object->GetType() != OBJECTTYPE::MAP) {
+				//레이어 컬링. 
+				if (IsCulled(object->GetLayerIndex()))
+					continue;
 
-			// QuadTree를 통한 Frustum Culling.
-			if (scene->GetQuadTree()->IsObjectVisible(object, this) == false) 
-			{
-				CullingObject++;
-				continue;
-			}
-
-			//FOW통한 컬링. 
-			if (cachedFogOfWar) {
-				if (!cachedFogOfWar->ShouldRenderObject(object)) {
+				// QuadTree를 통한 Frustum Culling.
+				if (!scene->GetQuadTree()->IsObjectVisible(object, this))
+				{
+					CullingObject++;
 					continue;
 				}
 
-				float alpha = cachedFogOfWar->GetObjectAlpha(object);
-				object->SetAlpha(alpha);
+				//FOW통한 컬링. 
+				if (cachedFogOfWar) {
+					if (!cachedFogOfWar->ShouldRenderObject(object)) {
+						continue;
+					}
+
+					float alpha = cachedFogOfWar->GetObjectAlpha(object);
+					object->SetAlpha(alpha);
+				}
 			}
 
 
@@ -151,7 +151,6 @@ void Camera::SortGameObject()
 			//cout << "컬링 오브젝트 : " << CullingObject << "\n";
 			//cout << "렌더링 오브젝트 : " << gameObjects.size() - CullingObject << "\n";
 		}
-
 	}
 	else
 	{

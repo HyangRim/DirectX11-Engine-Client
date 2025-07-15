@@ -22,6 +22,14 @@ class Text;
 class UIPanel;
 class ImageUI;
 
+enum class OBJECTTYPE {
+	DEFAULT,
+	MAP,
+	PLAYER,
+	MONSTER,
+	ENVIRONMENT,
+};
+
 class GameObject : public enable_shared_from_this<GameObject>
 {
 
@@ -59,6 +67,7 @@ public:
 	void AddComponent(shared_ptr<Component> _component);
 
 	void SetLayerIndex(uint8 _layer) { m_layerIndex = _layer; }
+	
 	uint8 GetLayerIndex() { return m_layerIndex; }
 
 	template<typename T>
@@ -89,6 +98,9 @@ public:
 	void SetName(wstring _name) { m_Name = _name; }
 	wstring GetName() { return m_Name; }
 
+	void SetType(OBJECTTYPE _type) { m_objType = _type; }
+	OBJECTTYPE GetType() { return m_objType; }
+
 public:
 	void OnDestroy(); // 소멸 전 정리 메서드
 	void ClearReferences(); // 참조 해제 메서드
@@ -112,6 +124,7 @@ private:
 	//FOW관련 코드. 
 	float m_alpha = 1.0f;
 	bool m_alphaChanged = false;
+	OBJECTTYPE m_objType = OBJECTTYPE::DEFAULT;
 
 };
 

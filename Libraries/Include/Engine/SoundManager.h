@@ -4,6 +4,8 @@ class SoundManager
 {
 	DECLARE_SINGLE(SoundManager);
 
+	~SoundManager();
+
 public:
 	HRESULT Init();
 

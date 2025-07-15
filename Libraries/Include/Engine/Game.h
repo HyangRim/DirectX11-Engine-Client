@@ -8,7 +8,7 @@ struct GameDesc
 	HWND hWnd = 0;
 	float width = 1366;
 	float height = 768;
-	bool vsync = false;
+	bool vsync = true;
 	bool windowed = true;
 	Color clearColor = Color(0.5f, 0.5f, 0.5f, 0.5f);
 };

@@ -15,13 +15,22 @@
 - 간단한 씬 그래프 구조
 - 충돌 관련(Sphere, AABB, OBB)
 - ImGui기반 UI
+- TextUI, ImageUI
 - 파티클 시스템
 - Shadow
 - Rigidbody(dynamic, static)
+- FOW(전장의 안개)
+- 멀티스레드 로딩
+
+
+## 최적화 관련
+
+- 모델 인스턴싱
+- QuadTree이용한 Frustum Culling
+- QuadTree이용한 Collision 최적화, 전장의 안개 최적화. 
 
 ### 예정 기능
 
-- 멀티스레드 로딩. 
 
 ##  데모 
 

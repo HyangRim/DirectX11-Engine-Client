@@ -5,16 +5,10 @@
 
 void CameraScript::Init()
 {
-	isFollowing = true;
 }
 
 void CameraScript::Update()
 {
-	if (isFollowing) {
-		characterFollow();
-		return;
-	}
-
 	float dt = TIME->GetDeltaTime();
 
 	Vec3 pos = GetTransform()->GetPosition();
@@ -61,11 +55,5 @@ void CameraScript::Update()
 		rotation.y -= dt * 0.5f;
 		GetTransform()->SetLocalRotation(rotation);
 	}
-
-}
-
-void CameraScript::characterFollow()
-{
-	if (m_FollowingTarget == nullptr) return;
 
 }

@@ -73,7 +73,10 @@ public:
 	void PushParticleData(const ParticleDesc& _desc);
 	void PushShadowData(const Matrix& _desc);
 	void PushTextData(const Vec4& textColor, const Vec4& outlineColor, float alpha, float outlineWidth);
+	void PushFOWData(const FogOfWarData& _desc);
+
 	vector<Technique>& GetTechniqes() { return m_techniques; }
+	bool IsFOWShader() const;
 
 private:
 	//어떤 정보를 넣으려거든 이 삼총사. 
@@ -125,6 +128,13 @@ private:
 	TextDesc m_textDesc;
 	shared_ptr<ConstantBuffer<TextDesc>> m_textBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> m_textEffectBuffer;
+
+	//FOW Shader
+	FogOfWarData m_fowDesc;
+	shared_ptr<ConstantBuffer<FogOfWarData>> m_fowBuffer;
+	ComPtr<ID3DX11EffectConstantBuffer> m_fowEffectBuffer;
+
+
 };
 
 class ShaderManager

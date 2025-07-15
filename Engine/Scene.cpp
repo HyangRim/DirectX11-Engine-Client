@@ -92,7 +92,7 @@ void Scene::Update()
 	//Pick();
 
 	GameObjectsTest();
-
+	UpdateQuadTree();
 
 
 	PickObjectOrUI();
@@ -154,26 +154,6 @@ void Scene::Render()
 
 void Scene::RenderGameCamera(Camera* cam)
 {
-	/*GRAPHICS->ClearShadowDepthStencilView();
-	GRAPHICS->SetShadowDepthStencilView();
-
-	Light* light = GetLight()->GetLight().get();
-
-	cam->SetStaticData();
-	cam->SortGameObject();
-
-	if (light) {
-		light->SetVPMatrix(cam, 100.0f, ::XMMatrixOrthographicLH(100, 100, 0, 200));
-		cam->Render_Forward(true);
-		Viewport& vp = GRAPHICS->GetShadowViewport();
-		cam->Render_Backward(true);
-	}
-
-	GRAPHICS->SetRTVAndDSV();
-	cam->Render_Forward(false);
-	if (m_sky)
-		m_sky->Render(cam);
-	cam->Render_Backward(false);*/
 
 	GRAPHICS->ClearShadowDepthStencilView();
 	GRAPHICS->SetShadowDepthStencilView();
@@ -490,8 +470,6 @@ shared_ptr<GameObject> Scene::PickObjectOrUI()
 
 	// Ray »ý¼º
 	Ray ray = CreateRayFromScreen(Vec2(screenPt.x, screenPt.y), camera);
-
-	UpdateQuadTree();
 
 	auto queryStart = std::chrono::high_resolution_clock::now();
 	vector<shared_ptr<GameObject>> candidates = m_quadTree->Query(ray, camera);

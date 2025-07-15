@@ -13,6 +13,10 @@ Text::Text() : Super(ComponentType::Text)
 
 Text::~Text()
 {
+    m_textColorEffect.Reset();
+    m_outlineColorEffect.Reset();
+    m_textAlphaEffect.Reset();
+    m_outlineWidthEffect.Reset();
 }
 void Text::Init()
 {

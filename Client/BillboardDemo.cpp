@@ -3,7 +3,6 @@
 #include "GameObject.h"
 #include "GeometryHelper.h"
 #include "Camera.h"
-#include "CameraScript.h"
 #include "MeshRenderer.h"
 #include "Mesh.h"
 #include "Material.h"
@@ -28,26 +27,27 @@
 #include "Sky.h"
 #include "Rigidbody.h"
 #include "FogOfWar.h"
+#include "CameraScript.h"
 
 void BillboardDemo::Init()
 {
 	CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\snowcube1024.dds", L"Sky.fx"));
 	shared_ptr<Shader> renderShader = make_shared<Shader>(L"FOW.fx");
-	
+	//shared_ptr<Shader> renderShader = make_shared<Shader>(L"23. RenderDemo.fx");
 	// Camera
 	auto camera = make_shared<GameObject>();
 	//camera->GetTransform()->SetLocalPosition(Vec3{ 0.f, 12.f, -7.5f });
 	//camera->GetTransform()->SetLocalRotation(Vec3{45.f, 0.f, 0.f});
 	camera->AddComponent(make_shared<Camera>());
 	camera->AddComponent(make_shared<CameraScript>());
-	camera->AddComponent(make_shared<FogOfWar>());
+	//camera->AddComponent(make_shared<FogOfWar>());
 
 	camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
 	CURSCENE->Add(camera);
 	
 
 	{
-		// Mesh
+		// Mesh0
 		// Material
 		{
 			shared_ptr<Material> material = make_shared<Material>();
@@ -62,62 +62,62 @@ void BillboardDemo::Init()
 		}
 
 		//OBB 1
-		{
-			auto obj = make_shared<GameObject>();
-			obj->GetTransform()->SetLocalPosition(Vec3(0, 2.5f, 0));
-			obj->GetTransform()->SetLocalScale(Vec3(1.f));
-			obj->AddComponent(make_shared<MeshRenderer>());
-			{
-				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"Veigar"));
-			}
-			{
-				auto mesh = RESOURCES->Get<Mesh>(L"Cube");
-				obj->GetMeshRenderer()->SetMesh(mesh);
-				obj->GetMeshRenderer()->SetPass(0);
-			}
-			{
-				//auto collider = make_shared<SphereCollider>();
-				obj->AddComponent(make_shared<SphereCollider>());
-				obj->AddComponent(make_shared<Rigidbody>());
-				obj->GetRigidbody()->SetStatic(true);
-				//obj->GetButton()->AddOnClikedEvent([obj]() { CURSCENE->Remove(obj); });
-				
-			}
+		//{
+		//	auto obj = make_shared<GameObject>();
+		//	obj->GetTransform()->SetLocalPosition(Vec3(0, 2.5f, 0));
+		//	obj->GetTransform()->SetLocalScale(Vec3(1.f));
+		//	obj->AddComponent(make_shared<MeshRenderer>());
+		//	{
+		//		obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"Veigar"));
+		//	}
+		//	{
+		//		auto mesh = RESOURCES->Get<Mesh>(L"Cube");
+		//		obj->GetMeshRenderer()->SetMesh(mesh);
+		//		obj->GetMeshRenderer()->SetPass(0);
+		//	}
+		//	{
+		//		//auto collider = make_shared<SphereCollider>();
+		//		obj->AddComponent(make_shared<SphereCollider>());
+		//		obj->AddComponent(make_shared<Rigidbody>());
+		//		obj->GetRigidbody()->SetStatic(true);
+		//		//obj->GetButton()->AddOnClikedEvent([obj]() { CURSCENE->Remove(obj); });
+		//		
+		//	}
 
-			CURSCENE->Add(obj);
-		}
+		//	CURSCENE->Add(obj);
+		//}
 
 
 
 		//OBB3
-		{
-			auto obj = make_shared<GameObject>();
-			obj->GetTransform()->SetLocalPosition(Vec3(7.5f, 2.5f, 0));
-			obj->GetTransform()->SetLocalScale(Vec3(1.f));
-			obj->AddComponent(make_shared<MeshRenderer>());
-			{
-				obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"Veigar"));
-			}
-			{
-				auto mesh = RESOURCES->Get<Mesh>(L"Cube");
-				obj->GetMeshRenderer()->SetMesh(mesh);
-				obj->GetMeshRenderer()->SetPass(0);
-			}
-			{
-				auto collider = make_shared<SphereCollider>();
-				obj->AddComponent(collider);
-				//obj->GetButton()->AddOnClikedEvent([obj]() { CURSCENE->Remove(obj); });
+		//{
+		//	auto obj = make_shared<GameObject>();
+		//	obj->GetTransform()->SetLocalPosition(Vec3(7.5f, 2.5f, 0));
+		//	obj->GetTransform()->SetLocalScale(Vec3(1.f));
+		//	obj->AddComponent(make_shared<MeshRenderer>());
+		//	{
+		//		obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"Veigar"));
+		//	}
+		//	{
+		//		auto mesh = RESOURCES->Get<Mesh>(L"Cube");
+		//		obj->GetMeshRenderer()->SetMesh(mesh);
+		//		obj->GetMeshRenderer()->SetPass(0);
+		//	}
+		//	{
+		//		auto collider = make_shared<SphereCollider>();
+		//		obj->AddComponent(collider);
+		//		//obj->GetButton()->AddOnClikedEvent([obj]() { CURSCENE->Remove(obj); });
 
-			}
-			{
-				obj->AddComponent(make_shared<Rigidbody>());
-			}
-			{
-				obj->AddComponent(make_shared<ForceScript>());
-			}
+		//	}
+		//	{
+		//		obj->AddComponent(make_shared<Rigidbody>());
+		//	}
+		//	{
+		//		obj->AddComponent(make_shared<ForceScript>());
+		//	}
 
-			CURSCENE->Add(obj);
-		}
+		//	CURSCENE->Add(obj);
+		//}
 
 
 
@@ -190,6 +190,7 @@ void BillboardDemo::Init()
 			RESOURCES->Add(L"TerrainGrass", material);
 		}
 		auto obj = make_shared<GameObject>();
+		obj->SetType(OBJECTTYPE::MAP);
 		obj->GetTransform()->SetLocalPosition(Vec3(-100.f, 0.f, -100.f));
 		obj->AddComponent(make_shared<Terrain>());
 		obj->GetTerrain()->Create(200, 200, RESOURCES->Get<Material>(L"TerrainGrass"));
@@ -257,22 +258,18 @@ void BillboardDemo::Init()
 			auto obj = make_shared<GameObject>();
 			obj->GetTransform()->SetPosition(Vec3(0.f, 0.f, 0.f));
 			obj->GetTransform()->SetScale(Vec3(1.f));
-			//obj->GetTransform()->SetRotation(Vec3(-180.f, 0.f, 0.f));
 
-			
-			
-			
-			
 			obj->AddComponent(make_shared<ModelAnimator>(renderShader));
 			{
 				obj->GetModelAnimator()->SetModel(m1);
 				obj->GetModelAnimator()->SetPass(2);
 			}
-			
+			obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->AddComponent(make_shared<FogOfWar>());
+
 			CURSCENE->Add(obj);
 
-
-			camera->GetTransform()->SetParent(obj->GetTransform());
+			//camera->GetTransform()->SetParent(obj->GetTransform());
 			camera->GetTransform()->SetLocalPosition(Vec3{ 0.f, 12.f, -7.5f });
 			camera->GetTransform()->SetLocalRotation(Vec3{ 45.f, 0.f, 0.f });
 		}

@@ -111,3 +111,12 @@ struct TextDesc {
 	float outlineWidth;  // 4바이트
 	Vec2 textPadding;    // 8바이트 (총 48바이트, 16바이트 정렬)
 };
+
+struct FogOfWarData {
+	Vec3 playerWorldPos;
+	float sightRange;
+	float darkness;
+	float fadeDistance;
+	float smoothness;
+	float time;
+};

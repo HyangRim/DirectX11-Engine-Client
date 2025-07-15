@@ -5,20 +5,26 @@
 
 Graphics::~Graphics()
 {
-	
+	if (m_deviceContext != nullptr) {
+		m_deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+		m_deviceContext->Flush();
+	}
 
-
-	m_deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
-	
 	m_renderTargetView.Reset();
 	m_depthStencilView.Reset();
 	m_depthStencilTexture.Reset(); 
 	m_shadowDSTexture.Reset();
 	m_shadowDSV.Reset();
 
-
-	m_deviceContext->Flush();
+	if (m_shadowMap)
+		m_shadowMap.reset();
 	
+	m_deviceContext.Reset();
+
+	if (m_swapChain != nullptr)
+		m_swapChain.Reset();
+	if (m_device != nullptr)
+		m_device.Reset();
 }
 
 
