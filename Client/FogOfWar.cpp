@@ -32,7 +32,8 @@ void FogOfWar::Update()
 
 	if (m_curTime > m_updateTime) {
 		m_curTime = 0.f;
-		m_needsUpdate = false;
+		m_needsUpdate = true;
+		UpdateFOWSystem();
 	}
 }
 
@@ -76,6 +77,44 @@ void FogOfWar::UpdateFOWSystem()
 
 
 
+bool FogOfWar::IsFOWShader(shared_ptr<Shader> _shader)
+{
+	return _shader->IsFOWShader();
+}
+
+void FogOfWar::UpdateShadersWithFOWData(const FogOfWarData& _fowData)
+{
+
+	const auto& objects = CURSCENE->GetQuadTree()->GetInsertedObject();
+	shared_ptr<Camera> camera = CURSCENE->GetMainCamera()->GetCamera();
+
+	Vec3 playerPos = _fowData.playerWorldPos;
+	float maxRange = _fowData.sightRange * 1.2f;
+
+	for (auto& obj : objects) {
+		if (CURSCENE->GetQuadTree()->IsObjectVisible(obj, camera)) {
+			Vec3 objPos = obj->GetTransform()->GetPosition();
+			float distance = Vec3::Distance(playerPos, objPos);
+			
+			if (distance <= maxRange) {
+				auto renderer = obj->GetRenderer();
+				if (renderer) {
+					auto material = renderer->GetMaterial();
+					if (material) {
+						auto shader = material->GetShader();
+
+						if (shader && shader->IsFOWShader()) {
+							shader->PushFOWData(_fowData);
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+}
+
 void FogOfWar::UpdateFOWShader()
 {
 	FogOfWarData fowData = {};
@@ -84,8 +123,16 @@ void FogOfWar::UpdateFOWShader()
 	fowData.darkness = m_darkness;
 	fowData.fadeDistance = m_fadeDistance;
 	fowData.smoothness = m_smoothness;
+	fowData.time = GetTickCount64() / 1000.f;
 
-	FOW->SetFogOfWarData(fowData);
+	if (!m_isFirstUpdate && memcmp(&m_lastFowData, &fowData, sizeof(FogOfWarData)) == 0)
+		return;
+
+	m_lastFowData = fowData;
+	m_isFirstUpdate = false;
+
+
+	UpdateShadersWithFOWData(fowData);
 }
 
 void FogOfWar::ApplyToMapObjects()
@@ -104,10 +151,8 @@ void FogOfWar::ApplyToMapObjects()
 
 bool FogOfWar::IsMapObject(shared_ptr<GameObject> _object)
 {
-	wstring name = _object->GetName();
-	return (name.find(L"Map") != wstring::npos ||
-		name.find(L"Terrain") != wstring::npos ||
-		_object->GetLayerIndex() == 0);
+	if (_object->GetType() == OBJECTTYPE::MAP) return true;
+	return false;
 }
 
 

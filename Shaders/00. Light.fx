@@ -111,10 +111,14 @@ float4 ComputeLight(float3 _normal, float2 _uv, float3 _worldPosition, float sha
         emissive = pow(emissive, 2);
         emissiveColor = GlobalLight.emissive * Material.emissive * emissive;
     }
-    if (shadow < 0.35f)
-        shadow = 0.35f;
-    return ambientColor + (diffuseColor + specularColor + emissiveColor) * shadow;
     
+    
+    float4 finalColor =  ambientColor + (diffuseColor + specularColor + emissiveColor) * shadow;
+    
+    float4 baseTexture = DiffuseMap.Sample(LinearSampler, _uv);
+    finalColor.rgb = max(finalColor.rgb, baseTexture.rgb * 0.95f);
+    
+    return finalColor;
 }
 
 void ComputeNormalMapping(inout float3 normal, float3 tangent, float2 uv)

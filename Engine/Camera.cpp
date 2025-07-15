@@ -58,17 +58,6 @@ void Camera::UpdateMatrix()
 
 void Camera::SortGameObject()
 {
-	// ProjectionType에 따라 분기
-	if (m_type == ProjectionType::Perspective) {
-		SortGameObjects();  // 일반 게임 객체 렌더링
-	}
-	else if (m_type == ProjectionType::Orthographic) {
-		SortUIObjects();    // UI 객체 렌더링
-	}
-}
-
-void Camera::SortGameObjects()
-{
 	shared_ptr<Scene> scene = CURSCENE;
 	const unordered_set<shared_ptr<GameObject>>& gameObjects = scene->GetObjects();
 
@@ -78,11 +67,12 @@ void Camera::SortGameObjects()
 	// FOW 인터페이스 캐싱 시스템 (성능 최적화)
 	static IFogOfWar* cachedFogOfWar = nullptr;
 	static int lastFrameCheck = -1;
-	int currentFrame = GetTickCount64() / 16;
+	int currentFrame = GetTickCount64() / 16; // 60FPS 기준
 
 	if (lastFrameCheck != currentFrame) {
 		cachedFogOfWar = nullptr;
 
+		// IFogOfWar 인터페이스 구현체 찾기
 		for (auto& obj : gameObjects) {
 			auto scripts = obj->GetScripts();
 			for (auto& comp : scripts) {
@@ -97,88 +87,100 @@ void Camera::SortGameObjects()
 		lastFrameCheck = currentFrame;
 	}
 
+	// FOW 시스템 업데이트 (엔진에서 호출)
 	if (cachedFogOfWar) {
 		cachedFogOfWar->UpdateFOWSystem();
 	}
 
-	FOW->UpdateShaderConstants();
+	if (m_type == ProjectionType::Perspective) 
+	{
+		int CullingObject = 0;
+		
+	
+		//cout << "전체 오브젝트 : " << gameObjects.size() << "\n";
+		//그려줄 것 선별하기. 
+		for (auto& object : gameObjects) 
+		{
+			if (object->GetType() != OBJECTTYPE::MAP) {
+				//레이어 컬링. 
+				if (IsCulled(object->GetLayerIndex()))
+					continue;
 
-	// **일반 게임 객체만 처리**
-	for (auto& object : gameObjects) {
-		if (IsCulled(object->GetLayerIndex()))
-			continue;
+				// QuadTree를 통한 Frustum Culling.
+				if (!scene->GetQuadTree()->IsObjectVisible(object, this))
+				{
+					CullingObject++;
+					continue;
+				}
 
-		// QuadTree를 통한 Frustum Culling
-		if (scene->GetQuadTree()->IsObjectVisible(object, this) == false) {
-			continue;
-		}
+				//FOW통한 컬링. 
+				if (cachedFogOfWar) {
+					if (!cachedFogOfWar->ShouldRenderObject(object)) {
+						continue;
+					}
 
-		// FOW 체크
-		if (cachedFogOfWar) {
-			if (!cachedFogOfWar->ShouldRenderObject(object)) {
-				continue;
+					float alpha = cachedFogOfWar->GetObjectAlpha(object);
+					object->SetAlpha(alpha);
+				}
 			}
-			float alpha = cachedFogOfWar->GetObjectAlpha(object);
-			object->SetAlpha(alpha);
-		}
 
-		shared_ptr<Renderer> renderer = object->GetRenderer();
-		if (renderer == nullptr)
-			continue;
 
-		shared_ptr<Material> material = renderer->GetMaterial();
-		RenderQueue renderQueue = material->GetRenderQueue();
+			//QuadTree - Visible가지고 Frustum Culling 가능. 
+			shared_ptr<Renderer> renderer = object->GetRenderer();
+			if (renderer == nullptr)
+				continue;
 
-		switch (renderQueue) {
-		case RenderQueue::Opaque:
-		case RenderQueue::Cutout:
-			m_vecForward.push_back(object);
-			break;
-		case RenderQueue::Transparent:
-			m_vecBackward.push_back(object);
-			break;
+			shared_ptr<Material> material = renderer->GetMaterial();
+			RenderQueue renderQueue = material->GetRenderQueue();
+
+			//TODO : 컷아웃용 정렬하기
+			//TODO : 거리에 따라 정렬하기
+
+			switch (renderQueue)
+			{
+				case RenderQueue::Opaque:
+				case RenderQueue::Cutout:
+					m_vecForward.push_back(object);
+					break;
+				case RenderQueue::Transparent:
+					m_vecBackward.push_back(object);
+					break;
+
+			}
+
+			//cout << "컬링 오브젝트 : " << CullingObject << "\n";
+			//cout << "렌더링 오브젝트 : " << gameObjects.size() - CullingObject << "\n";
 		}
 	}
-}
+	else
+	{
+		//그려줄 것 선별하기. 
+		for (auto& object : gameObjects) 
+		{
+			if (IsCulled(object->GetLayerIndex()))
+				continue;
 
-void Camera::SortUIObjects()
-{
-	shared_ptr<Scene> scene = CURSCENE;
+			//QuadTree - Visible가지고 Frustum Culling 가능. 
+			shared_ptr<Renderer> renderer = object->GetRenderer();
+			if (renderer == nullptr)
+				continue;
 
-	// **UI 객체만 가져오기**
-	const unordered_set<shared_ptr<GameObject>>& uiObjects = scene->m_uiObjects;
+			shared_ptr<Material> material = renderer->GetMaterial();
+			
+			RenderQueue renderQueue = material->GetRenderQueue();
 
-	m_vecForward.clear();
-	m_vecBackward.clear();
-
-	// UI 객체들을 Z 순서로 정렬하여 렌더링
-	vector<shared_ptr<GameObject>> sortedUIObjects(uiObjects.begin(), uiObjects.end());
-
-	// Z 좌표 기준으로 정렬 (멀리 있는 것부터 가까운 순으로)
-	std::sort(sortedUIObjects.begin(), sortedUIObjects.end(),
-		[](const shared_ptr<GameObject>& a, const shared_ptr<GameObject>& b) {
-			return a->GetTransform()->GetPosition().z > b->GetTransform()->GetPosition().z;
-		});
-
-	for (auto& object : sortedUIObjects) {
-		if (IsCulled(object->GetLayerIndex()))
-			continue;
-
-		shared_ptr<Renderer> renderer = object->GetRenderer();
-		if (renderer == nullptr)
-			continue;
-
-		shared_ptr<Material> material = renderer->GetMaterial();
-		RenderQueue renderQueue = material->GetRenderQueue();
-
-		switch (renderQueue) {
-		case RenderQueue::Opaque:
-		case RenderQueue::Cutout:
-			m_vecForward.push_back(object);
-			break;
-		case RenderQueue::Transparent:
-			m_vecBackward.push_back(object);
-			break;
+			//TODO : 컷아웃용 정렬하기
+			//TODO : 거리에 따라 정렬하기
+			switch (renderQueue)
+			{
+				case RenderQueue::Opaque:
+				case RenderQueue::Cutout:
+					m_vecForward.push_back(object);
+					break;
+				case RenderQueue::Transparent:
+					m_vecBackward.push_back(object);
+					break;
+			}
 		}
 	}
 }

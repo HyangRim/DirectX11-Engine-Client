@@ -17,7 +17,37 @@ Shader::Shader(wstring _file) : m_file(L"..\\Shaders\\" + _file)
 
 Shader::~Shader()
 {
-	
+	m_globalBuffer.reset();
+	m_transformBuffer.reset();
+	m_lightBuffer.reset();
+	m_materialBuffer.reset();
+	m_boneBuffer.reset();
+	m_keyframeBuffer.reset();
+	m_tweenBuffer.reset();
+	m_snowBuffer.reset();
+	m_particleBuffer.reset();
+	m_shadowBuffer.reset();
+	m_textBuffer.reset();
+
+	m_globalEffectBuffer.Reset();
+	m_transformEffectBuffer.Reset();
+	m_lightEffectBuffer.Reset();
+	m_materialEffectBuffer.Reset();
+	m_boneEffectBuffer.Reset();
+	m_keyframeEffectBuffer.Reset();
+	m_tweenEffectBuffer.Reset();
+	m_snowEffectBuffer.Reset();
+	m_particleEffectBuffer.Reset();
+	m_shadowEffectBuffer.Reset();
+	m_textEffectBuffer.Reset();
+
+	for (auto& technique : m_techniques) {
+		technique.m_technique.Reset();
+		for (auto& pass : technique.m_passes) {
+			pass.m_inputLayout.Reset();
+		}
+	}
+	m_techniques.clear();
 }
 
 
@@ -477,12 +507,30 @@ void Shader::PushTextData(const Vec4& textColor, const Vec4& outlineColor, float
 		m_textEffectBuffer = GetConstantBuffer("TextMaterialBuffer");
 	}
 
-	m_textDesc.TextColor = textColor;
-	m_textDesc.OutlineColor = outlineColor;
-	m_textDesc.TextAlpha = alpha;
-	m_textDesc.OutlineWidth = outlineWidth;
-	m_textDesc.TextPadding = Vec2(0, 0);
+	m_textDesc.textColor = textColor;
+	m_textDesc.outlineColor = outlineColor;
+	m_textDesc.textAlpha = alpha;
+	m_textDesc.outlineWidth = outlineWidth;
+	m_textDesc.textPadding = Vec2(0, 0);
 
 	m_textBuffer->CopyData(m_textDesc);
 	m_textEffectBuffer->SetConstantBuffer(m_textBuffer->GetComPtr().Get());
+}
+
+void Shader::PushFOWData(const FogOfWarData& _desc)
+{
+	if (m_fowBuffer == nullptr) {
+		m_fowBuffer = make_shared<ConstantBuffer<FogOfWarData>>();
+		m_fowBuffer->Create();
+		m_fowEffectBuffer = GetConstantBuffer("FogOfWarData");
+	}
+
+	m_fowDesc = _desc;
+	m_fowBuffer->CopyData(m_fowDesc);
+	m_fowEffectBuffer->SetConstantBuffer(m_fowBuffer->GetComPtr().Get());
+}
+
+bool Shader::IsFOWShader() const
+{
+	return m_file.find(L"FOW.fx") != wstring::npos;
 }

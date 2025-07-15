@@ -104,10 +104,19 @@ struct ParticleDesc {
 };
 
 struct TextDesc {
-	Vec4 TextColor;      // 16바이트
-	Vec4 OutlineColor;   // 16바이트 
-	Vec4 BackgroundColor;  // 배경색 추가
-	float TextAlpha;     // 4바이트
-	float OutlineWidth;  // 4바이트
-	Vec2 TextPadding;    // 8바이트 (총 48바이트, 16바이트 정렬)
+	Vec4 textColor;      // 16바이트
+	Vec4 outlineColor;   // 16바이트 
+	Vec4 backgroundColor;  // 배경색 추가
+	float textAlpha;     // 4바이트
+	float outlineWidth;  // 4바이트
+	Vec2 textPadding;    // 8바이트 (총 48바이트, 16바이트 정렬)
+};
+
+struct FogOfWarData {
+	Vec3 playerWorldPos;
+	float sightRange;
+	float darkness;
+	float fadeDistance;
+	float smoothness;
+	float time;
 };

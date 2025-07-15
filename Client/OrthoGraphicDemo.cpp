@@ -3,7 +3,6 @@
 #include "GeometryHelper.h"
 #include "Camera.h"
 #include "GameObject.h"
-#include "CameraScript.h"
 #include "MeshRenderer.h"
 #include "Mesh.h"
 #include "Material.h"
@@ -32,7 +31,6 @@ void OrthoGraphicDemo::Init()
 		camera->GetTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
 		camera->AddComponent(make_shared<Camera>());
 		camera->GetCamera()->SetProjectionType(ProjectionType::Perspective);
-		camera->AddComponent(make_shared<CameraScript>());
 		camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
 		CURSCENE->Add(camera);
 	}

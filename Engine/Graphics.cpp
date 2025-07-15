@@ -5,8 +5,26 @@
 
 Graphics::~Graphics()
 {
-	
+	if (m_deviceContext != nullptr) {
+		m_deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+		m_deviceContext->Flush();
+	}
 
+	m_renderTargetView.Reset();
+	m_depthStencilView.Reset();
+	m_depthStencilTexture.Reset(); 
+	m_shadowDSTexture.Reset();
+	m_shadowDSV.Reset();
+
+	if (m_shadowMap)
+		m_shadowMap.reset();
+	
+	m_deviceContext.Reset();
+
+	if (m_swapChain != nullptr)
+		m_swapChain.Reset();
+	if (m_device != nullptr)
+		m_device.Reset();
 }
 
 
@@ -20,7 +38,6 @@ void Graphics::Init(HWND hwnd)
 	CreateDepthStencilView();
 	SetViewport(GAME->GetGameDesc().width, GAME->GetGameDesc().height);
 }
-
 
 void Graphics::RenderBegin()
 {
@@ -115,12 +132,6 @@ void Graphics::CreateDeviceAndSwapChain()
 		nullptr,
 		m_deviceContext.GetAddressOf()
 	);
-	m_swapChain->SetPrivateData(
-		WKPDID_D3DDebugObjectName,
-		sizeof("Graphics::m_swapChain") - 1,
-		"Graphics::m_swapChain"
-	);
-
 
 	CHECK(hr);
 }

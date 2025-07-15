@@ -43,6 +43,9 @@ public:
 	void SetFadeDiatance(float _fade) { m_fadeDistance = _fade; m_needsUpdate = true; }
 	void SetSmoothness(float _smoothness) { m_smoothness = _smoothness; }
 
+
+	bool IsFOWShader(shared_ptr<Shader> _shader);
+	void UpdateShadersWithFOWData(const FogOfWarData& _fowData);
 private:
 	void UpdateFOWShader();
 	void ApplyToMapObjects();
@@ -50,13 +53,16 @@ private:
 
 private:
 	//¿ø ¼³Á¤.
-	float m_sightRange = 30.f;
+	float m_sightRange = 8.f;
 	float m_darkness = 0.3f;
-	float m_fadeDistance = 8.0f;
+	float m_fadeDistance = 3.0f;
 	float m_smoothness = 2.0f;
 
 	float m_curTime = 0.f;
 	float m_updateTime = 0.05f;
+
+	FogOfWarData m_lastFowData = {};
+	bool m_isFirstUpdate = true;
 	bool m_needsUpdate = true;
 };
 

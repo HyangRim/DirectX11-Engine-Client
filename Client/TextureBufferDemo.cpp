@@ -3,7 +3,6 @@
 #include "GeometryHelper.h"
 #include "Camera.h"
 #include "GameObject.h"
-#include "CameraScript.h"
 #include "MeshRenderer.h"
 #include "Mesh.h"
 #include "Material.h"
@@ -27,7 +26,6 @@ void TextureBufferDemo::Init()
 		auto camera = make_shared<GameObject>();
 		camera->GetTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
 		camera->AddComponent(make_shared<Camera>());
-		camera->AddComponent(make_shared<CameraScript>());
 		CURSCENE->Add(camera);
 	}
 

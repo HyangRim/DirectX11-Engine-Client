@@ -4,6 +4,11 @@
 
 namespace fs = std::filesystem;
 
+SoundManager::~SoundManager()
+{
+	Free();
+}
+
 HRESULT SoundManager::Init()
 {
 	ZeroMemory(m_Channels, sizeof(m_Channels));

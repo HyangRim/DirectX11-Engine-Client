@@ -29,7 +29,7 @@ float CalculateFogOfWar(float3 worldPos)
     // 성능 최적화: 너무 멀리 있으면 조기 종료
     if (distance > g_sightRange * 1.2f)
     {
-        return g_darkness;
+        return max(g_darkness, 0.4f);
     }
     
     float fogFactor = 1.0f;
@@ -37,7 +37,7 @@ float CalculateFogOfWar(float3 worldPos)
     if (distance > g_sightRange)
     {
         // 시야 범위 밖: 어둡게
-        fogFactor = g_darkness;
+        fogFactor = max(g_darkness, 0.4f);
     }
     else if (distance > (g_sightRange - g_fadeDistance))
     {
@@ -48,7 +48,7 @@ float CalculateFogOfWar(float3 worldPos)
         fadeRatio = smoothstep(0.0f, 1.0f, fadeRatio);
         fadeRatio = pow(fadeRatio, g_smoothness);
         
-        fogFactor = lerp(1.0f, g_darkness, fadeRatio);
+        fogFactor = lerp(1.0f, max(g_darkness, 0.4f), fadeRatio);
     }
     
     return fogFactor;
@@ -61,20 +61,34 @@ float CalculateFogOfWar(float3 worldPos)
 // 기본 FOW 픽셀 셰이더
 float4 PS_FOW(MeshOutput input) : SV_TARGET
 {
+    //그림자 계산. 
+    float shadow = CalcShadowFactor(ShadowMap, input.shadowPosH);
     // 기존 라이팅 계산
-    float4 baseColor = ComputeLight(input.normal, input.uv, input.worldPosition);
+    float4 baseColor = ComputeLight(input.normal, input.uv, input.worldPosition, shadow);
     
     // FOW 계산
     float fogFactor = CalculateFogOfWar(input.worldPosition);
     
+    // 회색 필터 효과 계산
+    float3 grayColor = dot(baseColor.rgb, float3(0.299, 0.587, 0.114)); // 그레이스케일 변환
+    grayColor = grayColor * float3(0.7, 0.7, 0.8); // 약간 푸른빛이 도는 회색
+    
+    float grayIntensity = saturate(g_smoothness * 0.5f);
+    
+    // 원본 색상과 회색 사이의 보간 (어두운 영역일수록 회색 강함)
+    float3 foggedColor = lerp(baseColor.rgb, grayColor, (1.0f - fogFactor) * grayIntensity);
+    
+    // 최소 밝기 보장 (g_darkness를 최소 밝기로 재해석)
+    float minBrightness = max(g_darkness, 0.4f);
+    
     // 최종 색상 계산
-    float3 finalColor = baseColor.rgb * fogFactor;
+    float3 finalColor = foggedColor * max(fogFactor, minBrightness);
     
     // 어둠 영역에 푸른빛 색조 추가 (분위기 연출)
-    if (fogFactor < 0.5f)
+    if (fogFactor < 0.6f)
     {
-        float blueTint = (0.5f - fogFactor) * 0.15f;
-        finalColor = lerp(finalColor, finalColor * float3(0.9f, 0.95f, 1.1f), blueTint);
+        float blueTint = (0.6f - fogFactor) * 0.1f;
+        finalColor = lerp(finalColor, finalColor * float3(0.9f, 0.95f, 1.05f), blueTint);
     }
     
     return float4(finalColor, baseColor.a);
@@ -94,6 +108,8 @@ float4 PS_FOW_Simple(MeshOutput input) : SV_TARGET
     
     return float4(finalColor, baseColor.a);
 }
+
+
 
 ////////////////
 // Techniques //

@@ -2,6 +2,11 @@
 #include "FOWShaderManager.h"
 #include "Material.h"
 
+FOWShaderManager::~FOWShaderManager()
+{
+	End();
+}
+
 void FOWShaderManager::Init()
 {
 	if (m_isInitialized) return;
@@ -18,15 +23,17 @@ void FOWShaderManager::Init()
 
 void FOWShaderManager::End()
 {
-	m_fowShader.reset();
-	m_fowConstantBuffer.Reset();
-	m_fowEffectBuffer.Reset();
+	if(m_fowConstantBuffer != nullptr)
+		m_fowConstantBuffer.Reset();
+	
+	if(m_fowEffectBuffer != nullptr)
+		m_fowEffectBuffer.Reset();
 	m_isInitialized = false;
 }
 
 void FOWShaderManager::SetFogOfWarData(const FogOfWarData& _data)
 {
-	if (memcpy(&m_fowData, &_data, sizeof(FogOfWarData)) != 0) {
+	if (memcmp(&m_fowData, &_data, sizeof(FogOfWarData)) != 0) {
 		m_fowData = _data;
 		m_fowData.time = GetTickCount64() / 1000.f;
 		m_needsUpdate = true;
@@ -47,6 +54,7 @@ void FOWShaderManager::UpdateShaderConstants()
 
 	m_curTime += DT;
 	if (m_curTime <= UPDATETIME) return;
+
 
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	HRESULT hr = DC->Map(m_fowConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);

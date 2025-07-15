@@ -3,7 +3,6 @@
 #include "GameObject.h"
 #include "GeometryHelper.h"
 #include "Camera.h"
-#include "CameraScript.h"
 #include "MeshRenderer.h"
 #include "Mesh.h"
 #include "Material.h"
@@ -32,7 +31,6 @@ void ParticleDemo::Init()
 		auto camera = make_shared<GameObject>();
 		camera->GetTransform()->SetPosition(Vec3{ 0.f, 5.f, -5.f });
 		camera->AddComponent(make_shared<Camera>());
-		camera->AddComponent(make_shared<CameraScript>());
 		camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
 		CURSCENE->Add(camera);
 	}
