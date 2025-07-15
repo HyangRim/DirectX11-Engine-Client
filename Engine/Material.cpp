@@ -7,12 +7,7 @@ Material::Material() : Super(ResourceType::Material)
 
 Material::~Material()
 {
-	m_diffuseEffectBuffer.Reset();
-	m_normalEffectBuffer.Reset();
-	m_specularEffectBuffer.Reset();
-	m_randomEffectBuffer.Reset();
-	m_cubeMapEffectBuffer.Reset();
-	m_shadowMapEffectBuffer.Reset();
+	
 }
 
 void Material::SetShader(shared_ptr<Shader> _shader)
@@ -25,7 +20,7 @@ void Material::SetShader(shared_ptr<Shader> _shader)
 	m_randomEffectBuffer = m_shader->GetSRV("RandomMap");
 	m_cubeMapEffectBuffer = m_shader->GetSRV("CubeMap");
 	m_shadowMapEffectBuffer = m_shader->GetSRV("ShadowMap");
-
+	
 }
 
 void Material::Update()

@@ -69,7 +69,8 @@ SnowBillboard::SnowBillboard(Vec3 _extent, int32 _drawCount /*= 100*/)
 
 SnowBillboard::~SnowBillboard()
 {
-
+	m_vertexBuffer.reset();
+	m_indexBuffer.reset();
 }
 
 void SnowBillboard::SetMaterial(shared_ptr<Material> _material)

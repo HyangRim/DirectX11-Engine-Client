@@ -9,7 +9,7 @@ Mesh::Mesh()  : Super(ResourceType::Mesh)
 
 Mesh::~Mesh()
 {
-
+	
 }
 
 void Mesh::CreateQuad()

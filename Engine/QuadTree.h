@@ -4,7 +4,7 @@
 
 class GameObject;
 class Camera;
-
+class BaseCollider;
 
 struct QuadTreeNode
 {

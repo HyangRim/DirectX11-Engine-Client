@@ -17,17 +17,7 @@ Shader::Shader(wstring _file) : m_file(L"..\\Shaders\\" + _file)
 
 Shader::~Shader()
 {
-	m_globalEffectBuffer.Reset();
-	m_transformEffectBuffer.Reset();
-	m_lightEffectBuffer.Reset();
-	m_materialEffectBuffer.Reset();
-	m_tweenEffectBuffer.Reset();
-	m_snowEffectBuffer.Reset();
-	m_particleEffectBuffer.Reset();
-	m_shadowEffectBuffer.Reset();
-	m_textEffectBuffer.Reset();
-	m_boneEffectBuffer.Reset();
-	m_keyframeEffectBuffer.Reset();
+	
 }
 
 
@@ -487,11 +477,11 @@ void Shader::PushTextData(const Vec4& textColor, const Vec4& outlineColor, float
 		m_textEffectBuffer = GetConstantBuffer("TextMaterialBuffer");
 	}
 
-	m_textDesc.textColor = textColor;
-	m_textDesc.outlineColor = outlineColor;
-	m_textDesc.textAlpha = alpha;
-	m_textDesc.outlineWidth = outlineWidth;
-	m_textDesc.textPadding = Vec2(0, 0);
+	m_textDesc.TextColor = textColor;
+	m_textDesc.OutlineColor = outlineColor;
+	m_textDesc.TextAlpha = alpha;
+	m_textDesc.OutlineWidth = outlineWidth;
+	m_textDesc.TextPadding = Vec2(0, 0);
 
 	m_textBuffer->CopyData(m_textDesc);
 	m_textEffectBuffer->SetConstantBuffer(m_textBuffer->GetComPtr().Get());

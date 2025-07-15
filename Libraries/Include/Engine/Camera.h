@@ -55,6 +55,8 @@ public:
 
 public:
     void SortGameObject();
+    void SortGameObjects();  // °ÔÀÓ °´Ã¼¿ë (Perspective)
+    void SortUIObjects();    // UI °´Ã¼¿ë (Orthographic)
 
     void SetStaticData();
     void Render_Forward(bool _isShadowTech);

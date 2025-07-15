@@ -47,6 +47,7 @@ public:
 
     // 안전한 정리를 위한 함수
     void ClearAllLayers();
+    virtual void OnDestroy() override;  // 추가
 
 private:
     void CreateImageGameObject(ImageLayer& layer);

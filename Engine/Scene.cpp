@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Scene.h"
 #include <iostream>
 #include "GameObject.h"
@@ -21,83 +21,240 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-	try {
-		// 1. ÇöÀç ¼±ÅÃµÈ °´Ã¼ ÂüÁ¶ ÇØÁ¦
+	try
+	{
+		// 1. í˜„ì¬ ì„ íƒëœ ê°ì²´ ì°¸ì¡° í•´ì œ
 		m_curPickedObj.reset();
 
-		// 2. Ãæµ¹ Á¤º¸ ¸Ê Á¤¸®
+		// 2. ì¶©ëŒ ì •ë³´ ë§µ ì •ë¦¬
 		m_mapColInfo.clear();
 
-		// 3. ÄõµåÆ®¸® Á¤¸® (unique_ptrÀÌ¹Ç·Î ÀÚµ¿ ÇØÁ¦µÇÁö¸¸ ¸í½ÃÀûÀ¸·Î)
+		// 3. ì¿¼ë“œíŠ¸ë¦¬ ì •ë¦¬
 		m_quadTree.reset();
 
-		// 4. Sky °´Ã¼ ÇØÁ¦
+		// 4. Sky ê°ì²´ í•´ì œ
 		m_sky.reset();
 
-		// 5. GameObjectµé¿¡°Ô ¼Ò¸ê ¾Ë¸² (ÄÄÆ÷³ÍÆ® Á¤¸®¸¦ À§ÇØ)
-		for (auto& gameObject : m_gameObjects) {
-			if (gameObject && gameObject.use_count() > 1) {
-				// GameObjectÀÇ ÄÄÆ÷³ÍÆ®µéÀÌ ¼­·Î ÂüÁ¶ÇÏ°í ÀÖÀ» ¼ö ÀÖÀ¸¹Ç·Î
-				// ¸í½ÃÀûÀ¸·Î Á¤¸® ¸Ş¼­µå È£Ãâ (¸¸¾à ÀÖ´Ù¸é)
-				gameObject->OnDestroy();
-			}
-		}
+		// 5. UI ê°ì²´ë“¤ ë¨¼ì € ì†Œë©¸
+		DestroyUIObjects();
 
-		// 6. Ä³½Ã ÄÁÅ×ÀÌ³Êµé Á¤¸® (ÂüÁ¶¸¸ Á¦°Å)
-		m_cameras.clear();
-		m_Lights.clear();
-
-		// 7. ¸ŞÀÎ GameObject ÄÁÅ×ÀÌ³Ê Á¤¸® (°¡Àå ¸¶Áö¸·¿¡)
-		m_gameObjects.clear();
-
-#ifdef _DEBUG
-		std::cout << "Scene ¼Ò¸êÀÚ: ¸ğµç ¸®¼Ò½º ÇØÁ¦ ¿Ï·á" << std::endl;
-#endif
-
+		// 6. ì¼ë°˜ ê°ì²´ë“¤ ì†Œë©¸
+		DestroyNormalObjects();
 	}
-	catch (const std::exception& e) {
-#ifdef _DEBUG
-		std::cout << "Scene ¼Ò¸êÀÚ ¿¹¿Ü: " << e.what() << std::endl;
-#endif
-	}
-	catch (...) {
-#ifdef _DEBUG
-		std::cout << "Scene ¼Ò¸êÀÚ¿¡¼­ ¾Ë ¼ö ¾ø´Â ¿¹¿Ü ¹ß»ı" << std::endl;
-#endif
+	catch (const std::exception& e)
+	{
+
 	}
 }
 
+// ì§€ì—° ì‚­ì œ í•¨ìˆ˜ë“¤ êµ¬í˜„
+void Scene::MarkForDestroy(shared_ptr<GameObject> obj)
+{
+	if (!obj || m_isDestroying) return;
+
+	// ì¤‘ë³µ ì²´í¬
+	auto it = std::find(m_pendingDestroyNormal.begin(), m_pendingDestroyNormal.end(), obj);
+	if (it == m_pendingDestroyNormal.end())
+	{
+		m_pendingDestroyNormal.push_back(obj);
+	}
+}
+
+void Scene::MarkUIObjectForDestroy(shared_ptr<GameObject> obj)
+{
+	if (!obj || m_isDestroying) return;
+
+	// ì¤‘ë³µ ì²´í¬
+	auto it = std::find(m_pendingDestroyUI.begin(), m_pendingDestroyUI.end(), obj);
+	if (it == m_pendingDestroyUI.end())
+	{
+		m_pendingDestroyUI.push_back(obj);
+	}
+}
+
+void Scene::ProcessPendingDestroy()
+{
+	if (m_isDestroying) return;
+
+	// UI ê°ì²´ ë¨¼ì € ì²˜ë¦¬
+	ProcessPendingUIObjects();
+
+	// ì¼ë°˜ ê°ì²´ ì²˜ë¦¬
+	ProcessPendingNormalObjects();
+}
+
+void Scene::ProcessPendingNormalObjects()
+{
+	if (m_pendingDestroyNormal.empty()) return;
+
+	try {
+		// ì„ì‹œ ë²¡í„°ì— ë³µì‚¬
+		vector<shared_ptr<GameObject>> objectsToDestroy = m_pendingDestroyNormal;
+		m_pendingDestroyNormal.clear();
+
+		for (auto& obj : objectsToDestroy)
+		{
+			if (obj && obj.use_count() > 1)
+			{
+				// OnDestroy í˜¸ì¶œ
+				obj->OnDestroy();
+			}
+
+			// ê° ì»¨í…Œì´ë„ˆì—ì„œ ì œê±°
+			m_gameObjects.erase(obj);
+			m_cameras.erase(obj);
+			m_Lights.erase(obj);
+		}
+	}
+	catch (const std::exception& e)
+	{
+
+	}
+}
+
+void Scene::ProcessPendingUIObjects()
+{
+	if (m_pendingDestroyUI.empty()) return;
+
+	try {
+		// ì„ì‹œ ë²¡í„°ì— ë³µì‚¬
+		vector<shared_ptr<GameObject>> objectsToDestroy = m_pendingDestroyUI;
+		m_pendingDestroyUI.clear();
+
+		for (auto& obj : objectsToDestroy)
+		{
+			if (obj && obj.use_count() > 1)
+			{
+				// OnDestroy í˜¸ì¶œ
+				obj->OnDestroy();
+			}
+
+			// UI ì»¨í…Œì´ë„ˆë“¤ì—ì„œ ì œê±°
+			m_uiObjects.erase(obj);
+
+			// vectorì—ì„œ ì œê±°
+			m_uiChildren.erase(std::remove(m_uiChildren.begin(), m_uiChildren.end(), obj), m_uiChildren.end());
+			m_uiParents.erase(std::remove(m_uiParents.begin(), m_uiParents.end(), obj), m_uiParents.end());
+		}
+	}
+	catch (const std::exception& e)
+	{
+
+	}
+}
+
+
+void Scene::RegisterUIParent(shared_ptr<GameObject> parent)
+{
+	auto it = std::find(m_uiParents.begin(), m_uiParents.end(), parent);
+	if (it == m_uiParents.end())
+	{
+		m_uiParents.push_back(parent);
+	}
+}
+
+void Scene::RegisterUIChild(shared_ptr<GameObject> child)
+{
+	auto it = std::find(m_uiChildren.begin(), m_uiChildren.end(), child);
+	if (it == m_uiChildren.end())
+	{
+		m_uiChildren.push_back(child);
+	}
+}
+
+void Scene::DestroyUIObjects()
+{
+	try {
+		// ëª¨ë“  UI ê°ì²´ë¥¼ ì‚­ì œ ëŒ€ê¸°ì—´ì— ì¶”ê°€
+		for (auto& child : m_uiChildren) {
+			MarkUIObjectForDestroy(child);
+		}
+		for (auto& parent : m_uiParents) {
+			MarkUIObjectForDestroy(parent);
+		}
+		for (auto& uiObj : m_uiObjects) {
+			MarkUIObjectForDestroy(uiObj);
+		}
+
+		// ì»¨í…Œì´ë„ˆë“¤ ë¨¼ì € ì •ë¦¬
+		m_uiChildren.clear();
+		m_uiParents.clear();
+		m_uiObjects.clear();
+
+		// ì‹¤ì œ ì‚­ì œ ì²˜ë¦¬
+		ProcessPendingUIObjects();
+
+	}
+	catch (const std::exception& e) {
+
+	}
+}
+
+void Scene::DestroyNormalObjects()
+{
+	try {
+		// ëª¨ë“  ì¼ë°˜ ê°ì²´ë¥¼ ì‚­ì œ ëŒ€ê¸°ì—´ì— ì¶”ê°€
+		for (auto& gameObject : m_gameObjects) {
+			MarkForDestroy(gameObject);
+		}
+
+		// ì»¨í…Œì´ë„ˆë“¤ ë¨¼ì € ì •ë¦¬
+		m_cameras.clear();
+		m_Lights.clear();
+		m_gameObjects.clear();
+
+		// ì‹¤ì œ ì‚­ì œ ì²˜ë¦¬
+		ProcessPendingNormalObjects();
+	}
+	catch (const std::exception& e)
+	{
+
+	}
+}
+
+
 void Scene::Start()
 {
-	//Ãæµ¹ ÆÇÁ¤ ÃÊ±âÈ­. 
+	//ì¶©ëŒ íŒì • ì´ˆê¸°í™”. 
 	m_mapColInfo.clear();
 
 	const auto& objects = m_gameObjects;
 	for (auto& object : m_gameObjects) {
 		object->Start();
 	}
+
+	const auto& uiObjects = m_uiObjects;
+	for (auto& object : uiObjects) {
+		object->Start();
+	}
+
 	UpdateQuadTree();
 }
 
 void Scene::Update()
 {
 	const auto& objects = m_gameObjects;
-	//Update ÄÚµå ¾È¿¡¼­ Remove¸¦ ½á¹ö¸®¸é ¹®Á¦°¡ »ı±â±â ¶§¹®¿¡.
-	//ÀÌº¥Æ® ÈÄÃ³¸®·Î ¿ÀºêÁ§Æ® Ãß°¡, »ı¼ºÀ» ÇØ¾ßÇÔ. 
+	const auto& uiObjects = m_uiObjects;
+	//Update ì½”ë“œ ì•ˆì—ì„œ Removeë¥¼ ì¨ë²„ë¦¬ë©´ ë¬¸ì œê°€ ìƒê¸°ê¸° ë•Œë¬¸ì—.
+	//ì´ë²¤íŠ¸ í›„ì²˜ë¦¬ë¡œ ì˜¤ë¸Œì íŠ¸ ì¶”ê°€, ìƒì„±ì„ í•´ì•¼í•¨. 
 	for (auto& object : m_gameObjects) {
+		object->Update();
+	}
+
+	for (auto& object : m_uiObjects) {
 		object->Update();
 	}
 
 	//PickUI();
 	//Pick();
 
-	GameObjectsTest();
+	//GameObjectsTest();
 
 
 
 	PickObjectOrUI();
 
-//ÀÌ ¹Ø¿¡´Ù°¡ µğ¹ö±×¿ë 
+	//ì´ ë°‘ì—ë‹¤ê°€ ë””ë²„ê·¸ìš© 
 #if _DEBUG
 	GUI->ShowPickedObj();
 #endif
@@ -106,9 +263,16 @@ void Scene::Update()
 void Scene::FixedUpdate()
 {
 	const auto& objects = m_gameObjects;
-	//Update ÄÚµå ¾È¿¡¼­ Remove¸¦ ½á¹ö¸®¸é ¹®Á¦°¡ »ı±â±â ¶§¹®¿¡.
-	//ÀÌº¥Æ® ÈÄÃ³¸®·Î ¿ÀºêÁ§Æ® Ãß°¡, »ı¼ºÀ» ÇØ¾ßÇÔ. 
+	//Update ì½”ë“œ ì•ˆì—ì„œ Removeë¥¼ ì¨ë²„ë¦¬ë©´ ë¬¸ì œê°€ ìƒê¸°ê¸° ë•Œë¬¸ì—.
+	//ì´ë²¤íŠ¸ í›„ì²˜ë¦¬ë¡œ ì˜¤ë¸Œì íŠ¸ ì¶”ê°€, ìƒì„±ì„ í•´ì•¼í•¨. 
 	for (auto& object : m_gameObjects) {
+		object->FixedUpdate();
+	}
+
+	const auto& uiObjects = m_uiObjects;
+	//Update ì½”ë“œ ì•ˆì—ì„œ Removeë¥¼ ì¨ë²„ë¦¬ë©´ ë¬¸ì œê°€ ìƒê¸°ê¸° ë•Œë¬¸ì—.
+	//ì´ë²¤íŠ¸ í›„ì²˜ë¦¬ë¡œ ì˜¤ë¸Œì íŠ¸ ì¶”ê°€, ìƒì„±ì„ í•´ì•¼í•¨. 
+	for (auto& object : uiObjects) {
 		object->FixedUpdate();
 	}
 }
@@ -122,17 +286,24 @@ void Scene::LateUpdate()
 		object->LateUpdate();
 	}
 
+	const auto& uiObjects = m_uiObjects;
+	//Update ì½”ë“œ ì•ˆì—ì„œ Removeë¥¼ ì¨ë²„ë¦¬ë©´ ë¬¸ì œê°€ ìƒê¸°ê¸° ë•Œë¬¸ì—.
+	//ì´ë²¤íŠ¸ í›„ì²˜ë¦¬ë¡œ ì˜¤ë¸Œì íŠ¸ ì¶”ê°€, ìƒì„±ì„ í•´ì•¼í•¨. 
+	for (auto& object : uiObjects) {
+		object->LateUpdate();
+	}
+
 	// start = std::chrono::high_resolution_clock::now();
-	//BruteForce¹æ½Ä. 
+	//BruteForceë°©ì‹. 
 	//CheckCollision();
 
-	//QuadTree¹æ½Ä. 
+	//QuadTreeë°©ì‹. 
 	CheckCollisionWithQuadTree();
 	//auto end = std::chrono::high_resolution_clock::now();
 	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-	//cout << "BruteForce °É¸®´Â ½Ã°£ :" << duration.count() << "us\n";
+	//cout << "BruteForce ê±¸ë¦¬ëŠ” ì‹œê°„ :" << duration.count() << "us\n";
 
-	
+
 }
 
 void Scene::Render()
@@ -154,27 +325,6 @@ void Scene::Render()
 
 void Scene::RenderGameCamera(Camera* cam)
 {
-	/*GRAPHICS->ClearShadowDepthStencilView();
-	GRAPHICS->SetShadowDepthStencilView();
-
-	Light* light = GetLight()->GetLight().get();
-
-	cam->SetStaticData();
-	cam->SortGameObject();
-
-	if (light) {
-		light->SetVPMatrix(cam, 100.0f, ::XMMatrixOrthographicLH(100, 100, 0, 200));
-		cam->Render_Forward(true);
-		Viewport& vp = GRAPHICS->GetShadowViewport();
-		cam->Render_Backward(true);
-	}
-
-	GRAPHICS->SetRTVAndDSV();
-	cam->Render_Forward(false);
-	if (m_sky)
-		m_sky->Render(cam);
-	cam->Render_Backward(false);*/
-
 	GRAPHICS->ClearShadowDepthStencilView();
 	GRAPHICS->SetShadowDepthStencilView();
 
@@ -191,7 +341,7 @@ void Scene::RenderGameCamera(Camera* cam)
 	}
 
 	GRAPHICS->SetRTVAndDSV();
-	GRAPHICS->ClearDepthStencilView(); // ÀÌ ÁÙ Ãß°¡!
+	GRAPHICS->ClearDepthStencilView(); // ì´ ì¤„ ì¶”ê°€!
 
 	cam->Render_Forward(false);
 	if (m_sky)
@@ -211,6 +361,7 @@ void Scene::RenderUICamera(Camera* cam)
 
 void Scene::Add(shared_ptr<GameObject> _object)
 {
+	// ì¼ë°˜ ê°ì²´ë§Œ ì €ì¥
 	m_gameObjects.insert(_object);
 
 	if (_object->GetCamera() != nullptr) {
@@ -222,31 +373,32 @@ void Scene::Add(shared_ptr<GameObject> _object)
 	}
 }
 
+void Scene::AddUIObject(shared_ptr<GameObject> _object, bool isParent)
+{
+	// UI ê°ì²´ ì»¨í…Œì´ë„ˆì— ì €ì¥
+	m_uiObjects.insert(_object);
+
+	// ë¶€ëª¨/ìì‹ ë¶„ë¥˜
+	if (isParent) {
+		m_uiParents.push_back(_object);
+	}
+	else {
+		m_uiChildren.push_back(_object);
+	}
+}
+
 void Scene::Remove(shared_ptr<GameObject> _object)
 {
-	if (!_object) return;
+	if (!_object || m_isDestroying) return;
 
-	try {
-		// GameObject¿¡ ¼Ò¸ê ¾Ë¸²
-		_object->OnDestroy();
+	// UI ê°ì²´ì¸ì§€ í™•ì¸
+	bool isUIObject = (m_uiObjects.find(_object) != m_uiObjects.end());
 
-		// ÂüÁ¶ Ä«¿îÆ® È®ÀÎ
-		if (_object.use_count() > 1) {
-			// ¾ÈÀüÇÑ Á¦°Å
-			auto it = m_gameObjects.find(_object);
-			if (it != m_gameObjects.end()) {
-				m_gameObjects.erase(it);
-			}
-
-			m_cameras.erase(_object);
-			m_Lights.erase(_object);
-		}
-
+	if (isUIObject) {
+		MarkUIObjectForDestroy(_object);
 	}
-	catch (...) {
-#ifdef _DEBUG
-		std::cout << "Scene::Remove¿¡¼­ ¿¹¿Ü ¹ß»ı" << std::endl;
-#endif
+	else {
+		MarkForDestroy(_object);
 	}
 }
 
@@ -307,28 +459,28 @@ shared_ptr<class GameObject> Scene::Pick()
 
 	Matrix projectionMatrix = camera->GetProjectionMatrix();
 
-	//ViewÁÂÇ¥·Î º¯È¯
+	//Viewì¢Œí‘œë¡œ ë³€í™˜
 	float viewX = (+2.0f * screenX / width - 1.0f) / projectionMatrix(0, 0);
 	float viewY = (-2.0f * screenY / height + 1.0f) / projectionMatrix(1, 1);
 
-	//View·Î º¯È¯ÇÏ´Â ¿ªÇà·Ä ±¸ÇÏ±â. 
+	//Viewë¡œ ë³€í™˜í•˜ëŠ” ì—­í–‰ë ¬ êµ¬í•˜ê¸°. 
 	Matrix viewMatrix = camera->GetViewMatrix();
 	Matrix viewMatrixInv = viewMatrix.Invert();
 
-	//¸ğµç ¿ÀºêÁ§Æ® ±¸ÇÏ±â. 
+	//ëª¨ë“  ì˜¤ë¸Œì íŠ¸ êµ¬í•˜ê¸°. 
 	const auto& gameObjects = GetObjects();
 
 	float minDistance = FLT_MAX;
 	shared_ptr<GameObject> picked;
 
-	// ViewSpace¿¡¼­ Ray Á¤ÀÇ
-	// ViewSpace¶õ Ä«¸Ş¶óÀÇ À§Ä¡°¡ ¿øÁ¡ÀÌ±â ¶§¹®¿¡ originÀÌ 0º¤ÅÍ.
-	// rayDirÀº ½ÃÀÛÁ¡°ú ³¡Á¡À» ±¸ÇØÁØ´Ù´Â °Í. 
+	// ViewSpaceì—ì„œ Ray ì •ì˜
+	// ViewSpaceë€ ì¹´ë©”ë¼ì˜ ìœ„ì¹˜ê°€ ì›ì ì´ê¸° ë•Œë¬¸ì— originì´ 0ë²¡í„°.
+	// rayDirì€ ì‹œì‘ì ê³¼ ëì ì„ êµ¬í•´ì¤€ë‹¤ëŠ” ê²ƒ. 
 	Vec4 rayOrigin = Vec4(0.f, 0.f, 0.f, 1.f);
 	Vec4 rayDir = Vec4(viewX, viewY, 1.0f, 0.f);
 
-	//View½ÃÁ¡ ¿øÁ¡ -> world·Î µ¹¾Æ°¡±â. 
-	//À§Ä¡¿Í Dir±¸ÇÏ±â. 
+	//Viewì‹œì  ì›ì  -> worldë¡œ ëŒì•„ê°€ê¸°. 
+	//ìœ„ì¹˜ì™€ Dirêµ¬í•˜ê¸°. 
 	Vec3 worldRayOrigin = XMVector3TransformCoord(rayOrigin, viewMatrixInv);
 	Vec3 worldRayDir = XMVector3TransformNormal(rayDir, viewMatrixInv);
 	worldRayDir.Normalize();
@@ -337,17 +489,17 @@ shared_ptr<class GameObject> Scene::Pick()
 
 
 
-	//¸ğµç ¹°Ã¼¸¦ ÀüºÎ ´Ù ½ºÄµÇÏ´Â ¹«½ÄÇÑ ¹æ¹ı. 
+	//ëª¨ë“  ë¬¼ì²´ë¥¼ ì „ë¶€ ë‹¤ ìŠ¤ìº”í•˜ëŠ” ë¬´ì‹í•œ ë°©ë²•. 
 	for (auto& gameObject : gameObjects) {
-		if(camera->IsCulled(gameObject->GetLayerIndex()))
+		if (camera->IsCulled(gameObject->GetLayerIndex()))
 			continue;
 
-		//Collider ºÙ¿©¾ß¸¸ ÇÇ°İ µÈ´Ù. 
+		//Collider ë¶™ì—¬ì•¼ë§Œ í”¼ê²© ëœë‹¤. 
 		if (gameObject->GetCollider() == nullptr)
 			continue;
 
 
-		//WorldSpace¿¡¼­ ¿¬»êÇÏ±â. 
+		//WorldSpaceì—ì„œ ì—°ì‚°í•˜ê¸°. 
 		Ray ray = Ray(worldRayOrigin, worldRayDir);
 
 		float distance = 0.f;
@@ -361,7 +513,7 @@ shared_ptr<class GameObject> Scene::Pick()
 	}
 
 
-	//Teraain Å¬¸¯ °Ë»ç. 
+	//Teraain í´ë¦­ ê²€ì‚¬. 
 	for (auto& gameObject : gameObjects) {
 		if (gameObject->GetTerrain() == nullptr)
 			continue;
@@ -389,8 +541,8 @@ shared_ptr<class GameObject> Scene::Pick()
 void Scene::CheckCollision()
 {
 
-	//1. m_gameObjects³¢¸® for¹® µ¹·Á¼­ °Ë»çÇÑ´Ù. 
-	//2. Collider¸¸µé ¶§, obj¸¦ ¹Ş´Â´Ù. 
+	//1. m_gameObjectsë¼ë¦¬ forë¬¸ ëŒë ¤ì„œ ê²€ì‚¬í•œë‹¤. 
+	//2. Colliderë§Œë“¤ ë•Œ, objë¥¼ ë°›ëŠ”ë‹¤. 
 	vector<shared_ptr<BaseCollider>> colliders;
 	for (auto object : m_gameObjects) {
 		if (object->GetCollider() == nullptr)
@@ -400,9 +552,9 @@ void Scene::CheckCollision()
 	}
 
 	//BruteForce
-	//Äõµå Æ®¸® °°Àº °Å. 
+	//ì¿¼ë“œ íŠ¸ë¦¬ ê°™ì€ ê±°. 
 
-	//Collider³¢¸® °Ë»ç. -> GameObject¿¡ CollisionÃ³¸® ÇØ¾ßÇÏ´Âµ¥. 
+	//Colliderë¼ë¦¬ ê²€ì‚¬. -> GameObjectì— Collisionì²˜ë¦¬ í•´ì•¼í•˜ëŠ”ë°. 
 	for (uint32 idx = 0; idx < colliders.size(); ++idx) {
 		if (colliders[idx].get()->GetActive() == false)
 			continue;
@@ -420,33 +572,33 @@ void Scene::CheckCollision()
 
 			auto colliderMapIter = m_mapColInfo.find(id.ID);
 
-			//Ãæµ¹ Á¤º¸°¡ ¹Ì µî·Ï »óÅÂÀÏ °æ¿ì.(Ãæµ¹ÇÏÁö ¾Ê¾Ò´Ù·Î ÀÔ·Â.) 
+			//ì¶©ëŒ ì •ë³´ê°€ ë¯¸ ë“±ë¡ ìƒíƒœì¼ ê²½ìš°.(ì¶©ëŒí•˜ì§€ ì•Šì•˜ë‹¤ë¡œ ì…ë ¥.) 
 			if (colliderMapIter == m_mapColInfo.end()) {
 				m_mapColInfo.insert(make_pair(id.ID, false));
 				colliderMapIter = m_mapColInfo.find(id.ID);
 			}
 
-			//ÇöÀç Collider³¢¸® Ãæµ¹ÇßÀ» °æ¿ì¿¡. 
+			//í˜„ì¬ Colliderë¼ë¦¬ ì¶©ëŒí–ˆì„ ê²½ìš°ì—. 
 			if (colliders[idx]->Intersects(other)) {
 
 				if (colliderMapIter->second == false) {
-					//ÀÌ¹ø ÇÁ·¹ÀÓ¿¡ ¸· Ãæµ¹ÇÑ °æ¿ì.
+					//ì´ë²ˆ í”„ë ˆì„ì— ë§‰ ì¶©ëŒí•œ ê²½ìš°.
 
-					//TODO : ÀÌº¥Æ® ÈÄÃ³¸® ½Ã½ºÅÛ ¾î¶»°Ô? 
+					//TODO : ì´ë²¤íŠ¸ í›„ì²˜ë¦¬ ì‹œìŠ¤í…œ ì–´ë–»ê²Œ? 
 					colliders[idx].get()->GetGameObject()->OnCollisionEnter(colliders[jdx].get()->GetGameObject());
 					colliders[jdx].get()->GetGameObject()->OnCollisionEnter(colliders[idx].get()->GetGameObject());
 					colliderMapIter->second = true;
 				}
 				else {
-					//ÀÌÀü ÇÁ·¹ÀÓ¿¡µµ Ãæµ¹ÇÏ°í ÀÖ´ø °æ¿ì. 
+					//ì´ì „ í”„ë ˆì„ì—ë„ ì¶©ëŒí•˜ê³  ìˆë˜ ê²½ìš°. 
 					colliders[idx].get()->GetGameObject()->OnCollision(colliders[jdx].get()->GetGameObject());
 					colliders[jdx].get()->GetGameObject()->OnCollision(colliders[idx].get()->GetGameObject());
 				}
 			}
 			else {
-				//Ãæµ¹ÇÏÁö ¾Ê¾ÒÀ» °æ¿ì. 
+				//ì¶©ëŒí•˜ì§€ ì•Šì•˜ì„ ê²½ìš°. 
 				if (colliderMapIter->second == true) {
-					//ÀÌÀü¿¡ Ãæµ¹ÇÏ°í ÀÖ¾úÀ¸¸é. 
+					//ì´ì „ì— ì¶©ëŒí•˜ê³  ìˆì—ˆìœ¼ë©´. 
 					colliders[idx].get()->GetGameObject()->OnCollisionExit(colliders[jdx].get()->GetGameObject());
 					colliders[jdx].get()->GetGameObject()->OnCollisionExit(colliders[idx].get()->GetGameObject());
 					colliderMapIter->second = false;
@@ -471,10 +623,10 @@ shared_ptr<GameObject> Scene::PickObjectOrUI()
 
 	POINT screenPt = INPUT->GetMousePos();
 
-	// UI °Ë»ç (±âÁ¸°ú µ¿ÀÏ)
+	// UI ê²€ì‚¬ (ê¸°ì¡´ê³¼ ë™ì¼)
 	if (GetUICamera() != nullptr)
 	{
-		const auto gameObjects = GetObjects();
+		const auto gameObjects = m_uiObjects;
 		for (auto& object : gameObjects)
 		{
 			if (object->GetButton() == nullptr) continue;
@@ -488,7 +640,7 @@ shared_ptr<GameObject> Scene::PickObjectOrUI()
 
 	shared_ptr<Camera> camera = GetMainCamera()->GetCamera();
 
-	// Ray »ı¼º
+	// Ray ìƒì„±
 	Ray ray = CreateRayFromScreen(Vec2(screenPt.x, screenPt.y), camera);
 
 	UpdateQuadTree();
@@ -497,13 +649,13 @@ shared_ptr<GameObject> Scene::PickObjectOrUI()
 	vector<shared_ptr<GameObject>> candidates = m_quadTree->Query(ray, camera);
 	auto queryEnd = std::chrono::high_resolution_clock::now();
 
-	// ÁÂÇ¥ ºñ±³ µğ¹ö±ë + À½¼ö ÁÂÇ¥ ÇÊÅÍ¸µ
+	// ì¢Œí‘œ ë¹„êµ ë””ë²„ê¹… + ìŒìˆ˜ ì¢Œí‘œ í•„í„°ë§
 #if _DEBUG
-	cout << "=== ÁÂÇ¥ ºñ±³ µğ¹ö±ë ===" << endl;
+	cout << "=== ì¢Œí‘œ ë¹„êµ ë””ë²„ê¹… ===" << endl;
 #endif
-	
 
-	// À¯È¿ÇÑ ÈÄº¸¸¸ ÀúÀåÇÒ º¤ÅÍ
+
+	// ìœ íš¨í•œ í›„ë³´ë§Œ ì €ì¥í•  ë²¡í„°
 	vector<shared_ptr<GameObject>> validCandidates;
 
 	for (auto& obj : candidates)
@@ -511,48 +663,48 @@ shared_ptr<GameObject> Scene::PickObjectOrUI()
 		Vec3 worldPos = obj->GetTransform()->GetPosition();
 		RECT objBounds = m_quadTree->GetObjectScreenBounds(obj, camera);
 
-		// È­¸é ÁÂÇ¥ Áß½ÉÁ¡ °è»ê
+		// í™”ë©´ ì¢Œí‘œ ì¤‘ì‹¬ì  ê³„ì‚°
 		int screenCenterX = (objBounds.left + objBounds.right) / 2;
 		int screenCenterY = (objBounds.top + objBounds.bottom) / 2;
 
-		
-		// À½¼ö ÁÂÇ¥ °Ë»ç
+
+		// ìŒìˆ˜ ì¢Œí‘œ ê²€ì‚¬
 		if (screenCenterX < 0 || screenCenterY < 0)
 		{
-			//cout << "  -> À½¼ö ÁÂÇ¥·Î ÀÎÇØ ÈÄº¸¿¡¼­ Á¦¿ÜµÊ" << endl;
-			continue; // ÀÌ °´Ã¼´Â ÈÄº¸¿¡¼­ Á¦¿Ü
+			//cout << "  -> ìŒìˆ˜ ì¢Œí‘œë¡œ ì¸í•´ í›„ë³´ì—ì„œ ì œì™¸ë¨" << endl;
+			continue; // ì´ ê°ì²´ëŠ” í›„ë³´ì—ì„œ ì œì™¸
 		}
-		
+
 #if _DEBUG
-		cout << "°´Ã¼ " << ws2s(obj->GetName()) << ":" << endl;
-		cout << "  ¿ùµå ÁÂÇ¥: (" << worldPos.x << ", " << worldPos.y << ", " << worldPos.z << ")" << endl;
-		cout << "  È­¸é ÁÂÇ¥: (" << screenCenterX << ", " << screenCenterY << ")" << endl;
+		cout << "ê°ì²´ " << ws2s(obj->GetName()) << ":" << endl;
+		cout << "  ì›”ë“œ ì¢Œí‘œ: (" << worldPos.x << ", " << worldPos.y << ", " << worldPos.z << ")" << endl;
+		cout << "  í™”ë©´ ì¢Œí‘œ: (" << screenCenterX << ", " << screenCenterY << ")" << endl;
 
 
-		cout << "  ¸¶¿ì½º¿Í °Å¸®: " << sqrt(pow(screenPt.x - screenCenterX, 2) +
+		cout << "  ë§ˆìš°ìŠ¤ì™€ ê±°ë¦¬: " << sqrt(pow(screenPt.x - screenCenterX, 2) +
 			pow(screenPt.y - screenCenterY, 2)) << endl;
 #endif
-		// À¯È¿ÇÑ ÈÄº¸¿¡ Ãß°¡
+		// ìœ íš¨í•œ í›„ë³´ì— ì¶”ê°€
 		validCandidates.push_back(obj);
 	}
 
 #if _DEBUG
-	// ¼º´É Á¤º¸ Ãâ·Â (¼öÁ¤µÈ ÈÄº¸ °³¼ö ¹İ¿µ)
+	// ì„±ëŠ¥ ì •ë³´ ì¶œë ¥ (ìˆ˜ì •ëœ í›„ë³´ ê°œìˆ˜ ë°˜ì˜)
 	const auto& stats = m_quadTree->GetStats();
-	cout << "=== ÇÇÅ· ¼º´É Á¤º¸ ===" << endl;
-	cout << "ÀüÃ¼ °´Ã¼ ¼ö: " << m_gameObjects.size() << endl;
-	cout << "ÃÊ±â ÈÄº¸ °´Ã¼ ¼ö: " << candidates.size() << endl;
-	cout << "À¯È¿ ÈÄº¸ °´Ã¼ ¼ö: " << validCandidates.size() << endl;
-	cout << "ÇÊÅÍ¸µ È¿°ú: " << (candidates.size() - validCandidates.size()) << "°³ Á¦¿Ü" << endl;
-	cout << "È¿À²¼º: " << (100.0f * validCandidates.size() / (m_gameObjects.size() / 2)) << "%" << endl;
-	cout << "Äõ¸® ½Ã°£: " << stats.lastQueryTime.count() << "¥ìs" << endl;
-	cout << "¸¶¿ì½º ÁÂÇ¥ : " << screenPt.x << " , " << screenPt.y << endl;
+	cout << "=== í”¼í‚¹ ì„±ëŠ¥ ì •ë³´ ===" << endl;
+	cout << "ì „ì²´ ê°ì²´ ìˆ˜: " << m_gameObjects.size() << endl;
+	cout << "ì´ˆê¸° í›„ë³´ ê°ì²´ ìˆ˜: " << candidates.size() << endl;
+	cout << "ìœ íš¨ í›„ë³´ ê°ì²´ ìˆ˜: " << validCandidates.size() << endl;
+	cout << "í•„í„°ë§ íš¨ê³¼: " << (candidates.size() - validCandidates.size()) << "ê°œ ì œì™¸" << endl;
+	cout << "íš¨ìœ¨ì„±: " << (100.0f * validCandidates.size() / (m_gameObjects.size() / 2)) << "%" << endl;
+	cout << "ì¿¼ë¦¬ ì‹œê°„: " << stats.lastQueryTime.count() << "Î¼s" << endl;
+	cout << "ë§ˆìš°ìŠ¤ ì¢Œí‘œ : " << screenPt.x << " , " << screenPt.y << endl;
 #endif
-	// À¯È¿ÇÑ ÈÄº¸µé¸¸ ´ë»óÀ¸·Î ±³Â÷ °Ë»ç
+	// ìœ íš¨í•œ í›„ë³´ë“¤ë§Œ ëŒ€ìƒìœ¼ë¡œ êµì°¨ ê²€ì‚¬
 	float minDistance = FLT_MAX;
 	shared_ptr<GameObject> picked;
 
-	for (auto& gameObject : validCandidates) // candidates -> validCandidates·Î º¯°æ
+	for (auto& gameObject : validCandidates) // candidates -> validCandidatesë¡œ ë³€ê²½
 	{
 		if (camera->IsCulled(gameObject->GetLayerIndex())) continue;
 		if (gameObject->GetCollider() == nullptr) continue;
@@ -567,7 +719,7 @@ shared_ptr<GameObject> Scene::PickObjectOrUI()
 		}
 	}
 
-	if (picked)//pickµÈ ¿ÀºêÁ§Æ®. 
+	if (picked)//pickëœ ì˜¤ë¸Œì íŠ¸. 
 	{
 		if (!ImGui::IsWindowHovered()) {
 			m_curPickedObj = picked;
@@ -577,18 +729,18 @@ shared_ptr<GameObject> Scene::PickObjectOrUI()
 #endif
 		}
 	}
-	else {//¹öÆ° ´­·¶À¸³ª ¾Æ¹«°Íµµ pickedµÇÁö ¾Ê¾ÒÀ» ¶§. 
-		//±×·¯¸é¼­ ImguiÃ¢¿¡µµ Å¬¸¯ÇÏÁö ¾Ê¾ÒÀ» ¶§. 
+	else {//ë²„íŠ¼ ëˆŒë €ìœ¼ë‚˜ ì•„ë¬´ê²ƒë„ pickedë˜ì§€ ì•Šì•˜ì„ ë•Œ. 
+		//ê·¸ëŸ¬ë©´ì„œ Imguiì°½ì—ë„ í´ë¦­í•˜ì§€ ì•Šì•˜ì„ ë•Œ. 
 		if (!ImGui::IsWindowHovered()) {
 			m_curPickedObj.reset();
 		}
 	}
 
 #if _DEBUG
-	// µğ¹ö±× Á¤º¸
+	// ë””ë²„ê·¸ ì •ë³´
 	if (INPUT->GetButtonDown(KEY_TYPE::RBUTTON))
 	{
-		cout << "\n=== »ó¼¼ µğ¹ö±× Á¤º¸ ===" << endl;
+		cout << "\n=== ìƒì„¸ ë””ë²„ê·¸ ì •ë³´ ===" << endl;
 		cout.flush();
 		m_quadTree->DebugDraw(camera);
 		m_quadTree->PrintDuplicates();
@@ -615,23 +767,23 @@ void Scene::UpdateQuadTree()
 		m_quadTree = make_unique<QuadTree>(width, height);
 	}
 
-	// Ä«¸Ş¶ó º¯È­ °¨Áö
+	// ì¹´ë©”ë¼ ë³€í™” ê°ì§€
 	static Vec3 lastCameraPos = Vec3::Zero;
 	static Vec3 lastCameraRot = Vec3::Zero;
 	static int lastObjectCount = 0;
 
-	//°´Ã¼ À§Ä¡ º¯È­ °¨Áö¸¦ À§ÇÑ ÇØ½Ã¸Ê
+	//ê°ì²´ ìœ„ì¹˜ ë³€í™” ê°ì§€ë¥¼ ìœ„í•œ í•´ì‹œë§µ
 	static unordered_map<shared_ptr<GameObject>, Vec3> lastObjectPositions;
 
 	Vec3 currentCameraPos = GetMainCamera()->GetTransform()->GetPosition();
 	Vec3 currentCameraRot = GetMainCamera()->GetTransform()->GetLocalRotation();
 	int currentObjectCount = (int)m_gameObjects.size();
 
-	// º¯È­ °¨Áö
+	// ë³€í™” ê°ì§€
 	float positionDelta = Vec3::Distance(lastCameraPos, currentCameraPos);
 	float rotationDelta = Vec3::Distance(lastCameraRot, currentCameraRot);
 
-	//¾î¶² ¿ÀºêÁ§Æ®¶óµµ À§Ä¡°¡ º¯°æµÇ¾úÀ¸¸é, UpdateQuadTree.
+	//ì–´ë–¤ ì˜¤ë¸Œì íŠ¸ë¼ë„ ìœ„ì¹˜ê°€ ë³€ê²½ë˜ì—ˆìœ¼ë©´, UpdateQuadTree.
 	bool objectMoved = false;
 	for (auto& object : m_gameObjects) {
 		if (!object->GetCollider()) continue;
@@ -646,7 +798,7 @@ void Scene::UpdateQuadTree()
 			}
 		}
 		else {
-			//»õ·Î¿î °´Ã¼ ¹ß°ß ½Ã.
+			//ìƒˆë¡œìš´ ê°ì²´ ë°œê²¬ ì‹œ.
 			objectMoved = true;
 		}
 	}
@@ -674,13 +826,13 @@ void Scene::UpdateQuadTree()
 		m_quadTree->Clear();
 		shared_ptr<Camera> camera = GetMainCamera()->GetCamera();
 
-		// °´Ã¼ »ğÀÔ 
+		// ê°ì²´ ì‚½ì… 
 		int insertedCount = 0;
 		for (auto& object : m_gameObjects)
 		{
 			if (object->GetCollider())
 			{
-				// °¡½Ã¼º °Ë»ç
+				// ê°€ì‹œì„± ê²€ì‚¬
 				if (m_quadTree->IsObjectVisible(object, camera))
 				{
 					m_quadTree->Insert(object);
@@ -696,8 +848,8 @@ void Scene::UpdateQuadTree()
 		auto buildTime = std::chrono::duration_cast<std::chrono::microseconds>(buildEnd - buildStart);
 
 #ifdef _DEBUG
-		cout << "ÄõµåÆ®¸® Àç±¸¼º: " << insertedCount << "/" << m_gameObjects.size()
-			<< " °´Ã¼, " << buildTime.count() << "¥ìs" << endl;
+		cout << "ì¿¼ë“œíŠ¸ë¦¬ ì¬êµ¬ì„±: " << insertedCount << "/" << m_gameObjects.size()
+			<< " ê°ì²´, " << buildTime.count() << "Î¼s" << endl;
 	}
 #endif
 }
@@ -710,19 +862,19 @@ void Scene::GameObjectsTest()
 		for (auto& obj : m_gameObjects)
 		{
 			int count = obj.use_count();
-			if (obj.use_count() > 2) {  // Scene + ´Ù¸¥ ÂüÁ¶
+			if (obj.use_count() > 2) {  // Scene + ë‹¤ë¥¸ ì°¸ì¡°
 				std::wcout << L"Warning: " << obj->GetName()
 					<< L" has high reference count: "
 					<< obj.use_count() << std::endl;
 			}
 
 			name = ws2s(obj->GetName());
-			cout << "¿ÀºêÁ§Æ® ÀÌ¸§ : " << name << endl;
+			cout << "ì˜¤ë¸Œì íŠ¸ ì´ë¦„ : " << name << endl;
 		}
 	}
 }
 
-// Ray »ı¼º 
+// Ray ìƒì„± 
 Ray Scene::CreateRayFromScreen(const Vec2& screenPos, shared_ptr<Camera> camera)
 {
 	Viewport viewport = GRAPHICS->GetViewport();
@@ -730,11 +882,11 @@ Ray Scene::CreateRayFromScreen(const Vec2& screenPos, shared_ptr<Camera> camera)
 	Matrix viewMatrix = camera->GetViewMatrix();
 	Matrix projMatrix = camera->GetProjectionMatrix();
 
-	// Near plane°ú Far planeÀÇ ¿ùµå ÁÂÇ¥ °è»ê
+	// Near planeê³¼ Far planeì˜ ì›”ë“œ ì¢Œí‘œ ê³„ì‚°
 	Vec3 nearPoint = viewport.UnProject(Vec3(screenPos.x, screenPos.y, 0.0f), worldMatrix, viewMatrix, projMatrix);
 	Vec3 farPoint = viewport.UnProject(Vec3(screenPos.x, screenPos.y, 1.0f), worldMatrix, viewMatrix, projMatrix);
 
-	// Ray ¹æÇâ °è»ê
+	// Ray ë°©í–¥ ê³„ì‚°
 	Vec3 rayDirection = farPoint - nearPoint;
 	rayDirection.Normalize();
 

@@ -13,6 +13,7 @@ Viewport::Viewport(float _width, float _height, float _x, float _y, float _minDe
 
 Viewport::~Viewport()
 {
+
 }
 
 void Viewport::RSSetViewport()

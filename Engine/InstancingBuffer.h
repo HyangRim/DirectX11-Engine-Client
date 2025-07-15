@@ -35,6 +35,5 @@ private:
 	shared_ptr<VertexBuffer>	m_instanceBuffer;
 	uint32						m_maxCount;
 	vector<InstancingData>		m_data;
-
 };
 

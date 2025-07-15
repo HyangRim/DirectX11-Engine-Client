@@ -49,12 +49,17 @@ void Text::Update()
 {
     Super::Update();
 
+    // 디버깅 정보 출력
+
     if (m_needUpdate) {
         CreateTextTexture();
         UpdateMaterial();
         PushTextData();
         m_needUpdate = false;
     }
+
+    // 매 프레임 셰이더 데이터 전달
+    PushTextData();
 }
 
 void Text::SetText(const wstring& text)
@@ -297,6 +302,8 @@ void Text::CreateTextTexture()
     DeleteObject(hBitmap);
     DeleteObject(hFont);
     DeleteDC(hdc);
+
+
 }
 
 void Text::UpdateMaterial()
@@ -315,22 +322,8 @@ void Text::UpdateMaterial()
 
 void Text::PushTextData()
 {
-    // 셰이더에 데이터 전달
-    if (m_textColorEffect) {
-        float colorArray[4] = { m_color.x, m_color.y, m_color.z, m_color.w };
-        m_textColorEffect->SetFloatVector(colorArray);
-    }
-
-    if (m_outlineColorEffect) {
-        float outlineArray[4] = { m_outlineColor.x, m_outlineColor.y, m_outlineColor.z, m_outlineColor.w };
-        m_outlineColorEffect->SetFloatVector(outlineArray);
-    }
-
-    if (m_textAlphaEffect) {
-        m_textAlphaEffect->SetFloat(m_alpha);
-    }
-
-    if (m_outlineWidthEffect) {
-        m_outlineWidthEffect->SetFloat(m_enableOutline ? m_outlineWidth : 0.0f);
+    if (m_material && m_material->GetShader()) {
+        // ConstantBuffer 방식으로 데이터 전달
+        m_material->GetShader()->PushTextData(m_color, m_outlineColor, m_alpha, m_outlineWidth);
     }
 }

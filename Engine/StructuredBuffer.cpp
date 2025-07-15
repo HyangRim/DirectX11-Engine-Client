@@ -14,11 +14,7 @@ StructuredBuffer::StructuredBuffer(void* _inputData, uint32 _inputStride, uint32
 
 StructuredBuffer::~StructuredBuffer()
 {
-	m_input.Reset();
-	m_srv.Reset();
-	m_output.Reset();
-	m_uav.Reset();
-	m_result.Reset();
+	
 }
 
 void StructuredBuffer::CreateBuffer()

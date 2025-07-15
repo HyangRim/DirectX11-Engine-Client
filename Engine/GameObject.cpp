@@ -270,7 +270,6 @@ void GameObject::OnDestroy()
 
 		std::wcout << L"GameObject '" << m_Name << L"' OnDestroy 호출" << std::endl;
 
-
 		// 1. 모든 컴포넌트들에게 OnDestroy 알림
 		for (auto& component : m_components) {
 			if (component) {

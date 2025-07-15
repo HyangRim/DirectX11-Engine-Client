@@ -82,9 +82,6 @@
     <ClCompile Include="ResourceManager.cpp">
       <Filter>02. Managers</Filter>
     </ClCompile>
-    <ClCompile Include="SceneManager.cpp">
-      <Filter>02. Managers</Filter>
-    </ClCompile>
     <ClCompile Include="SoundManager.cpp">
       <Filter>02. Managers</Filter>
     </ClCompile>
@@ -95,9 +92,6 @@
       <Filter>02. Managers</Filter>
     </ClCompile>
     <ClCompile Include="Graphics.cpp">
-      <Filter>02. Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene.cpp">
       <Filter>02. Managers</Filter>
     </ClCompile>
     <ClCompile Include="QuadTree.cpp">
@@ -223,6 +217,12 @@
     <ClCompile Include="ImageUI.cpp">
       <Filter>06. UI &amp; Effect\UI</Filter>
     </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>02. Managers\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>02. Managers\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Types.h">
@@ -321,9 +321,6 @@
     <ClInclude Include="ResourceManager.h">
       <Filter>02. Managers</Filter>
     </ClInclude>
-    <ClInclude Include="SceneManager.h">
-      <Filter>02. Managers</Filter>
-    </ClInclude>
     <ClInclude Include="SoundManager.h">
       <Filter>02. Managers</Filter>
     </ClInclude>
@@ -334,9 +331,6 @@
       <Filter>02. Managers</Filter>
     </ClInclude>
     <ClInclude Include="Graphics.h">
-      <Filter>02. Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene.h">
       <Filter>02. Managers</Filter>
     </ClInclude>
     <ClInclude Include="QuadTree.h">
@@ -462,6 +456,12 @@
     <ClInclude Include="ImageUI.h">
       <Filter>06. UI &amp; Effect\UI</Filter>
     </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>02. Managers\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>02. Managers\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Engine">
@@ -520,6 +520,9 @@
     </Filter>
     <Filter Include="00. Engine\Interface">
       <UniqueIdentifier>{388cb458-a75b-4eea-894a-17fdae178144}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Managers\Scene">
+      <UniqueIdentifier>{943e65c8-18eb-4ce0-8326-e4a549f64275}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -32,6 +32,8 @@ Billboard::Billboard() : Super(ComponentType::Billboard)
 
 Billboard::~Billboard()
 {
+	m_vertexBuffer.reset();
+	m_indexBuffer.reset();
 }
 
 void Billboard::InnerRender(bool _isShadowTech)

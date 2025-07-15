@@ -8,7 +8,7 @@ IndexBuffer::IndexBuffer()
 
 IndexBuffer::~IndexBuffer()
 {
-	_indexBuffer.Reset();
+	
 }
 
 void IndexBuffer::Create(const vector<uint32>& _indices)

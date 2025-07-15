@@ -71,97 +71,97 @@ void UITestDemo::Init()
 	}
 
 
-	//{
-	//	// Animation
-	//	shared_ptr<Model> m1 = make_shared<Model>();
+	{
+		// Animation
+		shared_ptr<Model> m1 = make_shared<Model>();
 
-	//	m1->ReadModel(L"Nicky/Nicky");
-	//	m1->ReadMaterial(L"Nicky/Nicky");
-	//	m1->ReadAnimation(L"Nicky/Nicky_Run");
+		m1->ReadModel(L"Nicky/Nicky");
+		m1->ReadMaterial(L"Nicky/Nicky");
+		m1->ReadAnimation(L"Nicky/Nicky_Run");
 
-	//	for (int32 i = 0; i < 1; i++)
-	//	{
+		for (int32 i = 0; i < 20; i++)
+		{
 
-	//		auto obj = make_shared<GameObject>();
-	//		obj->SetName(to_wstring(i));
+			auto obj = make_shared<GameObject>();
+			obj->SetName(to_wstring(i));
 
-	//		obj->GetTransform()->SetPosition(Vec3(rand() % 100, 0, rand() % 100));
-	//		
-	//		//obj->GetTransform()->SetPosition(Vec3(
-	//		//	(rand() % 1000) - 500,  // -500 ~ 499
-	//		//	0,
-	//		//	(rand() % 1000) - 500   // -500 ~ 499
-	//		//));
-
-
-	//		obj->GetTransform()->SetScale(Vec3(1.f));
-
-	//		obj->AddComponent(make_shared<SphereCollider>());
-	//		obj->AddComponent(make_shared<Rigidbody>());
-	//		obj->GetCollider()->SetOffset(Vec3(0.f, 1.f, 0.f));
-	//		obj->GetRigidbody()->SetStatic(true);
-
-	//		/*obj->AddComponent(make_shared<ModelRenderer>(renderShader));
-	//		{
-	//			obj->GetModelRenderer()->SetModel(m1);
-	//			obj->GetModelRenderer()->SetPass(1);
-	//		}*/
-
-	//		obj->AddComponent(make_shared<ModelAnimator>(renderShader));
-	//		{
-	//			obj->GetModelAnimator()->SetModel(m1);
-	//			obj->GetModelAnimator()->SetPass(2);
-	//		}
-
-	//		CURSCENE->Add(obj);
-	//	}
+			obj->GetTransform()->SetPosition(Vec3(rand() % 100, 0, rand() % 100));
+			
+			//obj->GetTransform()->SetPosition(Vec3(
+			//	(rand() % 1000) - 500,  // -500 ~ 499
+			//	0,
+			//	(rand() % 1000) - 500   // -500 ~ 499
+			//));
 
 
-	//	//// 여러 클러스터로 나누어 배치
-	//	//for (int32 cluster = 0; cluster < 5; cluster++)
-	//	//{
-	//	//	Vec3 clusterCenter = Vec3(
-	//	//		(cluster % 3 - 1) * 500,  // -200, 0, 200
-	//	//		0,
-	//	//		(cluster / 3 - 1) * 500   // -200, 0, 200
-	//	//	);
+			obj->GetTransform()->SetScale(Vec3(1.f));
 
-	//	//	for (int32 i = 0; i < 10; i++)
-	//	//	{
-	//	//		auto obj = make_shared<GameObject>();
-	//	//		obj->SetName(to_wstring(cluster * 100 + i));
+			obj->AddComponent(make_shared<SphereCollider>());
+			obj->AddComponent(make_shared<Rigidbody>());
+			obj->GetCollider()->SetOffset(Vec3(0.f, 1.f, 0.f));
+			obj->GetRigidbody()->SetStatic(true);
 
-	//	//		// 클러스터 중심 주변에 배치
-	//	//		obj->GetTransform()->SetPosition(clusterCenter + Vec3(
-	//	//			(rand() % 40) - 20,  // 클러스터 내 랜덤
-	//	//			0,
-	//	//			(rand() % 40) - 20
-	//	//		));
+			/*obj->AddComponent(make_shared<ModelRenderer>(renderShader));
+			{
+				obj->GetModelRenderer()->SetModel(m1);
+				obj->GetModelRenderer()->SetPass(1);
+			}*/
 
-	//	//		// 나머지 코드...
-	//	//		obj->GetTransform()->SetScale(Vec3(1.f));
+			obj->AddComponent(make_shared<ModelAnimator>(renderShader));
+			{
+				obj->GetModelAnimator()->SetModel(m1);
+				obj->GetModelAnimator()->SetPass(2);
+			}
 
-	//	//		obj->AddComponent(make_shared<SphereCollider>());
-	//	//		obj->AddComponent(make_shared<Rigidbody>());
-	//	//		obj->GetCollider()->SetOffset(Vec3(0.f, 1.f, 0.f));
-	//	//		obj->GetRigidbody()->SetStatic(true);
+			CURSCENE->Add(obj);
+		}
 
-	//	//		/*obj->AddComponent(make_shared<ModelRenderer>(renderShader));
-	//	//		{
-	//	//			obj->GetModelRenderer()->SetModel(m1);
-	//	//			obj->GetModelRenderer()->SetPass(1);
-	//	//		}*/
 
-	//	//		obj->AddComponent(make_shared<ModelAnimator>(renderShader));
-	//	//		{
-	//	//			obj->GetModelAnimator()->SetModel(m1);
-	//	//			obj->GetModelAnimator()->SetPass(2);
-	//	//		}
+		//// 여러 클러스터로 나누어 배치
+		//for (int32 cluster = 0; cluster < 5; cluster++)
+		//{
+		//	Vec3 clusterCenter = Vec3(
+		//		(cluster % 3 - 1) * 500,  // -200, 0, 200
+		//		0,
+		//		(cluster / 3 - 1) * 500   // -200, 0, 200
+		//	);
 
-	//	//		CURSCENE->Add(obj);
-	//	//	}
-	//	//}
-	//}
+		//	for (int32 i = 0; i < 10; i++)
+		//	{
+		//		auto obj = make_shared<GameObject>();
+		//		obj->SetName(to_wstring(cluster * 100 + i));
+
+		//		// 클러스터 중심 주변에 배치
+		//		obj->GetTransform()->SetPosition(clusterCenter + Vec3(
+		//			(rand() % 40) - 20,  // 클러스터 내 랜덤
+		//			0,
+		//			(rand() % 40) - 20
+		//		));
+
+		//		// 나머지 코드...
+		//		obj->GetTransform()->SetScale(Vec3(1.f));
+
+		//		obj->AddComponent(make_shared<SphereCollider>());
+		//		obj->AddComponent(make_shared<Rigidbody>());
+		//		obj->GetCollider()->SetOffset(Vec3(0.f, 1.f, 0.f));
+		//		obj->GetRigidbody()->SetStatic(true);
+
+		//		/*obj->AddComponent(make_shared<ModelRenderer>(renderShader));
+		//		{
+		//			obj->GetModelRenderer()->SetModel(m1);
+		//			obj->GetModelRenderer()->SetPass(1);
+		//		}*/
+
+		//		obj->AddComponent(make_shared<ModelAnimator>(renderShader));
+		//		{
+		//			obj->GetModelAnimator()->SetModel(m1);
+		//			obj->GetModelAnimator()->SetPass(2);
+		//		}
+
+		//		CURSCENE->Add(obj);
+		//	}
+		//}
+	}
 	
 	
 	// UI
@@ -223,16 +223,11 @@ void UITestDemo::Init()
 		//panelObj->AddComponent(uiPanel);
 
 		//// 패널 생성 (화면 중앙에 300x200 크기)
-		//uiPanel->Create(Vec2(600, 400), Vec2(800, 600), panelMaterial);
-
-		//// 씬에 추가
-		//CURSCENE->Add(panelObj);
-
-
+		//uiPanel->Create(Vec2(600, 400), Vec2(800, 600), nullptr);
 		//
 		//// 패널 내부에 텍스트들 추가
 		//auto titleText = uiPanel->AddText(
-		//	Vec2(150, 30),                          // 패널 내 로컬 위치
+		//	Vec2(0, 0),                          // 패널 내 로컬 위치
 		//	L"게임 메뉴",                           // 텍스트 내용
 		//	50.0f,                                  // 폰트 크기
 		//	Vec4(1.0f, 1.0f, 1.0f, 1.0f),          // 흰색 글자
@@ -241,8 +236,15 @@ void UITestDemo::Init()
 		//	2.0f,                                   // 외곽선 두께
 		//	L"TitleText"                            // 텍스트 이름
 		//);
-		//
-		//
+
+		//// 씬에 추가
+		//CURSCENE->AddUIObject(panelObj);
+
+
+		
+		
+		
+		
 
 	
 		//// Button GameObject (부모)
@@ -331,23 +333,38 @@ void CreatePanelWithImageUI()
 		panelObj->GetUIPanel()->Create(Vec2(400, 300), Vec2(600, 400),
 			nullptr);
 
-		//// 패널에 ImageUI 추가
-		//auto imageUI = panelObj->GetUIPanel()->AddImageUI(Vec2(0, 0), L"MainImageUI");
+		// 패널에 ImageUI 추가
+		auto imageUI = panelObj->GetUIPanel()->AddImageUI(Vec2(0, 0), L"MainImageUI");
 
-		//// ImageUI에 이미지 레이어들 추가
-		//imageUI->AddImageLayer(0, Vec2(400, 200), Vec2(106, 166),
-		//	RESOURCES->Get<Material>(L"BackImg"), 1);
+		// ImageUI에 이미지 레이어들 추가
+		imageUI->AddImageLayer(0, Vec2(400, 200), Vec2(106, 166),
+			RESOURCES->Get<Material>(L"BackImg"), 1);
 
-		//imageUI->AddImageLayer(10, Vec2(400, 200), Vec2(122, 158),
-		//	RESOURCES->Get<Material>(L"NickyImg"), 1);
+		imageUI->AddImageLayer(10, Vec2(400, 200), Vec2(122, 158),
+			RESOURCES->Get<Material>(L"NickyImg"), 1);
 
-		//// 패널에 버튼도 추가 가능
-		//auto button = panelObj->GetUIPanel()->AddButton(Vec2(100, 100), Vec2(80, 40),
-		//	RESOURCES->Get<Material>(L"BtnImg"), L"TestButton");
+		// 패널에 버튼도 추가 가능
+		auto button = panelObj->GetUIPanel()->AddButton(Vec2(100, 100), Vec2(80, 40),
+			RESOURCES->Get<Material>(L"BtnImg"), L"TestButton");
 
-
-
-		//panelObj->SetLayerIndex(LAYER_UI);
-		CURSCENE->Add(panelObj);
+		button->AddOnClickedEvent([button]() {
+				std::wcout << button->GetGameObject()->GetName() << " : clicked\n";
+				});
+		
+		panelObj->GetUIPanel()->AddText(
+			Vec2(0.f),
+			L"Test",
+			20.f,
+			Color(1.f, 0.f, 0.f, 1.f),
+			1.f,
+			Color(0.f, 0.f, 0.f, 1.f),
+			2.0f,
+			L"TitleText"
+		);
+		
+		panelObj->SetLayerIndex(LAYER_UI);
+		// **UI 객체로 씬에 추가 (부모로 등록)**
+		CURSCENE->AddUIObject(panelObj, true);  // true = 부모
+		CURSCENE->RegisterUIParent(panelObj);
 	}
 }

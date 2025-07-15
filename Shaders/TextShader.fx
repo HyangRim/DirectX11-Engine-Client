@@ -13,10 +13,6 @@ struct VertexInput
     float2 uv : TEXCOORD;
     float3 normal : NORMAL;
     float3 tangent : TANGENT;
-    
-    // Instancing
-    uint instanceID : SV_INSTANCEID;
-    matrix world : INST;
 };
 
 struct PixelInput
@@ -34,10 +30,11 @@ Texture2D DiffuseMap;
 
 cbuffer TextMaterialBuffer
 {
-    float4 TextColor; // 내부 글자 색상
-    float4 OutlineColor; // 외곽선 색상
+    float4 TextColor;
+    float4 OutlineColor;
+    float4 BackgroundColor;
     float TextAlpha;
-    float OutlineWidth; // 외곽선 두께
+    float OutlineWidth;
     float2 TextPadding;
 };
 
@@ -49,8 +46,8 @@ PixelInput VS_Text(VertexInput input)
 {
     PixelInput output;
     
-    // World 변환
-    float4 worldPos = mul(input.position, input.world);
+    // 일반 Transform 사용 (W 행렬)
+    float4 worldPos = mul(input.position, W);
     
     // View-Projection 변환
     output.position = mul(worldPos, VP);
@@ -76,8 +73,10 @@ float4 PS_OutlineText(PixelInput input) : SV_TARGET
     // 텍스처에서 원본 색상 샘플링
     float4 texColor = DiffuseMap.Sample(LinearSampler, uv);
     
-    // 텍셀 크기 계산 (외곽선 두께에 따라 조정)
-    float2 texelSize = OutlineWidth / float2(512.0f, 512.0f); // 텍스처 크기 가정
+    // 텍셀 크기를 동적으로 계산
+    float2 texelSize;
+    DiffuseMap.GetDimensions(texelSize.x, texelSize.y);
+    texelSize = (OutlineWidth / texelSize);
     
     // 8방향 외곽선 샘플링
     float outline = 0.0f;
@@ -108,7 +107,6 @@ float4 PS_OutlineText(PixelInput input) : SV_TARGET
     }
     else
     {
-       
         discard;
     }
     
@@ -121,7 +119,6 @@ float4 PS_OutlineText(PixelInput input) : SV_TARGET
 
 technique11 TextTech
 {
-    // Pass 0: 외곽선 포함 텍스트
     pass P0
     {
         SetBlendState(AlphaBlend, float4(0, 0, 0, 0), 0xFF);

@@ -49,8 +49,6 @@ void RenderManager::ClearData()
 
 }
 
-
-
 void RenderManager::RenderMeshRenderer(vector<shared_ptr<GameObject>>& _gameObjects)
 {
 

@@ -52,6 +52,11 @@ public:
 		data.pSysMem = _vertices.data();
 
 		HRESULT hr = DEVICE->CreateBuffer(&desc, &data, _vertexBuffer.GetAddressOf());
+		_vertexBuffer->SetPrivateData(
+			WKPDID_D3DDebugObjectName,
+			sizeof("VertexBuffer::_vertexBuffer") - 1,
+			"VertexBuffer::_vertexBuffer"
+		);
 		CHECK(hr);
 	}
 
@@ -76,6 +81,7 @@ public:
 		vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT;
 
 		HRESULT hr = DEVICE->CreateBuffer(&vbd, 0, _vertexBuffer.GetAddressOf());
+
 		CHECK(hr);
 	}
 

@@ -1,3 +1,84 @@
+#pragma once
+#include "Component.h"
+
+class Material;
+class Mesh;
+class Texture;
+class Button;
+class Text;
+class ImageUI;
+
+class UIPanel : public Component
+{
+    using Super = Component;
+
+public:
+    UIPanel();
+    virtual ~UIPanel();
+
+    virtual void Init() override;
+    virtual void Update() override;
+
+    // 패널 설정 함수들
+    void SetPosition(const Vec2& position);
+    void SetSize(const Vec2& size);
+    void SetBackgroundColor(const Vec4& color);
+    void SetBackgroundTexture(shared_ptr<Texture> texture);
+    void SetVisible(bool visible);
+
+    // UI 요소 추가 함수들
+    shared_ptr<Button> AddButton(Vec2 localPos, Vec2 size, shared_ptr<Material> material, const wstring& name = L"Button");
+    shared_ptr<Text> AddText(Vec2 localPos, const wstring& text, float fontSize = 16.0f,
+        Vec4 color = Vec4(1, 1, 1, 1), float alpha = 1.0f,
+        Vec4 outlineColor = Vec4(0, 0, 0, 1), float outlineWidth = 1.0f,
+        const wstring& name = L"Text");
+    // ImageUI 추가 함수
+    shared_ptr<ImageUI> AddImageUI(Vec2 localPos, const wstring& name = L"ImageUI");
+
+    // UI 요소 관리
+    void RemoveUIElement(const wstring& name);
+    shared_ptr<Button> GetButton(const wstring& name);
+    shared_ptr<Text> GetText(const wstring& name);
+    shared_ptr<ImageUI> GetImageUI(const wstring& name);
+
+
+    // Getter 함수들
+    const Vec2& GetPosition() const { return m_position; }
+    const Vec2& GetSize() const { return m_size; }
+    bool IsVisible() const { return m_visible; }
+
+    // 패널 생성 함수
+    void Create(Vec2 screenPos, Vec2 size, shared_ptr<Material> backgroundMaterial = nullptr);
+
+public:
+    // 소멸 관련 메서드
+    virtual void OnDestroy() override;
+    void ClearChildReferences() {
+        // weak_ptr은 순환 참조를 만들지 않음
+        m_childElements.clear();
+        m_namedElements.clear();
+    }
+
+private:
+    void CreatePanelBackground();
+    void UpdateChildPositions();
+    Vec2 LocalToWorldPosition(const Vec2& localPos);
+
+private:
+    Vec2 m_position = Vec2(0.0f, 0.0f);
+    Vec2 m_size = Vec2(200.0f, 150.0f);
+    Vec4 m_backgroundColor = Vec4(0.f);
+    bool m_visible = true;
+
+    // 배경 렌더링용
+    shared_ptr<Texture> m_backgroundTexture;
+    shared_ptr<Material> m_backgroundMaterial;
+    shared_ptr<Mesh> m_backgroundMesh;
+
+    // 자식 UI 요소들
+    vector<weak_ptr<GameObject>> m_childElements;
+    map<wstring, weak_ptr<GameObject>> m_namedElements;
+};
 #include "pch.h"
 #include "UIPanel.h"
 #include "Transform.h"
@@ -19,19 +100,14 @@ UIPanel::UIPanel() : Super(ComponentType::UIPanel)
 
 UIPanel::~UIPanel()
 {
-    try {
+    try
+    {
         // OnDestroy가 아직 호출되지 않았다면 호출
-        OnDestroy();
-
-#ifdef _DEBUG
-        std::cout << "UIPanel 소멸자 완료" << std::endl;
-#endif
-
+        //OnDestroy();
     }
-    catch (...) {
-#ifdef _DEBUG
-        std::cout << "UIPanel 소멸자에서 예외 발생" << std::endl;
-#endif
+    catch (...)
+    {
+
     }
 }
 
@@ -107,10 +183,11 @@ void UIPanel::Create(Vec2 screenPos, Vec2 size, shared_ptr<Material> backgroundM
 void UIPanel::OnDestroy()
 {
     try {
-        for (auto it = m_childElements.begin(); it != m_childElements.end();) {
-            if (auto child = it->lock()) {
-                CURSCENE->Remove(child);
-                child->OnDestroy(); // 명시적 소멸 호출
+        // 자식 요소들 정리만 하면 됨 (Scene에서 알아서 순서대로 소멸)
+        for (auto it = m_childElements.begin(); it != m_childElements.end();)
+        {
+            if (auto child = it->lock())
+            {
                 ++it;
             }
             else {
@@ -118,11 +195,11 @@ void UIPanel::OnDestroy()
             }
         }
 
-        // 2. 컨테이너 완전 정리
+        // 컨테이너들 정리
         m_childElements.clear();
         m_namedElements.clear();
 
-        // 3. 배경 리소스 정리
+        // 리소스 해제
         if (m_backgroundMaterial) {
             m_backgroundMaterial.reset();
         }
@@ -136,13 +213,11 @@ void UIPanel::OnDestroy()
         Super::OnDestroy();
 
     }
-    catch (...) {
-#ifdef _DEBUG
-        std::cout << "UIPanel::OnDestroy에서 예외 발생" << std::endl;
-#endif
+    catch (...)
+    {
+
     }
 }
-
 
 
 void UIPanel::SetPosition(const Vec2& position)
@@ -219,8 +294,9 @@ shared_ptr<Button> UIPanel::AddButton(Vec2 localPos, Vec2 size, shared_ptr<Mater
     m_childElements.push_back(buttonObj);
     m_namedElements[name] = buttonObj;
 
-    // 씬에 추가
-    CURSCENE->Add(buttonObj);
+    // **UI 객체로 씬에 추가 (자식으로 등록)**
+    CURSCENE->AddUIObject(buttonObj, false);  // false = 자식
+    CURSCENE->RegisterUIChild(buttonObj);
 
     return buttonComponent;
 }
@@ -244,7 +320,7 @@ shared_ptr<Text> UIPanel::AddText(Vec2 localPos, const wstring& text, float font
     textObj->GetTransform()->SetPosition(Vec3(
         textObj->GetTransform()->GetPosition().x,
         textObj->GetTransform()->GetPosition().y,
-        -0.2f  // 버튼보다도 앞쪽
+        -0.15f  // 버튼보다도 앞쪽
     ));
 
     textObj->SetLayerIndex(LAYER_UI);
@@ -253,8 +329,9 @@ shared_ptr<Text> UIPanel::AddText(Vec2 localPos, const wstring& text, float font
     m_childElements.push_back(textObj);
     m_namedElements[name] = textObj;
 
-    // 씬에 추가
-    CURSCENE->Add(textObj);
+    // **UI 객체로 씬에 추가 (자식으로 등록)**
+    CURSCENE->AddUIObject(textObj, false);  // false = 자식
+    CURSCENE->RegisterUIChild(textObj);
 
     return textComponent;
 }
@@ -269,25 +346,23 @@ shared_ptr<ImageUI> UIPanel::AddImageUI(Vec2 localPos, const wstring& name)
     auto imageUIComponent = make_shared<ImageUI>();
     imageUIObj->AddComponent(imageUIComponent);
 
-    // 월드 좌표로 변환하여 위치 설정
+    // 위치 설정
     Vec2 worldPos = LocalToWorldPosition(localPos);
-
     float height = GRAPHICS->GetViewport().GetHeight();
     float width = GRAPHICS->GetViewport().GetWidth();
-
     float x = worldPos.x - width / 2.0f;
     float y = height / 2.0f - worldPos.y;
 
-    imageUIObj->GetTransform()->SetPosition(Vec3(x, y, -0.05f)); // 패널과 버튼 사이
-
+    imageUIObj->GetTransform()->SetPosition(Vec3(x, y, -0.05f));
     imageUIObj->SetLayerIndex(LAYER_UI);
 
     // 자식 요소로 등록 (weak_ptr 사용)
     m_childElements.push_back(imageUIObj);
     m_namedElements[name] = imageUIObj;
 
-    // 씬에 추가
-    CURSCENE->Add(imageUIObj);
+    // **UI 객체로 씬에 추가 (자식으로 등록)**
+    CURSCENE->AddUIObject(imageUIObj, false);  // false = 자식
+    CURSCENE->RegisterUIChild(imageUIObj);
 
     return imageUIComponent;
 }
@@ -296,9 +371,8 @@ void UIPanel::RemoveUIElement(const wstring& name)
 {
     auto it = m_namedElements.find(name);
     if (it != m_namedElements.end()) {
-        // weak_ptr을 shared_ptr로 변환
         if (auto child = it->second.lock()) {
-            // 벡터에서 제거 (weak_ptr 비교)
+            // 벡터에서 제거
             auto vecIt = std::find_if(m_childElements.begin(), m_childElements.end(),
                 [&child](const weak_ptr<GameObject>& weakPtr) {
                     return !weakPtr.owner_before(child) && !child.owner_before(weakPtr);
@@ -308,11 +382,11 @@ void UIPanel::RemoveUIElement(const wstring& name)
                 m_childElements.erase(vecIt);
             }
 
-            // 씬에서 제거
-            CURSCENE->Remove(child);
+            // 지연 삭제 시스템 사용
+            if (CURSCENE && !CURSCENE->m_isDestroying) {
+                CURSCENE->MarkUIObjectForDestroy(child);
+            }
         }
-
-        // 맵에서 제거
         m_namedElements.erase(it);
     }
 }

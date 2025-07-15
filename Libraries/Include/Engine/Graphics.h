@@ -13,6 +13,7 @@ public:
 public:
 	void Init(HWND hwnd);
 
+
 	void RenderBegin();
 	void RenderEnd();
 

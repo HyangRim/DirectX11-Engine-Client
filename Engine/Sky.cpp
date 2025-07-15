@@ -36,6 +36,7 @@ Sky::Sky(const std::wstring& _cubemapFilename, const wstring& _shaderFileName)
 
 Sky::~Sky()
 {
+	
 }
 
 ComPtr<ID3D11ShaderResourceView> Sky::CubeMapSRV()

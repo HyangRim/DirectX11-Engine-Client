@@ -7,18 +7,6 @@ Graphics::~Graphics()
 {
 	
 
-
-	m_deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
-	
-	m_renderTargetView.Reset();
-	m_depthStencilView.Reset();
-	m_depthStencilTexture.Reset(); 
-	m_shadowDSTexture.Reset();
-	m_shadowDSV.Reset();
-
-
-	m_deviceContext->Flush();
-	
 }
 
 
@@ -32,6 +20,7 @@ void Graphics::Init(HWND hwnd)
 	CreateDepthStencilView();
 	SetViewport(GAME->GetGameDesc().width, GAME->GetGameDesc().height);
 }
+
 
 void Graphics::RenderBegin()
 {
@@ -126,6 +115,12 @@ void Graphics::CreateDeviceAndSwapChain()
 		nullptr,
 		m_deviceContext.GetAddressOf()
 	);
+	m_swapChain->SetPrivateData(
+		WKPDID_D3DDebugObjectName,
+		sizeof("Graphics::m_swapChain") - 1,
+		"Graphics::m_swapChain"
+	);
+
 
 	CHECK(hr);
 }

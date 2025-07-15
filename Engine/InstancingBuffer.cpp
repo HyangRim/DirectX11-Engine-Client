@@ -8,6 +8,7 @@ InstancingBuffer::InstancingBuffer()
 
 InstancingBuffer::~InstancingBuffer()
 {
+	
 }
 
 void InstancingBuffer::ClearData()
