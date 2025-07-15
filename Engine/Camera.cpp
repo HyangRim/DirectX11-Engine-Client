@@ -58,9 +58,20 @@ void Camera::UpdateMatrix()
 
 void Camera::SortGameObject()
 {
+    if (m_type == ProjectionType::Perspective)
+    {
+        SortGameObjects();
+    }
+    else
+    {
+        SortUIObjects();
+    }
+}
+
+void Camera::SortGameObjects()
+{
     shared_ptr<Scene> scene = CURSCENE;
     const unordered_set<shared_ptr<GameObject>>& gameObjects = scene->GetObjects();
-    const unordered_set<shared_ptr<GameObject>>& uiObjects = scene->m_uiObjects;
 
     m_vecForward.clear();
     m_vecBackward.clear();
@@ -92,99 +103,96 @@ void Camera::SortGameObject()
     if (cachedFogOfWar) {
         cachedFogOfWar->UpdateFOWSystem();
     }
-
-    if (m_type == ProjectionType::Perspective)
-    {
-        int CullingObject = 0;
-
-
-        //cout << "전체 오브젝트 : " << gameObjects.size() << "\n";
+    //cout << "전체 오브젝트 : " << gameObjects.size() << "\n";
         //그려줄 것 선별하기. 
-        for (auto& object : gameObjects)
-        {
-            if (object->GetType() != OBJECTTYPE::MAP) {
-                //레이어 컬링. 
-                if (IsCulled(object->GetLayerIndex()))
-                    continue;
-
-                // QuadTree를 통한 Frustum Culling.
-                if (!scene->GetQuadTree()->IsObjectVisible(object, this))
-                {
-                    CullingObject++;
-                    continue;
-                }
-
-                //FOW통한 컬링. 
-                if (cachedFogOfWar) {
-                    if (!cachedFogOfWar->ShouldRenderObject(object)) {
-                        continue;
-                    }
-
-                    float alpha = cachedFogOfWar->GetObjectAlpha(object);
-                    object->SetAlpha(alpha);
-                }
-            }
-
-
-            //QuadTree - Visible가지고 Frustum Culling 가능. 
-            shared_ptr<Renderer> renderer = object->GetRenderer();
-            if (renderer == nullptr)
-                continue;
-
-            shared_ptr<Material> material = renderer->GetMaterial();
-            RenderQueue renderQueue = material->GetRenderQueue();
-
-            //TODO : 컷아웃용 정렬하기
-            //TODO : 거리에 따라 정렬하기
-
-            switch (renderQueue)
-            {
-            case RenderQueue::Opaque:
-            case RenderQueue::Cutout:
-                m_vecForward.push_back(object);
-                break;
-            case RenderQueue::Transparent:
-                m_vecBackward.push_back(object);
-                break;
-
-            }
-
-            //cout << "컬링 오브젝트 : " << CullingObject << "\n";
-            //cout << "렌더링 오브젝트 : " << gameObjects.size() - CullingObject << "\n";
-        }
-    }
-    else
+    for (auto& object : gameObjects)
     {
-        //그려줄 것 선별하기. 
-        for (auto& object : uiObjects)
-        {
+        if (object->GetType() != OBJECTTYPE::MAP) {
+            //레이어 컬링. 
             if (IsCulled(object->GetLayerIndex()))
                 continue;
 
-            //QuadTree - Visible가지고 Frustum Culling 가능. 
-            shared_ptr<Renderer> renderer = object->GetRenderer();
-            if (renderer == nullptr)
+            // QuadTree를 통한 Frustum Culling.
+            if (!scene->GetQuadTree()->IsObjectVisible(object, this))
                 continue;
 
-            shared_ptr<Material> material = renderer->GetMaterial();
 
-            RenderQueue renderQueue = material->GetRenderQueue();
+            //FOW통한 컬링. 
+            if (cachedFogOfWar) {
+                if (!cachedFogOfWar->ShouldRenderObject(object)) {
+                    continue;
+                }
 
-            //TODO : 컷아웃용 정렬하기
-            //TODO : 거리에 따라 정렬하기
-            switch (renderQueue)
-            {
-            case RenderQueue::Opaque:
-            case RenderQueue::Cutout:
-                m_vecForward.push_back(object);
-                break;
-            case RenderQueue::Transparent:
-                m_vecBackward.push_back(object);
-                break;
+                float alpha = cachedFogOfWar->GetObjectAlpha(object);
+                object->SetAlpha(alpha);
             }
+        }
+
+
+        //QuadTree - Visible가지고 Frustum Culling 가능. 
+        shared_ptr<Renderer> renderer = object->GetRenderer();
+        if (renderer == nullptr)
+            continue;
+
+        shared_ptr<Material> material = renderer->GetMaterial();
+        RenderQueue renderQueue = material->GetRenderQueue();
+
+        //TODO : 컷아웃용 정렬하기
+        //TODO : 거리에 따라 정렬하기
+
+        switch (renderQueue)
+        {
+        case RenderQueue::Opaque:
+        case RenderQueue::Cutout:
+            m_vecForward.push_back(object);
+            break;
+        case RenderQueue::Transparent:
+            m_vecBackward.push_back(object);
+            break;
+
         }
     }
 }
+
+void Camera::SortUIObjects()
+{
+    shared_ptr<Scene> scene = CURSCENE;
+
+    const unordered_set<shared_ptr<GameObject>>& uiObjects = scene->m_uiObjects;
+
+    m_vecForward.clear();
+    m_vecBackward.clear();
+
+    vector<shared_ptr<GameObject>> sortedUIObjects(uiObjects.begin(), uiObjects.end());
+
+    std::sort(sortedUIObjects.begin(), sortedUIObjects.end(),
+        [](const shared_ptr<GameObject>& a, const shared_ptr<GameObject>& b) {
+            return a->GetTransform()->GetPosition().z > b->GetTransform()->GetPosition().z;
+        });
+
+    for (auto& object : sortedUIObjects) {
+        if (IsCulled(object->GetLayerIndex()))
+            continue;
+
+        shared_ptr<Renderer> renderer = object->GetRenderer();
+        if (renderer == nullptr)
+            continue;
+
+        shared_ptr<Material> material = renderer->GetMaterial();
+        RenderQueue renderQueue = material->GetRenderQueue();
+
+        switch (renderQueue) {
+        case RenderQueue::Opaque:
+        case RenderQueue::Cutout:
+            m_vecForward.push_back(object);
+            break;
+        case RenderQueue::Transparent:
+            m_vecBackward.push_back(object);
+            break;
+        }
+    }
+}
+
 
 void Camera::SetStaticData() {
 	s_MatView = m_matView;

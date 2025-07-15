@@ -26,6 +26,7 @@
 #include "TextButton.h"
 #include "UIPanel.h"
 #include "ImageUI.h"
+#include "CameraScript.h"
 
 void CreatePanelWithImageUI();
 
@@ -42,6 +43,7 @@ void UITestDemo::Init()
 		camera->SetName(L"MainCamera");
 		camera->GetTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
 		camera->AddComponent(make_shared<Camera>());
+		camera->AddComponent(make_shared<CameraScript>());
 		camera->GetCamera()->SetNear(1.f);
 		camera->GetCamera()->SetFar(100.f);
 		camera->GetCamera()->SetProjectionType(ProjectionType::Perspective);

@@ -246,6 +246,7 @@ void GameObject::OnCollision(shared_ptr<GameObject> _other)
 		GetRigidbody()->OnCollision(_other);
 	}
 #ifdef _DEBUG
+	std::wcout << this->GetName() << "가 " << _other->GetName() << "와 충돌\n";
 	std::cout << "Collision\n";
 #endif
 }

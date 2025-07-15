@@ -456,7 +456,6 @@ shared_ptr<class GameObject> Scene::Pick()
     float width = GRAPHICS->GetViewport().GetWidth();
     float height = GRAPHICS->GetViewport().GetHeight();
 
-
     Matrix projectionMatrix = camera->GetProjectionMatrix();
 
     //View좌표로 변환
@@ -486,8 +485,6 @@ shared_ptr<class GameObject> Scene::Pick()
     worldRayDir.Normalize();
 
     Ray ray = Ray(worldRayOrigin, worldRayDir);
-
-
 
     //모든 물체를 전부 다 스캔하는 무식한 방법. 
     for (auto& gameObject : gameObjects) {
