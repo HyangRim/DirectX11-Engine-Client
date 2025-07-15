@@ -250,7 +250,7 @@ void Scene::Update()
 
     //GameObjectsTest();
 
-
+    UpdateQuadTree();
 
     PickObjectOrUI();
 
@@ -642,8 +642,6 @@ shared_ptr<GameObject> Scene::PickObjectOrUI()
 
     // Ray 생성
     Ray ray = CreateRayFromScreen(Vec2(screenPt.x, screenPt.y), camera);
-
-    UpdateQuadTree();
 
     auto queryStart = std::chrono::high_resolution_clock::now();
     vector<shared_ptr<GameObject>> candidates = m_quadTree->Query(ray, camera);
