@@ -16,7 +16,7 @@
 
 Scene::Scene()
 {
-
+    int a = 0;
 }
 
 Scene::~Scene()

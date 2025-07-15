@@ -52,7 +52,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	desc.width = 1366;
 	desc.height = 768;
 	desc.clearColor = Color(0.2f, 0.2f, 0.2f, 0.2f);
-	desc.app = make_shared<BillboardDemo>();
+	desc.app = make_shared<UITestDemo>();
 
 	GAME->Run(desc);
 
