@@ -28,6 +28,19 @@ public:
     void SetPass(uint8 _pass) { m_pass = _pass; }
     shared_ptr<Shader> GetShader();
 
+    //애니메이션 제어 메소드
+    void SetAnimation(uint32 _animIndex, bool _immediate = false);
+
+
+    //duration은 _tweenDuration초 동안 부드럽게 전환. 
+    void SetNextAnimation(uint32 _animIndex, bool _tweenDuration = 1.0f);
+    void SetAnimationSpeed(float _speed);
+
+    //애니메이션 상태 Get
+    uint32 GetCurrentAnimationIndex() const;
+    bool IsAnimationTransitioning() const;
+    bool IsAnimationFinished() const;
+
 
     void RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech);
     InstanceID GetInstanceID();

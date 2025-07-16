@@ -304,3 +304,67 @@ void ModelAnimator::CreateAnimationTransform(uint32 _index)
 shared_ptr<Shader> ModelAnimator::GetShader() {
 	return m_material->GetShader();
 }
+
+void ModelAnimator::SetAnimation(uint32 _animIndex, bool _immediate)
+{
+	if (_animIndex >= m_model->GetAnimationCount())
+		return;
+
+	if (_immediate) {
+		// 즉시 애니메이션 변경
+		m_tweenDesc.m_curr.m_animIndex = _animIndex;
+		m_tweenDesc.m_curr.m_currFrame = 0;
+		m_tweenDesc.m_curr.m_nextFrame = 1;
+		m_tweenDesc.m_curr.m_sumTime = 0.f;
+		m_tweenDesc.m_curr.m_ratio = 0.f;
+		m_tweenDesc.ClearNextAnim();
+	}
+	else {
+		SetNextAnimation(_animIndex);
+	}
+}
+
+void ModelAnimator::SetNextAnimation(uint32 _animIndex, bool _tweenDuration)
+{
+	if (_animIndex >= m_model->GetAnimationCount())
+		return;
+
+	m_tweenDesc.m_next.m_animIndex = _animIndex;
+	m_tweenDesc.m_next.m_currFrame = 0;
+	m_tweenDesc.m_next.m_nextFrame = 1;
+	m_tweenDesc.m_next.m_sumTime = 0.f;
+	m_tweenDesc.m_next.m_ratio = 0.f;
+	m_tweenDesc.m_tweenDuration = _tweenDuration;
+	m_tweenDesc.m_tweenSumTime = 0.f;
+	m_tweenDesc.m_tweenRatio = 0.f;
+}
+
+void ModelAnimator::SetAnimationSpeed(float _speed)
+{
+	m_tweenDesc.m_curr.m_speed = _speed;
+	if (m_tweenDesc.m_next.m_animIndex >= 0)
+		m_tweenDesc.m_next.m_speed = _speed;
+}
+
+uint32 ModelAnimator::GetCurrentAnimationIndex() const
+{
+	return m_tweenDesc.m_curr.m_animIndex;
+}
+
+bool ModelAnimator::IsAnimationTransitioning() const
+{
+	return m_tweenDesc.m_next.m_animIndex >= 0;
+}
+
+bool ModelAnimator::IsAnimationFinished() const
+{
+	if (m_tweenDesc.m_next.m_animIndex >= 0)
+		return false;
+
+	shared_ptr<ModelAnimation> currentAnim = m_model->GetAnimationByIndex(m_tweenDesc.m_curr.m_animIndex);
+	if (currentAnim)
+	{
+		return m_tweenDesc.m_curr.m_currFrame >= currentAnim->m_frameCount - 1;
+	}
+	return true;
+}

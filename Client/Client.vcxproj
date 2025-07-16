@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BiancaCamera.h" />
+    <ClInclude Include="BiancaTest.h" />
     <ClInclude Include="BillboardDemo.h" />
     <ClInclude Include="ButtonDemo.h" />
     <ClInclude Include="CameraScript.h" />
@@ -39,6 +41,8 @@
     <ClInclude Include="ViewportDemo.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BiancaCamera.cpp" />
+    <ClCompile Include="BiancaTest.cpp" />
     <ClCompile Include="BillboardDemo.cpp" />
     <ClCompile Include="ButtonDemo.cpp" />
     <ClCompile Include="CameraScript.cpp" />

@@ -28,14 +28,17 @@
     <Filter Include="Shaders\Text">
       <UniqueIdentifier>{878a2d81-db68-493c-a70e-c7928958eea6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Main\Scripts">
+    <Filter Include="Scripts">
       <UniqueIdentifier>{1f7c04bf-b597-483a-87a0-71490610d009}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Main\Scripts\Camera">
+    <Filter Include="Scripts\Camera">
       <UniqueIdentifier>{10bf8da9-c58d-45fe-b41c-357dc5245b2b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Main\Scripts\FOW">
+    <Filter Include="Scripts\FOW">
       <UniqueIdentifier>{67440155-896d-4476-9eb0-00678c005e9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\PlayerTest">
+      <UniqueIdentifier>{eac17648-82fa-433d-bcb1-91e9d825662c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -85,10 +88,16 @@
       <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="FogOfWar.cpp">
-      <Filter>Main\Scripts\FOW</Filter>
+      <Filter>Scripts\FOW</Filter>
     </ClCompile>
     <ClCompile Include="CameraScript.cpp">
-      <Filter>Main\Scripts\Camera</Filter>
+      <Filter>Scripts\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaTest.cpp">
+      <Filter>Scripts\PlayerTest</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaCamera.cpp">
+      <Filter>Scripts\PlayerTest</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -141,10 +150,16 @@
       <Filter>Main</Filter>
     </ClInclude>
     <ClInclude Include="FogOfWar.h">
-      <Filter>Main\Scripts\FOW</Filter>
+      <Filter>Scripts\FOW</Filter>
     </ClInclude>
     <ClInclude Include="CameraScript.h">
-      <Filter>Main\Scripts\Camera</Filter>
+      <Filter>Scripts\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaTest.h">
+      <Filter>Scripts\PlayerTest</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaCamera.h">
+      <Filter>Scripts\PlayerTest</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
