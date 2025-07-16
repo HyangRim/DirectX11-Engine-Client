@@ -14,39 +14,50 @@ Vec3 Transform::ToEulerAngles(Quaternion q)
 {
 	Vec3 angles;
 
-	// roll (x-axis rotation)
-	double sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
-	double cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
-	angles.x = std::atan2(sinr_cosp, cosr_cosp);
+	double test = q.x * q.y + q.z * q.w;
 
-	//// pitch (y-axis rotation)
-	//double sinp = std::sqrt(1 + 2 * (q.w * q.y - q.x * q.z));
-	//double cosp = std::sqrt(1 - 2 * (q.w * q.y - q.x * q.z));
-	//angles.y = 2 * std::atan2(sinp, cosp) - 3.14159f * 0.5f;
+	// 특이점 처리 (짐벌락)
+	if (test > 0.499) { // 북극 특이점
+		angles.y = XMConvertToDegrees(2 * atan2(q.x, q.w));
+		angles.x = XMConvertToDegrees(XM_PI / 2);
+		angles.z = 0;
+		return angles;
+	}
+	if (test < -0.499) { // 남극 특이점
+		angles.y = XMConvertToDegrees(-2 * atan2(q.x, q.w));
+		angles.x = XMConvertToDegrees(-XM_PI / 2);
+		angles.z = 0;
+		return angles;
+	}
 
-	//// yaw (z-axis rotation)
-	//double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
-	//double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
-	//angles.z = std::atan2(siny_cosp, cosy_cosp);
+	// 일반적인 경우
+	double sqx = q.x * q.x;
+	double sqy = q.y * q.y;
+	double sqz = q.z * q.z;
 
-	// Pitch (Y축 회전) - 수정된 공식
-	double sinp = 2 * (q.w * q.y - q.z * q.x);
-	if (std::abs(sinp) >= 1)
-		angles.y = std::copysign(XM_PI / 2, sinp); // 짐벌락 처리
-	else
-		angles.y = std::asin(sinp);
-
-	// Yaw (Z축 회전)
-	double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
-	double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
-	angles.z = std::atan2(siny_cosp, cosy_cosp);
-
-	// 라디안 → 도 변환
-	angles.x = XMConvertToDegrees(angles.x);
-	angles.y = XMConvertToDegrees(angles.y);
-	angles.z = XMConvertToDegrees(angles.z);
+	// Y-X-Z 순서에 맞는 변환 공식
+	angles.y = XMConvertToDegrees(atan2(2 * q.y * q.w - 2 * q.x * q.z, 1 - 2 * sqy - 2 * sqz));
+	angles.x = XMConvertToDegrees(asin(2 * test));
+	angles.z = XMConvertToDegrees(atan2(2 * q.x * q.w - 2 * q.y * q.z, 1 - 2 * sqx - 2 * sqz));
 
 	return angles;
+}
+
+Vec3 Transform::NormalizeAngles(const Vec3& _angles)
+{
+	Vec3 result = _angles;
+
+	// -180 ~ 180 범위로 정규화
+	while (result.x > 180.0f) result.x -= 360.0f;
+	while (result.x < -180.0f) result.x += 360.0f;
+
+	while (result.y > 180.0f) result.y -= 360.0f;
+	while (result.y < -180.0f) result.y += 360.0f;
+
+	while (result.z > 180.0f) result.z -= 360.0f;
+	while (result.z < -180.0f) result.z += 360.0f;
+
+	return result;
 }
 
 void Transform::Init()
@@ -60,15 +71,16 @@ void Transform::Update()
 
 void Transform::UpdateTransform()
 {
+
 	//Scale Rotation Translation
+
 	Matrix matScale = Matrix::CreateScale(m_localScale);
-	Matrix matRotation = Matrix::CreateRotationX(m_localRotation.x);
-	matRotation *= Matrix::CreateRotationY(m_localRotation.y);
-	matRotation *= Matrix::CreateRotationZ(m_localRotation.z);
+	Matrix matRotation = Matrix::CreateRotationY(XMConvertToRadians(m_localRotation.y));
+	matRotation *= Matrix::CreateRotationX(XMConvertToRadians(m_localRotation.x));
+	matRotation *= Matrix::CreateRotationZ(XMConvertToRadians(m_localRotation.z));
 	Matrix matTranslation = Matrix::CreateTranslation(m_localPosition);
 
 	m_matLocal = matScale * matRotation * matTranslation;
-
 
 	//부모가 없으면 local행렬이 world와 같음. 
 
@@ -83,14 +95,13 @@ void Transform::UpdateTransform()
 	//여기서 right, up, look 벡터는 무엇인가??
 	Quaternion quat;
 	m_matWorld.Decompose(m_WorldScale, quat, m_WorldPosition);
+
 	m_WorldRotation = ToEulerAngles(quat);
+
 
 
 	//Coord와 Normal방식. 
 	//방향만 바꾸고 싶다. 면, (1,0, 0, 1) <- 4번째가 0이냐 1이냐 차이. 
-
-
-
 
 	//Children들 Transform변경
 	for (const shared_ptr<Transform>& child : m_children) {
@@ -117,21 +128,21 @@ void Transform::SetScale(const Vec3& _Scale)
 void Transform::SetRotation(const Vec3& _Rotation)
 {
 	if (HasParent()) {
-		// X-Y-Z 순서로 회전 행렬 생성
-		XMMATRIX rotX = XMMatrixRotationX(XMConvertToRadians(_Rotation.x));
+		// Y-X-Z 순서로 회전 행렬 생성 (UpdateTransform()과 동일)
 		XMMATRIX rotY = XMMatrixRotationY(XMConvertToRadians(_Rotation.y));
+		XMMATRIX rotX = XMMatrixRotationX(XMConvertToRadians(_Rotation.x));
 		XMMATRIX rotZ = XMMatrixRotationZ(XMConvertToRadians(_Rotation.z));
 
-		XMMATRIX worldRotMatrix = rotX * rotY * rotZ;
+		XMMATRIX worldRotMatrix = rotY * rotX * rotZ;
 		XMVECTOR worldQuatVec = XMQuaternionRotationMatrix(worldRotMatrix);
 
-		// 부모 회전
+		// 부모 회전도 동일한 순서
 		Vec3 parentRot = m_parent->GetRotation();
-		XMMATRIX parentRotX = XMMatrixRotationX(XMConvertToRadians(parentRot.x));
 		XMMATRIX parentRotY = XMMatrixRotationY(XMConvertToRadians(parentRot.y));
+		XMMATRIX parentRotX = XMMatrixRotationX(XMConvertToRadians(parentRot.x));
 		XMMATRIX parentRotZ = XMMatrixRotationZ(XMConvertToRadians(parentRot.z));
 
-		XMMATRIX parentRotMatrix = parentRotX * parentRotY * parentRotZ;
+		XMMATRIX parentRotMatrix = parentRotY * parentRotX * parentRotZ;
 		XMVECTOR parentQuatVec = XMQuaternionRotationMatrix(parentRotMatrix);
 
 		XMVECTOR parentInverseVec = XMQuaternionInverse(parentQuatVec);

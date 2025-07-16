@@ -17,8 +17,6 @@ OBBBoxCollider::OBBBoxCollider()
 	m_DebugObject->GetMeshRenderer()->GetMaterial()->SetCastShadow(false);
 	m_DebugObject->GetMeshRenderer()->SetPass(3);
 
-	auto temp = m_DebugObject->GetMeshRenderer()->GetInstanceID();
-
 	CURSCENE->Add(m_DebugObject);
 }
 

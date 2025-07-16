@@ -6,7 +6,7 @@ struct InstancingData {
 	Matrix m_world;
 };
 
-#define MAX_MESH_INSTANCE 1000
+#define MAX_MESH_INSTANCE 250
 
 
 

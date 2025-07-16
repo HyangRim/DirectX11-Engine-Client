@@ -47,10 +47,6 @@ ComPtr<ID3D11ShaderResourceView> Sky::CubeMapSRV()
 void Sky::Render(Camera* _camera)
 {
 	Vec3 eyePos = _camera->GetTransform()->GetPosition();
-	if (eyePos.z > -15.0f)
-	{
-		int a = 0;
-	}
 	Matrix world = Matrix::CreateTranslation(eyePos);
 
 	Matrix v = _camera->GetViewMatrix();

@@ -18,8 +18,6 @@ AABBBoxCollider::AABBBoxCollider()
 	m_DebugObject->GetMeshRenderer()->GetMaterial()->SetCastShadow(false);
 	m_DebugObject->GetMeshRenderer()->SetPass(3);
 
-	auto temp = m_DebugObject->GetMeshRenderer()->GetInstanceID();
-
 	CURSCENE->Add(m_DebugObject);
 }
 
@@ -33,7 +31,7 @@ void AABBBoxCollider::Update()
 	m_boundingBox.Extents = GetTransform()->GetScale() * 0.5f;
 
 	m_DebugObject->GetTransform()->SetScale(GetGameObject()->GetTransform()->GetScale());
-	m_DebugObject->GetTransform()->SetRotation(GetGameObject()->GetTransform()->GetRotation());
+	//m_DebugObject->GetTransform()->SetRotation(GetGameObject()->GetTransform()->GetRotation());
 	m_DebugObject->GetTransform()->SetPosition(GetGameObject()->GetTransform()->GetPosition() + m_offSetPos);
 }
 

@@ -28,26 +28,26 @@ void AssimpTool::Init()
 
 	//}
 
+	//{
+
+	//	shared_ptr<Converter> converter = make_shared<Converter>();
+
+	//	//FBX -> Memory
+	//	converter->ReadAssetFile(L"Bianca/Nicky.fbx");
+
+	//	//Memory ->CustomData;
+	//	converter->ExportMaterialData(L"Bianca/Nicky");
+	//	converter->ExportModelData(L"Nicky/Nicky");
+
+	//	//CustomData -> Memory;
+
+	//}
+
+
 	{
-
 		shared_ptr<Converter> converter = make_shared<Converter>();
-
-		//FBX -> Memory
-		converter->ReadAssetFile(L"Nicky/Nicky.fbx");
-
-		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Nicky/Nicky");
-		converter->ExportModelData(L"Nicky/Nicky");
-
-		//CustomData -> Memory;
-
-	}
-
-
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		converter->ReadAssetFile(L"Nicky/Nicky_Run.fbx");
-		converter->ExportAnimationData(L"Nicky/Nicky_Run");
+		converter->ReadAssetFile(L"Bianca/Bianca_wait.fbx");
+		converter->ExportAnimationData(L"Bianca2/Bianca_wait");
 
 	}
 	{
@@ -75,7 +75,7 @@ void AssimpTool::Init()
 
 	}
 	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
+		//shared_ptr<Converter> converter = make_shared<Converter>();
 		//converter->ReadAssetFile(L"Bianca/Bianca_atk.fbx");
 		//converter->ExportAnimationData(L"Bianca2/Bianca_atk");
 

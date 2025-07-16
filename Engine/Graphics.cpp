@@ -54,8 +54,6 @@ void Graphics::RenderBegin()
 	
 	//스텐실이란. 원하는 뭔가에 따라서 그걸 구멍이 뚫려 그 부분만 바꾼다거나.
 	//그런 고급 기법. 
-	//m_deviceContext->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
-	//m_deviceContext->RSSetViewports(1, &m_viewport);
 
 	//스텐실 뷰는 카메라마다 초기화 하도록.  
 	m_viewport.RSSetViewport();

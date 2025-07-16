@@ -29,6 +29,8 @@
 #include "FogOfWar.h"
 #include "CameraScript.h"
 #include "SceneObjectManager.h"
+#include "BiancaTest.h"
+#include "BiancaCamera.h"
 
 void BillboardDemo::Init()
 {
@@ -37,10 +39,8 @@ void BillboardDemo::Init()
 	//shared_ptr<Shader> renderShader = make_shared<Shader>(L"23. RenderDemo.fx");
 	// Camera
 	auto camera = make_shared<GameObject>();
-	//camera->GetTransform()->SetLocalPosition(Vec3{ 0.f, 12.f, -7.5f });
-	//camera->GetTransform()->SetLocalRotation(Vec3{45.f, 0.f, 0.f});
 	camera->AddComponent(make_shared<Camera>());
-	camera->AddComponent(make_shared<CameraScript>());
+	//camera->AddComponent(make_shared<CameraScript>());
 	//camera->AddComponent(make_shared<FogOfWar>());
 
 	camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
@@ -133,10 +133,10 @@ void BillboardDemo::Init()
 		lightDesc.ambient = Vec4(0.4f);
 		lightDesc.diffuse = Vec4(1.f);
 		lightDesc.specular = Vec4(0.1f);
-		lightDesc.direction = Vec3(1.f, -1.f, 1.f);
+		lightDesc.direction = Vec3(1.f, 1.f, 1.f);
 		//light->GetLight()->SetLightDesc(lightDesc);
 		light->GetTransform()->SetRotation(lightDesc.direction);
-		light->GetTransform()->SetPosition(Vec3(0.f, -150.f, 0.f));
+		light->GetTransform()->SetPosition(Vec3(0.f, 150.f, 0.f));
 		static_pointer_cast<Light>(light->GetFixedComponent(ComponentType::Light))->SetLightDesc(lightDesc);
 		CURSCENE->Add(light);
 	}
@@ -251,7 +251,13 @@ void BillboardDemo::Init()
 
 		m1->ReadModel(L"Bianca2/Bianca");
 		m1->ReadMaterial(L"Bianca2/Bianca");
+		m1->ReadAnimation(L"Bianca2/Bianca_wait");
+		m1->ReadAnimation(L"Bianca2/Bianca_run");
 		m1->ReadAnimation(L"Bianca2/Bianca_atk");
+		m1->ReadAnimation(L"Bianca2/Bianca_reststart");
+		m1->ReadAnimation(L"Bianca2/Bianca_restloop");
+		m1->ReadAnimation(L"Bianca2/Bianca_restend");
+		m1->ReadAnimation(L"Bianca2/Bianca_dance");
 
 		for (int32 i = 0; i < 1; i++)
 		{
@@ -267,12 +273,17 @@ void BillboardDemo::Init()
 			}
 			obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->AddComponent(make_shared<FogOfWar>());
+			obj->AddComponent(make_shared<BiancaTest>());
 
 			CURSCENE->Add(obj);
 
 			//camera->GetTransform()->SetParent(obj->GetTransform());
-			camera->GetTransform()->SetLocalPosition(Vec3{ 0.f, 12.f, -7.5f });
-			camera->GetTransform()->SetLocalRotation(Vec3{ 45.f, 0.f, 0.f });
+			auto BiancaCam = make_shared<BiancaCamera>();
+			camera->AddComponent(BiancaCam);
+			BiancaCam->SetTarget(obj);
+			BiancaCam->SetOffset(Vec3(0.f, 12.f, -12.5f));
+			camera->GetTransform()->SetRotation(Vec3{ 45.f, 0.f, 0.f });
+
 		}
 	}
 	

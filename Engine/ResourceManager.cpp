@@ -101,7 +101,7 @@ void ResourceManager::CreateDefaultMaterial()
 		MaterialDesc& desc = material->GetMaterialDesc();
 		desc.ambient = Vec4(0.5f, 0.5f, 0.5f, 1.f);
 		desc.diffuse = Vec4(0.8f, 0.2f, 0.2f, 1.f);
-		//desc.specular = Vec4(1.f);
+
 		RESOURCES->Add(L"default", material);
 	}
 }

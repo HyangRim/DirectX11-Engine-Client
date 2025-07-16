@@ -33,9 +33,7 @@ public:
 	virtual void Update() override;
 
 	// 핵심 가시성 함수들
-	
 	virtual bool ShouldRenderObject(shared_ptr<GameObject> _object) override;
-	virtual float GetObjectAlpha(shared_ptr<GameObject> _object) override;
 	virtual void UpdateFOWSystem() override;
 
 	void SetSightRange(float _range) { m_sightRange = _range; m_needsUpdate = true; }
@@ -43,12 +41,10 @@ public:
 	void SetFadeDiatance(float _fade) { m_fadeDistance = _fade; m_needsUpdate = true; }
 	void SetSmoothness(float _smoothness) { m_smoothness = _smoothness; }
 
-
 	bool IsFOWShader(shared_ptr<Shader> _shader);
 	void UpdateShadersWithFOWData(const FogOfWarData& _fowData);
 private:
 	void UpdateFOWShader();
-	void ApplyToMapObjects();
 	bool IsMapObject(shared_ptr<GameObject> _object);
 
 private:

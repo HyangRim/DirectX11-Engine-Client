@@ -14,7 +14,6 @@ void ImGuiManager::Init()
 
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
-	//ImGui::StyleColorsLight();
 
 	// Setup Platform/Renderer backends
 	ImGui_ImplWin32_Init(GAME->GetGameDesc().hWnd);

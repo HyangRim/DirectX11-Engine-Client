@@ -19,7 +19,12 @@ public:
 	void SetLocalScale(const Vec3& _localScale) { m_localScale = _localScale; UpdateTransform(); }
 	
 	Vec3 GetLocalRotation() { return m_localRotation; }
-	void SetLocalRotation(const Vec3& _localRotation) { m_localRotation = _localRotation; UpdateTransform(); }
+	void SetLocalRotation(const Vec3& _localRotation) {
+
+		m_localRotation = _localRotation;
+		UpdateTransform(); 
+	
+	}
 	
 	Vec3 GetLocalPosition() { return m_localPosition; }
 	void SetLocalPosition(const Vec3& _localPosition) { m_localPosition = _localPosition; UpdateTransform(); }
@@ -57,6 +62,9 @@ public:
 	}
 	
 	static Vec3 ToEulerAngles(Quaternion q);
+
+private:
+	Vec3 NormalizeAngles(const Vec3& _angles);
 
 private:
 

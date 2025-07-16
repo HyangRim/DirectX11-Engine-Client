@@ -29,8 +29,6 @@ Camera::~Camera()
 void Camera::LateUpdate()
 {
 	UpdateMatrix();
-
-	//RENDER->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);
 }
 
 
@@ -76,7 +74,7 @@ void Camera::SortGameObjects()
     m_vecForward.clear();
     m_vecBackward.clear();
 
-    // FOW 인터페이스 캐싱 시스템 (성능 최적화)
+    // FOW 캐싱 (성능 최적화)
     static IFogOfWar* cachedFogOfWar = nullptr;
     static int lastFrameCheck = -1;
     int currentFrame = GetTickCount64() / 16; // 60FPS 기준
@@ -103,8 +101,9 @@ void Camera::SortGameObjects()
     if (cachedFogOfWar) {
         cachedFogOfWar->UpdateFOWSystem();
     }
-    //cout << "전체 오브젝트 : " << gameObjects.size() << "\n";
-        //그려줄 것 선별하기. 
+
+
+    //그려줄 것 선별하기. 
     for (auto& object : gameObjects)
     {
         if (object->GetType() != OBJECTTYPE::MAP) {
@@ -122,9 +121,6 @@ void Camera::SortGameObjects()
                 if (!cachedFogOfWar->ShouldRenderObject(object)) {
                     continue;
                 }
-
-                float alpha = cachedFogOfWar->GetObjectAlpha(object);
-                object->SetAlpha(alpha);
             }
         }
 
@@ -134,11 +130,7 @@ void Camera::SortGameObjects()
         if (renderer == nullptr)
             continue;
 
-        shared_ptr<Material> material = renderer->GetMaterial();
-        RenderQueue renderQueue = material->GetRenderQueue();
-
-        //TODO : 컷아웃용 정렬하기
-        //TODO : 거리에 따라 정렬하기
+        RenderQueue renderQueue = renderer->GetMaterial()->GetRenderQueue();
 
         switch (renderQueue)
         {
@@ -178,8 +170,7 @@ void Camera::SortUIObjects()
         if (renderer == nullptr)
             continue;
 
-        shared_ptr<Material> material = renderer->GetMaterial();
-        RenderQueue renderQueue = material->GetRenderQueue();
+        RenderQueue renderQueue = renderer->GetMaterial()->GetRenderQueue();
 
         switch (renderQueue) {
         case RenderQueue::Opaque:

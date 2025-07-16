@@ -82,18 +82,6 @@ public:
 	virtual void OnCollisionEnter(shared_ptr<GameObject> _other);
 	virtual void OnCollisionExit(shared_ptr<GameObject> _other);
 
-
-	//FOW°ü·Ã
-	void SetAlpha(float _alpha) {
-		if (abs(m_alpha - _alpha) > 0.01f) {
-			m_alpha = _alpha;
-			m_alphaChanged = true;
-		}
-	}
-	float GetAlpha() const { return m_alpha; }
-	bool HasAlphaChanged() const { return m_alphaChanged; }
-	void ResetAlphaChanged() { m_alphaChanged = false; }
-
 public:
 	void SetName(wstring _name) { m_Name = _name; }
 	wstring GetName() { return m_Name; }

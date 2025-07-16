@@ -19,8 +19,6 @@ void FogOfWar::Init()
 {
 	Super::Init();
 
-	FOW->Init();
-	ApplyToMapObjects();
 }
 
 void FogOfWar::Update()
@@ -52,30 +50,10 @@ bool FogOfWar::ShouldRenderObject(shared_ptr<GameObject> _object)
 	return distance <= m_sightRange;
 }
 
-float FogOfWar::GetObjectAlpha(shared_ptr<GameObject> _object)
-{
-	Vec3 playerPos = GetTransform()->GetPosition();
-	Vec3 objPos = _object->GetTransform()->GetPosition();
-	float distance = Vec3::Distance(playerPos, objPos);
-
-	if (distance <= m_sightRange - m_fadeDistance) {
-		return 1.0f;
-	}
-	else if (distance <= m_sightRange) {
-		float fadeRatio = (distance - (m_sightRange - m_fadeDistance)) / m_fadeDistance;
-		return 1.0f - fadeRatio;
-	}
-	else {
-		return 0.0f;
-	}
-}
-
 void FogOfWar::UpdateFOWSystem()
 {
 	UpdateFOWShader();
 }
-
-
 
 bool FogOfWar::IsFOWShader(shared_ptr<Shader> _shader)
 {
@@ -135,24 +113,9 @@ void FogOfWar::UpdateFOWShader()
 	UpdateShadersWithFOWData(fowData);
 }
 
-void FogOfWar::ApplyToMapObjects()
-{
-	const auto& objects = CURSCENE->GetObjects();
-
-	for (auto& obj : objects) {
-		if (IsMapObject(obj)) {
-			auto renderer = obj->GetRenderer();
-			if (renderer) {
-				FOW->ApplyToMaterial(renderer->GetMaterial());
-			}
-		}
-	}
-}
 
 bool FogOfWar::IsMapObject(shared_ptr<GameObject> _object)
 {
 	if (_object->GetType() == OBJECTTYPE::MAP) return true;
 	return false;
 }
-
-

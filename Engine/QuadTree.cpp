@@ -59,30 +59,36 @@ void QuadTree::Insert(shared_ptr<GameObject> _object)
 
 void QuadTree::Build()
 {
+#ifndef _DEBUG
 	auto start = std::chrono::high_resolution_clock::now();
+#endif 
 
 	//Insert과정에서 이미 트리가 구성되므로 통계만 업데이트.
 	UpdateStats();
 
+#ifndef _DEBUG
 	auto end = std::chrono::high_resolution_clock::now();
 	m_stats.lastBuildTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+#endif
 }
 
 vector<shared_ptr<GameObject>> QuadTree::Query(const Ray& _ray, shared_ptr<Camera> _camera)
 {
+#ifndef _DEBUG
 	auto start = std::chrono::high_resolution_clock::now();
+#endif
 
 	vector<shared_ptr<GameObject>> result;
 	QueryNode(m_root, _ray, _camera, result);
-
 
 	//중복 제거
 	sort(result.begin(), result.end());
 	result.erase(unique(result.begin(), result.end()), result.end());
 
+#ifndef _DEBUG
 	auto end = std::chrono::high_resolution_clock::now();
 	m_stats.lastQueryTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-
+#endif
 	return result;
 }
 
@@ -183,7 +189,7 @@ void QuadTree::Split(unique_ptr<QuadTreeNode>& _node, int _depth)
 
 	_node->isLeaf = false;
 
-	//기존 객체들을 자식으로 재분배(여러 노드에 중복 삽입 허용)
+	//기존 객체들을 자식으로 재분배(겹쳐있을 경우 여러 노드에 중복 삽입 허용)
 	vector<shared_ptr<GameObject>> tempObjects = move(_node->objects);
 	_node->objects.clear();
 
@@ -593,7 +599,7 @@ bool QuadTree::IsObjectVisible(shared_ptr<GameObject> _object, shared_ptr<Camera
 	Vec3 cameraLook = _camera->GetTransform()->GetLook();
 
 	float dot = dirToObj.Dot(cameraLook);
-	if (dot < 0.1f) return false;
+	if (dot < -0.1f) return false;
 
 	// 3. 추가 : 화면 투영 검사. 
 	Viewport viewport = GRAPHICS->GetViewport();
@@ -661,7 +667,7 @@ bool QuadTree::IsObjectVisible(shared_ptr<GameObject> _object, Camera* _camera)
 	Vec3 cameraLook = _camera->GetTransform()->GetLook();
 
 	float dot = dirToObj.Dot(cameraLook);
-	if (dot < 0.f) return false;
+	if (dot < -0.1f) return false;
 
 	// 3. 추가 : 화면 투영 검사. 
 	Viewport viewport = GRAPHICS->GetViewport();
@@ -711,10 +717,6 @@ bool QuadTree::IsObjectVisible(shared_ptr<GameObject> _object, Camera* _camera)
 	return true;
 }
 
-int QuadTree::FindBestChildren(const unique_ptr<QuadTreeNode>& _node, const RECT& _objBounds, vector<int>& _childrenIndices)
-{
-	return 0;
-}
 
 void QuadTree::DebugDrawNode(const unique_ptr<QuadTreeNode>& _node, int _depth, shared_ptr<Camera> _camera)
 {
@@ -958,7 +960,7 @@ void QuadTree::CheckCollisionsInNode(const unique_ptr<QuadTreeNode>& _node, unor
 	if (!_node) return;
 
 	// 현재 노드의 객체들끼리 충돌 검사
-	//노드 안에서, 한 노드에 최대 12개 MAX = 12 * 12 = 144
+	//노드 안에서, 한 노드에 최대 12개 MAX = 12 * 12 / 2 = 72
 	auto& objects = _node->objects;
 	for (size_t i = 0; i < objects.size(); ++i) {
 		if (!objects[i]->GetCollider() || !objects[i]->GetCollider()->GetActive())
@@ -1003,6 +1005,7 @@ void QuadTree::CheckCrossNodeCollisions(const unique_ptr<QuadTreeNode>& _node1, 
 
 		for (auto& obj2 : _node2->objects) {
 			if (!obj2->GetCollider() || !obj2->GetCollider()->GetActive()) continue;
+			if (obj1 == obj2) continue;
 
 			ProcessCollisionPair(obj1->GetCollider(), obj2->GetCollider(),
 				_collisionMap, _processedPairs);
