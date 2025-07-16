@@ -205,9 +205,6 @@
     <ClCompile Include="Transform.cpp">
       <Filter>04. Component</Filter>
     </ClCompile>
-    <ClCompile Include="FOWShaderManager.cpp">
-      <Filter>02. Managers</Filter>
-    </ClCompile>
     <ClCompile Include="IExecute.cpp">
       <Filter>00. Engine\Interface</Filter>
     </ClCompile>
@@ -446,9 +443,6 @@
     </ClInclude>
     <ClInclude Include="Transform.h">
       <Filter>04. Component</Filter>
-    </ClInclude>
-    <ClInclude Include="FOWShaderManager.h">
-      <Filter>02. Managers</Filter>
     </ClInclude>
     <ClInclude Include="IExecute.h">
       <Filter>00. Engine\Interface</Filter>

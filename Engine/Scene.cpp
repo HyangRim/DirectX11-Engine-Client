@@ -12,7 +12,6 @@
 #include "SphereCollider.h"
 #include "AABBBoxCollider.h"
 #include "UIPanel.h"
-
 #include "SceneObjectManager.h"
 
 
@@ -26,7 +25,6 @@ Scene::~Scene()
    
 }
 
-
 void Scene::RegisterUIParent(shared_ptr<GameObject> parent)
 {
     m_objectManager->RegisterUIParent(parent);
@@ -36,8 +34,6 @@ void Scene::RegisterUIChild(shared_ptr<GameObject> child)
 {
     m_objectManager->RegisterUIChild(child);
 }
-
-
 
 void Scene::Start()
 {
@@ -73,8 +69,6 @@ void Scene::LateUpdate()
     m_objectManager->LateUpdate();
 
     // start = std::chrono::high_resolution_clock::now();
-    //BruteForce방식. 
-    //CheckCollision();
 
     //QuadTree방식. 
     CheckCollisionWithQuadTree();
@@ -90,9 +84,6 @@ void Scene::Render()
 {
     const auto& cameras = m_objectManager->GetCameras();
     for (auto camera : cameras) {
-        //camera->GetCamera()->SortGameObject();
-        //camera->GetCamera()->Render_Forward(false);
-        //GRAPHICS->ClearDepthStencilView();
 
         Camera* cam = camera->GetCamera().get();
         if (cam->GetProjectionType() == ProjectionType::Perspective) {
@@ -171,6 +162,8 @@ shared_ptr<GameObject> Scene::GetUICamera()
     return m_objectManager->GetUICamera();
 }
 
+
+//포폴 차이점 용으로 남겨두기. 
 void Scene::CheckCollision()
 {
     //1. m_gameObjects끼리 for문 돌려서 검사한다. 

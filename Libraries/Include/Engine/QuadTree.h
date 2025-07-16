@@ -77,8 +77,6 @@ public:
     bool IsObjectVisible(shared_ptr<GameObject> _object, shared_ptr<Camera> _camera);
     bool IsObjectVisible(shared_ptr<GameObject> _object, Camera* _camera);
 
-    int FindBestChildren(const unique_ptr<QuadTreeNode>& _node, const RECT& _objBounds, vector<int>& _childrenIndices);
-
     // 디버그 헬퍼
     void DebugDrawNode(const unique_ptr<QuadTreeNode>& _node, int _depth, shared_ptr<Camera> _camera);
     void PrintNodeStructure(const unique_ptr<QuadTreeNode>& _node, int _depth, const string& _prefix);
@@ -139,7 +137,10 @@ private:
     unique_ptr<QuadTreeNode> m_root;
     float m_screenWidth;
     float m_screenHeight;
+
     unordered_set<shared_ptr<GameObject>> m_insertedObjects;
+
+    //디버그용. 
     QuadTreeStats m_stats;
     static int s_nextNodeId;
 

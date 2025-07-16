@@ -28,7 +28,6 @@ public:										\
 #define GUI			GET_SINGLE(ImGuiManager)
 #define SCENE		GET_SINGLE(SceneManager)
 #define SOUND		GET_SINGLE(SoundManager)
-#define FOW			GET_SINGLE(FOWShaderManager)
 
 #define CURSCENE	SCENE->GetCurScene()
 #define CUR_SCENE	SCENE->GetCurScene()

@@ -58,11 +58,9 @@ private:
 	ComPtr<ID3D11DepthStencilView> m_depthStencilView;
 	ComPtr<ID3D11Texture2D> m_shadowDSTexture;
 	ComPtr<ID3D11DepthStencilView> m_shadowDSV;
-	//ComPtr<ID3D11ShaderResourceView> m_shadowSRV;
 	shared_ptr<Texture> m_shadowMap;
 
 	// Misc
-	//D3D11_VIEWPORT m_viewport = { 0 };
 	Viewport m_viewport;
 	Viewport m_shadowVP;
 };

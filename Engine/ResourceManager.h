@@ -11,9 +11,6 @@ class ResourceManager
 {
 	DECLARE_SINGLE(ResourceManager);
 
-
-
-
 public:
 	void Init();
 

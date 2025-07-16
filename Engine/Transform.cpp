@@ -19,17 +19,7 @@ Vec3 Transform::ToEulerAngles(Quaternion q)
 	double cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
 	angles.x = std::atan2(sinr_cosp, cosr_cosp);
 
-	//// pitch (y-axis rotation)
-	//double sinp = std::sqrt(1 + 2 * (q.w * q.y - q.x * q.z));
-	//double cosp = std::sqrt(1 - 2 * (q.w * q.y - q.x * q.z));
-	//angles.y = 2 * std::atan2(sinp, cosp) - 3.14159f * 0.5f;
-
-	//// yaw (z-axis rotation)
-	//double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
-	//double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
-	//angles.z = std::atan2(siny_cosp, cosy_cosp);
-
-	// Pitch (Y축 회전) - 수정된 공식
+	// Pitch (Y축 회전)
 	double sinp = 2 * (q.w * q.y - q.z * q.x);
 	if (std::abs(sinp) >= 1)
 		angles.y = std::copysign(XM_PI / 2, sinp); // 짐벌락 처리
@@ -41,7 +31,7 @@ Vec3 Transform::ToEulerAngles(Quaternion q)
 	double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
 	angles.z = std::atan2(siny_cosp, cosy_cosp);
 
-	// 라디안 → 도 변환
+	// 라디안 -> 도 변환
 	angles.x = XMConvertToDegrees(angles.x);
 	angles.y = XMConvertToDegrees(angles.y);
 	angles.z = XMConvertToDegrees(angles.z);
@@ -85,12 +75,8 @@ void Transform::UpdateTransform()
 	m_matWorld.Decompose(m_WorldScale, quat, m_WorldPosition);
 	m_WorldRotation = ToEulerAngles(quat);
 
-
 	//Coord와 Normal방식. 
 	//방향만 바꾸고 싶다. 면, (1,0, 0, 1) <- 4번째가 0이냐 1이냐 차이. 
-
-
-
 
 	//Children들 Transform변경
 	for (const shared_ptr<Transform>& child : m_children) {
