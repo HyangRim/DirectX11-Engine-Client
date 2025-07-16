@@ -249,7 +249,7 @@ void BillboardDemo::Init()
 		// Animation
 		shared_ptr<Model> m1 = make_shared<Model>();
 
-		m1->ReadModel(L"Bianca2/Bianca");
+		/*m1->ReadModel(L"Bianca2/Bianca");
 		m1->ReadMaterial(L"Bianca2/Bianca");
 		m1->ReadAnimation(L"Bianca2/Bianca_wait");
 		m1->ReadAnimation(L"Bianca2/Bianca_run");
@@ -257,7 +257,7 @@ void BillboardDemo::Init()
 		m1->ReadAnimation(L"Bianca2/Bianca_reststart");
 		m1->ReadAnimation(L"Bianca2/Bianca_restloop");
 		m1->ReadAnimation(L"Bianca2/Bianca_restend");
-		m1->ReadAnimation(L"Bianca2/Bianca_dance");
+		m1->ReadAnimation(L"Bianca2/Bianca_dance");*/
 
 		for (int32 i = 0; i < 1; i++)
 		{

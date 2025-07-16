@@ -46,10 +46,10 @@ void SceneDemo::Init()
 	//Animation
 	shared_ptr<class Model> m1 = make_shared<Model>();
 	m1->ReadModel(L"Kachujin/Kachujin");
-	m1->ReadMaterial(L"Kachujin/Kachujin");
+	/*m1->ReadMaterial(L"Kachujin/Kachujin");
 	m1->ReadAnimation(L"Kachujin/Idle");
 	m1->ReadAnimation(L"Kachujin/Run");
-	m1->ReadAnimation(L"Kachujin/Slash");
+	m1->ReadAnimation(L"Kachujin/Slash");*/
 
 	
 

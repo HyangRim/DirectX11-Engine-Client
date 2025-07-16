@@ -77,15 +77,20 @@ void UITestDemo::Init()
 
 		m1->ReadModel(L"Nicky/Nicky");
 		m1->ReadMaterial(L"Nicky/Nicky");
-		m1->ReadAnimation(L"Nicky/Nicky_Glove_Atk1");
 
-		for (int32 i = 0; i < 100; i++)
+		// 태그 기반으로 애니메이션 로드
+		m1->ReadAnimation(L"Wait", L"Nicky/Nicky_Glove_Wait");
+		m1->ReadAnimation(L"Run", L"Nicky/Nicky_Glove_Run");
+		m1->ReadAnimation(L"BaseAttack", L"Nicky/Nicky_Glove_Atk_01");
+		m1->ReadAnimation(L"Skill", L"Nicky/Nicky_Glove_Skill_03");
+
+		for (int32 i = 0; i < 1; i++)
 		{
 
 			nicky = make_shared<GameObject>();
 			nicky->SetName(to_wstring(i));
 
-			nicky->GetTransform()->SetPosition(Vec3(rand() % 100, 0, rand() % 100));
+			nicky->GetTransform()->SetPosition(Vec3(0, 0, 0));
 			
 			//obj->GetTransform()->SetPosition(Vec3(
 			//	(rand() % 1000) - 500,  // -500 ~ 499
