@@ -50,7 +50,30 @@ void AssimpTool::Init()
 		converter->ExportAnimationData(L"Nicky/Nicky_Run");
 
 	}
-	
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		converter->ReadAssetFile(L"Nicky/Nicky_Wait.fbx");
+		converter->ExportAnimationData(L"Nicky/Nicky_Wait");
+
+	}
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		converter->ReadAssetFile(L"Nicky/Nicky_Glove_Run.fbx");
+		converter->ExportAnimationData(L"Nicky/Nicky_Glove_Run");
+
+	}
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		converter->ReadAssetFile(L"Nicky/Nicky_Glove_Atk1.fbx");
+		converter->ExportAnimationData(L"Nicky/Nicky_Glove_Atk1");
+
+	}
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		converter->ReadAssetFile(L"Nicky/Nicky_Glove_Atk2.fbx");
+		converter->ExportAnimationData(L"Nicky/Nicky_Glove_Atk2");
+
+	}
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//converter->ReadAssetFile(L"Bianca/Bianca_atk.fbx");

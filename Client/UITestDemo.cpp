@@ -77,9 +77,9 @@ void UITestDemo::Init()
 
 		m1->ReadModel(L"Nicky/Nicky");
 		m1->ReadMaterial(L"Nicky/Nicky");
-		m1->ReadAnimation(L"Nicky/Nicky_Run");
+		m1->ReadAnimation(L"Nicky/Nicky_Glove_Atk1");
 
-		for (int32 i = 0; i < 1; i++)
+		for (int32 i = 0; i < 100; i++)
 		{
 
 			nicky = make_shared<GameObject>();
