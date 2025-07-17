@@ -37,14 +37,36 @@ void Converter::ReadAssetFile(wstring _file)
 		aiProcess_RemoveRedundantMaterials
 	);
 
+
+	//m_scene = m_importer->ReadFile(
+	//	Utils::ToString(fileStr),
+	//	aiProcess_ConvertToLeftHanded |
+	//	aiProcess_Triangulate |
+	//	aiProcess_GenUVCoords |
+	//	aiProcess_GenNormals |
+	//	aiProcess_CalcTangentSpace |
+	//	// aiProcess_PreTransformVertices |        // 이 줄 제거
+	//	aiProcess_JoinIdenticalVertices |
+	//	aiProcess_OptimizeGraph |
+	//	aiProcess_OptimizeMeshes |
+	//	aiProcess_RemoveRedundantMaterials
+	//);
+	//본 없이 출력할거면 true.
+	m_isStaticMesh = false;
 	assert(m_scene != nullptr);
 }
 
 void Converter::ExportModelData(wstring _savePath)
 {
 	wstring finalPath = m_modelPath + _savePath + L".mesh";
-	ReadModelData(m_scene->mRootNode, -1, -1);
-	ReadSkinData();
+
+	if (m_isStaticMesh) {
+		ReadStaticMeshData(m_scene->mRootNode);  // 매개변수 추가
+	}
+	else {
+		ReadModelData(m_scene->mRootNode, -1, -1);
+		ReadSkinData();
+	}
 
 	//Write CSV File
 	{
@@ -112,6 +134,55 @@ void Converter::ExportAnimationData(wstring _savePath, uint32 _index)
 //A -> ROOT로 변경하는 행렬을 만들어주면 됨. 
 //루트까지 부모의 WORLD를 구한다.
 
+
+void Converter::ReadStaticMeshData(aiNode* _node)
+{
+	if (_node->mNumMeshes > 0) {
+		shared_ptr<asMesh> mesh = make_shared<asMesh>();
+		mesh->m_name = _node->mName.C_Str();
+		mesh->m_boneIndex = -1;
+
+		for (uint32 idx = 0; idx < _node->mNumMeshes; ++idx) {
+			uint32 index = _node->mMeshes[idx];
+			const aiMesh* srcMesh = m_scene->mMeshes[index];
+
+			// 머티리얼 정보 추가
+			const aiMaterial* material = m_scene->mMaterials[srcMesh->mMaterialIndex];
+			mesh->m_materialName = material->GetName().C_Str();
+
+			const uint32 startVertex = mesh->m_vertices.size();  // 이 부분 추가!
+
+			for (uint32 v = 0; v < srcMesh->mNumVertices; ++v) {
+				VertexType vertex;
+				::memcpy(&vertex.position, &srcMesh->mVertices[v], sizeof(Vec3));
+
+				if (srcMesh->HasTextureCoords(0))
+					::memcpy(&vertex.uv, &srcMesh->mTextureCoords[0][v], sizeof(Vec2));
+
+				if (srcMesh->HasNormals())
+					::memcpy(&vertex.normal, &srcMesh->mNormals[v], sizeof(Vec3));
+
+				vertex.blendIndices = Vec4(0, 0, 0, 0);
+				vertex.blendWeights = Vec4(0, 0, 0, 0);
+
+				mesh->m_vertices.push_back(vertex);
+			}
+
+			// 인덱스 처리 수정
+			for (uint32 f = 0; f < srcMesh->mNumFaces; ++f) {
+				aiFace& face = srcMesh->mFaces[f];
+				for (uint32 k = 0; k < face.mNumIndices; ++k)
+					mesh->m_indices.push_back(face.mIndices[k] + startVertex);  // startVertex 추가!
+			}
+		}
+
+		m_meshes.push_back(mesh);
+	}
+
+	for (uint32 idx = 0; idx < _node->mNumChildren; ++idx) {
+		ReadStaticMeshData(_node->mChildren[idx]);
+	}
+}
 
 void Converter::ReadModelData(aiNode* _node, int32 _index, int32 _parent)
 {
@@ -290,14 +361,19 @@ void Converter::WriteModelFile(wstring _filePath)
 
 	// Bone Data
 	//본 몇개인지 넣어주고, 본마다 데이터 쓰기. 
-	file->Write<uint32>(m_bones.size());
-	for (shared_ptr<asBone> bone : m_bones)
-	{
-		file->Write<int32>(bone->m_index);
-		file->Write<string>(bone->m_name);
-		file->Write<int32>(bone->m_parent);
-		file->Write<Matrix>(bone->m_transform);
-		file->Write<aiMatrix4x4>(bone->m_offsetMatrix);
+	if (m_isStaticMesh) {
+		file->Write<uint32>(0);  // 본 개수 0
+	}
+	else {
+		file->Write<uint32>(m_bones.size());
+		for (shared_ptr<asBone> bone : m_bones)
+		{
+			file->Write<int32>(bone->m_index);
+			file->Write<string>(bone->m_name);
+			file->Write<int32>(bone->m_parent);
+			file->Write<Matrix>(bone->m_transform);
+			file->Write<aiMatrix4x4>(bone->m_offsetMatrix);
+		}
 	}
 
 	// Mesh Data

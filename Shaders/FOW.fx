@@ -109,6 +109,11 @@ float4 PS_FOW_Simple(MeshOutput input) : SV_TARGET
     return float4(finalColor, baseColor.a);
 }
 
+float4 PS_FOW_DEBUG(MeshOutput input) : SV_TARGET
+{
+    return float4(1, 0, 0, 1); // 간단한 형태
+}
+
 
 
 ////////////////

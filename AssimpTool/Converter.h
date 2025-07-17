@@ -15,6 +15,7 @@ public:
 
 
 private:
+	void ReadStaticMeshData(aiNode* _node);
 	void ReadModelData(aiNode* _node, int32 _index, int32 _parent);
 	void ReadMeshData(aiNode* _node, int32 _bone);
 	void ReadSkinData();
@@ -52,6 +53,8 @@ private:
 	vector<shared_ptr<asBone>> m_bones;
 	vector<shared_ptr<asMesh>> m_meshes;
 	vector<shared_ptr<asMaterial>> m_materials;
+
+	bool m_isStaticMesh = false;
 };
 
 
