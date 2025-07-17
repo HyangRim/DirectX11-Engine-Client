@@ -11,18 +11,23 @@
 ModelAnimator::ModelAnimator(shared_ptr<Shader> _shader)
     : Super(ComponentType::Animator), m_shader(_shader)
 {
-    //m_tweenDesc.m_next.m_animIndex = rand() % 3;
-    //m_tweenDesc.m_tweenSumTime += rand() % 100;
+    // 애니메이션 루프 설정
     m_loopSettings[AnimationState::Wait] = true;
     m_loopSettings[AnimationState::Run] = true;
-    m_loopSettings[AnimationState::Skill] = false;  // 스킬은 한 번만 실행
+    m_loopSettings[AnimationState::Skill_1] = false;
+    m_loopSettings[AnimationState::Skill_2] = false;
+    m_loopSettings[AnimationState::Skill_3] = false;
+    m_loopSettings[AnimationState::Skill_4] = false;
     m_loopSettings[AnimationState::BaseAttack] = false;
 
-    // 상태를 태그로 매핑 (초기화 시 설정)
+    // 상태-태그 매핑
     m_stateToTag[AnimationState::Wait] = L"Wait";
     m_stateToTag[AnimationState::Run] = L"Run";
     m_stateToTag[AnimationState::BaseAttack] = L"BaseAttack";
-    m_stateToTag[AnimationState::Skill] = L"Skill";
+    m_stateToTag[AnimationState::Skill_1] = L"Skill_1";
+    m_stateToTag[AnimationState::Skill_2] = L"Skill_2";
+    m_stateToTag[AnimationState::Skill_3] = L"Skill_3";
+    m_stateToTag[AnimationState::Skill_4] = L"Skill_4";
 }
 
 ModelAnimator::~ModelAnimator()
@@ -37,81 +42,114 @@ void ModelAnimator::Update()
 
 void ModelAnimator::UpdateTweenData()
 {
-    // 애니메이션 상태 업데이트 (키 입력 처리 포함)
-    UpdateAnimationState();
-
-    // 애니메이션 시퀀스 업데이트 추가
-    //UpdateAnimationSequence();
+    // 시퀀스 모드에 따른 업데이트
+    if (m_isSequenceMode)
+    {
+        UpdateSequence();
+    }
+    else
+    {
+        UpdateAnimationState();
+    }
 
     // 스킬 쿨다운 처리
+    UpdateSkillCooldown();
+
+    // 트윈 데이터 업데이트
+    UpdateTweenFrames();
+}
+
+void ModelAnimator::UpdateSkillCooldown()
+{
     if (m_skillCooldown > 0.0f)
     {
         m_skillCooldown -= DT;
         if (m_skillCooldown <= 0.0f)
         {
             m_isSkillActive = false;
-            // 스킬 완료 후 Wait로 전환
-            TransitionToAnimation(AnimationState::Wait);
+            if (!m_isSequenceMode)
+            {
+                TransitionToAnimation(AnimationState::Wait);
+            }
         }
     }
+}
 
+void ModelAnimator::UpdateTweenFrames()
+{
     TweenDesc& desc = m_tweenDesc;
-
     desc.m_curr.m_sumTime += DT;
-    //현재 애니메이션 관련
 
+    // 현재 애니메이션 프레임 업데이트
+    UpdateCurrentAnimation();
+
+    // 다음 애니메이션 블렌딩 처리
+    if (desc.m_next.m_animIndex >= 0)
     {
-        // 인덱스 기반에서 태그 기반으로 변경
-        wstring currentTag = m_indexToTag[desc.m_curr.m_animIndex];
-        shared_ptr<ModelAnimation> currentAnim = m_model->GetAnimationByTag(currentTag);
-        if (currentAnim)
-        {
-            float timePerFrame = 1 / (currentAnim->m_frameRate * desc.m_curr.m_speed);
-            if (desc.m_curr.m_sumTime >= timePerFrame)
-            {
-                desc.m_curr.m_sumTime = 0;
-                desc.m_curr.m_currFrame = (desc.m_curr.m_currFrame + 1) % currentAnim->m_frameCount;
-                desc.m_curr.m_nextFrame = (desc.m_curr.m_currFrame + 1) % currentAnim->m_frameCount;
-            }
+        UpdateNextAnimation();
+    }
+}
 
-            desc.m_curr.m_ratio = (desc.m_curr.m_sumTime / timePerFrame);
-        }
+void ModelAnimator::UpdateCurrentAnimation()
+{
+    TweenDesc& desc = m_tweenDesc;
+    wstring currentTag = m_indexToTag[desc.m_curr.m_animIndex];
+    shared_ptr<ModelAnimation> currentAnim = m_model->GetAnimationByTag(currentTag);
+
+    if (!currentAnim) return;
+
+    float timePerFrame = 1.0f / (currentAnim->m_frameRate * desc.m_curr.m_speed);
+
+    if (desc.m_curr.m_sumTime >= timePerFrame)
+    {
+        desc.m_curr.m_sumTime = 0;
+
+        // 시퀀스 모드와 일반 모드 모두 정상적인 프레임 진행
+        desc.m_curr.m_currFrame = (desc.m_curr.m_currFrame + 1) % currentAnim->m_frameCount;
+        desc.m_curr.m_nextFrame = (desc.m_curr.m_currFrame + 1) % currentAnim->m_frameCount;
     }
 
-    //다음 애니메이션이 예약되어 있다면.
-    if (desc.m_next.m_animIndex >= 0) {
-        desc.m_tweenSumTime += DT;
-        desc.m_tweenRatio = desc.m_tweenSumTime / desc.m_tweenDuration;
+    desc.m_curr.m_ratio = desc.m_curr.m_sumTime / timePerFrame;
+}
 
-        if (desc.m_tweenRatio >= 1.f) {
-            //애니메이션 교체 끝.
-            desc.m_curr = desc.m_next;
-            desc.ClearNextAnim();
-        }
-        else {
-            //애니메이션 교체 중. 
-            wstring nextTag = m_indexToTag[desc.m_next.m_animIndex];
-            shared_ptr<ModelAnimation> nextAnim = m_model->GetAnimationByTag(nextTag);
-            desc.m_next.m_sumTime += DT;
+void ModelAnimator::UpdateNextAnimation()
+{
+    TweenDesc& desc = m_tweenDesc;
+    desc.m_tweenSumTime += DT;
+    desc.m_tweenRatio = desc.m_tweenSumTime / desc.m_tweenDuration;
 
-            float timePerFrame = 1.f / (nextAnim->m_frameRate * desc.m_next.m_speed);
-
-            if (desc.m_next.m_ratio >= 1.f)
-            {
-                desc.m_next.m_sumTime = 0;
-
-                desc.m_next.m_currFrame = (desc.m_next.m_currFrame + 1) % nextAnim->m_frameCount;
-                desc.m_next.m_nextFrame = (desc.m_next.m_currFrame + 1) % nextAnim->m_frameCount;
-            }
-            desc.m_next.m_ratio = desc.m_next.m_sumTime / timePerFrame;
-        }
+    if (desc.m_tweenRatio >= 1.0f)
+    {
+        // 블렌딩 완료
+        desc.m_curr = desc.m_next;
+        desc.ClearNextAnim();
+        return;
     }
+
+    // 블렌딩 중 - 다음 애니메이션 프레임 계산
+    wstring nextTag = m_indexToTag[desc.m_next.m_animIndex];
+    shared_ptr<ModelAnimation> nextAnim = m_model->GetAnimationByTag(nextTag);
+
+    if (!nextAnim) return;
+
+    desc.m_next.m_sumTime += DT;
+    float timePerFrame = 1.0f / (nextAnim->m_frameRate * desc.m_next.m_speed);
+
+    if (desc.m_next.m_ratio >= 1.0f)
+    {
+        desc.m_next.m_sumTime = 0;
+        desc.m_next.m_currFrame = (desc.m_next.m_currFrame + 1) % nextAnim->m_frameCount;
+        desc.m_next.m_nextFrame = (desc.m_next.m_currFrame + 1) % nextAnim->m_frameCount;
+    }
+
+    desc.m_next.m_ratio = desc.m_next.m_sumTime / timePerFrame;
 }
 
 void ModelAnimator::SetModel(shared_ptr<Model> _model)
 {
     m_model = _model;
 
+    // 첫 번째 머티리얼 설정
     const auto& materials = m_model->GetMaterials();
     for (auto& material : materials)
     {
@@ -120,7 +158,12 @@ void ModelAnimator::SetModel(shared_ptr<Model> _model)
         break;
     }
 
-    // 태그와 인덱스 매핑 생성
+    // 태그-인덱스 매핑 생성
+    CreateTagIndexMapping();
+}
+
+void ModelAnimator::CreateTagIndexMapping()
+{
     m_tagToIndex.clear();
     m_indexToTag.clear();
 
@@ -135,49 +178,55 @@ void ModelAnimator::SetModel(shared_ptr<Model> _model)
 
 void ModelAnimator::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech)
 {
-    if (m_model == nullptr)
+    if (!m_model || !Super::Render(_isShadowTech))
         return;
 
-    if (Super::Render(_isShadowTech) == false)
-        return;
-
-    //TODO(Animation)
-    //TransformMap은 뼈대 정보. 
-    if (m_texture == nullptr)
+    // 텍스처 생성 (최초 한 번)
+    if (!m_texture)
         CreateTexture();
 
-    //SRV를 통해 정보 전달. 
+    // 변환 맵 설정
     m_shader->GetSRV("TransformMap")->SetResource(m_srv.Get());
 
-    // Bones
-    BoneDesc boneDesc;
+    // 본 데이터 설정
+    SetupBoneData();
 
-    //본 갯수 새고, 그 갯수만큼 만들어주기. 
-    //그리고, 그 정보에 대해 GPU에 밀어넣어주기. 
+    // 메시 렌더링
+    RenderMeshes(_buffer, _isShadowTech);
+}
+
+void ModelAnimator::SetupBoneData()
+{
+    BoneDesc boneDesc;
     const uint32 boneCount = m_model->GetBoneCount();
+
     for (uint32 i = 0; i < boneCount; ++i)
     {
         shared_ptr<ModelBone> bone = m_model->GetBoneByIndex(i);
         boneDesc.transforms[i] = bone->m_transform;
     }
-    m_shader->PushBoneData(boneDesc);
 
-    //Mesh마다 출력. 
+    m_shader->PushBoneData(boneDesc);
+}
+
+void ModelAnimator::RenderMeshes(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech)
+{
     const auto& meshes = m_model->GetMeshes();
+
     for (auto& mesh : meshes)
     {
         if (mesh->m_material)
             mesh->m_material->Update();
 
-        // BoneIndex
-        //그게 몇 번째 Bone인지 넣어주기. 
         m_shader->GetScalar("BoneIndex")->SetInt(mesh->m_boneIndex);
 
         mesh->m_vertexBuffer->PushData();
         mesh->m_indexBuffer->PushData();
-
         _buffer->PushData();
-        m_shader->DrawIndexedInstanced(GET_TECH(_isShadowTech), m_pass, mesh->m_indexBuffer->GetCount(), _buffer->GetCount());
+
+        m_shader->DrawIndexedInstanced(GET_TECH(_isShadowTech), m_pass,
+            mesh->m_indexBuffer->GetCount(),
+            _buffer->GetCount());
     }
 }
 
@@ -191,10 +240,8 @@ void ModelAnimator::CreateTexture()
     if (m_model->GetAnimationCount() == 0)
         return;
 
-    uint32 actualBoneCount = m_model->GetBoneCount();
     uint32 maxFrameCount = 0;
 
-    // 태그 기반으로 변경
     for (const auto& pair : m_model->GetAnimations())
     {
         maxFrameCount = max(maxFrameCount, pair.second->m_frameCount);
@@ -202,171 +249,102 @@ void ModelAnimator::CreateTexture()
     }
 
     // Create Texture
+    D3D11_TEXTURE2D_DESC desc;
+    ZeroMemory(&desc, sizeof(D3D11_TEXTURE2D_DESC));
+    desc.Width = MAX_BONE_TRANSFORMS * 4;
+    desc.Height = maxFrameCount;
+    desc.ArraySize = m_model->GetAnimationCount();
+    desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+    desc.Usage = D3D11_USAGE_IMMUTABLE;
+    desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    desc.MipLevels = 1;
+    desc.SampleDesc.Count = 1;
+
+    const uint32 dataSize = MAX_BONE_TRANSFORMS * sizeof(Matrix);
+    const uint32 pageSize = dataSize * maxFrameCount;
+
+    void* mallocPtr = ::malloc(pageSize * m_model->GetAnimationCount());
+
+    uint32 animIndex = 0;
+    for (const auto& pair : m_model->GetAnimations())
     {
-        D3D11_TEXTURE2D_DESC desc;
-        ZeroMemory(&desc, sizeof(D3D11_TEXTURE2D_DESC));
-        desc.Width = MAX_BONE_TRANSFORMS * 4;
-        desc.Height = maxFrameCount;
-        desc.ArraySize = m_model->GetAnimationCount();
-        desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT; // 16바이트(최댓값)
-        desc.Usage = D3D11_USAGE_IMMUTABLE;
-        desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-        desc.MipLevels = 1;
-        desc.SampleDesc.Count = 1;
+        uint32 startOffset = animIndex * pageSize;
+        BYTE* pageStartPtr = reinterpret_cast<BYTE*>(mallocPtr) + startOffset;
 
-        const uint32 dataSize = MAX_BONE_TRANSFORMS * sizeof(Matrix);
-        const uint32 pageSize = dataSize * maxFrameCount;
-
-        void* mallocPtr = ::malloc(pageSize * m_model->GetAnimationCount());
-
-        // 파편화된 데이터를 조립한다.
-        uint32 animIndex = 0;
-        for (const auto& pair : m_model->GetAnimations())
+        for (uint32 f = 0; f < maxFrameCount; f++)
         {
-            uint32 startOffset = animIndex * pageSize;
-            BYTE* pageStartPtr = reinterpret_cast<BYTE*>(mallocPtr) + startOffset;
-
-            for (uint32 f = 0; f < maxFrameCount; f++)
-            {
-                void* ptr = pageStartPtr + dataSize * f;
-                ::memcpy(ptr, m_animTransform[pair.first].transforms[f].data(), dataSize);
-            }
-            animIndex++;
+            void* ptr = pageStartPtr + dataSize * f;
+            ::memcpy(ptr, m_animTransform[pair.first].transforms[f].data(), dataSize);
         }
-
-        // 리소스 만들기
-        vector<D3D11_SUBRESOURCE_DATA> subResources(m_model->GetAnimationCount());
-
-        for (uint32 c = 0; c < m_model->GetAnimationCount(); c++)
-        {
-            void* ptr = (BYTE*)mallocPtr + c * pageSize;
-            subResources[c].pSysMem = ptr;
-            subResources[c].SysMemPitch = dataSize;
-            subResources[c].SysMemSlicePitch = pageSize;
-        }
-
-        HRESULT hr = DEVICE->CreateTexture2D(&desc, subResources.data(), m_texture.GetAddressOf());
-        CHECK(hr);
-
-        ::free(mallocPtr);
+        animIndex++;
     }
+
+    vector<D3D11_SUBRESOURCE_DATA> subResources(m_model->GetAnimationCount());
+
+    for (uint32 c = 0; c < m_model->GetAnimationCount(); c++)
+    {
+        void* ptr = (BYTE*)mallocPtr + c * pageSize;
+        subResources[c].pSysMem = ptr;
+        subResources[c].SysMemPitch = dataSize;
+        subResources[c].SysMemSlicePitch = pageSize;
+    }
+
+    HRESULT hr = DEVICE->CreateTexture2D(&desc, subResources.data(), m_texture.GetAddressOf());
+    CHECK(hr);
+
+    ::free(mallocPtr);
 
     // Create SRV
-    {
-        D3D11_SHADER_RESOURCE_VIEW_DESC desc;
-        ZeroMemory(&desc, sizeof(desc));
-        desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-        desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
-        desc.Texture2DArray.MipLevels = 1;
-        desc.Texture2DArray.ArraySize = m_model->GetAnimationCount();
+    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+    ZeroMemory(&srvDesc, sizeof(srvDesc));
+    srvDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+    srvDesc.Texture2DArray.MipLevels = 1;
+    srvDesc.Texture2DArray.ArraySize = m_model->GetAnimationCount();
 
-        HRESULT hr = DEVICE->CreateShaderResourceView(m_texture.Get(), &desc, m_srv.GetAddressOf());
-        CHECK(hr);
-    }
+    hr = DEVICE->CreateShaderResourceView(m_texture.Get(), &srvDesc, m_srv.GetAddressOf());
+    CHECK(hr);
 }
 
 void ModelAnimator::CreateAnimationTransform(const wstring& _tag)
 {
-    //캐싱 용도. 
     vector<Matrix> tempAnimBoneTransforms(MAX_BONE_TRANSFORMS, Matrix::Identity);
-
     shared_ptr<ModelAnimation> animation = m_model->GetAnimationByTag(_tag);
-    if (!animation)
-        return;
 
-    for (uint32 frame = 0; frame < animation->m_frameCount; ++frame) {
-        for (uint32 bone = 0; bone < m_model->GetBoneCount(); ++bone) {
+    if (!animation) return;
+
+    for (uint32 frame = 0; frame < animation->m_frameCount; ++frame)
+    {
+        for (uint32 bone = 0; bone < m_model->GetBoneCount(); ++bone)
+        {
             shared_ptr<ModelBone> tbone = m_model->GetBoneByIndex(bone);
-            Matrix matAnimation;
+            Matrix matAnimation = Matrix::Identity;
 
             shared_ptr<ModelKeyframe> tframe = animation->GetKeyframe(tbone->m_name);
-            if (tframe != nullptr) {
+            if (tframe != nullptr)
+            {
                 ModelKeyframeData& data = tframe->m_transforms[frame];
 
-                //특정 본의 특정 프레임의 SRT구하기. 
-                Matrix S, R, T;
-                S = Matrix::CreateScale(data.m_scale.x, data.m_scale.y, data.m_scale.z);
-                R = Matrix::CreateFromQuaternion(data.m_rotation);
-                T = Matrix::CreateTranslation(data.m_translation.x, data.m_translation.y, data.m_translation.z);
+                Matrix S = Matrix::CreateScale(data.m_scale.x, data.m_scale.y, data.m_scale.z);
+                Matrix R = Matrix::CreateFromQuaternion(data.m_rotation);
+                Matrix T = Matrix::CreateTranslation(data.m_translation.x, data.m_translation.y, data.m_translation.z);
 
-                //이게 어떤 의미를 가지고 있는가? 
-                //상위 부모로의 Relative임. 
                 matAnimation = S * R * T;
             }
-            else {
-                matAnimation = Matrix::Identity;
-            }
 
-            // T포즈와 관련된 것. 
-            // 현재 -> Global을 m_transform에 넣어놓았음.
-            Matrix toRootMatrix = tbone->m_transform;
-            //자신의 관절을 기준으로 한 좌표계로 바꾸는 것. 
-            Matrix invGlobal = toRootMatrix.Invert();
-
-            int32 parentIndex = tbone->m_parentIndex;
-
-            //Anim과 관련된 것. 
             Matrix matParent = Matrix::Identity;
-            if (parentIndex >= 0)
-                matParent = tempAnimBoneTransforms[parentIndex];
-            tempAnimBoneTransforms[bone] = matAnimation * matParent;
+            if (tbone->m_parentIndex >= 0)
+                matParent = tempAnimBoneTransforms[tbone->m_parentIndex];
 
-            //수정사항
+            tempAnimBoneTransforms[bone] = matAnimation * matParent;
             m_animTransform[_tag].transforms[frame][bone] = tbone->m_offsetMatrix * tempAnimBoneTransforms[bone];
         }
     }
 }
 
-// 기존 인덱스 기반 메서드 주석처리
-//void ModelAnimator::CreateAnimationTransform(uint32 _index)
-//{
-//    //캐싱 용도. 
-//    vector<Matrix> tempAnimBoneTransforms(MAX_BONE_TRANSFORMS, Matrix::Identity);
-//
-//    shared_ptr<ModelAnimation> animation = m_model->GetAnimationByIndex(_index);
-//
-//    for (uint32 frame = 0; frame < animation->m_frameCount; ++frame) {
-//        for (uint32 bone = 0; bone < m_model->GetBoneCount(); ++bone) {
-//            shared_ptr<ModelBone> tbone = m_model->GetBoneByIndex(bone);
-//            Matrix matAnimation;
-//
-//            shared_ptr<ModelKeyframe> tframe = animation->GetKeyframe(tbone->m_name);
-//            if (tframe != nullptr) {
-//                ModelKeyframeData& data = tframe->m_transforms[frame];
-//
-//                //특정 본의 특정 프레임의 SRT구하기. 
-//                Matrix S, R, T;
-//                S = Matrix::CreateScale(data.m_scale.x, data.m_scale.y, data.m_scale.z);
-//                R = Matrix::CreateFromQuaternion(data.m_rotation);
-//                T = Matrix::CreateTranslation(data.m_translation.x, data.m_translation.y, data.m_translation.z);
-//
-//                //이게 어떤 의미를 가지고 있는가? 
-//                //상위 부모로의 Relative임. 
-//                matAnimation = S * R * T;
-//            }
-//            else {
-//                matAnimation = Matrix::Identity;
-//            }
-//
-//            // T포즈와 관련된 것. 
-//            // 현재 -> Global을 m_transform에 넣어놓았음.
-//            Matrix toRootMatrix = tbone->m_transform;
-//            //자신의 관절을 기준으로 한 좌표계로 바꾸는 것. 
-//            Matrix invGlobal = toRootMatrix.Invert();
-//
-//            int32 parentIndex = tbone->m_parentIndex;
-//
-//            //Anim과 관련된 것. 
-//            Matrix matParent = Matrix::Identity;
-//            if (parentIndex >= 0)
-//                matParent = tempAnimBoneTransforms[parentIndex];
-//            tempAnimBoneTransforms[bone] = matAnimation * matParent;
-//
-//            //수정사항
-//            m_animTransform[_index].transforms[frame][bone] = tbone->m_offsetMatrix * tempAnimBoneTransforms[bone];
-//        }
-//    }
-//}
+// ============================================================================
+// 애니메이션 제어 메서드들
+// ============================================================================
 
 shared_ptr<Shader> ModelAnimator::GetShader()
 {
@@ -378,27 +356,33 @@ void ModelAnimator::SetAnimation(uint32 _animIndex, bool _immediate)
     if (_animIndex >= m_model->GetAnimationCount())
         return;
 
-    if (_immediate) {
-        // 즉시 애니메이션 변경
-        m_tweenDesc.m_curr.m_animIndex = _animIndex;
-        m_tweenDesc.m_curr.m_currFrame = 0;
-        m_tweenDesc.m_curr.m_nextFrame = 1;
-        m_tweenDesc.m_curr.m_sumTime = 0.f;
-        m_tweenDesc.m_curr.m_ratio = 0.f;
-        m_tweenDesc.ClearNextAnim();
+    if (_immediate)
+    {
+        SetAnimationImmediate(_animIndex);
     }
-    else {
+    else
+    {
         SetNextAnimation(_animIndex);
     }
+}
+
+void ModelAnimator::SetAnimationImmediate(uint32 _animIndex)
+{
+    m_tweenDesc.m_curr.m_animIndex = _animIndex;
+    m_tweenDesc.m_curr.m_currFrame = 0;
+    m_tweenDesc.m_curr.m_nextFrame = 1;
+    m_tweenDesc.m_curr.m_sumTime = 0.0f;
+    m_tweenDesc.m_curr.m_ratio = 0.0f;
+    m_tweenDesc.ClearNextAnim();
 }
 
 void ModelAnimator::SetAnimationByTag(const wstring& _tag, bool _immediate)
 {
     auto it = m_tagToIndex.find(_tag);
-    if (it == m_tagToIndex.end())
-        return;
-
-    SetAnimation(it->second, _immediate);
+    if (it != m_tagToIndex.end())
+    {
+        SetAnimation(it->second, _immediate);
+    }
 }
 
 void ModelAnimator::SetNextAnimation(uint32 _animIndex, bool _tweenDuration)
@@ -409,20 +393,20 @@ void ModelAnimator::SetNextAnimation(uint32 _animIndex, bool _tweenDuration)
     m_tweenDesc.m_next.m_animIndex = _animIndex;
     m_tweenDesc.m_next.m_currFrame = 0;
     m_tweenDesc.m_next.m_nextFrame = 1;
-    m_tweenDesc.m_next.m_sumTime = 0.f;
-    m_tweenDesc.m_next.m_ratio = 0.f;
+    m_tweenDesc.m_next.m_sumTime = 0.0f;
+    m_tweenDesc.m_next.m_ratio = 0.0f;
     m_tweenDesc.m_tweenDuration = _tweenDuration;
-    m_tweenDesc.m_tweenSumTime = 0.f;
-    m_tweenDesc.m_tweenRatio = 0.f;
+    m_tweenDesc.m_tweenSumTime = 0.0f;
+    m_tweenDesc.m_tweenRatio = 0.0f;
 }
 
 void ModelAnimator::SetNextAnimationByTag(const wstring& _tag, bool _tweenDuration)
 {
     auto it = m_tagToIndex.find(_tag);
-    if (it == m_tagToIndex.end())
-        return;
-
-    SetNextAnimation(it->second, _tweenDuration);
+    if (it != m_tagToIndex.end())
+    {
+        SetNextAnimation(it->second, _tweenDuration);
+    }
 }
 
 void ModelAnimator::SetAnimationSpeed(float _speed)
@@ -431,6 +415,241 @@ void ModelAnimator::SetAnimationSpeed(float _speed)
     if (m_tweenDesc.m_next.m_animIndex >= 0)
         m_tweenDesc.m_next.m_speed = _speed;
 }
+
+// ============================================================================
+// 애니메이션 상태 관리
+// ============================================================================
+
+void ModelAnimator::UpdateAnimationState()
+{
+    if (m_isSequenceMode || m_isSkillActive)
+        return;
+
+    ProcessInputs();
+    UpdateMovementState();
+}
+
+void ModelAnimator::ProcessInputs()
+{
+    // 스킬 키 입력 처리
+    if (INPUT->GetButtonDown(KEY_TYPE::Q))
+    {
+        PlaySequence(L"Skill_1_Sequence");
+        m_currentState = AnimationState::Skill_1;
+        return;
+    }
+    if (INPUT->GetButtonDown(KEY_TYPE::W))
+    {
+        PlaySequence(L"Skill_2_Sequence");
+        m_currentState = AnimationState::Skill_2;
+        return;
+    }
+    if (INPUT->GetButtonDown(KEY_TYPE::E))
+    {
+        PlaySequence(L"Skill_3_Sequence");
+        m_currentState = AnimationState::Skill_3;
+        return;
+    }
+    if (INPUT->GetButtonDown(KEY_TYPE::R))
+    {
+        PlaySequence(L"Skill_4_Sequence");
+        m_currentState = AnimationState::Skill_4;
+        return;
+    }
+    if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON))
+    {
+        PlaySequence(L"BaseAttack_Sequence");
+        return;
+    }
+}
+
+void ModelAnimator::UpdateMovementState()
+{
+    bool isMoving = INPUT->GetButton(KEY_TYPE::UP) ||
+        INPUT->GetButton(KEY_TYPE::DOWN) ||
+        INPUT->GetButton(KEY_TYPE::LEFT) ||
+        INPUT->GetButton(KEY_TYPE::RIGHT);
+
+    if (isMoving && !m_wasMoving)
+    {
+        TransitionToAnimation(AnimationState::Run);
+    }
+    else if (!isMoving && m_wasMoving)
+    {
+        TransitionToAnimation(AnimationState::Wait);
+    }
+
+    m_wasMoving = isMoving;
+}
+
+void ModelAnimator::TransitionToAnimation(AnimationState newState)
+{
+    if (m_currentState == newState || !CanTransitionTo(newState))
+        return;
+
+    m_currentState = newState;
+    wstring animTag = m_stateToTag[newState];
+    SetAnimationByTag(animTag, false);
+}
+
+bool ModelAnimator::CanTransitionTo(AnimationState newState) const
+{
+    if (m_isSequenceMode)
+        return false;
+
+    if (m_isSkillActive && newState != AnimationState::Skill_1 &&
+        newState != AnimationState::Skill_2 && newState != AnimationState::Skill_3 &&
+        newState != AnimationState::Skill_4)
+        return false;
+
+    return true;
+}
+
+// ============================================================================
+// 애니메이션 시퀀스 관리
+// ============================================================================
+
+void ModelAnimator::CreateSequence(const wstring& name, const vector<wstring>& animTags, bool loop)
+{
+    CreateSequence(name, animTags, vector<float>(), loop);
+}
+
+void ModelAnimator::CreateSequence(const wstring& name, const vector<wstring>& animTags,
+    const vector<float>& durations, bool loop)
+{
+    AnimationSequence sequence;
+    sequence.name = name;
+    sequence.animationTags = animTags;
+    sequence.animationDurations = durations;
+    sequence.isLoop = loop;
+    sequence.currentIndex = 0;
+    sequence.currentTime = 0.0f;
+    sequence.isPlaying = false;
+
+    m_sequences[name] = sequence;
+}
+
+void ModelAnimator::PlaySequence(const wstring& name)
+{
+    auto it = m_sequences.find(name);
+    if (it == m_sequences.end())
+        return;
+
+    StopSequence();
+
+    m_currentSequence = &it->second;
+    m_currentSequence->isPlaying = true;
+    m_currentSequence->currentIndex = 0;
+    m_currentSequence->currentTime = 0.0f;
+    m_isSequenceMode = true;
+
+    if (!m_currentSequence->animationTags.empty())
+    {
+        SetAnimationByTag(m_currentSequence->animationTags[0], true);
+    }
+}
+
+void ModelAnimator::StopSequence()
+{
+    if (m_currentSequence)
+    {
+        m_currentSequence->isPlaying = false;
+        m_currentSequence->currentIndex = 0;
+        m_currentSequence->currentTime = 0.0f;
+    }
+
+    m_currentSequence = nullptr;
+    m_isSequenceMode = false;
+    m_tweenDesc.ClearNextAnim();
+
+    // Wait 애니메이션으로 리셋
+    ResetToWaitAnimation();
+}
+
+void ModelAnimator::ResetToWaitAnimation()
+{
+    auto waitIt = m_tagToIndex.find(L"Wait");
+    if (waitIt != m_tagToIndex.end())
+    {
+        m_tweenDesc.m_curr.m_animIndex = waitIt->second;
+        m_tweenDesc.m_curr.m_currFrame = 0;
+        m_tweenDesc.m_curr.m_nextFrame = 1;
+        m_tweenDesc.m_curr.m_sumTime = 0.0f;
+        m_tweenDesc.m_curr.m_ratio = 0.0f;
+    }
+}
+
+void ModelAnimator::UpdateSequence()
+{
+    if (!m_isSequenceMode || !m_currentSequence || !m_currentSequence->isPlaying)
+        return;
+
+    if (m_currentSequence->animationTags.empty())
+        return;
+
+    float currentAnimDuration = GetCurrentSequenceDuration();
+    m_currentSequence->currentTime += DT;
+
+    if (m_currentSequence->currentTime >= currentAnimDuration)
+    {
+        TransitionToNextInSequence();
+    }
+}
+
+float ModelAnimator::GetCurrentSequenceDuration()
+{
+    float currentAnimDuration = m_currentSequence->GetCurrentAnimationDuration();
+
+    if (currentAnimDuration < 0.0f)
+    {
+        const wstring& currentAnimTag = m_currentSequence->animationTags[m_currentSequence->currentIndex];
+        currentAnimDuration = GetAnimationDuration(currentAnimTag);
+    }
+
+    return currentAnimDuration;
+}
+
+void ModelAnimator::TransitionToNextInSequence()
+{
+    if (!m_currentSequence)
+        return;
+
+    uint32 nextIndex = m_currentSequence->currentIndex + 1;
+
+    if (nextIndex >= m_currentSequence->animationTags.size())
+    {
+        if (m_currentSequence->isLoop)
+        {
+            nextIndex = 0;
+        }
+        else
+        {
+            CompleteSequence();
+            return;
+        }
+    }
+
+    m_currentSequence->currentIndex = nextIndex;
+    m_currentSequence->currentTime = 0.0f;
+
+    const wstring& nextAnimTag = m_currentSequence->animationTags[nextIndex];
+    SetAnimationByTag(nextAnimTag, true);
+}
+
+void ModelAnimator::CompleteSequence()
+{
+    if (m_currentSequence->onComplete)
+    {
+        m_currentSequence->onComplete();
+    }
+
+    StopSequence();
+    TransitionToAnimation(AnimationState::Wait);
+}
+
+// ============================================================================
+// 유틸리티 메서드들
+// ============================================================================
 
 uint32 ModelAnimator::GetCurrentAnimationIndex() const
 {
@@ -456,90 +675,74 @@ bool ModelAnimator::IsAnimationFinished() const
 
     wstring currentTag = m_indexToTag[m_tweenDesc.m_curr.m_animIndex];
     shared_ptr<ModelAnimation> currentAnim = m_model->GetAnimationByTag(currentTag);
+
     if (currentAnim)
     {
         return m_tweenDesc.m_curr.m_currFrame >= currentAnim->m_frameCount - 1;
     }
+
     return true;
 }
 
 uint32 ModelAnimator::GetAnimationIndexByTag(const wstring& _tag)
 {
     auto it = m_tagToIndex.find(_tag);
-    if (it != m_tagToIndex.end())
-        return it->second;
-    return 0;
+    return (it != m_tagToIndex.end()) ? it->second : 0;
 }
 
-void ModelAnimator::UpdateAnimationState()
+float ModelAnimator::GetAnimationDuration(const wstring& animTag) const
 {
-    // 스킬 실행 중이면 다른 입력 무시
-    if (m_isSkillActive)
-        return;
+    shared_ptr<ModelAnimation> anim = m_model->GetAnimationByTag(animTag);
+    if (!anim)
+        return 0.0f;
 
-    // 방향키 입력 확인
-    bool isMoving = INPUT->GetButton(KEY_TYPE::UP) ||
-        INPUT->GetButton(KEY_TYPE::DOWN) ||
-        INPUT->GetButton(KEY_TYPE::LEFT) ||
-        INPUT->GetButton(KEY_TYPE::RIGHT);
-
-    // Q키 입력 확인 (Wait나 Run 상태에서만)
-    if (INPUT->GetButtonDown(KEY_TYPE::Q) &&
-        (m_currentState == AnimationState::Wait || m_currentState == AnimationState::Run))
-    {
-        shared_ptr<ModelAnimation> temp = m_model->GetAnimationByTag(m_stateToTag[AnimationState::Skill]);
-
-        uint32 frameCount = temp->m_frameCount;
-        float frameRate = temp->m_frameRate;
-
-        m_isSkillActive = true;
-
-        m_skillCooldown = frameCount / frameRate; // 스킬 지속시간동안 쿨타임
-        TransitionToAnimation(AnimationState::Skill);
-
-        //PlayAnimationSequence(L"CompleteSkill", false);
-        return;
-    }
-
-    // 이동 상태 변화 처리
-    if (isMoving && !m_wasMoving)
-    {
-        // 방향키를 눌렀을 때 -> Run으로 전환
-        TransitionToAnimation(AnimationState::Run);
-    }
-    else if (!isMoving && m_wasMoving)
-    {
-        // 방향키를 뗐을 때 -> Wait로 전환
-        TransitionToAnimation(AnimationState::Wait);
-    }
-
-    // 이전 상태 저장
-    m_wasMoving = isMoving;
+    return static_cast<float>(anim->m_frameCount) / anim->m_frameRate;
 }
 
-void ModelAnimator::TransitionToAnimation(AnimationState newState)
+void ModelAnimator::SetSequenceCompleteCallback(const wstring& name, function<void()> callback)
 {
-    if (m_currentState == newState || !CanTransitionTo(newState))
-        return;
-
-    m_currentState = newState;
-    wstring animTag = m_stateToTag[newState];
-
-    // 태그 기반으로 애니메이션 변경
-    SetAnimationByTag(animTag, false);
-
-    // 상태별 속도 설정
-    if (m_animationSpeeds.find(newState) != m_animationSpeeds.end())
+    auto it = m_sequences.find(name);
+    if (it != m_sequences.end())
     {
-        SetAnimationSpeed(m_animationSpeeds[newState]);
+        it->second.onComplete = callback;
     }
 }
 
-bool ModelAnimator::CanTransitionTo(AnimationState newState) const
+void ModelAnimator::SetSequenceAnimationDuration(const wstring& sequenceName, uint32 animIndex, float duration)
 {
-    // 스킬 실행 중에는 다른 상태로 전환 불가
-    if (m_isSkillActive && newState != AnimationState::Skill)
-        return false;
+    auto it = m_sequences.find(sequenceName);
+    if (it == m_sequences.end())
+        return;
 
-    return true;
+    AnimationSequence& sequence = it->second;
+
+    if (sequence.animationDurations.size() <= animIndex)
+    {
+        sequence.animationDurations.resize(animIndex + 1, -1.0f);
+    }
+
+    sequence.animationDurations[animIndex] = duration;
+}
+
+void ModelAnimator::SetSequenceAnimationDurations(const wstring& sequenceName, const vector<float>& durations)
+{
+    auto it = m_sequences.find(sequenceName);
+    if (it != m_sequences.end())
+    {
+        it->second.animationDurations = durations;
+    }
+}
+
+float ModelAnimator::GetCorrectedFrameRate(const wstring& animTag, float speed)
+{
+    shared_ptr<ModelAnimation> anim = m_model->GetAnimationByTag(animTag);
+    if (!anim)
+        return 25.0f;
+
+    return anim->m_frameRate * speed;
+}
+
+float ModelAnimator::GetTimePerFrame(const wstring& animTag, float speed)
+{
+    return 1.0f / GetCorrectedFrameRate(animTag, speed);
 }

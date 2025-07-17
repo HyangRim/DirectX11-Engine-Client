@@ -78,13 +78,33 @@ void UITestDemo::Init()
 		m1->ReadModel(L"Nicky/Nicky");
 		m1->ReadMaterial(L"Nicky/Nicky");
 
-		// 태그 기반으로 애니메이션 로드
-		m1->ReadAnimation(L"Wait", L"Nicky/Nicky_Glove_Wait");
-
+		//달리기
 		m1->ReadAnimation(L"Run", L"Nicky/Nicky_Glove_Run");
 
+		//대기
+		m1->ReadAnimation(L"Wait", L"Nicky/Nicky_Glove_Wait");
 
-		m1->ReadAnimation(L"Skill", L"Nicky/Nicky_Glove_Skill_03");
+		//평타
+		m1->ReadAnimation(L"BaseAttack_01", L"Nicky/Nicky_Glove_Atk_01");
+		m1->ReadAnimation(L"BaseAttack_02", L"Nicky/Nicky_Glove_Atk_02");
+
+		//Q
+		m1->ReadAnimation(L"Skill_01_Attack", L"Nicky/Nicky_Glove_Skill_01_Attack");
+		m1->ReadAnimation(L"Skill_01_Rush", L"Nicky/Nicky_Glove_Skill_01_Rush");
+		m1->ReadAnimation(L"Skill_01_End", L"Nicky/Nicky_Glove_Skill_01_End");
+
+		//W
+		m1->ReadAnimation(L"Skill_02_Guard", L"Nicky/Nicky_Glove_Skill_02_Guard");
+		m1->ReadAnimation(L"Skill_02_Loop", L"Nicky/Nicky_Glove_Skill_02_Loop");
+	
+		//E
+		m1->ReadAnimation(L"Skill_03", L"Nicky/Nicky_Glove_Skill_03");
+
+		//R
+		m1->ReadAnimation(L"Skill_04_Attack", L"Nicky/Nicky_Glove_Skill_04_Attack");
+		m1->ReadAnimation(L"Skill_04_Ready", L"Nicky/Nicky_Glove_Skill_04_Ready");
+		m1->ReadAnimation(L"Skill_04_Start", L"Nicky/Nicky_Glove_Skill_04_Start");
+
 		
 
 		for (int32 i = 0; i < 1; i++)
@@ -94,14 +114,6 @@ void UITestDemo::Init()
 			nicky->SetName(to_wstring(i));
 
 			nicky->GetTransform()->SetPosition(Vec3(0, 0, 0));
-			
-			//obj->GetTransform()->SetPosition(Vec3(
-			//	(rand() % 1000) - 500,  // -500 ~ 499
-			//	0,
-			//	(rand() % 1000) - 500   // -500 ~ 499
-			//));
-
-
 			nicky->GetTransform()->SetScale(Vec3(1.f));
 
 			nicky->AddComponent(make_shared<SphereCollider>());
@@ -115,15 +127,89 @@ void UITestDemo::Init()
 				nicky->GetModelAnimator()->SetPass(2);
 			}
 
-			
-		
 			/*obj->AddComponent(make_shared<ModelRenderer>(renderShader));
 			{
 				obj->GetModelRenderer()->SetModel(m1);
 				obj->GetModelRenderer()->SetPass(1);
 			}*/
 
+			auto animator = nicky->GetModelAnimator();
+
+			// 평타 시퀀스 (BaseAttack_01 -> BaseAttack_02)
+			vector<wstring> baseAttackAnims = { L"BaseAttack_02", L"BaseAttack_01" };
+			vector<float> baseAttackDurations = { 0.8f, 1.2f }; 
+			animator->CreateSequence(L"BaseAttack_Sequence", baseAttackAnims, baseAttackDurations, false);
+
+			// Q 스킬 시퀀스 (Skill_01_Attack -> Skill_01_Rush -> Skill_01_End)
+			vector<wstring> skill1Anims = { L"Skill_01_Attack", L"Skill_01_Rush", L"Skill_01_End" };
+			vector<float> skill1Durations = { 0.5f, 1.0f, 0.7f }; 
+			animator->CreateSequence(L"Skill_1_Sequence", skill1Anims, skill1Durations, false);
+
+			// W 스킬 시퀀스 (Skill_02_Guard -> Skill_02_Loop)
+			vector<wstring> skill2Anims = { L"Skill_02_Guard", L"Skill_02_Loop" };
+			animator->CreateSequence(L"Skill_2_Sequence", skill2Anims, false);
+
+			// E 스킬 시퀀스 (Skill_03 단일)
+			vector<wstring> skill3Anims = { L"Skill_03" };
+			animator->CreateSequence(L"Skill_3_Sequence", skill3Anims, false);
+
+			// R 스킬 시퀀스 (Skill_04_Ready -> Skill_04_Start -> Skill_04_Attack)
+			vector<wstring> skill4Anims = { L"Skill_04_Ready", L"Skill_04_Start", L"Skill_01_Rush", L"Skill_04_Attack"};
+			vector<float> skill4Durations; 
+			skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_04_Ready"));  
+			skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_04_Start"));  
+			skill4Durations.push_back(3.f); 
+			skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_04_Attack"));  
+			animator->CreateSequence(L"Skill_4_Sequence", skill4Anims, skill4Durations, false);
 			
+			// 특정 애니메이션의 실제 재생시간 확인
+			float attack02Duration = animator->GetAnimationDuration(L"Skill_01_Rush");
+			cout << "BaseAttack_02 실제 재생시간: " << attack02Duration << "초" << endl;
+
+			// 시퀀스 완료 콜백 설정
+			animator->SetSequenceCompleteCallback(L"BaseAttack_Sequence", [this]() {
+				std::wcout << L"평타 시퀀스 완료!" << std::endl;
+				if (nicky && nicky->GetModelAnimator())
+				{
+					nicky->GetModelAnimator()->SetAnimationByTag(L"Wait", false);
+				}
+				});
+
+			animator->SetSequenceCompleteCallback(L"Skill_1_Sequence", [this]() {
+				std::wcout << L"Q 스킬 시퀀스 완료!" << std::endl;
+				if (nicky && nicky->GetModelAnimator())
+				{
+					nicky->GetModelAnimator()->SetAnimationByTag(L"Wait", false);
+				}
+				});
+
+			animator->SetSequenceCompleteCallback(L"Skill_2_Sequence", [this]() {
+				std::wcout << L"W 스킬 시퀀스 완료!" << std::endl;
+				if (nicky && nicky->GetModelAnimator())
+				{
+					nicky->GetModelAnimator()->SetAnimationByTag(L"Wait", false);
+				}
+				});
+
+			animator->SetSequenceCompleteCallback(L"Skill_3_Sequence", [this]() {
+				std::wcout << L"E 스킬 시퀀스 완료!" << std::endl;
+				if (nicky && nicky->GetModelAnimator())
+				{
+					nicky->GetModelAnimator()->SetAnimationByTag(L"Wait", false);
+				}
+				});
+
+			animator->SetSequenceCompleteCallback(L"Skill_4_Sequence", [this]() {
+				std::wcout << L"R 스킬 시퀀스 완료!" << std::endl;
+				if (nicky && nicky->GetModelAnimator())
+				{
+					nicky->GetModelAnimator()->SetAnimationByTag(L"Wait", false);
+				}
+				});
+
+			// 상태별 태그 매핑 설정
+			animator->m_stateToTag[AnimationState::Wait] = L"Wait";
+			animator->m_stateToTag[AnimationState::Run] = L"Run"; // Run 애니메이션이 
 
 			CURSCENE->Add(nicky);
 		}
@@ -326,6 +412,8 @@ void UITestDemo::Update()
 		//CURSCENE->GetObjectManager()->MarkUIObjectForDestroyWithChildren(panelObj);
 		CURSCENE->Remove(nicky);
 	}
+
+	
 }
 
 void UITestDemo::Render()

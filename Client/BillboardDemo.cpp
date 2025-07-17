@@ -253,11 +253,14 @@ void BillboardDemo::Init()
 		m1->ReadMaterial(L"Bianca2/Bianca");
 		m1->ReadAnimation(L"Wait", L"Bianca2/Bianca_wait");
 		m1->ReadAnimation(L"Run",L"Bianca2/Bianca_run");
-		m1->ReadAnimation(L"BaseAttack",L"Bianca2/Bianca_atk");
+		m1->ReadAnimation(L"Skill_R_1",L"Bianca2/Bianca_skill4");
+		m1->ReadAnimation(L"Skill_R_2", L"Bianca2/Bianca_skill4-2");
+
+
 		//m1->ReadAnimation(L"Bianca2/Bianca_reststart");
 		//m1->ReadAnimation(L"Bianca2/Bianca_restloop");
 		//m1->ReadAnimation(L"Bianca2/Bianca_restend");
-		m1->ReadAnimation(L"Skill", L"Bianca2/Bianca_dance");
+		//m1->ReadAnimation(L"Skill", L"Bianca2/Bianca_dance");
 
 		for (int32 i = 0; i < 1; i++)
 		{
@@ -274,6 +277,15 @@ void BillboardDemo::Init()
 			obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->AddComponent(make_shared<FogOfWar>());
 			obj->AddComponent(make_shared<BiancaTest>());
+			auto animator = obj->GetModelAnimator();
+			// R ½ºÅ³ ½ÃÄö½º (Skill_04_Ready -> Skill_04_Start -> Skill_04_Attack)
+			vector<wstring> skill4Anims = { L"Skill_R_1", L"Skill_R_2" };
+			vector<float> skill4Durations; 
+			skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_R_1"));  
+			skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_R_2"));  
+
+			
+			animator->CreateSequence(L"Skill_4_Sequence", skill4Anims, skill4Durations, false);
 
 			CURSCENE->Add(obj);
 

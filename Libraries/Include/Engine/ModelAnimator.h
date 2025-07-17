@@ -1,40 +1,57 @@
 #pragma once
 #include "Renderer.h"
 
-// ModelAnimator.h에 추가
+// ============================================================================
+// 전방 선언 및 구조체
+// ============================================================================
+
+class Model;
+
+// 애니메이션 상태 열거형
 enum class AnimationState
 {
     Wait = 0,
     Run = 1,
     BaseAttack = 2,
-    Skill = 3
+    Skill_1 = 3,
+    Skill_2 = 4,
+    Skill_3 = 5,
+    Skill_4 = 6
+};
+
+// 애니메이션 변환 구조체
+struct AnimTransform
+{
+    using TransformArrayType = array<Matrix, MAX_BONE_TRANSFORMS>;
+    array<TransformArrayType, MAX_MODEL_KEYFRAMES> transforms;
 };
 
 // 애니메이션 시퀀스 구조체
 struct AnimationSequence
 {
-    wstring sequenceName;                           // 시퀀스 이름
-    vector<wstring> animationTags;                  // 재생할 애니메이션 태그들
-    vector<float> transitionDurations;             // 각 전환 시간
-    bool isLoop = false;                            // 시퀀스 반복 여부
-    uint32 currentIndex = 0;                       // 현재 재생 중인 애니메이션 인덱스
-    bool isPlaying = false;                         // 시퀀스 재생 중 여부
-    function<void()> onSequenceComplete = nullptr; // 시퀀스 완료 콜백
+    wstring name;                           // 시퀀스 이름
+    vector<wstring> animationTags;          // 애니메이션 태그 목록
+    vector<float> animationDurations;      // 각 애니메이션별 재생시간
+    uint32 currentIndex = 0;                // 현재 재생 중인 애니메이션 인덱스
+    float currentTime = 0.0f;               // 현재 애니메이션 재생 시간
+    bool isPlaying = false;                 // 시퀀스 재생 중인지
+    bool isLoop = false;                    // 시퀀스 반복 재생 여부
+    function<void()> onComplete = nullptr;  // 완료 콜백
+
+    // 현재 애니메이션의 재생시간 반환 (커스텀 또는 기본값)
+    float GetCurrentAnimationDuration() const
+    {
+        if (currentIndex < animationDurations.size())
+            return animationDurations[currentIndex];
+        return -1.0f; // 기본값 사용
+    }
 };
 
-class Model;
+// ============================================================================
+// ModelAnimator 클래스
+// ============================================================================
 
-struct AnimTransform {
-    // 200개의 관절 정보를 담아줄 수 있음.
-    using TransformArrayType = array<Matrix, MAX_BONE_TRANSFORMS>;
-
-    //250개의 본 * 500개의 키프레임. 
-    //2차 배열. 
-    array<TransformArrayType, MAX_MODEL_KEYFRAMES> transforms;
-};
-
-class ModelAnimator :
-    public Renderer
+class ModelAnimator : public Renderer
 {
     using Super = Renderer;
 
@@ -42,86 +59,148 @@ public:
     ModelAnimator(shared_ptr<Shader> _shader);
     ~ModelAnimator();
 
+    // ============================================================================
+    // 기본 메서드들
+    // ============================================================================
     virtual void Update() override;
     void UpdateTweenData();
     void SetModel(shared_ptr<Model> _model);
     void SetPass(uint8 _pass) { m_pass = _pass; }
     shared_ptr<Shader> GetShader();
 
-    //애니메이션 제어 메소드 - 태그 기반 추가
+    // ============================================================================
+    // 애니메이션 제어 메서드들
+    // ============================================================================
     void SetAnimation(uint32 _animIndex, bool _immediate = false);
-    void SetAnimationByTag(const wstring& _tag, bool _immediate = false);  // 새로운 메서드
-
-    //duration은 _tweenDuration초 동안 부드럽게 전환. 
+    void SetAnimationByTag(const wstring& _tag, bool _immediate = false);
     void SetNextAnimation(uint32 _animIndex, bool _tweenDuration = 1.0f);
-    void SetNextAnimationByTag(const wstring& _tag, bool _tweenDuration = 1.0f);  // 새로운 메서드
+    void SetNextAnimationByTag(const wstring& _tag, bool _tweenDuration = 1.0f);
     void SetAnimationSpeed(float _speed);
 
-    //애니메이션 상태 Get
+    // ============================================================================
+    // 애니메이션 상태 조회
+    // ============================================================================
     uint32 GetCurrentAnimationIndex() const;
-    wstring GetCurrentAnimationTag() const;  // 새로운 메서드
+    wstring GetCurrentAnimationTag() const;
+    float GetAnimationDuration(const wstring& animTag) const;
     bool IsAnimationTransitioning() const;
     bool IsAnimationFinished() const;
 
+    // ============================================================================
+    // 렌더링 관련
+    // ============================================================================
     void RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech);
     InstanceID GetInstanceID();
     TweenDesc GetTweenDesc() { return m_tweenDesc; }
 
-private:
-    void CreateTexture();
-    void CreateAnimationTransform(const wstring& _tag);  // 태그 기반으로 변경
-    //void CreateAnimationTransform(uint32 _index);  // 기존 버전 주석처리
-    //void CreateAnimationTransform(shared_ptr<ModelAnimation> _modelAnim);
+    // ============================================================================
+    // 애니메이션 상태 관리
+    // ============================================================================
+    void UpdateAnimationState();
+    void TransitionToAnimation(AnimationState newState);
+    bool CanTransitionTo(AnimationState newState) const;
 
-    uint32 GetAnimationIndexByTag(const wstring& _tag);  // 내부 변환 메서드
+    // ============================================================================
+    // 시퀀스 관리
+    // ============================================================================
+    void CreateSequence(const wstring& name, const vector<wstring>& animTags, bool loop = false);
+    void CreateSequence(const wstring& name, const vector<wstring>& animTags, const vector<float>& durations, bool loop = false);
+    void PlaySequence(const wstring& name);
+    void StopSequence();
+    void UpdateSequence();
+    void TransitionToNextInSequence();
+    bool IsSequencePlaying() const { return m_currentSequence != nullptr && m_currentSequence->isPlaying; }
+    void SetSequenceCompleteCallback(const wstring& name, function<void()> callback);
 
-private:
-    //vector<AnimTransform> m_animTransform;  // 기존 버전 주석처리
-    unordered_map<wstring, AnimTransform> m_animTransform;  // 새로운 버전
-    ComPtr<ID3D11Texture2D> m_texture;
-    ComPtr<ID3D11ShaderResourceView> m_srv;
+    // ============================================================================
+    // 시퀀스 설정
+    // ============================================================================
+    void SetSequenceAnimationDuration(const wstring& sequenceName, uint32 animIndex, float duration);
+    void SetSequenceAnimationDurations(const wstring& sequenceName, const vector<float>& durations);
 
-    // 태그와 인덱스 매핑
-    unordered_map<wstring, uint32> m_tagToIndex;
-    vector<wstring> m_indexToTag;
-
-private:
-    TweenDesc m_tweenDesc;
-
-private:
-    shared_ptr<Shader>  m_shader;
-    uint8               m_pass = 0;
-    shared_ptr<Model>   m_model;
-
-    //////////////변환////////////////
+    // ============================================================================
+    // 유틸리티 메서드들
+    // ============================================================================
+    float GetCorrectedFrameRate(const wstring& animTag, float speed = 1.0f);
+    float GetTimePerFrame(const wstring& animTag, float speed = 1.0f);
 
 public:
-    // 기존 상태 관리 변수들...
+    // ============================================================================
+    // 상태 관리 변수들
+    // ============================================================================
     AnimationState m_currentState = AnimationState::Wait;
     AnimationState m_nextState = AnimationState::Wait;
     bool m_isTransitioning = false;
     float m_transitionDuration = 0.25f;
     float m_transitionTimer = 0.0f;
 
-    // 키 입력 상태 관리 변수들
-    bool m_wasMoving = false;  // 이전 프레임에서 움직였는지 확인
-    bool m_isSkillActive = false;  // 스킬 실행 중인지 확인
-    float m_skillCooldown = 0.0f;  // 스킬 쿨다운 타이머
+    // 키 입력 상태 관리
+    bool m_wasMoving = false;
+    bool m_isSkillActive = false;
+    float m_skillCooldown = 0.0f;
 
-    // 상태별 설정 - 태그 기반으로 변경
-    map<AnimationState, wstring> m_stateToTag;  // 상태를 태그로 매핑
+    // 상태별 설정 매핑
+    map<AnimationState, wstring> m_stateToTag;
     map<AnimationState, float> m_animationSpeeds;
     map<AnimationState, bool> m_loopSettings;
 
-    // 애니메이션 상태 관리 메서드들
-    void UpdateAnimationState();
-    void TransitionToAnimation(AnimationState newState);
-    bool CanTransitionTo(AnimationState newState) const;
+private:
+    // ============================================================================
+    // 내부 구현 메서드들
+    // ============================================================================
 
+    // 텍스처 생성 관련
+    void CreateTexture();
+    void CreateAnimationTransform(const wstring& _tag);
 
+    // 태그 매핑 관련
+    void CreateTagIndexMapping();
+    uint32 GetAnimationIndexByTag(const wstring& _tag);
 
+    // 업데이트 관련
+    void UpdateSkillCooldown();
+    void UpdateTweenFrames();
+    void UpdateCurrentAnimation();
+    void UpdateNextAnimation();
+    void ProcessInputs();
+    void UpdateMovementState();
 
+    // 렌더링 관련
+    void SetupBoneData();
+    void RenderMeshes(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech);
 
-    //시퀀스
+    // 시퀀스 관련
+    float GetCurrentSequenceDuration();
+    void CompleteSequence();
+    void ResetToWaitAnimation();
 
+    // 애니메이션 설정 관련
+    void SetAnimationImmediate(uint32 _animIndex);
+
+private:
+    // ============================================================================
+    // 멤버 변수들
+    // ============================================================================
+
+    // 셰이더 및 모델 관련
+    shared_ptr<Shader> m_shader;
+    shared_ptr<Model> m_model;
+    uint8 m_pass = 0;
+
+    // 애니메이션 데이터
+    unordered_map<wstring, AnimTransform> m_animTransform;
+    ComPtr<ID3D11Texture2D> m_texture;
+    ComPtr<ID3D11ShaderResourceView> m_srv;
+
+    // 태그-인덱스 매핑
+    unordered_map<wstring, uint32> m_tagToIndex;
+    vector<wstring> m_indexToTag;
+
+    // 트윈 데이터
+    TweenDesc m_tweenDesc;
+
+    // 시퀀스 관련
+    unordered_map<wstring, AnimationSequence> m_sequences;
+    AnimationSequence* m_currentSequence = nullptr;
+    bool m_isSequenceMode = false;
 };

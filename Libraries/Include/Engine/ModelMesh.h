@@ -11,6 +11,7 @@ struct ModelBone {
 
 	Matrix m_offsetMatrix;
 };
+
 struct ModelMesh
 {
 	void CreateBuffers();
