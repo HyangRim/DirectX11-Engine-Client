@@ -36,31 +36,31 @@ void AssimpTool::Init()
 	};
 
 
-	{
-		
-		shared_ptr<Converter> converter = make_shared<Converter>();
+	//{
+	//	
+	//	shared_ptr<Converter> converter = make_shared<Converter>();
 
-		//FBX -> Memory
-		converter->ReadAssetFile(L"Aya/Aya_S005.fbx");
+	//	//FBX -> Memory
+	//	converter->ReadAssetFile(L"Aya/Aya_S005.fbx");
 
-		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Aya/Aya");
-		converter->ExportModelData(L"Aya/Aya");
+	//	//Memory ->CustomData;
+	//	converter->ExportMaterialData(L"Aya/Aya");
+	//	converter->ExportModelData(L"Aya/Aya");
 
-		//CustomData -> Memory;
-		
+	//	//CustomData -> Memory;
+	//	
 
-		for (int i = 0; i < 14; i++)
-		{
-			shared_ptr<Converter> converter = make_shared<Converter>();
+	//	for (int i = 0; i < 14; i++)
+	//	{
+	//		shared_ptr<Converter> converter = make_shared<Converter>();
 
-			//FBX -> Memory
-			converter->ReadAssetFile(name2[i]);
+	//		//FBX -> Memory
+	//		converter->ReadAssetFile(name2[i]);
 
-			//Memory ->CustomData;
-			converter->ExportAnimationData(name[i]);
-		}
-	}
+	//		//Memory ->CustomData;
+	//		converter->ExportAnimationData(name[i]);
+	//	}
+	//}
 	
 
 	//{
@@ -70,20 +70,20 @@ void AssimpTool::Init()
 
 	//}
 
-	//{
+	{
 
-	//	shared_ptr<Converter> converter = make_shared<Converter>();
+		shared_ptr<Converter> converter = make_shared<Converter>();
 
-	//	//FBX -> Memory
-	//	converter->ReadAssetFile(L"Bianca/Nicky.fbx");
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetary.fbx");
 
-	//	//Memory ->CustomData;
-	//	converter->ExportMaterialData(L"Bianca/Nicky");
-	//	converter->ExportModelData(L"Nicky/Nicky");
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetary/Cemetary");
+		converter->ExportModelData(L"Cemetary/Cemetary");
 
-	//	//CustomData -> Memory;
+		//CustomData -> Memory;
 
-	//}
+	}
 
 
 	/*{
