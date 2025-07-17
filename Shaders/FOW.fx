@@ -49,6 +49,12 @@ float CalculateFogOfWar(float3 worldPos)
 float4 PS_FOW(MeshOutput input) : SV_TARGET
 {
     
+    //float distance = length(input.worldPosition - g_playerWorldPos);
+    //if (distance > 25.f)
+    //{
+    //    discard;
+    //}
+    
     
     //그림자 계산. 
     float shadow = CalcShadowFactor(ShadowMap, input.shadowPosH);

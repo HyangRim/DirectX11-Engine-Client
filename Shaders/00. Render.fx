@@ -15,7 +15,7 @@
 
 cbuffer FogOfWarData : register(b5)
 {
-    float3 g_playerWorldPos; // 플레이어 월드 위치
+    float3 g_playerWorldPos; // 플레이어 월드 기준 위치. 
     float g_sightRange; // 시야 거리
     float g_darkness; // 어둠 강도 (0.0 ~ 1.0)
     float g_fadeDistance; // 페이드 거리
