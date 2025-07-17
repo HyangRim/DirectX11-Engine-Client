@@ -70,28 +70,28 @@ void AssimpTool::Init()
 
 	//}
 
+	//{
+
+	//	shared_ptr<Converter> converter = make_shared<Converter>();
+
+	//	//FBX -> Memory
+	//	converter->ReadAssetFile(L"Map2/map2.fbx");
+
+	//	//Memory ->CustomData;
+	//	converter->ExportMaterialData(L"map2/map2");
+	//	converter->ExportModelData(L"map2/map2");
+
+	//	//CustomData -> Memory;
+
+	//}
+
+
 	{
-
 		shared_ptr<Converter> converter = make_shared<Converter>();
+		converter->ReadAssetFile(L"Bianca/Glove_skill04.fbx");
+		converter->ExportAnimationData(L"Bianca2/Glove_skill04");
 
-		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Cemetary.fbx");
-
-		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Cemetary/Cemetary");
-		converter->ExportModelData(L"Cemetary/Cemetary");
-
-		//CustomData -> Memory;
-
-	}
-
-
-	/*{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		converter->ReadAssetFile(L"Bianca/Bianca_wait.fbx");
-		converter->ExportAnimationData(L"Bianca2/Bianca_wait");
-
-	}
+	}/*
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		converter->ReadAssetFile(L"Nicky/Nicky_Wait.fbx");

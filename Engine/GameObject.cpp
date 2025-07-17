@@ -20,6 +20,8 @@
 #include "Text.h"
 #include "UIPanel.h"
 #include "ImageUI.h"
+#include "AABBBoxCollider.h"
+#include "SphereCollider.h"
 
 GameObject::GameObject()
 {
@@ -28,7 +30,7 @@ GameObject::GameObject()
 
 GameObject::~GameObject()
 {
-	
+
 }
 
 void GameObject::Init()

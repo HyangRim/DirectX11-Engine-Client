@@ -31,28 +31,28 @@ void CameraScript::Update()
 	if (INPUT->GetButton(KEY_TYPE::Q))
 	{
 		Vec3 rotation = GetTransform()->GetLocalRotation();
-		rotation.x += dt * 0.5f;
+		rotation.x += dt * 15.f;
 		GetTransform()->SetLocalRotation(rotation);
 	}
 
 	if (INPUT->GetButton(KEY_TYPE::E))
 	{
 		Vec3 rotation = GetTransform()->GetLocalRotation();
-		rotation.x -= dt * 0.5f;
+		rotation.x -= dt * 15.f;
 		GetTransform()->SetLocalRotation(rotation);
 	}
 
 	if (INPUT->GetButton(KEY_TYPE::Z))
 	{
 		Vec3 rotation = GetTransform()->GetLocalRotation();
-		rotation.y += dt * 0.5f;
+		rotation.y += dt * 15.f;
 		GetTransform()->SetLocalRotation(rotation);
 	}
 
 	if (INPUT->GetButton(KEY_TYPE::C))
 	{
 		Vec3 rotation = GetTransform()->GetLocalRotation();
-		rotation.y -= dt * 0.5f;
+		rotation.y -= dt * 15.f;
 		GetTransform()->SetLocalRotation(rotation);
 	}
 
