@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Materials>
+    <Material>
+        <Name>System_OBJ_HiddenDoor</Name>
+        <DiffuseFile></DiffuseFile>
+        <SpecularFile></SpecularFile>
+        <NormalFile></NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="0" G="0.86225843" B="1" A="1"/>
+        <Specular R="0" G="0.86225843" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Default_Material</Name>
+        <DiffuseFile></DiffuseFile>
+        <SpecularFile></SpecularFile>
+        <NormalFile></NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Bg_Harbor_STR_House_01_02_Re</Name>
+        <DiffuseFile>Bg_Harbor_STR_House_01_02_Re.png</DiffuseFile>
+        <SpecularFile>Bg_Harbor_STR_House_01_02_Re.png</SpecularFile>
+        <NormalFile>Bg_Harbor_STR_House_01_02_Re.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Bg_Alley_STR_RetainingWall_01</Name>
+        <DiffuseFile>Bg_Alley_STR_RetainingWall_01.png</DiffuseFile>
+        <SpecularFile>Bg_Alley_STR_RetainingWall_01.png</SpecularFile>
+        <NormalFile>Bg_Alley_STR_RetainingWall_01N.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Alley_STR_Grass_01_Blend_01</Name>
+        <DiffuseFile>Alley_STR_Grass_01.png</DiffuseFile>
+        <SpecularFile>Alley_STR_Grass_01.png</SpecularFile>
+        <NormalFile>Alley_STR_Grass_01N.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Alley_STR_Roof_Top_02</Name>
+        <DiffuseFile>Alley_STR_Roof_Top_02.png</DiffuseFile>
+        <SpecularFile>Alley_STR_Roof_Top_02.png</SpecularFile>
+        <NormalFile>Alley_STR_Roof_Top_01N.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Common_OBJ_Atlas_Merge_01</Name>
+        <DiffuseFile>Common_OBJ_Atlas_Merge_01.png</DiffuseFile>
+        <SpecularFile>Common_OBJ_Atlas_Merge_01.png</SpecularFile>
+        <NormalFile>Common_OBJ_Atlas_Merge_01N.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="1" G="1" B="1" A="1"/>
+    </Material>
+    <Material>
+        <Name>Alley_STR_Trim_01</Name>
+        <DiffuseFile>Alley_STR_Trim_01.png</DiffuseFile>
+        <SpecularFile>Alley_STR_Trim_01.png</SpecularFile>
+        <NormalFile>Alley_STR_Trim_01N.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Alley_STR_Floor_CubeBlock_01</Name>
+        <DiffuseFile>Alley_STR_Floor_CubeBlock_01.png</DiffuseFile>
+        <SpecularFile>Alley_STR_Floor_CubeBlock_01.png</SpecularFile>
+        <NormalFile>Alley_STR_Floor_CubeBlock_01N.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Alley_STR_Concrete_06</Name>
+        <DiffuseFile>Alley_STR_Concrete_06.png</DiffuseFile>
+        <SpecularFile>Alley_STR_Concrete_06.png</SpecularFile>
+        <NormalFile>Alley_STR_Concrete_06N.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Bg_Harbor_STR_Warehouse_01_02_Light_Re</Name>
+        <DiffuseFile>Bg_Harbor_STR_Warehouse_01_02_Light_Re.png</DiffuseFile>
+        <SpecularFile>Bg_Harbor_STR_Warehouse_01_02_Light_Re.png</SpecularFile>
+        <NormalFile>Bg_Harbor_STR_Warehouse_01_02_Light_Re.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Alley_STR_Roof_Top_03</Name>
+        <DiffuseFile>Alley_STR_Roof_Top_03.png</DiffuseFile>
+        <SpecularFile>Alley_STR_Roof_Top_03.png</SpecularFile>
+        <NormalFile>Alley_STR_Roof_Top_03N.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Harbor_STR_Roof_Plate_00</Name>
+        <DiffuseFile>Harbor_STR_Roof_Plate_00.png</DiffuseFile>
+        <SpecularFile>Harbor_STR_Roof_Plate_00.png</SpecularFile>
+        <NormalFile>Harbor_STR_Roof_Plate_00N.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Factory_STR_Roof_Panel_02_Blend_02</Name>
+        <DiffuseFile>Factory_STR_Roof_Panel_02.png</DiffuseFile>
+        <SpecularFile>Factory_STR_Roof_Panel_02.png</SpecularFile>
+        <NormalFile>Factory_STR_Roof_Panel_02N.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="0.25725344" G="0.41054752" B="0.44339618" A="1"/>
+        <Specular R="0.25725344" G="0.41054752" B="0.44339618" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Common_OBJ_Glass_01</Name>
+        <DiffuseFile>Common_OBJ_Window_02.png</DiffuseFile>
+        <SpecularFile>Common_OBJ_Window_02.png</SpecularFile>
+        <NormalFile>Common_OBJ_Window_02.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="0.32075471" G="0.32075471" B="0.32075471" A="1"/>
+        <Specular R="0.32075471" G="0.32075471" B="0.32075471" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Common_STR_HedgeBush_01</Name>
+        <DiffuseFile>Common_STR_HedgeBush_01.png</DiffuseFile>
+        <SpecularFile>Common_STR_HedgeBush_01.png</SpecularFile>
+        <NormalFile>Common_STR_HedgeBush_01.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Common_Decal_Graffiti_01</Name>
+        <DiffuseFile>Common_Decal_Graffiti_01.png</DiffuseFile>
+        <SpecularFile>Common_Decal_Graffiti_01.png</SpecularFile>
+        <NormalFile>Common_Decal_Graffiti_01.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Alley_STR_MetalPaint_01_Blend_01</Name>
+        <DiffuseFile>Alley_STR_MetalPaint_01.png</DiffuseFile>
+        <SpecularFile>Alley_STR_MetalPaint_01.png</SpecularFile>
+        <NormalFile>Alley_STR_MetalPaint_01N.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="0.38679245" G="0.34831223" B="0.33388215" A="1"/>
+        <Specular R="0.38679245" G="0.34831223" B="0.33388215" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Uptown_OBJ_MerryGoRound</Name>
+        <DiffuseFile>Uptown_OBJ_MerryGoRound.png</DiffuseFile>
+        <SpecularFile>Uptown_OBJ_MerryGoRound.png</SpecularFile>
+        <NormalFile>Uptown_OBJ_MerryGoRoundN.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Alley_STR_ConcreteWall_06</Name>
+        <DiffuseFile>Alley_STR_ConcreteWall_06.png</DiffuseFile>
+        <SpecularFile>Alley_STR_ConcreteWall_06.png</SpecularFile>
+        <NormalFile>Alley_STR_ConcreteWall_06N.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="1" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Alley_STR_Herringbone_01</Name>
+        <DiffuseFile>Alley_STR_Herringbone_01.png</DiffuseFile>
+        <SpecularFile>Alley_STR_Herringbone_01.png</SpecularFile>
+        <NormalFile>Alley_STR_Herringbone_01N.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>ItemBox_Boat_01</Name>
+        <DiffuseFile>ItemBox_Boat.png</DiffuseFile>
+        <SpecularFile>ItemBox_Boat.png</SpecularFile>
+        <NormalFile>ItemBox_BoatN.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0.45490193" B="0.45490193" A="1"/>
+    </Material>
+    <Material>
+        <Name>Bg_Harbor_STR_Base_Harbor_One_Squad</Name>
+        <DiffuseFile>Harbor_STR_Base_Squad_One.png</DiffuseFile>
+        <SpecularFile>Harbor_STR_Base_Squad_One.png</SpecularFile>
+        <NormalFile>Harbor_STR_Base_Squad_One.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Bg_Harbor_STR_Base_Warehouse_One_Squad</Name>
+        <DiffuseFile>Warehouse_STR_Base_Squad_One.png</DiffuseFile>
+        <SpecularFile>Warehouse_STR_Base_Squad_One.png</SpecularFile>
+        <NormalFile>Warehouse_STR_Base_Squad_One.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Bg_Harbor_STR_Base_Deco</Name>
+        <DiffuseFile>Bg_Harbor_STR_Base_Deco.png</DiffuseFile>
+        <SpecularFile>Bg_Harbor_STR_Base_Deco.png</SpecularFile>
+        <NormalFile>Bg_Harbor_STR_Base_Deco.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Harbor_STR_Concrete_Moss</Name>
+        <DiffuseFile>Harbor_STR_Concrete_Moss.png</DiffuseFile>
+        <SpecularFile>Harbor_STR_Concrete_Moss.png</SpecularFile>
+        <NormalFile>Harbor_STR_Concrete_Moss_N.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Bg_Uptown_STR_House_02_01</Name>
+        <DiffuseFile>Uptown_STR_House_02_01.png</DiffuseFile>
+        <SpecularFile>Uptown_STR_House_02_01.png</SpecularFile>
+        <NormalFile>Uptown_STR_House_02_01.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Bg_Uptown_STR_House_02_02</Name>
+        <DiffuseFile>Uptown_STR_House_02_02.png</DiffuseFile>
+        <SpecularFile>Uptown_STR_House_02_02.png</SpecularFile>
+        <NormalFile>Uptown_STR_House_02_02.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Alley_STR_Block_01</Name>
+        <DiffuseFile>Alley_STR_Block_01.png</DiffuseFile>
+        <SpecularFile>Alley_STR_Block_01.png</SpecularFile>
+        <NormalFile>Alley_STR_Block_01N.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Alley_STR_Concrete_05</Name>
+        <DiffuseFile>Alley_STR_Concrete_05.png</DiffuseFile>
+        <SpecularFile>Alley_STR_Concrete_05.png</SpecularFile>
+        <NormalFile>Alley_STR_Concrete_05N.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+</Materials>

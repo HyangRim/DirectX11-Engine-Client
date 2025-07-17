@@ -472,7 +472,7 @@ Ray SceneObjectManager::CreateRayFromScreen(const Vec2& screenPos, shared_ptr<Ca
 void SceneObjectManager::UpdateQuadTree()
 {
     //Assimp¿ë ÀÓ½Ã. 
-    //return;
+    return;
 
     if (!m_quadTree)
     {
