@@ -80,9 +80,12 @@ void UITestDemo::Init()
 
 		// 태그 기반으로 애니메이션 로드
 		m1->ReadAnimation(L"Wait", L"Nicky/Nicky_Glove_Wait");
+
 		m1->ReadAnimation(L"Run", L"Nicky/Nicky_Glove_Run");
-		m1->ReadAnimation(L"BaseAttack", L"Nicky/Nicky_Glove_Atk_01");
+
+
 		m1->ReadAnimation(L"Skill", L"Nicky/Nicky_Glove_Skill_03");
+		
 
 		for (int32 i = 0; i < 1; i++)
 		{
@@ -106,17 +109,21 @@ void UITestDemo::Init()
 			nicky->GetCollider()->SetOffset(Vec3(0.f, 1.f, 0.f));
 			nicky->GetRigidbody()->SetStatic(true);
 
+			nicky->AddComponent(make_shared<ModelAnimator>(renderShader));
+			{
+				nicky->GetModelAnimator()->SetModel(m1);
+				nicky->GetModelAnimator()->SetPass(2);
+			}
+
+			
+		
 			/*obj->AddComponent(make_shared<ModelRenderer>(renderShader));
 			{
 				obj->GetModelRenderer()->SetModel(m1);
 				obj->GetModelRenderer()->SetPass(1);
 			}*/
 
-			nicky->AddComponent(make_shared<ModelAnimator>(renderShader));
-			{
-				nicky->GetModelAnimator()->SetModel(m1);
-				nicky->GetModelAnimator()->SetPass(2);
-			}
+			
 
 			CURSCENE->Add(nicky);
 		}
@@ -215,7 +222,7 @@ void UITestDemo::Init()
 
 
 
-		CreatePanelWithImageUI();
+		//CreatePanelWithImageUI();
 
 	
 		//
