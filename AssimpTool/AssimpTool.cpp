@@ -41,25 +41,26 @@ void AssimpTool::Init()
 		shared_ptr<Converter> converter = make_shared<Converter>();
 
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Aya/Aya_S005.fbx");
+		converter->ReadAssetFile(L"Nicky/Nicky_Glove_skill04_Rush.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Aya/Aya");
-		converter->ExportModelData(L"Aya/Aya");
+		//converter->ExportMaterialData(L"Aya/Aya");
+		//converter->ExportModelData(L"Aya/Aya");
+		converter->ExportAnimationData(L"Nicky/Nicky_Glove_skill04_Rush.fbx");
 
 		//CustomData -> Memory;
 		
 
-		for (int i = 0; i < 14; i++)
-		{
-			shared_ptr<Converter> converter = make_shared<Converter>();
+		//for (int i = 0; i < 14; i++)
+		//{
+		//	shared_ptr<Converter> converter = make_shared<Converter>();
 
-			//FBX -> Memory
-			converter->ReadAssetFile(name2[i]);
+		//	//FBX -> Memory
+		//	converter->ReadAssetFile(name2[i]);
 
-			//Memory ->CustomData;
-			converter->ExportAnimationData(name[i]);
-		}
+		//	//Memory ->CustomData;
+		//	converter->ExportAnimationData(name[i]);
+		//}
 	}
 	
 

@@ -10,6 +10,18 @@ enum class AnimationState
     Skill = 3
 };
 
+// 애니메이션 시퀀스 구조체
+struct AnimationSequence
+{
+    wstring sequenceName;                           // 시퀀스 이름
+    vector<wstring> animationTags;                  // 재생할 애니메이션 태그들
+    vector<float> transitionDurations;             // 각 전환 시간
+    bool isLoop = false;                            // 시퀀스 반복 여부
+    uint32 currentIndex = 0;                       // 현재 재생 중인 애니메이션 인덱스
+    bool isPlaying = false;                         // 시퀀스 재생 중 여부
+    function<void()> onSequenceComplete = nullptr; // 시퀀스 완료 콜백
+};
+
 class Model;
 
 struct AnimTransform {
@@ -83,7 +95,7 @@ private:
 
     //////////////변환////////////////
 
-private:
+public:
     // 기존 상태 관리 변수들...
     AnimationState m_currentState = AnimationState::Wait;
     AnimationState m_nextState = AnimationState::Wait;
@@ -105,4 +117,11 @@ private:
     void UpdateAnimationState();
     void TransitionToAnimation(AnimationState newState);
     bool CanTransitionTo(AnimationState newState) const;
+
+
+
+
+
+    //시퀀스
+
 };

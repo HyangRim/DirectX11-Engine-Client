@@ -40,6 +40,9 @@ void ModelAnimator::UpdateTweenData()
     // 애니메이션 상태 업데이트 (키 입력 처리 포함)
     UpdateAnimationState();
 
+    // 애니메이션 시퀀스 업데이트 추가
+    //UpdateAnimationSequence();
+
     // 스킬 쿨다운 처리
     if (m_skillCooldown > 0.0f)
     {
@@ -489,14 +492,12 @@ void ModelAnimator::UpdateAnimationState()
         uint32 frameCount = temp->m_frameCount;
         float frameRate = temp->m_frameRate;
 
-
         m_isSkillActive = true;
-
-
-
 
         m_skillCooldown = frameCount / frameRate; // 스킬 지속시간동안 쿨타임
         TransitionToAnimation(AnimationState::Skill);
+
+        //PlayAnimationSequence(L"CompleteSkill", false);
         return;
     }
 
