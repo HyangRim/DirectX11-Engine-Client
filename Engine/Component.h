@@ -23,6 +23,7 @@ enum class ComponentType : uint8 {
 	UIPanel,
 	TextButton,
 	Image,
+	AnimationStateMachine,
 	// ...
 	Script,
 	End

@@ -21,6 +21,7 @@ class Rigidbody;
 class Text;
 class UIPanel;
 class ImageUI;
+class AnimationStateMachine;
 
 enum class OBJECTTYPE {
 	DEFAULT,
@@ -61,6 +62,7 @@ public:
 	shared_ptr<Text> GetText();
 	shared_ptr<UIPanel> GetUIPanel();
 	shared_ptr<ImageUI> GetImageUI();
+	shared_ptr<AnimationStateMachine> GetAnimationStateMachine();
 
 
 

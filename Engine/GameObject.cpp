@@ -22,6 +22,7 @@
 #include "ImageUI.h"
 #include "AABBBoxCollider.h"
 #include "SphereCollider.h"
+#include "AnimationStateMachine.h"
 
 GameObject::GameObject()
 {
@@ -220,6 +221,12 @@ shared_ptr<ImageUI> GameObject::GetImageUI()
 {
 	shared_ptr<Component> component = GetFixedComponent(ComponentType::Image);
 	return static_pointer_cast<ImageUI>(component);
+}
+
+shared_ptr<AnimationStateMachine> GameObject::GetAnimationStateMachine()
+{
+	shared_ptr<Component> component = GetFixedComponent(ComponentType::AnimationStateMachine);
+	return static_pointer_cast<AnimationStateMachine>(component);
 }
 
 

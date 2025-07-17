@@ -1,5 +1,6 @@
 #pragma once
 #include "Renderer.h"
+#include "AnimationState.h"
 
 // ============================================================================
 // 전방 선언 및 구조체
@@ -7,17 +8,17 @@
 
 class Model;
 
-// 애니메이션 상태 열거형
-enum class AnimationState
-{
-    Wait = 0,
-    Run = 1,
-    BaseAttack = 2,
-    Skill_1 = 3,
-    Skill_2 = 4,
-    Skill_3 = 5,
-    Skill_4 = 6
-};
+//// 애니메이션 상태 열거형
+//enum class AnimationState
+//{
+//    Wait = 0,
+//    Run = 1,
+//    BaseAttack = 2,
+//    Skill_1 = 3,
+//    Skill_2 = 4,
+//    Skill_3 = 5,
+//    Skill_4 = 6
+//};
 
 // 애니메이션 변환 구조체
 struct AnimTransform
@@ -97,8 +98,8 @@ public:
     // 애니메이션 상태 관리
     // ============================================================================
     void UpdateAnimationState();
-    void TransitionToAnimation(AnimationState newState);
-    bool CanTransitionTo(AnimationState newState) const;
+    void TransitionToAnimation(AnimationStateType newState);
+    bool CanTransitionTo(AnimationStateType newState) const;
 
     // ============================================================================
     // 시퀀스 관리
@@ -128,8 +129,8 @@ public:
     // ============================================================================
     // 상태 관리 변수들
     // ============================================================================
-    AnimationState m_currentState = AnimationState::Wait;
-    AnimationState m_nextState = AnimationState::Wait;
+    AnimationStateType m_currentState = AnimationStateType::Wait;
+    AnimationStateType m_nextState = AnimationStateType::Wait;
     bool m_isTransitioning = false;
     float m_transitionDuration = 0.25f;
     float m_transitionTimer = 0.0f;
@@ -140,9 +141,9 @@ public:
     float m_skillCooldown = 0.0f;
 
     // 상태별 설정 매핑
-    map<AnimationState, wstring> m_stateToTag;
-    map<AnimationState, float> m_animationSpeeds;
-    map<AnimationState, bool> m_loopSettings;
+    map<AnimationStateType, wstring> m_stateToTag;
+    map<AnimationStateType, float> m_animationSpeeds;
+    map<AnimationStateType, bool> m_loopSettings;
 
 private:
     // ============================================================================

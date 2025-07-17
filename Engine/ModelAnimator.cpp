@@ -12,22 +12,22 @@ ModelAnimator::ModelAnimator(shared_ptr<Shader> _shader)
     : Super(ComponentType::Animator), m_shader(_shader)
 {
     // 애니메이션 루프 설정
-    m_loopSettings[AnimationState::Wait] = true;
-    m_loopSettings[AnimationState::Run] = true;
-    m_loopSettings[AnimationState::Skill_1] = false;
-    m_loopSettings[AnimationState::Skill_2] = false;
-    m_loopSettings[AnimationState::Skill_3] = false;
-    m_loopSettings[AnimationState::Skill_4] = false;
-    m_loopSettings[AnimationState::BaseAttack] = false;
+    m_loopSettings[AnimationStateType::Wait] = true;
+    m_loopSettings[AnimationStateType::Run] = true;
+    m_loopSettings[AnimationStateType::Skill_1] = false;
+    m_loopSettings[AnimationStateType::Skill_2] = false;
+    m_loopSettings[AnimationStateType::Skill_3] = false;
+    m_loopSettings[AnimationStateType::Skill_4] = false;
+    m_loopSettings[AnimationStateType::BaseAttack] = false;
 
     // 상태-태그 매핑
-    m_stateToTag[AnimationState::Wait] = L"Wait";
-    m_stateToTag[AnimationState::Run] = L"Run";
-    m_stateToTag[AnimationState::BaseAttack] = L"BaseAttack";
-    m_stateToTag[AnimationState::Skill_1] = L"Skill_1";
-    m_stateToTag[AnimationState::Skill_2] = L"Skill_2";
-    m_stateToTag[AnimationState::Skill_3] = L"Skill_3";
-    m_stateToTag[AnimationState::Skill_4] = L"Skill_4";
+    m_stateToTag[AnimationStateType::Wait] = L"Wait";
+    m_stateToTag[AnimationStateType::Run] = L"Run";
+    m_stateToTag[AnimationStateType::BaseAttack] = L"BaseAttack";
+    m_stateToTag[AnimationStateType::Skill_1] = L"Skill_1";
+    m_stateToTag[AnimationStateType::Skill_2] = L"Skill_2";
+    m_stateToTag[AnimationStateType::Skill_3] = L"Skill_3";
+    m_stateToTag[AnimationStateType::Skill_4] = L"Skill_4";
 }
 
 ModelAnimator::~ModelAnimator()
@@ -69,7 +69,7 @@ void ModelAnimator::UpdateSkillCooldown()
             m_isSkillActive = false;
             if (!m_isSequenceMode)
             {
-                TransitionToAnimation(AnimationState::Wait);
+                TransitionToAnimation(AnimationStateType::Wait);
             }
         }
     }
@@ -435,25 +435,25 @@ void ModelAnimator::ProcessInputs()
     if (INPUT->GetButtonDown(KEY_TYPE::Q))
     {
         PlaySequence(L"Skill_1_Sequence");
-        m_currentState = AnimationState::Skill_1;
+        m_currentState = AnimationStateType::Skill_1;
         return;
     }
     if (INPUT->GetButtonDown(KEY_TYPE::W))
     {
         PlaySequence(L"Skill_2_Sequence");
-        m_currentState = AnimationState::Skill_2;
+        m_currentState = AnimationStateType::Skill_2;
         return;
     }
     if (INPUT->GetButtonDown(KEY_TYPE::E))
     {
         PlaySequence(L"Skill_3_Sequence");
-        m_currentState = AnimationState::Skill_3;
+        m_currentState = AnimationStateType::Skill_3;
         return;
     }
     if (INPUT->GetButtonDown(KEY_TYPE::R))
     {
         PlaySequence(L"Skill_4_Sequence");
-        m_currentState = AnimationState::Skill_4;
+        m_currentState = AnimationStateType::Skill_4;
         return;
     }
     if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON))
@@ -472,17 +472,17 @@ void ModelAnimator::UpdateMovementState()
 
     if (isMoving && !m_wasMoving)
     {
-        TransitionToAnimation(AnimationState::Run);
+        TransitionToAnimation(AnimationStateType::Run);
     }
     else if (!isMoving && m_wasMoving)
     {
-        TransitionToAnimation(AnimationState::Wait);
+        TransitionToAnimation(AnimationStateType::Wait);
     }
 
     m_wasMoving = isMoving;
 }
 
-void ModelAnimator::TransitionToAnimation(AnimationState newState)
+void ModelAnimator::TransitionToAnimation(AnimationStateType newState)
 {
     if (m_currentState == newState || !CanTransitionTo(newState))
         return;
@@ -492,14 +492,14 @@ void ModelAnimator::TransitionToAnimation(AnimationState newState)
     SetAnimationByTag(animTag, false);
 }
 
-bool ModelAnimator::CanTransitionTo(AnimationState newState) const
+bool ModelAnimator::CanTransitionTo(AnimationStateType newState) const
 {
     if (m_isSequenceMode)
         return false;
 
-    if (m_isSkillActive && newState != AnimationState::Skill_1 &&
-        newState != AnimationState::Skill_2 && newState != AnimationState::Skill_3 &&
-        newState != AnimationState::Skill_4)
+    if (m_isSkillActive && newState != AnimationStateType::Skill_1 &&
+        newState != AnimationStateType::Skill_2 && newState != AnimationStateType::Skill_3 &&
+        newState != AnimationStateType::Skill_4)
         return false;
 
     return true;
@@ -644,7 +644,7 @@ void ModelAnimator::CompleteSequence()
     }
 
     StopSequence();
-    TransitionToAnimation(AnimationState::Wait);
+    TransitionToAnimation(AnimationStateType::Wait);
 }
 
 // ============================================================================

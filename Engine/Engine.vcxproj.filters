@@ -181,9 +181,6 @@
     <ClCompile Include="MeshRenderer.cpp">
       <Filter>04. Component</Filter>
     </ClCompile>
-    <ClCompile Include="ModelAnimator.cpp">
-      <Filter>04. Component</Filter>
-    </ClCompile>
     <ClCompile Include="ModelRenderer.cpp">
       <Filter>04. Component</Filter>
     </ClCompile>
@@ -222,6 +219,21 @@
     </ClCompile>
     <ClCompile Include="SceneObjectManager.cpp">
       <Filter>02. Managers\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelAnimator.cpp">
+      <Filter>04. Component\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationState.cpp">
+      <Filter>04. Component\Animation\AnimationStateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationStateMachine.cpp">
+      <Filter>04. Component\Animation\AnimationStateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyWaitState.cpp">
+      <Filter>04. Component\Animation\Nicky\Wait</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyRunState.cpp">
+      <Filter>04. Component\Animation\Nicky\Move</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -420,9 +432,6 @@
     <ClInclude Include="MeshRenderer.h">
       <Filter>04. Component</Filter>
     </ClInclude>
-    <ClInclude Include="ModelAnimator.h">
-      <Filter>04. Component</Filter>
-    </ClInclude>
     <ClInclude Include="ModelRenderer.h">
       <Filter>04. Component</Filter>
     </ClInclude>
@@ -461,6 +470,21 @@
     </ClInclude>
     <ClInclude Include="SceneObjectManager.h">
       <Filter>02. Managers\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelAnimator.h">
+      <Filter>04. Component\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationState.h">
+      <Filter>04. Component\Animation\AnimationStateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationStateMachine.h">
+      <Filter>04. Component\Animation\AnimationStateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyWaitState.h">
+      <Filter>04. Component\Animation\Nicky\Wait</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyRunState.h">
+      <Filter>04. Component\Animation\Nicky\Move</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -523,6 +547,27 @@
     </Filter>
     <Filter Include="02. Managers\Scene">
       <UniqueIdentifier>{943e65c8-18eb-4ce0-8326-e4a549f64275}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Animation">
+      <UniqueIdentifier>{cea69602-fe55-4820-9acc-9e84a9d35a54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Animation\AnimationStateMachine">
+      <UniqueIdentifier>{7f436137-1109-43bf-b82c-b5e3d35b5206}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Animation\Nicky">
+      <UniqueIdentifier>{2fbb0048-754e-407f-b9fc-cd058bd1f262}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Animation\Bianca">
+      <UniqueIdentifier>{68528acc-b0c2-4fce-b52f-a384aef545da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Animation\Nicky\Wait">
+      <UniqueIdentifier>{49875535-81c7-493a-9e58-a50c9fa1e6cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Animation\Nicky\Move">
+      <UniqueIdentifier>{a37e16d4-11bf-4888-8a0c-782e410cfece}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Animation\Nicky\Skill">
+      <UniqueIdentifier>{afa4a79c-744e-4ba7-b896-0595194547c5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
