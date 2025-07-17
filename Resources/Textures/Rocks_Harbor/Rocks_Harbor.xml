@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Materials>
+    <Material>
+        <Name>Rock_G</Name>
+        <DiffuseFile>Rock_G.png</DiffuseFile>
+        <SpecularFile>Rock_G.png</SpecularFile>
+        <NormalFile>Rock_G_Normal.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Rock_D</Name>
+        <DiffuseFile>Rock_D.png</DiffuseFile>
+        <SpecularFile>Rock_D.png</SpecularFile>
+        <NormalFile>Rock_D_Normal.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Rock_F</Name>
+        <DiffuseFile>Rock_F.png</DiffuseFile>
+        <SpecularFile>Rock_F.png</SpecularFile>
+        <NormalFile>Rock_F_Normal.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Rock_H</Name>
+        <DiffuseFile>Rock_H.png</DiffuseFile>
+        <SpecularFile>Rock_H.png</SpecularFile>
+        <NormalFile>Rock_H_Normal.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+</Materials>

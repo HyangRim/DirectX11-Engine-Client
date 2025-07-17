@@ -70,28 +70,284 @@ void AssimpTool::Init()
 
 	//}
 
-	//{
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/church.fbx");
 
-	//	shared_ptr<Converter> converter = make_shared<Converter>();
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"church/church");
+		converter->ExportModelData(L"church/church");
 
-	//	//FBX -> Memory
-	//	converter->ReadAssetFile(L"Map2/map2.fbx");
+		//CustomData -> Memory;
+	}
 
-	//	//Memory ->CustomData;
-	//	converter->ExportMaterialData(L"map2/map2");
-	//	converter->ExportModelData(L"map2/map2");
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Factory.fbx");
 
-	//	//CustomData -> Memory;
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Factory/Factory");
+		converter->ExportModelData(L"Factory/Factory");
 
-	//}
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/gojuga.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"gojuga/gojuga");
+		converter->ExportModelData(L"gojuga/gojuga");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Grass_Cemetry.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Grass_Cemetry/Grass_Cemetry");
+		converter->ExportModelData(L"Grass_Cemetry/Grass_Cemetry");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Grass_Church.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Grass_Church/Grass_Church");
+		converter->ExportModelData(L"Grass_Church/Grass_Church");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Grass_Factory.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Grass_Factory/Grass_Factory");
+		converter->ExportModelData(L"Grass_Factory/Grass_Factory");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Grass_gojuga.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Grass_gojuga/Grass_gojuga");
+		converter->ExportModelData(L"Grass_gojuga/Grass_gojuga");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Grass_Harbor.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Grass_Harbor/Grass_Harbor");
+		converter->ExportModelData(L"Grass_Harbor/Grass_Harbor");
+
+		//CustomData -> Memory;
+	}
 
 
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
-		converter->ReadAssetFile(L"Bianca/Glove_skill04.fbx");
-		converter->ExportAnimationData(L"Bianca2/Glove_skill04");
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Harbor.fbx");
 
-	}/*
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Harbor/Harbor");
+		converter->ExportModelData(L"Harbor/Harbor");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/hospital.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"hospital/hospital");
+		converter->ExportModelData(L"hospital/hospital");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Poles_Factory.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Poles_Factory/Poles_Factory");
+		converter->ExportModelData(L"Poles_Factory/Poles_Factory");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Poles_gojuga.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Poles_gojuga/Poles_gojuga");
+		converter->ExportModelData(L"Poles_gojuga/Poles_gojuga");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Poles_Harbor.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Poles_Harbor/Poles_Harbor");
+		converter->ExportModelData(L"Poles_Harbor/Poles_Harbor");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Rocks_Church.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Rocks_Church/Rocks_Church");
+		converter->ExportModelData(L"Rocks_Church/Rocks_Church");
+
+		//CustomData -> Memory;
+	}
+
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Rocks_Factory.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Rocks_Factory/Rocks_Factory");
+		converter->ExportModelData(L"Rocks_Factory/Rocks_Factory");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Rocks_gojuga.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Rocks_gojuga/Rocks_gojuga");
+		converter->ExportModelData(L"Rocks_gojuga/Rocks_gojuga");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Rocks_Harbor.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Rocks_Harbor/Rocks_Harbor");
+		converter->ExportModelData(L"Rocks_Harbor/Rocks_Harbor");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Rocks_SandBeach.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Rocks_SandBeach/Rocks_SandBeach");
+		converter->ExportModelData(L"Rocks_SandBeach/Rocks_SandBeach");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/sand_beach.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"sand_beach/sand_beach");
+		converter->ExportModelData(L"sand_beach/sand_beach");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Tree_Cemetery.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Tree_Cemetery/Tree_Cemetery");
+		converter->ExportModelData(L"Tree_Cemetery/Tree_Cemetery");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Tree_Church.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Tree_Church/Tree_Church");
+		converter->ExportModelData(L"Tree_Church/Tree_Church");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Tree_gojuga.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Tree_gojuga/Tree_gojuga");
+		converter->ExportModelData(L"Tree_gojuga/Tree_gojuga");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Tree_Harbor.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Tree_Harbor/Tree_Harbor");
+		converter->ExportModelData(L"Tree_Harbor/Tree_Harbor");
+
+		//CustomData -> Memory;
+	}
+	/*
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		converter->ReadAssetFile(L"Nicky/Nicky_Wait.fbx");

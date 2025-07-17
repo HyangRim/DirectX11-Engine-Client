@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Materials>
+    <Material>
+        <Name>Tree_leaves_001</Name>
+        <DiffuseFile>Vegetation_Tree_Leaves_01.png</DiffuseFile>
+        <SpecularFile>Vegetation_Tree_Leaves_01.png</SpecularFile>
+        <NormalFile>Vegetation_Tree_Leaves_01.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="0.96078449" G="0.96078449" B="0.96078449" A="1"/>
+        <Specular R="0.96078449" G="0.96078449" B="0.96078449" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Tree_Bark_02</Name>
+        <DiffuseFile>Deciduous_bark_02.png</DiffuseFile>
+        <SpecularFile>Deciduous_bark_02.png</SpecularFile>
+        <NormalFile>Deciduous_bark_02.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Tree_Bark_01</Name>
+        <DiffuseFile>Deciduous_bark_01.png</DiffuseFile>
+        <SpecularFile>Deciduous_bark_01.png</SpecularFile>
+        <NormalFile>Deciduous_bark_01.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Tree_Bark_06</Name>
+        <DiffuseFile>Deciduous_bark_06.png</DiffuseFile>
+        <SpecularFile>Deciduous_bark_06.png</SpecularFile>
+        <NormalFile>Deciduous_bark_06.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Tree_Bark_05</Name>
+        <DiffuseFile>Deciduous_bark_05.png</DiffuseFile>
+        <SpecularFile>Deciduous_bark_05.png</SpecularFile>
+        <NormalFile>Deciduous_bark_05.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Tree_Bark_09</Name>
+        <DiffuseFile>Deciduous_bark_09.png</DiffuseFile>
+        <SpecularFile>Deciduous_bark_09.png</SpecularFile>
+        <NormalFile>Deciduous_bark_09.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+    <Material>
+        <Name>Tree_leaves_01_Re</Name>
+        <DiffuseFile>BG_Tree_Leaves_Re.png</DiffuseFile>
+        <SpecularFile>BG_Tree_Leaves_Re.png</SpecularFile>
+        <NormalFile>BG_Tree_Leaves_Re.png</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="1" B="1" A="1"/>
+        <Specular R="1" G="1" B="1" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+</Materials>
