@@ -2,19 +2,6 @@
 #include "00. Light.fx"
 #include "00. Render.fx"
 
-////////////////
-// FOW Buffer //
-////////////////
-
-cbuffer FogOfWarData : register(b5)
-{
-    float3 g_playerWorldPos; // 플레이어 월드 위치
-    float g_sightRange; // 시야 거리
-    float g_darkness; // 어둠 강도 (0.0 ~ 1.0)
-    float g_fadeDistance; // 페이드 거리
-    float g_smoothness; // 경계 부드러움
-    float g_time; // 시간 (애니메이션용)
-}
 
 ////////////////
 // Functions  //
@@ -61,6 +48,14 @@ float CalculateFogOfWar(float3 worldPos)
 // 기본 FOW 픽셀 셰이더
 float4 PS_FOW(MeshOutput input) : SV_TARGET
 {
+    
+    //float distance = length(input.worldPosition - g_playerWorldPos);
+    //if (distance > 25.f)
+    //{
+    //    discard;
+    //}
+    
+    
     //그림자 계산. 
     float shadow = CalcShadowFactor(ShadowMap, input.shadowPosH);
     // 기존 라이팅 계산
