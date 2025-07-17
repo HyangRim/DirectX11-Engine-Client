@@ -8,6 +8,6 @@ private:
 	virtual void Init() override;
 	virtual void Update() override;
 
-	float m_speed = 10.f;
+	float m_speed = 100.f;
 };
 
