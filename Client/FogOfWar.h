@@ -50,7 +50,7 @@ private:
 private:
 	//¿ø ¼³Á¤.
 	float m_sightRange = 8.f;
-	float m_darkness = 0.3f;
+	float m_darkness = 0.7f;
 	float m_fadeDistance = 3.0f;
 	float m_smoothness = 2.0f;
 

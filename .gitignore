@@ -98,6 +98,10 @@ StyleCopReport.xml
 *.svclog
 *.scc
 
+#map2File
+map2.mesh
+Vertices.csv
+
 # Chutzpah Test files
 _Chutzpah*
 
