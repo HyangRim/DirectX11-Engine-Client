@@ -4,6 +4,7 @@
 #include "Shader.h"
 #include "Mesh.h"
 #include "Material.h"
+#include "Model.h"
 #include "MathUtils.h"
 #include <filesystem>
 
@@ -126,4 +127,17 @@ shared_ptr<Texture> ResourceManager::GetOrAddTexture(const wstring& _key, const 
 
 	//있으면 보내주기. 
 	return texture;
+}
+
+shared_ptr<Model> ResourceManager::GetOrAddModel(const wstring& _key, const wstring& _path)
+{
+	shared_ptr<Model> model = Get<Model>(_key);
+
+	if (model == nullptr) {
+		model = make_shared<Model>();
+		model->ReadModel(_path);
+		Add(_key, model);
+	}
+
+	return model;
 }

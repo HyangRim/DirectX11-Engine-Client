@@ -334,8 +334,8 @@ void BillboardDemo::Init()
 		baseobj->SetType(OBJECTTYPE::MAP);
 		//±³È¸ Base
 		{
-			shared_ptr<Model> m2 = make_shared<Model>();
-			m2->ReadModel(L"forest/forest");
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"forest", L"forest/forest");
+			//m2->ReadModel(L"forest/forest");
 			m2->ReadMaterial(L"forest/forest");
 			auto obj = make_shared<GameObject>();
 			obj->SetName(L"forest");

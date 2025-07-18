@@ -5,6 +5,7 @@
 class Shader;
 class Texture;
 class Mesh;
+class Model;
 class Material;
 
 class ResourceManager
@@ -24,9 +25,13 @@ public:
 	shared_ptr<T> Get(const wstring& _key);
 
 	shared_ptr<Texture> GetOrAddTexture(const wstring& _key, const wstring& _path);
+	shared_ptr<Model> GetOrAddModel(const wstring& _key, const wstring& _path);
+
 
 	template<typename T>
 	ResourceType GetResourceType();
+
+	
 
 private:
 	void CreateDefaultMesh();
@@ -95,6 +100,8 @@ ResourceType ResourceManager::GetResourceType()
 		return ResourceType::Mesh;
 	if (std::is_same_v<T, Material>)
 		return ResourceType::Material;
+	if (std::is_same_v<T, Model>)
+		return ResourceType::Model;
 
 	assert(false);
 	return ResourceType::None;

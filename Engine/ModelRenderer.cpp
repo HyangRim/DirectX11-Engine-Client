@@ -6,7 +6,6 @@
 #include "ModelMesh.h"
 #include "Camera.h"
 #include "Light.h"
-#include "Material.h"
 
 ModelRenderer::ModelRenderer(shared_ptr<Shader> _shader) : Super(ComponentType::ModelRenderer), m_shader(_shader)
 {

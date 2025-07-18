@@ -8,6 +8,7 @@ enum class ResourceType : uint8
 	Texture,
 	Material,
 	Animation,
+	Model,
 
 	End
 };

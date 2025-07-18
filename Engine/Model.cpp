@@ -8,7 +8,7 @@
 #include "ModelMesh.h"
 #include "ModelAnimation.h"
 
-Model::Model()
+Model::Model() : Super(ResourceType::Model)
 {
 }
 

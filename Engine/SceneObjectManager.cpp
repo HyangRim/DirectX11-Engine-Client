@@ -321,7 +321,7 @@ shared_ptr<GameObject> SceneObjectManager::PickObjectOrUI()
     // UI 검사 (기존과 동일)
     if (GetUICamera() != nullptr)
     {
-        const auto gameObjects = m_uiObjects;
+        const auto& gameObjects = m_uiObjects;
         for (auto& object : gameObjects)
         {
             if (object->GetButton() == nullptr) continue;
@@ -570,7 +570,7 @@ void SceneObjectManager::UpdateQuadTree()
 
 shared_ptr<GameObject> SceneObjectManager::GetMainCamera()
 {
-    for (auto camera : m_cameras) {
+    for (auto& camera : m_cameras) {
         if (camera->GetCamera()->GetProjectionType() == ProjectionType::Perspective)
             return camera;
     }
@@ -579,7 +579,7 @@ shared_ptr<GameObject> SceneObjectManager::GetMainCamera()
 
 shared_ptr<GameObject> SceneObjectManager::GetUICamera()
 {
-    for (auto camera : m_cameras) {
+    for (auto& camera : m_cameras) {
         if (camera->GetCamera()->GetProjectionType() == ProjectionType::Orthographic)
             return camera;
     }
