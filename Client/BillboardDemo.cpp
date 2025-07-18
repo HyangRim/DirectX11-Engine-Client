@@ -299,19 +299,49 @@ void BillboardDemo::Init()
 		}
 	}
 	
-	{
-		// Model
-		shared_ptr<Model> m2 = make_shared<Model>();
-		m2->ReadModel(L"Cemetary/Cemetary");
-		m2->ReadMaterial(L"Cemetary/Cemetary");
-		//m2->ReadModel(L"map2/map2");
-		//m2->ReadMaterial(L"map2/map2");
 
-		for (int32 i = 0; i < 1; i++)
+	//교회 Base
+	//{
+	//	// Model
+	//	shared_ptr<Model> m2 = make_shared<Model>();
+	//	m2->ReadModel(L"/Cemetary");
+	//	m2->ReadMaterial(L"Cemetary/Cemetary");
+	//	//m2->ReadModel(L"map2/map2");
+	//	//m2->ReadMaterial(L"map2/map2");
+
+	//	for (int32 i = 0; i < 1; i++)
+	//	{
+	//		auto obj = make_shared<GameObject>();
+	//		obj->GetTransform()->SetPosition(Vec3(0, 0, 0));
+	//		obj->GetTransform()->SetScale(Vec3(0.01f));
+	//		obj->SetType(OBJECTTYPE::MAP);
+
+	//		obj->AddComponent(make_shared<ModelRenderer>(renderShader));
+	//		{
+	//			obj->GetModelRenderer()->SetModel(m2);
+	//			obj->GetModelRenderer()->SetPass(1);
+	//		}
+
+	//		CURSCENE->Add(obj);
+	//	}
+	//}
+	//교회. 
+	//맵 부모 오브젝트. 
+	{
+		auto baseobj = make_shared<GameObject>();
+		baseobj->GetTransform()->SetLocalPosition(Vec3(0, 0, 0));
+		baseobj->GetTransform()->SetLocalScale(Vec3(1.f));
+		baseobj->SetType(OBJECTTYPE::MAP);
+		//교회 Base
 		{
+			shared_ptr<Model> m2 = make_shared<Model>();
+			m2->ReadModel(L"Cemetary/Cemetary");
+			m2->ReadMaterial(L"Cemetary/Cemetary");
 			auto obj = make_shared<GameObject>();
-			obj->GetTransform()->SetPosition(Vec3(0, 0, 0));
-			obj->GetTransform()->SetScale(Vec3(0.01f));
+			obj->SetName(L"Cemetary_base");
+			obj->GetTransform()->SetLocalPosition(Vec3(0, 0, 0));
+			obj->GetTransform()->SetLocalScale(Vec3(0.01f));
+			obj->GetTransform()->SetParent(baseobj->GetTransform());
 			obj->SetType(OBJECTTYPE::MAP);
 
 			obj->AddComponent(make_shared<ModelRenderer>(renderShader));
@@ -322,6 +352,7 @@ void BillboardDemo::Init()
 
 			CURSCENE->Add(obj);
 		}
+
 	}
 
 	// UI

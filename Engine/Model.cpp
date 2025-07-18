@@ -36,7 +36,6 @@ void Model::ReadMaterial(wstring _filename)
 
         node = materialNode->FirstChildElement();
         material->SetName(Utils::ToWString(node->GetText()));
-
         // Diffuse Texture
         node = node->NextSiblingElement();
         if (node->GetText())
@@ -338,15 +337,20 @@ shared_ptr<ModelAnimation> Model::GetAnimationByTag(const wstring& _tag)
 void Model::BindCacheInfo()
 {
     // Mesh에 Material 캐싱. 
+    unordered_set<wstring> matlist;
     for (const auto& mesh : m_meshes)
     {
+        matlist.insert(mesh->m_materialName);
         //이미 찾았으면 스킵. 
         if (mesh->m_material != nullptr)
             continue;
 
         mesh->m_material = GetMaterialByName(mesh->m_materialName);
+        if (mesh->m_material) {
+            int asas = 3232;
+        }
     }
-
+    
     //Mesh에 Bone 캐싱. 
     for (const auto& mesh : m_meshes)
     {

@@ -37,7 +37,7 @@ private:
 	wstring m_resourcePath;
 
 private:
-	using KeyObjMap = map<wstring/*key*/, shared_ptr<ResourceBase>>;
+	using KeyObjMap = unordered_map<wstring/*key*/, shared_ptr<ResourceBase>>;
 	array<KeyObjMap, RESOURCE_TYPE_COUNT> m_resources;
 };
 
