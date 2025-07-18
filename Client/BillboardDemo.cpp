@@ -1,36 +1,9 @@
 #include "pch.h"
 #include "BillboardDemo.h"
-#include "GameObject.h"
-#include "GeometryHelper.h"
-#include "Camera.h"
-#include "MeshRenderer.h"
-#include "Mesh.h"
-#include "Material.h"
-#include "Model.h"
-#include "ModelRenderer.h"
-#include "ModelAnimator.h"
-#include "Transform.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-#include "Light.h"
-#include "TextureBuffer.h"
-#include "Viewport.h"
-#include "SphereCollider.h"
-#include "Scene.h"
-#include "AABBBoxCollider.h"
-#include "OBBBoxCollider.h"
-#include "Terrain.h"
-#include "Button.h"
-#include "Billboard.h"
-#include "SnowBillboard.h"
-#include "ParticleSystem.h"
-#include "Sky.h"
-#include "Rigidbody.h"
-#include "FogOfWar.h"
-#include "CameraScript.h"
-#include "SceneObjectManager.h"
 #include "BiancaTest.h"
 #include "BiancaCamera.h"
+#include "FogOfWar.h"
+#include "CameraScript.h"
 
 #include "AnimationStateMachine.h"
 #include "BiancaRunState.h"
@@ -42,7 +15,7 @@ void BillboardDemo::Init()
 {
 	CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\snowcube1024.dds", L"Sky.fx"));
 	shared_ptr<Shader> renderShader = make_shared<Shader>(L"FOW.fx");
-	//shared_ptr<Shader> renderShader = make_shared<Shader>(L"23. RenderDemo.fx");
+	shared_ptr<Shader> grassShader = make_shared<Shader>(L"28. BillboardDemo.fx");
 	// Camera
 	auto camera = make_shared<GameObject>();
 	camera->AddComponent(make_shared<Camera>());
@@ -52,81 +25,239 @@ void BillboardDemo::Init()
 	camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
 	CURSCENE->Add(camera);
 	
+	{
+		// UICamera
+		auto camera = make_shared<GameObject>();
+		camera->GetTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
+		camera->AddComponent(make_shared<Camera>());
+		camera->GetCamera()->SetProjectionType(ProjectionType::Orthographic);
+		camera->GetCamera()->SetNear(1.0f);
+		camera->GetCamera()->SetFar(100.0f);
+		camera->GetCamera()->SetCullingMaskAll();
+		camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, false);
+		CURSCENE->Add(camera);
+	}
 
 	{
-		// Mesh0
-		// Material
 		{
-			shared_ptr<Material> material = make_shared<Material>();
-			material->SetShader(renderShader);
-			auto texture = RESOURCES->Load<Texture>(L"Veigar", L"..\\Resources\\Textures\\veigar.jpg");
-			material->SetDiffuseMap(texture);
-			MaterialDesc& desc = material->GetMaterialDesc();
-			desc.ambient = Vec4(1.f);
-			desc.diffuse = Vec4(1.f);
-			desc.specular = Vec4(1.f);
-			RESOURCES->Add(L"Veigar", material);
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_STR_Base", L"Cemetery/Cemetery_STR_Base");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"Cemetery/Cemetery_STR_Base");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Cemetery_STR_Base");
+			obj->GetTransform()->SetLocalPosition(Vec3(0, -10, 0));
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::MAP);
+
+			obj->AddComponent(make_shared<ModelRenderer>(renderShader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+
+			CURSCENE->Add(obj);
 		}
 
-		//OBB 1
-		//{
-		//	auto obj = make_shared<GameObject>();
-		//	obj->GetTransform()->SetLocalPosition(Vec3(0, 2.5f, 0));
-		//	obj->GetTransform()->SetLocalScale(Vec3(1.f));
-		//	obj->AddComponent(make_shared<MeshRenderer>());
-		//	{
-		//		obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"Veigar"));
-		//	}
-		//	{
-		//		auto mesh = RESOURCES->Get<Mesh>(L"Cube");
-		//		obj->GetMeshRenderer()->SetMesh(mesh);
-		//		obj->GetMeshRenderer()->SetPass(0);
-		//	}
-		//	{
-		//		//auto collider = make_shared<SphereCollider>();
-		//		obj->AddComponent(make_shared<SphereCollider>());
-		//		obj->AddComponent(make_shared<Rigidbody>());
-		//		obj->GetRigidbody()->SetStatic(true);
-		//		//obj->GetButton()->AddOnClikedEvent([obj]() { CURSCENE->Remove(obj); });
-		//		
-		//	}
+		float movex = -50.f;
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Common_OBJ_Lavender_01", L"Environment/Common_OBJ_Lavender_01");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"Environment/Common_OBJ_Lavender_01");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Common_OBJ_Lavender_01");
+			obj->GetTransform()->SetLocalPosition(Vec3(movex, 0, 0));
+			movex += 5.f;
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::MAP);
 
-		//	CURSCENE->Add(obj);
-		//}
+			obj->AddComponent(make_shared<ModelRenderer>(renderShader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
 
+			CURSCENE->Add(obj);
+		}
 
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Common_OBJ_Longgrass_01", L"Environment/Common_OBJ_Longgrass_01");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"Environment/Common_OBJ_Longgrass_01");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Common_OBJ_Longgrass_01");
+			obj->GetTransform()->SetLocalPosition(Vec3(movex, 0, 0));
+			movex += 5.f;
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::MAP);
 
-		//OBB3
-		//{
-		//	auto obj = make_shared<GameObject>();
-		//	obj->GetTransform()->SetLocalPosition(Vec3(7.5f, 2.5f, 0));
-		//	obj->GetTransform()->SetLocalScale(Vec3(1.f));
-		//	obj->AddComponent(make_shared<MeshRenderer>());
-		//	{
-		//		obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"Veigar"));
-		//	}
-		//	{
-		//		auto mesh = RESOURCES->Get<Mesh>(L"Cube");
-		//		obj->GetMeshRenderer()->SetMesh(mesh);
-		//		obj->GetMeshRenderer()->SetPass(0);
-		//	}
-		//	{
-		//		auto collider = make_shared<SphereCollider>();
-		//		obj->AddComponent(collider);
-		//		//obj->GetButton()->AddOnClikedEvent([obj]() { CURSCENE->Remove(obj); });
+			obj->AddComponent(make_shared<ModelRenderer>(renderShader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
 
-		//	}
-		//	{
-		//		obj->AddComponent(make_shared<Rigidbody>());
-		//	}
-		//	{
-		//		obj->AddComponent(make_shared<ForceScript>());
-		//	}
+			CURSCENE->Add(obj);
+		}
 
-		//	CURSCENE->Add(obj);
-		//}
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"NATURE_FERN_00", L"Environment/NATURE_FERN_00");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"Environment/NATURE_FERN_00");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"NATURE_FERN_00");
+			obj->GetTransform()->SetLocalPosition(Vec3(movex, 0, 0));
+			movex += 5.f;
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::MAP);
 
+			obj->AddComponent(make_shared<ModelRenderer>(renderShader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
 
+			CURSCENE->Add(obj);
+		}
+
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"NATURE_FERN_04", L"Environment/NATURE_FERN_04");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"Environment/NATURE_FERN_04");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"NATURE_FERN_04");
+			obj->GetTransform()->SetLocalPosition(Vec3(movex, 0, 0));
+			movex += 5.f;
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::MAP);
+
+			obj->AddComponent(make_shared<ModelRenderer>(renderShader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+
+			CURSCENE->Add(obj);
+		}
+
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Vegetation_Shurb_01A", L"Environment/Vegetation_Shurb_01A");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"Environment/Vegetation_Shurb_01A");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Vegetation_Shurb_01A");
+			obj->GetTransform()->SetLocalPosition(Vec3(movex, 0, 0));
+			movex += 5.f;
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::MAP);
+
+			obj->AddComponent(make_shared<ModelRenderer>(renderShader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+
+			CURSCENE->Add(obj);
+		}
+
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Water_Grass_01", L"Environment/Water_Grass_01");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"Environment/Water_Grass_01");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Water_Grass_01");
+			obj->GetTransform()->SetLocalPosition(Vec3(movex, 0, 0));
+			movex += 5.f;
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::MAP);
+
+			obj->AddComponent(make_shared<ModelRenderer>(renderShader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+
+			CURSCENE->Add(obj);
+		}
+
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Water_Grass_03_1", L"Environment/Water_Grass_03_1");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"Environment/Water_Grass_03_1");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Water_Grass_03_1");
+			obj->GetTransform()->SetLocalPosition(Vec3(movex, 0, 0));
+			movex += 5.f;
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::MAP);
+
+			obj->AddComponent(make_shared<ModelRenderer>(renderShader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+
+			CURSCENE->Add(obj);
+		}
+
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Wetland_GrassPatch_2", L"Environment/Wetland_GrassPatch_2");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"Environment/Wetland_GrassPatch_2");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Wetland_GrassPatch_2");
+			obj->GetTransform()->SetLocalPosition(Vec3(movex, 0, 0));
+			movex += 5.f;
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::MAP);
+
+			obj->AddComponent(make_shared<ModelRenderer>(renderShader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+
+			CURSCENE->Add(obj);
+		}
+
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Wetland_GrassPatch_3", L"Environment/Wetland_GrassPatch_3");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"Environment/Wetland_GrassPatch_3");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Wetland_GrassPatch_3");
+			obj->GetTransform()->SetLocalPosition(Vec3(movex, 0, 0));
+			movex += 5.f;
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::MAP);
+
+			obj->AddComponent(make_shared<ModelRenderer>(renderShader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+
+			CURSCENE->Add(obj);
+		}
+
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Woodland_GrassPatch_01", L"Environment/Woodland_GrassPatch_01");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"Environment/Woodland_GrassPatch_01");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Woodland_GrassPatch_01");
+			obj->GetTransform()->SetLocalPosition(Vec3(movex, 0, 0));
+			movex += 5.f;
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::MAP);
+
+			obj->AddComponent(make_shared<ModelRenderer>(renderShader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+
+			CURSCENE->Add(obj);
+		}
 
 	}
 
@@ -182,28 +313,6 @@ void BillboardDemo::Init()
 	//	CURSCENE->Add(obj);
 	//}
 
-	//// Terrain
-	//{
-	//	//auto terrainShader = make_shared<Shader>(L"19. RenderDemo.fx");
-	//	{
-	//		shared_ptr<Material> material = make_shared<Material>();
-	//		material->SetShader(renderShader);
-	//		auto texture = RESOURCES->Load<Texture>(L"TerrainGrass", L"..\\Resources\\Textures\\Terrain\\grass.jpg");
-	//		material->SetDiffuseMap(texture);
-	//		MaterialDesc& desc = material->GetMaterialDesc();
-	//		desc.ambient = Vec4(1.f);
-	//		desc.diffuse = Vec4(1.f);
-	//		desc.specular = Vec4(1.f);
-	//		RESOURCES->Add(L"TerrainGrass", material);
-	//	}
-	//	auto obj = make_shared<GameObject>();
-	//	obj->SetType(OBJECTTYPE::MAP);
-	//	obj->GetTransform()->SetLocalPosition(Vec3(-100.f, 0.f, -100.f));
-	//	obj->AddComponent(make_shared<Terrain>());
-	//	obj->GetTerrain()->Create(200, 200, RESOURCES->Get<Material>(L"TerrainGrass"));
-	//	CURSCENE->Add(obj);
-	//}
-
 	//Particle
 	/*{
 		auto particleShader = make_shared<Shader>(L"ParticleSystem.fx");
@@ -222,35 +331,6 @@ void BillboardDemo::Init()
 		CURSCENE->Add(obj);
 	}*/
 
-	//// SnowBillboard
-	//{	// Billboard
-	//	{
-	//		auto snowShader = make_shared<Shader>(L"29. SnowBillboard.fx");
-	//		auto obj = make_shared<GameObject>();
-	//		obj->GetTransform()->SetLocalPosition(Vec3(0.f));
-	//		obj->AddComponent(make_shared<SnowBillboard>(Vec3(100, 100, 100), 10000));
-	//		{
-	//			// Material
-	//			{
-	//				shared_ptr<Material> material = make_shared<Material>();
-	//				material->SetShader(snowShader);
-	//				auto texture = RESOURCES->Load<Texture>(L"SnowGrass", L"..\\Resources\\Textures\\grass.png");
-	//				//auto texture = RESOURCES->Load<Texture>(L"Veigar", L"..\\Resources\\Textures\\veigar.jpg");
-	//				material->SetDiffuseMap(texture);
-	//				MaterialDesc& desc = material->GetMaterialDesc();
-	//				desc.ambient = Vec4(1.f);
-	//				desc.diffuse = Vec4(1.f);
-	//				desc.specular = Vec4(1.f);
-	//				RESOURCES->Add(L"Veigar", material);
-
-	//				obj->GetSnowBillboard()->SetMaterial(material);
-	//			}
-	//		}
-
-	//		CURSCENE->Add(obj);
-	//	}
-	//}
-
 	{
 		// Animation
 		shared_ptr<Model> m1 = make_shared<Model>();
@@ -268,11 +348,6 @@ void BillboardDemo::Init()
 		//m1->ReadAnimation(L"Skill_R_1",L"Bianca2/Bianca_skill4");
 		//m1->ReadAnimation(L"Skill_R_2", L"Bianca2/Bianca_skill4-2");
 
-
-		//m1->ReadAnimation(L"Bianca2/Bianca_reststart");
-		//m1->ReadAnimation(L"Bianca2/Bianca_restloop");
-		//m1->ReadAnimation(L"Bianca2/Bianca_restend");
-		//m1->ReadAnimation(L"Skill", L"Bianca2/Bianca_dance");
 
 		for (int32 i = 0; i < 1; i++)
 		{
@@ -318,7 +393,7 @@ void BillboardDemo::Init()
 
 		}
 	}
-	
+
 
 	//교회 Base
 	//{
@@ -347,63 +422,34 @@ void BillboardDemo::Init()
 	//}
 	//교회. 
 	//맵 부모 오브젝트. 
-	{
-		auto baseobj = make_shared<GameObject>();
-		baseobj->GetTransform()->SetLocalPosition(Vec3(0, 0, 0));
-		baseobj->GetTransform()->SetLocalScale(Vec3(1.f));
-		baseobj->SetType(OBJECTTYPE::MAP);
-		//교회 Base
-		{
-			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"forest", L"forest/forest");
-			//m2->ReadModel(L"forest/forest");
-			m2->ReadMaterial(L"forest/forest");
-			auto obj = make_shared<GameObject>();
-			obj->SetName(L"forest");
-			obj->GetTransform()->SetLocalPosition(Vec3(0, 0, 0));
-			obj->GetTransform()->SetLocalScale(Vec3(0.01f));
-			obj->GetTransform()->SetParent(baseobj->GetTransform());
-			obj->SetType(OBJECTTYPE::MAP);
-
-			obj->AddComponent(make_shared<ModelRenderer>(renderShader));
-			{
-				obj->GetModelRenderer()->SetModel(m2);
-				obj->GetModelRenderer()->SetPass(1);
-			}
-
-			CURSCENE->Add(obj);
-		}
-
-	}
-
-	// UI
 	//{
-	//	const int debugUISize = 5;
-	//	auto obj = make_shared<GameObject>();
-	//	obj->SetLayerIndex(LAYER_UI);
-	//	obj->AddComponent(make_shared<Button>());
-	//	auto material = make_shared<Material>();
-	//	//auto texture = make_shared<Texture>();
-	//	//texture->SetSRV(GRAPHICS->GetShadowMapSRV());
-	//	material->SetDiffuseMap(GRAPHICS->GetShadowMap());
-	//	material->SetShader(make_shared<Shader>(L"DebugTexture.fx"));
-	//	obj->GetButton()->Create(Vec2(2048 / (debugUISize * 2) + 20, 2048 / (debugUISize * 2) + 20), Vec2(2048 / debugUISize, 2048 / debugUISize), material);
-	//	obj->GetButton()->AddOnClickedEvent([obj]() { CURSCENE->Remove(obj); });
+	//	auto baseobj = make_shared<GameObject>();
+	//	baseobj->GetTransform()->SetLocalPosition(Vec3(0, 0, 0));
+	//	baseobj->GetTransform()->SetLocalScale(Vec3(1.f));
+	//	baseobj->SetType(OBJECTTYPE::MAP);
+	//	//교회 Base
+	//	{
+	//		shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"forest", L"forest/forest");
+	//		//m2->ReadModel(L"forest/forest");
+	//		m2->ReadMaterial(L"forest/forest");
+	//		auto obj = make_shared<GameObject>();
+	//		obj->SetName(L"forest");
+	//		obj->GetTransform()->SetLocalPosition(Vec3(0, 0, 0));
+	//		obj->GetTransform()->SetLocalScale(Vec3(0.01f));
+	//		obj->GetTransform()->SetParent(baseobj->GetTransform());
+	//		obj->SetType(OBJECTTYPE::MAP);
 
-	//	CURSCENE->Add(obj);
+	//		obj->AddComponent(make_shared<ModelRenderer>(renderShader));
+	//		{
+	//			obj->GetModelRenderer()->SetModel(m2);
+	//			obj->GetModelRenderer()->SetPass(1);
+	//		}
+
+	//		CURSCENE->Add(obj);
+	//	}
+
 	//}
 
-	{
-		// UICamera
-		auto camera = make_shared<GameObject>();
-		camera->GetTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
-		camera->AddComponent(make_shared<Camera>());
-		camera->GetCamera()->SetProjectionType(ProjectionType::Orthographic);
-		camera->GetCamera()->SetNear(1.0f);
-		camera->GetCamera()->SetFar(100.0f);
-		camera->GetCamera()->SetCullingMaskAll();
-		camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, false);
-		CURSCENE->Add(camera);
-	}
 }
 
 void BillboardDemo::Update()
