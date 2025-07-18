@@ -335,10 +335,10 @@ void BillboardDemo::Init()
 		//±³È¸ Base
 		{
 			shared_ptr<Model> m2 = make_shared<Model>();
-			m2->ReadModel(L"Cemetary/Cemetary");
-			m2->ReadMaterial(L"Cemetary/Cemetary");
+			m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"forest/forest");
 			auto obj = make_shared<GameObject>();
-			obj->SetName(L"Cemetary_base");
+			obj->SetName(L"forest");
 			obj->GetTransform()->SetLocalPosition(Vec3(0, 0, 0));
 			obj->GetTransform()->SetLocalScale(Vec3(0.01f));
 			obj->GetTransform()->SetParent(baseobj->GetTransform());

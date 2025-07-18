@@ -30,98 +30,105 @@ void Model::ReadMaterial(wstring _filename)
 
     while (materialNode)
     {
-        shared_ptr<Material> material = make_shared<Material>();
 
         tinyxml2::XMLElement* node = nullptr;
 
         node = materialNode->FirstChildElement();
-        material->SetName(Utils::ToWString(node->GetText()));
-        // Diffuse Texture
-        node = node->NextSiblingElement();
-        if (node->GetText())
-        {
-            wstring textureStr = Utils::ToWString(node->GetText());
-            if (textureStr.length() > 0)
-            {
-                auto texture = RESOURCES->GetOrAddTexture(textureStr, (parentPath / textureStr).wstring());
-                material->SetDiffuseMap(texture);
-            }
-        }
+        wstring materialName = Utils::ToWString(node->GetText());
+        shared_ptr<Material> material = RESOURCES->Get<Material>(materialName);
+        if (material == nullptr) {
+            material = make_shared<Material>();
+            material->SetName(materialName);
 
-        // Specular Texture
-        node = node->NextSiblingElement();
-        if (node->GetText())
-        {
-            wstring texture = Utils::ToWString(node->GetText());
-            if (texture.length() > 0)
+            // Diffuse Texture
+            node = node->NextSiblingElement();
+            if (node->GetText())
             {
                 wstring textureStr = Utils::ToWString(node->GetText());
                 if (textureStr.length() > 0)
                 {
                     auto texture = RESOURCES->GetOrAddTexture(textureStr, (parentPath / textureStr).wstring());
-                    material->SetSpecularMap(texture);
+                    material->SetDiffuseMap(texture);
                 }
             }
-        }
 
-        // Normal Texture
-        node = node->NextSiblingElement();
-        if (node->GetText())
-        {
-            wstring textureStr = Utils::ToWString(node->GetText());
-            if (textureStr.length() > 0)
+            // Specular Texture
+            node = node->NextSiblingElement();
+            if (node->GetText())
             {
-                auto texture = RESOURCES->GetOrAddTexture(textureStr, (parentPath / textureStr).wstring());
-                material->SetNormalMap(texture);
+                wstring texture = Utils::ToWString(node->GetText());
+                if (texture.length() > 0)
+                {
+                    wstring textureStr = Utils::ToWString(node->GetText());
+                    if (textureStr.length() > 0)
+                    {
+                        auto texture = RESOURCES->GetOrAddTexture(textureStr, (parentPath / textureStr).wstring());
+                        material->SetSpecularMap(texture);
+                    }
+                }
             }
-        }
 
-        // Ambient
-        {
+            // Normal Texture
             node = node->NextSiblingElement();
+            if (node->GetText())
+            {
+                wstring textureStr = Utils::ToWString(node->GetText());
+                if (textureStr.length() > 0)
+                {
+                    auto texture = RESOURCES->GetOrAddTexture(textureStr, (parentPath / textureStr).wstring());
+                    material->SetNormalMap(texture);
+                }
+            }
 
-            Color color;
-            color.x = node->FloatAttribute("R");
-            color.y = node->FloatAttribute("G");
-            color.z = node->FloatAttribute("B");
-            color.w = node->FloatAttribute("A");
-            material->GetMaterialDesc().ambient = color;
-        }
+            // Ambient
+            {
+                node = node->NextSiblingElement();
 
-        // Diffuse
-        {
-            node = node->NextSiblingElement();
+                Color color;
+                color.x = node->FloatAttribute("R");
+                color.y = node->FloatAttribute("G");
+                color.z = node->FloatAttribute("B");
+                color.w = node->FloatAttribute("A");
+                material->GetMaterialDesc().ambient = color;
+            }
 
-            Color color;
-            color.x = node->FloatAttribute("R");
-            color.y = node->FloatAttribute("G");
-            color.z = node->FloatAttribute("B");
-            color.w = node->FloatAttribute("A");
-            material->GetMaterialDesc().diffuse = color;
-        }
+            // Diffuse
+            {
+                node = node->NextSiblingElement();
 
-        // Specular
-        {
-            node = node->NextSiblingElement();
+                Color color;
+                color.x = node->FloatAttribute("R");
+                color.y = node->FloatAttribute("G");
+                color.z = node->FloatAttribute("B");
+                color.w = node->FloatAttribute("A");
+                material->GetMaterialDesc().diffuse = color;
+            }
 
-            Color color;
-            color.x = node->FloatAttribute("R");
-            color.y = node->FloatAttribute("G");
-            color.z = node->FloatAttribute("B");
-            color.w = node->FloatAttribute("A");
-            material->GetMaterialDesc().specular = color;
-        }
+            // Specular
+            {
+                node = node->NextSiblingElement();
 
-        // Emissive
-        {
-            node = node->NextSiblingElement();
+                Color color;
+                color.x = node->FloatAttribute("R");
+                color.y = node->FloatAttribute("G");
+                color.z = node->FloatAttribute("B");
+                color.w = node->FloatAttribute("A");
+                material->GetMaterialDesc().specular = color;
+            }
 
-            Color color;
-            color.x = node->FloatAttribute("R");
-            color.y = node->FloatAttribute("G");
-            color.z = node->FloatAttribute("B");
-            color.w = node->FloatAttribute("A");
-            material->GetMaterialDesc().emissive = color;
+            // Emissive
+            {
+                node = node->NextSiblingElement();
+
+                Color color;
+                color.x = node->FloatAttribute("R");
+                color.y = node->FloatAttribute("G");
+                color.z = node->FloatAttribute("B");
+                color.w = node->FloatAttribute("A");
+                material->GetMaterialDesc().emissive = color;
+            }
+
+            RESOURCES->Add(materialName, material);
         }
 
         m_materials.push_back(material);
@@ -130,6 +137,7 @@ void Model::ReadMaterial(wstring _filename)
         materialNode = materialNode->NextSiblingElement();
     }
 
+    delete document;
     BindCacheInfo();
 }
 
@@ -337,18 +345,13 @@ shared_ptr<ModelAnimation> Model::GetAnimationByTag(const wstring& _tag)
 void Model::BindCacheInfo()
 {
     // Mesh에 Material 캐싱. 
-    unordered_set<wstring> matlist;
     for (const auto& mesh : m_meshes)
     {
-        matlist.insert(mesh->m_materialName);
         //이미 찾았으면 스킵. 
         if (mesh->m_material != nullptr)
             continue;
 
         mesh->m_material = GetMaterialByName(mesh->m_materialName);
-        if (mesh->m_material) {
-            int asas = 3232;
-        }
     }
     
     //Mesh에 Bone 캐싱. 
