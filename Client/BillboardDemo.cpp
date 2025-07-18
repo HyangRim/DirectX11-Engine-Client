@@ -7,9 +7,12 @@
 
 #include "AnimationStateMachine.h"
 #include "BiancaRunState.h"
-#include "BiancaWaitState.h"
+
 #include "BiancaQSkillState.h"
+#include "BiancaWaitState.h"
+#include "BiancaESkillState.h"
 #include "BiancaRSkillState.h"
+
 
 void BillboardDemo::Init()
 {
@@ -341,6 +344,12 @@ void BillboardDemo::Init()
 		m1->ReadAnimation(L"Run",L"Bianca2/Bianca_run");
 
 		m1->ReadAnimation(L"Skill_1", L"Bianca2/Bianca_skill1");
+
+		m1->ReadAnimation(L"Skill_3_1", L"Bianca2/Bianca_skill3-1");
+		m1->ReadAnimation(L"Skill_3_2", L"Bianca2/Bianca_skill3-2");
+		m1->ReadAnimation(L"Skill_3_3", L"Bianca2/Bianca_skill3-3");
+
+
 		m1->ReadAnimation(L"Skill_4_1", L"Bianca2/Bianca_skill4");
 		m1->ReadAnimation(L"Skill_4_2", L"Bianca2/Bianca_skill4-2");
 
@@ -372,6 +381,7 @@ void BillboardDemo::Init()
 			obj->GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait, make_shared<BiancaWaitState>());
 			obj->GetAnimationStateMachine()->RegisterState(AnimationStateType::Run, make_shared<BiancaRunState>());
 			obj->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1, make_shared<BiancaQSkillState>());
+			obj->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_3, make_shared<BiancaESkillState>());
 			obj->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4, make_shared<BiancaRSkillState>());
 
 			// Q 스킬 시퀀스 

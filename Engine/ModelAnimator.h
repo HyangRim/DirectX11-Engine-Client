@@ -53,6 +53,7 @@ public:
     virtual void Update() override;
     void UpdateTweenData();
     void SetModel(shared_ptr<Model> _model);
+    shared_ptr<Model> GetModel() { return m_model; }
     void SetPass(uint8 _pass) { m_pass = _pass; }
     shared_ptr<Shader> GetShader();
 

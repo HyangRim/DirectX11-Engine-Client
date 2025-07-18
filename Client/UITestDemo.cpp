@@ -27,12 +27,22 @@
 #include "UIPanel.h"
 #include "ImageUI.h"
 #include "CameraScript.h"
+
 #include "AnimationStateMachine.h"
+
 #include "NickyWaitState.h"
 #include "NickyRunState.h"
 #include "NickyESkillState.h"
 #include "NickyWSkillState.h"
+#include "NickyQSkillState.h"
 #include "NickyRSkillState.h"
+
+#include "BiancaRunState.h"
+#include "BiancaQSkillState.h"
+#include "BiancaWaitState.h"
+#include "BiancaESkillState.h"
+#include "BiancaRSkillState.h"
+
 
 void UITestDemo::Init()
 {	
@@ -82,7 +92,7 @@ void UITestDemo::Init()
 		m1->ReadModel(L"Nicky/Nicky");
 		m1->ReadMaterial(L"Nicky/Nicky");
 
-		
+
 
 		//대기
 		m1->ReadAnimation(L"Wait", L"Nicky/Nicky_Glove_Wait");
@@ -90,14 +100,19 @@ void UITestDemo::Init()
 		//달리기
 		m1->ReadAnimation(L"Run", L"Nicky/Nicky_Glove_Run");
 
-		////평타
-		//m1->ReadAnimation(L"BaseAttack_01", L"Nicky/Nicky_Glove_Atk_01");
-		//m1->ReadAnimation(L"BaseAttack_02", L"Nicky/Nicky_Glove_Atk_02");
+		//평타
+		m1->ReadAnimation(L"BaseAttack_01", L"Nicky/Nicky_Glove_Atk_01");
+		m1->ReadAnimation(L"BaseAttack_02", L"Nicky/Nicky_Glove_Atk_02");
 
 		////Q
-		//m1->ReadAnimation(L"Skill_01_Attack", L"Nicky/Nicky_Glove_Skill_01_Attack");
+		m1->ReadAnimation(L"Skill_01_Attack", L"Nicky/Nicky_Glove_Skill_01_Attack");
 		m1->ReadAnimation(L"Skill_01_Rush", L"Nicky/Nicky_Glove_Skill_01_Rush");
-		//m1->ReadAnimation(L"Skill_01_End", L"Nicky/Nicky_Glove_Skill_01_End");
+		m1->ReadAnimation(L"Skill_01_End", L"Nicky/Nicky_Glove_Skill_01_End");
+		//Q Charge
+		m1->ReadAnimation(L"Skill_01_Charge_Loop_Run", L"Nicky/Nicky_Glove_Skill_01_Charge_Loop_Run");
+		m1->ReadAnimation(L"Skill_01_Charge_Start_Run", L"Nicky/Nicky_Glove_Skill_01_Charge_Start_Run");
+		m1->ReadAnimation(L"Skill_01_Charge_Loop_Wait", L"Nicky/Nicky_Glove_Skill_01_Charge_Loop_Wait");
+		m1->ReadAnimation(L"Skill_01_Charge_Start_Wait", L"Nicky/Nicky_Glove_Skill_01_Charge_Start_Wait");
 
 		//W
 		m1->ReadAnimation(L"Skill_02_Guard", L"Nicky/Nicky_Glove_Skill_02_Guard");
@@ -149,6 +164,7 @@ void UITestDemo::Init()
 			nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_2, make_shared<NickyWSkillState>());
 			nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_3, make_shared<NickyESkillState>());
 			nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4, make_shared<NickyRSkillState>());
+			nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1, make_shared<NickyQSkillState>());
 
 
 			// 기존 시퀀스 생성 코드는 유지 (필요시 사용)
@@ -184,136 +200,9 @@ void UITestDemo::Init()
 			skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_04_Attack"));  
 			animator->CreateSequence(L"Skill_4_Sequence", skill4Anims, skill4Durations, false);
 			
-			// 특정 애니메이션의 실제 재생시간 확인
 			
-			//// 시퀀스 완료 콜백 설정
-			//animator->SetSequenceCompleteCallback(L"BaseAttack_Sequence", [this]() {
-			//	std::wcout << L"평타 시퀀스 완료!" << std::endl;
-			//	if (nicky && nicky->GetModelAnimator())
-			//	{
-			//		nicky->GetModelAnimator()->SetAnimationByTag(L"Wait", false);
-			//	}
-			//	});
 
-			//animator->SetSequenceCompleteCallback(L"Skill_1_Sequence", [this]() {
-			//	std::wcout << L"Q 스킬 시퀀스 완료!" << std::endl;
-			//	if (nicky && nicky->GetModelAnimator())
-			//	{
-			//		nicky->GetModelAnimator()->SetAnimationByTag(L"Wait", false);
-			//	}
-			//	});
-
-			//animator->SetSequenceCompleteCallback(L"Skill_2_Sequence", [this]() {
-			//	std::wcout << L"W 스킬 시퀀스 완료!" << std::endl;
-			//	if (nicky && nicky->GetModelAnimator())
-			//	{
-			//		nicky->GetModelAnimator()->SetAnimationByTag(L"Wait", false);
-			//	}
-			//	});
-
-			//animator->SetSequenceCompleteCallback(L"Skill_3_Sequence", [this]() {
-			//	std::wcout << L"E 스킬 시퀀스 완료!" << std::endl;
-			//	if (nicky && nicky->GetModelAnimator())
-			//	{
-			//		nicky->GetModelAnimator()->SetAnimationByTag(L"Wait", false);
-			//	}
-			//	});
-
-			//animator->SetSequenceCompleteCallback(L"Skill_4_Sequence", [this]() {
-			//	std::wcout << L"R 스킬 시퀀스 완료!" << std::endl;
-			//	if (nicky && nicky->GetModelAnimator())
-			//	{
-			//		nicky->GetModelAnimator()->SetAnimationByTag(L"Wait", false);
-			//	}
-			//	});
-
-			//// 상태별 태그 매핑 설정
-			//animator->m_stateToTag[AnimationStateType::Wait] = L"Wait";
-			//animator->m_stateToTag[AnimationStateType::Run] = L"Run"; // Run 애니메이션이 
-			//animator->m_stateToTag[AnimationStateType::Skill_2] = L"Skill_2"; // Run 애니메이션이 
-			//animator->m_stateToTag[AnimationStateType::Skill_3] = L"Skill_3"; // Run 애니메이션이 
-
-
-
-			////========================================기존 ModelAnimation 단일 방식 예제=====================================//
-			//auto animator = nicky->GetModelAnimator();
-
-			//// 평타 시퀀스 (BaseAttack_01 -> BaseAttack_02)
-			//vector<wstring> baseAttackAnims = { L"BaseAttack_02", L"BaseAttack_01" };
-			//vector<float> baseAttackDurations = { 0.8f, 1.2f }; 
-			//animator->CreateSequence(L"BaseAttack_Sequence", baseAttackAnims, baseAttackDurations, false);
-
-			//// Q 스킬 시퀀스 (Skill_01_Attack -> Skill_01_Rush -> Skill_01_End)
-			//vector<wstring> skill1Anims = { L"Skill_01_Attack", L"Skill_01_Rush", L"Skill_01_End" };
-			//vector<float> skill1Durations = { 0.5f, 1.0f, 0.7f }; 
-			//animator->CreateSequence(L"Skill_1_Sequence", skill1Anims, skill1Durations, false);
-
-			//// W 스킬 시퀀스 (Skill_02_Guard -> Skill_02_Loop)
-			//vector<wstring> skill2Anims = { L"Skill_02_Guard", L"Skill_02_Loop" };
-			//animator->CreateSequence(L"Skill_2_Sequence", skill2Anims, false);
-
-			//// E 스킬 시퀀스 (Skill_03 단일)
-			//vector<wstring> skill3Anims = { L"Skill_03" };
-			//animator->CreateSequence(L"Skill_3_Sequence", skill3Anims, false);
-
-			//// R 스킬 시퀀스 (Skill_04_Ready -> Skill_04_Start -> Skill_04_Attack)
-			//vector<wstring> skill4Anims = { L"Skill_04_Ready", L"Skill_04_Start", L"Skill_01_Rush", L"Skill_04_Attack"};
-			//vector<float> skill4Durations; 
-			//skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_04_Ready"));  
-			//skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_04_Start"));  
-			//skill4Durations.push_back(3.f); 
-			//skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_04_Attack"));  
-			//animator->CreateSequence(L"Skill_4_Sequence", skill4Anims, skill4Durations, false);
-			//
-			//// 특정 애니메이션의 실제 재생시간 확인
-			//float attack02Duration = animator->GetAnimationDuration(L"Skill_01_Rush");
-			//cout << "BaseAttack_02 실제 재생시간: " << attack02Duration << "초" << endl;
-
-			//// 시퀀스 완료 콜백 설정
-			//animator->SetSequenceCompleteCallback(L"BaseAttack_Sequence", [this]() {
-			//	std::wcout << L"평타 시퀀스 완료!" << std::endl;
-			//	if (nicky && nicky->GetModelAnimator())
-			//	{
-			//		nicky->GetModelAnimator()->SetAnimationByTag(L"Wait", false);
-			//	}
-			//	});
-
-			//animator->SetSequenceCompleteCallback(L"Skill_1_Sequence", [this]() {
-			//	std::wcout << L"Q 스킬 시퀀스 완료!" << std::endl;
-			//	if (nicky && nicky->GetModelAnimator())
-			//	{
-			//		nicky->GetModelAnimator()->SetAnimationByTag(L"Wait", false);
-			//	}
-			//	});
-
-			//animator->SetSequenceCompleteCallback(L"Skill_2_Sequence", [this]() {
-			//	std::wcout << L"W 스킬 시퀀스 완료!" << std::endl;
-			//	if (nicky && nicky->GetModelAnimator())
-			//	{
-			//		nicky->GetModelAnimator()->SetAnimationByTag(L"Wait", false);
-			//	}
-			//	});
-
-			//animator->SetSequenceCompleteCallback(L"Skill_3_Sequence", [this]() {
-			//	std::wcout << L"E 스킬 시퀀스 완료!" << std::endl;
-			//	if (nicky && nicky->GetModelAnimator())
-			//	{
-			//		nicky->GetModelAnimator()->SetAnimationByTag(L"Wait", false);
-			//	}
-			//	});
-
-			//animator->SetSequenceCompleteCallback(L"Skill_4_Sequence", [this]() {
-			//	std::wcout << L"R 스킬 시퀀스 완료!" << std::endl;
-			//	if (nicky && nicky->GetModelAnimator())
-			//	{
-			//		nicky->GetModelAnimator()->SetAnimationByTag(L"Wait", false);
-			//	}
-			//	});
-
-			//// 상태별 태그 매핑 설정
-			//animator->m_stateToTag[AnimationStateType::Wait] = L"Wait";
-			//animator->m_stateToTag[AnimationStateType::Run] = L"Run"; // Run 애니메이션이 
-			////========================================기존 ModelAnimation 단일 방식 예제=====================================//
+			
 			CURSCENE->Add(nicky);
 		}
 
@@ -364,6 +253,121 @@ void UITestDemo::Init()
 		//}
 	}
 	
+	
+	
+	
+	//{
+	//	// Animation
+	//	shared_ptr<Model> m1 = make_shared<Model>();
+
+	//	m1->ReadModel(L"Bianca2/Bianca");
+	//	m1->ReadMaterial(L"Bianca2/Bianca");
+	//	m1->ReadAnimation(L"Wait", L"Bianca2/Bianca_wait");
+	//	m1->ReadAnimation(L"Run", L"Bianca2/Bianca_run");
+
+	//	m1->ReadAnimation(L"Skill_1", L"Bianca2/Bianca_skill1");
+
+	//	m1->ReadAnimation(L"Skill_3_1", L"Bianca2/Bianca_skill3-1");
+	//	m1->ReadAnimation(L"Skill_3_2", L"Bianca2/Bianca_skill3-2");
+	//	m1->ReadAnimation(L"Skill_3_3", L"Bianca2/Bianca_skill3-3");
+
+
+	//	m1->ReadAnimation(L"Skill_4_1", L"Bianca2/Bianca_skill4");
+	//	m1->ReadAnimation(L"Skill_4_2", L"Bianca2/Bianca_skill4-2");
+
+
+
+	//	for (int32 i = 0; i < 1; i++)
+	//	{
+
+	//		auto obj = make_shared<GameObject>();
+	//		obj->GetTransform()->SetPosition(Vec3(0.f, 0.f, 0.f));
+	//		obj->GetTransform()->SetScale(Vec3(1.f));
+
+	//		obj->AddComponent(make_shared<ModelAnimator>(renderShader));
+	//		{
+	//			obj->GetModelAnimator()->SetModel(m1);
+	//			obj->GetModelAnimator()->SetPass(2);
+	//		}
+	//		obj->AddComponent(make_shared<AABBBoxCollider>());
+	//	
+	//	
+	//		auto animator = obj->GetModelAnimator();
+	//		// FSM 추가
+	//		auto stateMachine = make_shared<AnimationStateMachine>();
+	//		obj->AddComponent(stateMachine);
+
+	//		obj->GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait, make_shared<BiancaWaitState>());
+	//		obj->GetAnimationStateMachine()->RegisterState(AnimationStateType::Run, make_shared<BiancaRunState>());
+	//		obj->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1, make_shared<BiancaQSkillState>());
+	//		obj->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_3, make_shared<BiancaESkillState>());
+	//		obj->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4, make_shared<BiancaRSkillState>());
+
+	//		// Q 스킬 시퀀스 
+	//		vector<wstring> skill1Anims = { L"Skill_1" };
+	//		animator->CreateSequence(L"Skill_1_Sequence", skill1Anims, false);
+
+	//		// R 스킬 시퀀스 (Skill_04_Ready -> Skill_04_Start -> Skill_04_Attack)
+	//		vector<wstring> skill4Anims = { L"Skill_4_1", L"Skill_4_2" };
+	//		animator->CreateSequence(L"Skill_4_Sequence", skill4Anims, false);
+
+	//		CURSCENE->Add(obj);
+
+	//		//camera->GetTransform()->SetParent(obj->GetTransform());
+	//		//auto BiancaCam = make_shared<BiancaCamera>();
+	//		//camera->AddComponent(BiancaCam);
+	//		//BiancaCam->SetTarget(obj);
+	//		//BiancaCam->SetOffset(Vec3(0.f, 12.f, -12.5f));
+	//		//camera->GetTransform()->SetRotation(Vec3{ 45.f, 0.f, 0.f });
+
+	//	}
+
+
+	//	//// 여러 클러스터로 나누어 배치
+	//	//for (int32 cluster = 0; cluster < 5; cluster++)
+	//	//{
+	//	//	Vec3 clusterCenter = Vec3(
+	//	//		(cluster % 3 - 1) * 500,  // -200, 0, 200
+	//	//		0,
+	//	//		(cluster / 3 - 1) * 500   // -200, 0, 200
+	//	//	);
+
+	//	//	for (int32 i = 0; i < 10; i++)
+	//	//	{
+	//	//		auto obj = make_shared<GameObject>();
+	//	//		obj->SetName(to_wstring(cluster * 100 + i));
+
+	//	//		// 클러스터 중심 주변에 배치
+	//	//		obj->GetTransform()->SetPosition(clusterCenter + Vec3(
+	//	//			(rand() % 40) - 20,  // 클러스터 내 랜덤
+	//	//			0,
+	//	//			(rand() % 40) - 20
+	//	//		));
+
+	//	//		// 나머지 코드...
+	//	//		obj->GetTransform()->SetScale(Vec3(1.f));
+
+	//	//		obj->AddComponent(make_shared<SphereCollider>());
+	//	//		obj->AddComponent(make_shared<Rigidbody>());
+	//	//		obj->GetCollider()->SetOffset(Vec3(0.f, 1.f, 0.f));
+	//	//		obj->GetRigidbody()->SetStatic(true);
+
+	//	//		/*obj->AddComponent(make_shared<ModelRenderer>(renderShader));
+	//	//		{
+	//	//			obj->GetModelRenderer()->SetModel(m1);
+	//	//			obj->GetModelRenderer()->SetPass(1);
+	//	//		}*/
+
+	//	//		obj->AddComponent(make_shared<ModelAnimator>(renderShader));
+	//	//		{
+	//	//			obj->GetModelAnimator()->SetModel(m1);
+	//	//			obj->GetModelAnimator()->SetPass(2);
+	//	//		}
+
+	//	//		CURSCENE->Add(obj);
+	//	//	}
+	//	//}
+	//}
 	
 	// UI
 	{

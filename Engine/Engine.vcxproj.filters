@@ -256,6 +256,12 @@
     <ClCompile Include="BiancaRSkillState.cpp">
       <Filter>04. Component\Animation\Bianca\Skill\Skill_R</Filter>
     </ClCompile>
+    <ClCompile Include="NickyQSkillState.cpp">
+      <Filter>04. Component\Animation\Nicky\Skill\Skill_Q</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaESkillState.cpp">
+      <Filter>04. Component\Animation\Bianca\Skill\Skill_E</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Types.h">
@@ -528,6 +534,12 @@
     <ClInclude Include="BiancaRSkillState.h">
       <Filter>04. Component\Animation\Bianca\Skill\Skill_R</Filter>
     </ClInclude>
+    <ClInclude Include="NickyQSkillState.h">
+      <Filter>04. Component\Animation\Nicky\Skill\Skill_Q</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaESkillState.h">
+      <Filter>04. Component\Animation\Bianca\Skill\Skill_E</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Engine">
@@ -634,6 +646,12 @@
     </Filter>
     <Filter Include="04. Component\Animation\Bianca\Skill\Skill_R">
       <UniqueIdentifier>{190162d5-3baf-4ae2-b6a1-6d67a305944b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Animation\Nicky\Skill\Skill_Q">
+      <UniqueIdentifier>{2c65306c-dcf4-4573-9ed0-431b15e5d795}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Animation\Bianca\Skill\Skill_E">
+      <UniqueIdentifier>{ffb7ef8b-8e89-4233-9701-3bf16510273e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -69,7 +69,7 @@ void AnimationStateMachine::ProcessInput()
     }
 
     // 스킬 입력 처리
-    if (INPUT->GetButtonDown(KEY_TYPE::Q))
+    if (INPUT->GetButtonDown(KEY_TYPE::B))
     {
         ChangeState(AnimationStateType::Skill_1);
         //m_isChargingQ = true;
@@ -141,7 +141,7 @@ void AnimationStateMachine::InitializeStates()
 // 새로운 메서드 추가
 void AnimationStateMachine::HandleSpecialStateTransitions()
 {
-    // E 스킬 완료 후 Wait 상태로 전환
+    // Q 스킬 완료 후 Wait 상태로 전환
     if (GetCurrentState() == AnimationStateType::Skill_1)
     {
         if (m_currentState->CanTransitionTo(AnimationStateType::Wait))

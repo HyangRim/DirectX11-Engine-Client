@@ -561,11 +561,12 @@ void SceneObjectManager::UpdateQuadTree()
         auto buildEnd = std::chrono::high_resolution_clock::now();
         auto buildTime = std::chrono::duration_cast<std::chrono::microseconds>(buildEnd - buildStart);
 
-#ifdef _DEBUG
-        cout << "孽靛飘府 犁备己: " << insertedCount << "/" << m_gameObjects.size()
-            << " 按眉, " << buildTime.count() << "レs" << endl;
+//#ifdef _DEBUG
+//        cout << "孽靛飘府 犁备己: " << insertedCount << "/" << m_gameObjects.size()
+//            << " 按眉, " << buildTime.count() << "レs" << endl;
+//#endif
     }
-#endif
+
 }
 
 shared_ptr<GameObject> SceneObjectManager::GetMainCamera()
