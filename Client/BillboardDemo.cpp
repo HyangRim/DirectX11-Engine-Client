@@ -32,6 +32,12 @@
 #include "BiancaTest.h"
 #include "BiancaCamera.h"
 
+#include "AnimationStateMachine.h"
+#include "BiancaRunState.h"
+#include "BiancaWaitState.h"
+#include "BiancaQSkillState.h"
+#include "BiancaRSkillState.h"
+
 void BillboardDemo::Init()
 {
 	CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\snowcube1024.dds", L"Sky.fx"));
@@ -253,8 +259,14 @@ void BillboardDemo::Init()
 		m1->ReadMaterial(L"Bianca2/Bianca");
 		m1->ReadAnimation(L"Wait", L"Bianca2/Bianca_wait");
 		m1->ReadAnimation(L"Run",L"Bianca2/Bianca_run");
-		m1->ReadAnimation(L"Skill_R_1",L"Bianca2/Bianca_skill4");
-		m1->ReadAnimation(L"Skill_R_2", L"Bianca2/Bianca_skill4-2");
+
+		m1->ReadAnimation(L"Skill_1", L"Bianca2/Bianca_skill1");
+		m1->ReadAnimation(L"Skill_4_1", L"Bianca2/Bianca_skill4");
+		m1->ReadAnimation(L"Skill_4_2", L"Bianca2/Bianca_skill4-2");
+
+		//m1->ReadAnimation(L"Run", L"Bianca2/Bianca_run");
+		//m1->ReadAnimation(L"Skill_R_1",L"Bianca2/Bianca_skill4");
+		//m1->ReadAnimation(L"Skill_R_2", L"Bianca2/Bianca_skill4-2");
 
 
 		//m1->ReadAnimation(L"Bianca2/Bianca_reststart");
@@ -278,14 +290,22 @@ void BillboardDemo::Init()
 			obj->AddComponent(make_shared<FogOfWar>());
 			obj->AddComponent(make_shared<BiancaTest>());
 			auto animator = obj->GetModelAnimator();
-			// R 스킬 시퀀스 (Skill_04_Ready -> Skill_04_Start -> Skill_04_Attack)
-			vector<wstring> skill4Anims = { L"Skill_R_1", L"Skill_R_2" };
-			vector<float> skill4Durations; 
-			skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_R_1"));  
-			skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_R_2"));  
+			// FSM 추가
+			auto stateMachine = make_shared<AnimationStateMachine>();
+			obj->AddComponent(stateMachine);
 
-			
-			animator->CreateSequence(L"Skill_4_Sequence", skill4Anims, skill4Durations, false);
+			obj->GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait, make_shared<BiancaWaitState>());
+			obj->GetAnimationStateMachine()->RegisterState(AnimationStateType::Run, make_shared<BiancaRunState>());
+			obj->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1, make_shared<BiancaQSkillState>());
+			obj->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4, make_shared<BiancaRSkillState>());
+
+			// Q 스킬 시퀀스 
+			vector<wstring> skill1Anims = { L"Skill_1" };
+			animator->CreateSequence(L"Skill_1_Sequence", skill1Anims, false);
+
+			// R 스킬 시퀀스 (Skill_04_Ready -> Skill_04_Start -> Skill_04_Attack)
+			vector<wstring> skill4Anims = { L"Skill_4_1", L"Skill_4_2" }; 
+			animator->CreateSequence(L"Skill_4_Sequence", skill4Anims, false);
 
 			CURSCENE->Add(obj);
 

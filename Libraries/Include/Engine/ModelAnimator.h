@@ -1,24 +1,11 @@
 #pragma once
 #include "Renderer.h"
-#include "AnimationState.h"
 
 // ============================================================================
 // 전방 선언 및 구조체
 // ============================================================================
 
 class Model;
-
-//// 애니메이션 상태 열거형
-//enum class AnimationState
-//{
-//    Wait = 0,
-//    Run = 1,
-//    BaseAttack = 2,
-//    Skill_1 = 3,
-//    Skill_2 = 4,
-//    Skill_3 = 5,
-//    Skill_4 = 6
-//};
 
 // 애니메이션 변환 구조체
 struct AnimTransform
@@ -49,7 +36,7 @@ struct AnimationSequence
 };
 
 // ============================================================================
-// ModelAnimator 클래스
+// ModelAnimator 클래스 - FSM 구조 적용 후 정리
 // ============================================================================
 
 class ModelAnimator : public Renderer
@@ -61,7 +48,7 @@ public:
     ~ModelAnimator();
 
     // ============================================================================
-    // 기본 메서드들
+    // 핵심 애니메이션 기능
     // ============================================================================
     virtual void Update() override;
     void UpdateTweenData();
@@ -70,7 +57,7 @@ public:
     shared_ptr<Shader> GetShader();
 
     // ============================================================================
-    // 애니메이션 제어 메서드들
+    // 애니메이션 제어 메서드들 (FSM에서 호출)
     // ============================================================================
     void SetAnimation(uint32 _animIndex, bool _immediate = false);
     void SetAnimationByTag(const wstring& _tag, bool _immediate = false);
@@ -88,6 +75,16 @@ public:
     bool IsAnimationFinished() const;
 
     // ============================================================================
+    // 시퀀스 관리 (FSM State에서 사용)
+    // ============================================================================
+    void CreateSequence(const wstring& name, const vector<wstring>& animTags, bool loop = false);
+    void CreateSequence(const wstring& name, const vector<wstring>& animTags, const vector<float>& durations, bool loop = false);
+    void PlaySequence(const wstring& name);
+    void StopSequence();
+    bool IsSequencePlaying() const { return m_currentSequence != nullptr && m_currentSequence->isPlaying; }
+    void SetSequenceCompleteCallback(const wstring& name, function<void()> callback);
+
+    // ============================================================================
     // 렌더링 관련
     // ============================================================================
     void RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech);
@@ -95,55 +92,12 @@ public:
     TweenDesc GetTweenDesc() { return m_tweenDesc; }
 
     // ============================================================================
-    // 애니메이션 상태 관리
-    // ============================================================================
-    void UpdateAnimationState();
-    void TransitionToAnimation(AnimationStateType newState);
-    bool CanTransitionTo(AnimationStateType newState) const;
-
-    // ============================================================================
-    // 시퀀스 관리
-    // ============================================================================
-    void CreateSequence(const wstring& name, const vector<wstring>& animTags, bool loop = false);
-    void CreateSequence(const wstring& name, const vector<wstring>& animTags, const vector<float>& durations, bool loop = false);
-    void PlaySequence(const wstring& name);
-    void StopSequence();
-    void UpdateSequence();
-    void TransitionToNextInSequence();
-    bool IsSequencePlaying() const { return m_currentSequence != nullptr && m_currentSequence->isPlaying; }
-    void SetSequenceCompleteCallback(const wstring& name, function<void()> callback);
-
-    // ============================================================================
-    // 시퀀스 설정
-    // ============================================================================
-    void SetSequenceAnimationDuration(const wstring& sequenceName, uint32 animIndex, float duration);
-    void SetSequenceAnimationDurations(const wstring& sequenceName, const vector<float>& durations);
-
-    // ============================================================================
     // 유틸리티 메서드들
     // ============================================================================
     float GetCorrectedFrameRate(const wstring& animTag, float speed = 1.0f);
     float GetTimePerFrame(const wstring& animTag, float speed = 1.0f);
-
-public:
-    // ============================================================================
-    // 상태 관리 변수들
-    // ============================================================================
-    AnimationStateType m_currentState = AnimationStateType::Wait;
-    AnimationStateType m_nextState = AnimationStateType::Wait;
-    bool m_isTransitioning = false;
-    float m_transitionDuration = 0.25f;
-    float m_transitionTimer = 0.0f;
-
-    // 키 입력 상태 관리
-    bool m_wasMoving = false;
-    bool m_isSkillActive = false;
-    float m_skillCooldown = 0.0f;
-
-    // 상태별 설정 매핑
-    map<AnimationStateType, wstring> m_stateToTag;
-    map<AnimationStateType, float> m_animationSpeeds;
-    map<AnimationStateType, bool> m_loopSettings;
+    void SetSequenceAnimationDuration(const wstring& sequenceName, uint32 animIndex, float duration);
+    void SetSequenceAnimationDurations(const wstring& sequenceName, const vector<float>& durations);
 
 private:
     // ============================================================================
@@ -158,19 +112,18 @@ private:
     void CreateTagIndexMapping();
     uint32 GetAnimationIndexByTag(const wstring& _tag);
 
-    // 업데이트 관련
-    void UpdateSkillCooldown();
+    // 트윈 업데이트 관련
     void UpdateTweenFrames();
     void UpdateCurrentAnimation();
     void UpdateNextAnimation();
-    void ProcessInputs();
-    void UpdateMovementState();
 
     // 렌더링 관련
     void SetupBoneData();
     void RenderMeshes(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech);
 
     // 시퀀스 관련
+    void UpdateSequence();
+    void TransitionToNextInSequence();
     float GetCurrentSequenceDuration();
     void CompleteSequence();
     void ResetToWaitAnimation();

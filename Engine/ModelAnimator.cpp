@@ -11,23 +11,8 @@
 ModelAnimator::ModelAnimator(shared_ptr<Shader> _shader)
     : Super(ComponentType::Animator), m_shader(_shader)
 {
-    // 애니메이션 루프 설정
-    m_loopSettings[AnimationStateType::Wait] = true;
-    m_loopSettings[AnimationStateType::Run] = true;
-    m_loopSettings[AnimationStateType::Skill_1] = false;
-    m_loopSettings[AnimationStateType::Skill_2] = false;
-    m_loopSettings[AnimationStateType::Skill_3] = false;
-    m_loopSettings[AnimationStateType::Skill_4] = false;
-    m_loopSettings[AnimationStateType::BaseAttack] = false;
-
-    // 상태-태그 매핑
-    m_stateToTag[AnimationStateType::Wait] = L"Wait";
-    m_stateToTag[AnimationStateType::Run] = L"Run";
-    m_stateToTag[AnimationStateType::BaseAttack] = L"BaseAttack";
-    m_stateToTag[AnimationStateType::Skill_1] = L"Skill_1";
-    m_stateToTag[AnimationStateType::Skill_2] = L"Skill_2";
-    m_stateToTag[AnimationStateType::Skill_3] = L"Skill_3";
-    m_stateToTag[AnimationStateType::Skill_4] = L"Skill_4";
+    // FSM 구조로 변경되면서 상태 관리 변수들 제거
+    // 단순히 애니메이션 재생에만 집중
 }
 
 ModelAnimator::~ModelAnimator()
@@ -38,41 +23,19 @@ ModelAnimator::~ModelAnimator()
 
 void ModelAnimator::Update()
 {
+    // FSM에서 상태 관리를 담당하므로 여기서는 기본 업데이트만 수행
 }
 
 void ModelAnimator::UpdateTweenData()
 {
-    // 시퀀스 모드에 따른 업데이트
+    // 시퀀스 업데이트 (시퀀스 모드일 때만)
     if (m_isSequenceMode)
     {
         UpdateSequence();
     }
-    else
-    {
-        UpdateAnimationState();
-    }
-
-    // 스킬 쿨다운 처리
-    UpdateSkillCooldown();
 
     // 트윈 데이터 업데이트
     UpdateTweenFrames();
-}
-
-void ModelAnimator::UpdateSkillCooldown()
-{
-    if (m_skillCooldown > 0.0f)
-    {
-        m_skillCooldown -= DT;
-        if (m_skillCooldown <= 0.0f)
-        {
-            m_isSkillActive = false;
-            if (!m_isSequenceMode)
-            {
-                TransitionToAnimation(AnimationStateType::Wait);
-            }
-        }
-    }
 }
 
 void ModelAnimator::UpdateTweenFrames()
@@ -103,8 +66,6 @@ void ModelAnimator::UpdateCurrentAnimation()
     if (desc.m_curr.m_sumTime >= timePerFrame)
     {
         desc.m_curr.m_sumTime = 0;
-
-        // 시퀀스 모드와 일반 모드 모두 정상적인 프레임 진행
         desc.m_curr.m_currFrame = (desc.m_curr.m_currFrame + 1) % currentAnim->m_frameCount;
         desc.m_curr.m_nextFrame = (desc.m_curr.m_currFrame + 1) % currentAnim->m_frameCount;
     }
@@ -176,174 +137,8 @@ void ModelAnimator::CreateTagIndexMapping()
     }
 }
 
-void ModelAnimator::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech)
-{
-    if (!m_model || !Super::Render(_isShadowTech))
-        return;
-
-    // 텍스처 생성 (최초 한 번)
-    if (!m_texture)
-        CreateTexture();
-
-    // 변환 맵 설정
-    m_shader->GetSRV("TransformMap")->SetResource(m_srv.Get());
-
-    // 본 데이터 설정
-    SetupBoneData();
-
-    // 메시 렌더링
-    RenderMeshes(_buffer, _isShadowTech);
-}
-
-void ModelAnimator::SetupBoneData()
-{
-    BoneDesc boneDesc;
-    const uint32 boneCount = m_model->GetBoneCount();
-
-    for (uint32 i = 0; i < boneCount; ++i)
-    {
-        shared_ptr<ModelBone> bone = m_model->GetBoneByIndex(i);
-        boneDesc.transforms[i] = bone->m_transform;
-    }
-
-    m_shader->PushBoneData(boneDesc);
-}
-
-void ModelAnimator::RenderMeshes(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech)
-{
-    const auto& meshes = m_model->GetMeshes();
-
-    for (auto& mesh : meshes)
-    {
-        if (mesh->m_material)
-            mesh->m_material->Update();
-
-        m_shader->GetScalar("BoneIndex")->SetInt(mesh->m_boneIndex);
-
-        mesh->m_vertexBuffer->PushData();
-        mesh->m_indexBuffer->PushData();
-        _buffer->PushData();
-
-        m_shader->DrawIndexedInstanced(GET_TECH(_isShadowTech), m_pass,
-            mesh->m_indexBuffer->GetCount(),
-            _buffer->GetCount());
-    }
-}
-
-InstanceID ModelAnimator::GetInstanceID()
-{
-    return make_pair((uint64)m_model.get(), (uint64)m_shader.get());
-}
-
-void ModelAnimator::CreateTexture()
-{
-    if (m_model->GetAnimationCount() == 0)
-        return;
-
-    uint32 maxFrameCount = 0;
-
-    for (const auto& pair : m_model->GetAnimations())
-    {
-        maxFrameCount = max(maxFrameCount, pair.second->m_frameCount);
-        CreateAnimationTransform(pair.first);
-    }
-
-    // Create Texture
-    D3D11_TEXTURE2D_DESC desc;
-    ZeroMemory(&desc, sizeof(D3D11_TEXTURE2D_DESC));
-    desc.Width = MAX_BONE_TRANSFORMS * 4;
-    desc.Height = maxFrameCount;
-    desc.ArraySize = m_model->GetAnimationCount();
-    desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-    desc.Usage = D3D11_USAGE_IMMUTABLE;
-    desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-    desc.MipLevels = 1;
-    desc.SampleDesc.Count = 1;
-
-    const uint32 dataSize = MAX_BONE_TRANSFORMS * sizeof(Matrix);
-    const uint32 pageSize = dataSize * maxFrameCount;
-
-    void* mallocPtr = ::malloc(pageSize * m_model->GetAnimationCount());
-
-    uint32 animIndex = 0;
-    for (const auto& pair : m_model->GetAnimations())
-    {
-        uint32 startOffset = animIndex * pageSize;
-        BYTE* pageStartPtr = reinterpret_cast<BYTE*>(mallocPtr) + startOffset;
-
-        for (uint32 f = 0; f < maxFrameCount; f++)
-        {
-            void* ptr = pageStartPtr + dataSize * f;
-            ::memcpy(ptr, m_animTransform[pair.first].transforms[f].data(), dataSize);
-        }
-        animIndex++;
-    }
-
-    vector<D3D11_SUBRESOURCE_DATA> subResources(m_model->GetAnimationCount());
-
-    for (uint32 c = 0; c < m_model->GetAnimationCount(); c++)
-    {
-        void* ptr = (BYTE*)mallocPtr + c * pageSize;
-        subResources[c].pSysMem = ptr;
-        subResources[c].SysMemPitch = dataSize;
-        subResources[c].SysMemSlicePitch = pageSize;
-    }
-
-    HRESULT hr = DEVICE->CreateTexture2D(&desc, subResources.data(), m_texture.GetAddressOf());
-    CHECK(hr);
-
-    ::free(mallocPtr);
-
-    // Create SRV
-    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-    ZeroMemory(&srvDesc, sizeof(srvDesc));
-    srvDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
-    srvDesc.Texture2DArray.MipLevels = 1;
-    srvDesc.Texture2DArray.ArraySize = m_model->GetAnimationCount();
-
-    hr = DEVICE->CreateShaderResourceView(m_texture.Get(), &srvDesc, m_srv.GetAddressOf());
-    CHECK(hr);
-}
-
-void ModelAnimator::CreateAnimationTransform(const wstring& _tag)
-{
-    vector<Matrix> tempAnimBoneTransforms(MAX_BONE_TRANSFORMS, Matrix::Identity);
-    shared_ptr<ModelAnimation> animation = m_model->GetAnimationByTag(_tag);
-
-    if (!animation) return;
-
-    for (uint32 frame = 0; frame < animation->m_frameCount; ++frame)
-    {
-        for (uint32 bone = 0; bone < m_model->GetBoneCount(); ++bone)
-        {
-            shared_ptr<ModelBone> tbone = m_model->GetBoneByIndex(bone);
-            Matrix matAnimation = Matrix::Identity;
-
-            shared_ptr<ModelKeyframe> tframe = animation->GetKeyframe(tbone->m_name);
-            if (tframe != nullptr)
-            {
-                ModelKeyframeData& data = tframe->m_transforms[frame];
-
-                Matrix S = Matrix::CreateScale(data.m_scale.x, data.m_scale.y, data.m_scale.z);
-                Matrix R = Matrix::CreateFromQuaternion(data.m_rotation);
-                Matrix T = Matrix::CreateTranslation(data.m_translation.x, data.m_translation.y, data.m_translation.z);
-
-                matAnimation = S * R * T;
-            }
-
-            Matrix matParent = Matrix::Identity;
-            if (tbone->m_parentIndex >= 0)
-                matParent = tempAnimBoneTransforms[tbone->m_parentIndex];
-
-            tempAnimBoneTransforms[bone] = matAnimation * matParent;
-            m_animTransform[_tag].transforms[frame][bone] = tbone->m_offsetMatrix * tempAnimBoneTransforms[bone];
-        }
-    }
-}
-
 // ============================================================================
-// 애니메이션 제어 메서드들
+// 애니메이션 제어 메서드들 (FSM에서 호출)
 // ============================================================================
 
 shared_ptr<Shader> ModelAnimator::GetShader()
@@ -417,96 +212,7 @@ void ModelAnimator::SetAnimationSpeed(float _speed)
 }
 
 // ============================================================================
-// 애니메이션 상태 관리
-// ============================================================================
-
-void ModelAnimator::UpdateAnimationState()
-{
-    if (m_isSequenceMode || m_isSkillActive)
-        return;
-
-    ProcessInputs();
-    UpdateMovementState();
-}
-
-void ModelAnimator::ProcessInputs()
-{
-    // 스킬 키 입력 처리
-    if (INPUT->GetButtonDown(KEY_TYPE::Q))
-    {
-        PlaySequence(L"Skill_1_Sequence");
-        m_currentState = AnimationStateType::Skill_1;
-        return;
-    }
-    if (INPUT->GetButtonDown(KEY_TYPE::W))
-    {
-        PlaySequence(L"Skill_2_Sequence");
-        m_currentState = AnimationStateType::Skill_2;
-        return;
-    }
-    if (INPUT->GetButtonDown(KEY_TYPE::E))
-    {
-        PlaySequence(L"Skill_3_Sequence");
-        m_currentState = AnimationStateType::Skill_3;
-        return;
-    }
-    if (INPUT->GetButtonDown(KEY_TYPE::R))
-    {
-        PlaySequence(L"Skill_4_Sequence");
-        m_currentState = AnimationStateType::Skill_4;
-        return;
-    }
-    if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON))
-    {
-        PlaySequence(L"BaseAttack_Sequence");
-        return;
-    }
-}
-
-void ModelAnimator::UpdateMovementState()
-{
-    bool isMoving = INPUT->GetButton(KEY_TYPE::UP) ||
-        INPUT->GetButton(KEY_TYPE::DOWN) ||
-        INPUT->GetButton(KEY_TYPE::LEFT) ||
-        INPUT->GetButton(KEY_TYPE::RIGHT);
-
-    if (isMoving && !m_wasMoving)
-    {
-        TransitionToAnimation(AnimationStateType::Run);
-    }
-    else if (!isMoving && m_wasMoving)
-    {
-        TransitionToAnimation(AnimationStateType::Wait);
-    }
-
-    m_wasMoving = isMoving;
-}
-
-void ModelAnimator::TransitionToAnimation(AnimationStateType newState)
-{
-    if (m_currentState == newState || !CanTransitionTo(newState))
-        return;
-
-    m_currentState = newState;
-    wstring animTag = m_stateToTag[newState];
-    SetAnimationByTag(animTag, false);
-}
-
-bool ModelAnimator::CanTransitionTo(AnimationStateType newState) const
-{
-    if (m_isSequenceMode)
-        return false;
-
-    if (m_isSkillActive && newState != AnimationStateType::Skill_1 &&
-        newState != AnimationStateType::Skill_2 && newState != AnimationStateType::Skill_3 &&
-        newState != AnimationStateType::Skill_4)
-        return false;
-
-    return true;
-}
-
-// ============================================================================
-// 애니메이션 시퀀스 관리
+// 애니메이션 시퀀스 관리 (FSM State에서 사용)
 // ============================================================================
 
 void ModelAnimator::CreateSequence(const wstring& name, const vector<wstring>& animTags, bool loop)
@@ -644,7 +350,180 @@ void ModelAnimator::CompleteSequence()
     }
 
     StopSequence();
-    TransitionToAnimation(AnimationStateType::Wait);
+}
+
+// ============================================================================
+// 렌더링 관련
+// ============================================================================
+
+void ModelAnimator::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech)
+{
+    if (!m_model || !Super::Render(_isShadowTech))
+        return;
+
+    // 텍스처 생성 (최초 한 번)
+    if (!m_texture)
+        CreateTexture();
+
+    // 변환 맵 설정
+    m_shader->GetSRV("TransformMap")->SetResource(m_srv.Get());
+
+    // 본 데이터 설정
+    SetupBoneData();
+
+    // 메시 렌더링
+    RenderMeshes(_buffer, _isShadowTech);
+}
+
+void ModelAnimator::SetupBoneData()
+{
+    BoneDesc boneDesc;
+    const uint32 boneCount = m_model->GetBoneCount();
+
+    for (uint32 i = 0; i < boneCount; ++i)
+    {
+        shared_ptr<ModelBone> bone = m_model->GetBoneByIndex(i);
+        boneDesc.transforms[i] = bone->m_transform;
+    }
+
+    m_shader->PushBoneData(boneDesc);
+}
+
+void ModelAnimator::RenderMeshes(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech)
+{
+    const auto& meshes = m_model->GetMeshes();
+
+    for (auto& mesh : meshes)
+    {
+        if (mesh->m_material)
+            mesh->m_material->Update();
+
+        m_shader->GetScalar("BoneIndex")->SetInt(mesh->m_boneIndex);
+
+        mesh->m_vertexBuffer->PushData();
+        mesh->m_indexBuffer->PushData();
+        _buffer->PushData();
+
+        m_shader->DrawIndexedInstanced(GET_TECH(_isShadowTech), m_pass,
+            mesh->m_indexBuffer->GetCount(),
+            _buffer->GetCount());
+    }
+}
+
+InstanceID ModelAnimator::GetInstanceID()
+{
+    return make_pair((uint64)m_model.get(), (uint64)m_shader.get());
+}
+
+// ============================================================================
+// 텍스처 생성 (기존 코드와 동일)
+// ============================================================================
+
+void ModelAnimator::CreateTexture()
+{
+    if (m_model->GetAnimationCount() == 0)
+        return;
+
+    uint32 maxFrameCount = 0;
+
+    for (const auto& pair : m_model->GetAnimations())
+    {
+        maxFrameCount = max(maxFrameCount, pair.second->m_frameCount);
+        CreateAnimationTransform(pair.first);
+    }
+
+    // Create Texture
+    D3D11_TEXTURE2D_DESC desc;
+    ZeroMemory(&desc, sizeof(D3D11_TEXTURE2D_DESC));
+    desc.Width = MAX_BONE_TRANSFORMS * 4;
+    desc.Height = maxFrameCount;
+    desc.ArraySize = m_model->GetAnimationCount();
+    desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+    desc.Usage = D3D11_USAGE_IMMUTABLE;
+    desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    desc.MipLevels = 1;
+    desc.SampleDesc.Count = 1;
+
+    const uint32 dataSize = MAX_BONE_TRANSFORMS * sizeof(Matrix);
+    const uint32 pageSize = dataSize * maxFrameCount;
+
+    void* mallocPtr = ::malloc(pageSize * m_model->GetAnimationCount());
+
+    uint32 animIndex = 0;
+    for (const auto& pair : m_model->GetAnimations())
+    {
+        uint32 startOffset = animIndex * pageSize;
+        BYTE* pageStartPtr = reinterpret_cast<BYTE*>(mallocPtr) + startOffset;
+
+        for (uint32 f = 0; f < maxFrameCount; f++)
+        {
+            void* ptr = pageStartPtr + dataSize * f;
+            ::memcpy(ptr, m_animTransform[pair.first].transforms[f].data(), dataSize);
+        }
+        animIndex++;
+    }
+
+    vector<D3D11_SUBRESOURCE_DATA> subResources(m_model->GetAnimationCount());
+
+    for (uint32 c = 0; c < m_model->GetAnimationCount(); c++)
+    {
+        void* ptr = (BYTE*)mallocPtr + c * pageSize;
+        subResources[c].pSysMem = ptr;
+        subResources[c].SysMemPitch = dataSize;
+        subResources[c].SysMemSlicePitch = pageSize;
+    }
+
+    HRESULT hr = DEVICE->CreateTexture2D(&desc, subResources.data(), m_texture.GetAddressOf());
+    CHECK(hr);
+
+    ::free(mallocPtr);
+
+    // Create SRV
+    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+    ZeroMemory(&srvDesc, sizeof(srvDesc));
+    srvDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+    srvDesc.Texture2DArray.MipLevels = 1;
+    srvDesc.Texture2DArray.ArraySize = m_model->GetAnimationCount();
+
+    hr = DEVICE->CreateShaderResourceView(m_texture.Get(), &srvDesc, m_srv.GetAddressOf());
+    CHECK(hr);
+}
+
+void ModelAnimator::CreateAnimationTransform(const wstring& _tag)
+{
+    vector<Matrix> tempAnimBoneTransforms(MAX_BONE_TRANSFORMS, Matrix::Identity);
+    shared_ptr<ModelAnimation> animation = m_model->GetAnimationByTag(_tag);
+
+    if (!animation) return;
+
+    for (uint32 frame = 0; frame < animation->m_frameCount; ++frame)
+    {
+        for (uint32 bone = 0; bone < m_model->GetBoneCount(); ++bone)
+        {
+            shared_ptr<ModelBone> tbone = m_model->GetBoneByIndex(bone);
+            Matrix matAnimation = Matrix::Identity;
+
+            shared_ptr<ModelKeyframe> tframe = animation->GetKeyframe(tbone->m_name);
+            if (tframe != nullptr)
+            {
+                ModelKeyframeData& data = tframe->m_transforms[frame];
+
+                Matrix S = Matrix::CreateScale(data.m_scale.x, data.m_scale.y, data.m_scale.z);
+                Matrix R = Matrix::CreateFromQuaternion(data.m_rotation);
+                Matrix T = Matrix::CreateTranslation(data.m_translation.x, data.m_translation.y, data.m_translation.z);
+
+                matAnimation = S * R * T;
+            }
+
+            Matrix matParent = Matrix::Identity;
+            if (tbone->m_parentIndex >= 0)
+                matParent = tempAnimBoneTransforms[tbone->m_parentIndex];
+
+            tempAnimBoneTransforms[bone] = matAnimation * matParent;
+            m_animTransform[_tag].transforms[frame][bone] = tbone->m_offsetMatrix * tempAnimBoneTransforms[bone];
+        }
+    }
 }
 
 // ============================================================================

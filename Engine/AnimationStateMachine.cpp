@@ -44,6 +44,9 @@ void AnimationStateMachine::Update()
     if (m_currentState)
     {
         m_currentState->Update(m_animator);     
+
+        // 특수 상태 처리 추가
+        HandleSpecialStateTransitions();
     }
 }
 
@@ -64,6 +67,32 @@ void AnimationStateMachine::ProcessInput()
     {
         ChangeState(AnimationStateType::Wait);
     }
+
+    // 스킬 입력 처리
+    if (INPUT->GetButtonDown(KEY_TYPE::Q))
+    {
+        ChangeState(AnimationStateType::Skill_1);
+        //m_isChargingQ = true;
+    }
+    // 스킬 입력 처리
+    if (INPUT->GetButtonDown(KEY_TYPE::W))
+    {
+        ChangeState(AnimationStateType::Skill_2);
+        //m_isChargingQ = true;
+    }
+    // 스킬 입력 처리
+    if (INPUT->GetButtonDown(KEY_TYPE::E))
+    {
+        ChangeState(AnimationStateType::Skill_3);
+        //m_isChargingQ = true;
+    }
+    // 스킬 입력 처리
+    if (INPUT->GetButtonDown(KEY_TYPE::R))
+    {
+        ChangeState(AnimationStateType::Skill_4);
+        //m_isChargingQ = true;
+    }
+
     m_wasMoving = isMoving; 
 }
 
@@ -107,6 +136,46 @@ bool AnimationStateMachine::IsInState(AnimationStateType state) const
 void AnimationStateMachine::InitializeStates()
 {
     // ... 다른 상태들 등록
+}
+
+// 새로운 메서드 추가
+void AnimationStateMachine::HandleSpecialStateTransitions()
+{
+    // E 스킬 완료 후 Wait 상태로 전환
+    if (GetCurrentState() == AnimationStateType::Skill_1)
+    {
+        if (m_currentState->CanTransitionTo(AnimationStateType::Wait))
+        {
+            ChangeState(AnimationStateType::Wait);
+        }
+    }
+    // W 스킬 완료 후 Wait 상태로 전환
+    else if (GetCurrentState() == AnimationStateType::Skill_2)
+    {
+        if (m_currentState->CanTransitionTo(AnimationStateType::Wait))
+        {
+            ChangeState(AnimationStateType::Wait);
+        }
+    }
+    // E 스킬 완료 후 Wait 상태로 전환
+    else if (GetCurrentState() == AnimationStateType::Skill_3)
+    {
+        if (m_currentState->CanTransitionTo(AnimationStateType::Wait))
+        {
+            ChangeState(AnimationStateType::Wait);
+        }
+    }
+    // W 스킬 완료 후 Wait 상태로 전환
+    else if (GetCurrentState() == AnimationStateType::Skill_4)
+    {
+        if (m_currentState->CanTransitionTo(AnimationStateType::Wait))
+        {
+            ChangeState(AnimationStateType::Wait);
+        }
+    }
+
+    // 다른 스킬들도 동일하게 처리 가능
+    // if (GetCurrentState() == AnimationStateType::Skill_1) { ... }
 }
 
 void AnimationStateMachine::RegisterState(AnimationStateType type, shared_ptr<AnimationState> state)

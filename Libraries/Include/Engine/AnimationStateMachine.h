@@ -28,6 +28,7 @@ public:
 
 private:
     void InitializeStates();
+    void HandleSpecialStateTransitions();  // Ãß°¡
    
 private:
     unordered_map<AnimationStateType, shared_ptr<AnimationState>> m_states;

@@ -169,6 +169,10 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     <ClInclude Include="AnimationState.h" />
     <ClInclude Include="AnimationStateMachine.h" />
     <ClInclude Include="BaseCollider.h" />
+    <ClInclude Include="BiancaQSkillState.h" />
+    <ClInclude Include="BiancaRSkillState.h" />
+    <ClInclude Include="BiancaRunState.h" />
+    <ClInclude Include="BiancaWaitState.h" />
     <ClInclude Include="Billboard.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Camera.h" />
@@ -198,8 +202,11 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="InstancingBuffer.h" />
+    <ClInclude Include="NickyESkillState.h" />
+    <ClInclude Include="NickyRSkillState.h" />
     <ClInclude Include="NickyRunState.h" />
     <ClInclude Include="NickyWaitState.h" />
+    <ClInclude Include="NickyWSkillState.h" />
     <ClInclude Include="QuadTree.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="Light.h" />
@@ -254,6 +261,10 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     <ClCompile Include="AnimationState.cpp" />
     <ClCompile Include="AnimationStateMachine.cpp" />
     <ClCompile Include="BaseCollider.cpp" />
+    <ClCompile Include="BiancaQSkillState.cpp" />
+    <ClCompile Include="BiancaRSkillState.cpp" />
+    <ClCompile Include="BiancaRunState.cpp" />
+    <ClCompile Include="BiancaWaitState.cpp" />
     <ClCompile Include="Billboard.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -300,8 +311,11 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="InstancingBuffer.cpp" />
+    <ClCompile Include="NickyESkillState.cpp" />
+    <ClCompile Include="NickyRSkillState.cpp" />
     <ClCompile Include="NickyRunState.cpp" />
     <ClCompile Include="NickyWaitState.cpp" />
+    <ClCompile Include="NickyWSkillState.cpp" />
     <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="Light.cpp" />

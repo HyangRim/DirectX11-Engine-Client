@@ -233,7 +233,28 @@
       <Filter>04. Component\Animation\Nicky\Wait</Filter>
     </ClCompile>
     <ClCompile Include="NickyRunState.cpp">
-      <Filter>04. Component\Animation\Nicky\Move</Filter>
+      <Filter>04. Component\Animation\Nicky\Run</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaRunState.cpp">
+      <Filter>04. Component\Animation\Bianca\Run</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaWaitState.cpp">
+      <Filter>04. Component\Animation\Bianca\Wait</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyESkillState.cpp">
+      <Filter>04. Component\Animation\Nicky\Skill\Skill_E</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyWSkillState.cpp">
+      <Filter>04. Component\Animation\Nicky\Skill\Skill_W</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyRSkillState.cpp">
+      <Filter>04. Component\Animation\Nicky\Skill\Skill_R</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaQSkillState.cpp">
+      <Filter>04. Component\Animation\Bianca\Skill\Skill_Q</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaRSkillState.cpp">
+      <Filter>04. Component\Animation\Bianca\Skill\Skill_R</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -484,7 +505,28 @@
       <Filter>04. Component\Animation\Nicky\Wait</Filter>
     </ClInclude>
     <ClInclude Include="NickyRunState.h">
-      <Filter>04. Component\Animation\Nicky\Move</Filter>
+      <Filter>04. Component\Animation\Nicky\Run</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaRunState.h">
+      <Filter>04. Component\Animation\Bianca\Run</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaWaitState.h">
+      <Filter>04. Component\Animation\Bianca\Wait</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyESkillState.h">
+      <Filter>04. Component\Animation\Nicky\Skill\Skill_E</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyWSkillState.h">
+      <Filter>04. Component\Animation\Nicky\Skill\Skill_W</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyRSkillState.h">
+      <Filter>04. Component\Animation\Nicky\Skill\Skill_R</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaQSkillState.h">
+      <Filter>04. Component\Animation\Bianca\Skill\Skill_Q</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaRSkillState.h">
+      <Filter>04. Component\Animation\Bianca\Skill\Skill_R</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -555,19 +597,43 @@
       <UniqueIdentifier>{7f436137-1109-43bf-b82c-b5e3d35b5206}</UniqueIdentifier>
     </Filter>
     <Filter Include="04. Component\Animation\Nicky">
-      <UniqueIdentifier>{2fbb0048-754e-407f-b9fc-cd058bd1f262}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\Animation\Bianca">
-      <UniqueIdentifier>{68528acc-b0c2-4fce-b52f-a384aef545da}</UniqueIdentifier>
+      <UniqueIdentifier>{b4615d43-1607-41a1-924c-b2dc5ff07355}</UniqueIdentifier>
     </Filter>
     <Filter Include="04. Component\Animation\Nicky\Wait">
-      <UniqueIdentifier>{49875535-81c7-493a-9e58-a50c9fa1e6cd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\Animation\Nicky\Move">
-      <UniqueIdentifier>{a37e16d4-11bf-4888-8a0c-782e410cfece}</UniqueIdentifier>
+      <UniqueIdentifier>{bf4736a6-c863-41e0-915d-23781482dd03}</UniqueIdentifier>
     </Filter>
     <Filter Include="04. Component\Animation\Nicky\Skill">
-      <UniqueIdentifier>{afa4a79c-744e-4ba7-b896-0595194547c5}</UniqueIdentifier>
+      <UniqueIdentifier>{ecfb5b81-f439-46ba-9044-218cd595a8f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Animation\Bianca">
+      <UniqueIdentifier>{89be299c-2ab0-4e02-b8d7-34e527c49f2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Animation\Nicky\Run">
+      <UniqueIdentifier>{b3d9898d-9d08-43df-bc14-dd9ebe588dbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Animation\Bianca\Run">
+      <UniqueIdentifier>{4db97fa3-b9df-4c64-8878-2cc9b2db0d76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Animation\Bianca\Wait">
+      <UniqueIdentifier>{5817bfe6-2fba-4dd6-ac25-1c1c6a07e426}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Animation\Nicky\Skill\Skill_E">
+      <UniqueIdentifier>{8661b850-d78f-412d-a8b6-ecbddd90f411}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Animation\Nicky\Skill\Skill_W">
+      <UniqueIdentifier>{25adfa30-d8b4-4e80-a743-c040ad400f3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Animation\Nicky\Skill\Skill_R">
+      <UniqueIdentifier>{61a387ff-ce80-4b09-b9b9-8b980c73a002}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Animation\Bianca\Skill">
+      <UniqueIdentifier>{18436bdf-f4b1-4d5c-b344-41858578a4c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Animation\Bianca\Skill\Skill_Q">
+      <UniqueIdentifier>{278c9da9-212b-4e6d-a623-2ccd09024589}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Animation\Bianca\Skill\Skill_R">
+      <UniqueIdentifier>{190162d5-3baf-4ae2-b6a1-6d67a305944b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

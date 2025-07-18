@@ -58,7 +58,6 @@ bool NickyWaitState::CanTransitionTo(AnimationStateType nextState)
     // Wait 상태에서는 대부분의 상태로 전환 가능
     switch (nextState)
     {
-    case AnimationStateType::Move:
     case AnimationStateType::BaseAttack:
     case AnimationStateType::Skill_1:
     case AnimationStateType::Skill_2:
