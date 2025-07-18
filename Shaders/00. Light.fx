@@ -67,6 +67,11 @@ float4 ComputeLight(float3 _normal, float2 _uv, float3 _worldPosition, float sha
     float4 specularColor = 0;
     float4 emissiveColor = 0;
     
+    float4 baseTexture = DiffuseMap.Sample(LinearSampler, _uv);
+    
+    if(baseTexture.a < 0.01f)
+        discard;
+    
     //Ambient
     {
         float4 color = GlobalLight.ambient * Material.ambient;
@@ -115,7 +120,7 @@ float4 ComputeLight(float3 _normal, float2 _uv, float3 _worldPosition, float sha
     
     float4 finalColor =  ambientColor + (diffuseColor + specularColor + emissiveColor) * shadow;
     
-    float4 baseTexture = DiffuseMap.Sample(LinearSampler, _uv);
+    
     finalColor.rgb = max(finalColor.rgb, baseTexture.rgb * 0.95f);
     
     return finalColor;

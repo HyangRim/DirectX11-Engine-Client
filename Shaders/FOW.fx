@@ -67,7 +67,7 @@ float4 PS_FOW(MeshOutput input) : SV_TARGET
     // 회색 필터 효과 계산
     float3 grayColor = dot(baseColor.rgb, float3(0.299, 0.587, 0.114)); // 그레이스케일 변환
     grayColor = grayColor * float3(0.7, 0.7, 0.8); // 약간 푸른빛이 도는 회색
-    
+         
     float grayIntensity = saturate(g_smoothness * 0.5f);
     
     // 원본 색상과 회색 사이의 보간 (어두운 영역일수록 회색 강함)
