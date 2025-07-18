@@ -73,11 +73,11 @@ void AssimpTool::Init()
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/church.fbx");
+		converter->ReadAssetFile(L"Map2/Cemetery_STR_Base.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"church/church");
-		converter->ExportModelData(L"church/church");
+		converter->ExportMaterialData(L"Cemetery/Cemetery_STR_Base");
+		converter->ExportModelData(L"Cemetery/Cemetery_STR_Base");
 
 		//CustomData -> Memory;
 	}
@@ -85,11 +85,11 @@ void AssimpTool::Init()
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Factory.fbx");
+		converter->ReadAssetFile(L"Map2/Common_OBJ_Pipe_04_Valve.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Factory/Factory");
-		converter->ExportModelData(L"Factory/Factory");
+		converter->ExportMaterialData(L"Cemetery/Common_OBJ_Pipe_04_Valve");
+		converter->ExportModelData(L"Cemetery/Common_OBJ_Pipe_04_Valve");
 
 		//CustomData -> Memory;
 	}
@@ -97,11 +97,11 @@ void AssimpTool::Init()
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/gojuga.fbx");
+		converter->ReadAssetFile(L"Map2/Alley_OBJ_Fence_04_L.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"gojuga/gojuga");
-		converter->ExportModelData(L"gojuga/gojuga");
+		converter->ExportMaterialData(L"Cemetery/Alley_OBJ_Fence_04_L");
+		converter->ExportModelData(L"Cemetery/Alley_OBJ_Fence_04_L");
 
 		//CustomData -> Memory;
 	}
@@ -109,11 +109,11 @@ void AssimpTool::Init()
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Grass_Cemetry.fbx");
+		converter->ReadAssetFile(L"Map2/Alley_OBJ_Fence_04_M.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Grass_Cemetry/Grass_Cemetry");
-		converter->ExportModelData(L"Grass_Cemetry/Grass_Cemetry");
+		converter->ExportMaterialData(L"Cemetery/Alley_OBJ_Fence_04_M");
+		converter->ExportModelData(L"Cemetery/Alley_OBJ_Fence_04_M");
 
 		//CustomData -> Memory;
 	}
@@ -121,11 +121,11 @@ void AssimpTool::Init()
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Grass_Church.fbx");
+		converter->ReadAssetFile(L"Map2/Alley_OBJ_ManHole_03.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Grass_Church/Grass_Church");
-		converter->ExportModelData(L"Grass_Church/Grass_Church");
+		converter->ExportMaterialData(L"Cemetery/Alley_OBJ_ManHole_03");
+		converter->ExportModelData(L"Cemetery/Alley_OBJ_ManHole_03");
 
 		//CustomData -> Memory;
 	}
@@ -133,11 +133,11 @@ void AssimpTool::Init()
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Grass_Factory.fbx");
+		converter->ReadAssetFile(L"Map2/Alley_OBJ_Fence_04_Pole_S.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Grass_Factory/Grass_Factory");
-		converter->ExportModelData(L"Grass_Factory/Grass_Factory");
+		converter->ExportMaterialData(L"Cemetery/Alley_OBJ_Fence_04_Pole_S");
+		converter->ExportModelData(L"Cemetery/Alley_OBJ_Fence_04_Pole_S");
 
 		//CustomData -> Memory;
 	}
@@ -145,11 +145,11 @@ void AssimpTool::Init()
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Grass_gojuga.fbx");
+		converter->ReadAssetFile(L"Map2/Alley_OBJ_Fence_04_S.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Grass_gojuga/Grass_gojuga");
-		converter->ExportModelData(L"Grass_gojuga/Grass_gojuga");
+		converter->ExportMaterialData(L"Cemetery/Alley_OBJ_Fence_04_S");
+		converter->ExportModelData(L"Cemetery/Alley_OBJ_Fence_04_S");
 
 		//CustomData -> Memory;
 	}
@@ -157,84 +157,11 @@ void AssimpTool::Init()
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Grass_Harbor.fbx");
+		converter->ReadAssetFile(L"Map2/Bg_Cemetery_STR_Base_Wall_01.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Grass_Harbor/Grass_Harbor");
-		converter->ExportModelData(L"Grass_Harbor/Grass_Harbor");
-
-		//CustomData -> Memory;
-	}
-
-
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Harbor.fbx");
-
-		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Harbor/Harbor");
-		converter->ExportModelData(L"Harbor/Harbor");
-
-		//CustomData -> Memory;
-	}
-
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/hospital.fbx");
-
-		//Memory ->CustomData;
-		converter->ExportMaterialData(L"hospital/hospital");
-		converter->ExportModelData(L"hospital/hospital");
-
-		//CustomData -> Memory;
-	}
-
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Poles_Factory.fbx");
-
-		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Poles_Factory/Poles_Factory");
-		converter->ExportModelData(L"Poles_Factory/Poles_Factory");
-
-		//CustomData -> Memory;
-	}
-
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Poles_gojuga.fbx");
-
-		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Poles_gojuga/Poles_gojuga");
-		converter->ExportModelData(L"Poles_gojuga/Poles_gojuga");
-
-		//CustomData -> Memory;
-	}
-
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Poles_Harbor.fbx");
-
-		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Poles_Harbor/Poles_Harbor");
-		converter->ExportModelData(L"Poles_Harbor/Poles_Harbor");
-
-		//CustomData -> Memory;
-	}
-
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Rocks_Church.fbx");
-
-		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Rocks_Church/Rocks_Church");
-		converter->ExportModelData(L"Rocks_Church/Rocks_Church");
+		converter->ExportMaterialData(L"Cemetery/Bg_Cemetery_STR_Base_Wall_01");
+		converter->ExportModelData(L"Cemetery/Bg_Cemetery_STR_Base_Wall_01");
 
 		//CustomData -> Memory;
 	}
@@ -243,11 +170,11 @@ void AssimpTool::Init()
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Rocks_Factory.fbx");
+		converter->ReadAssetFile(L"Map2/Cemetery_OBJ_Tomb_02.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Rocks_Factory/Rocks_Factory");
-		converter->ExportModelData(L"Rocks_Factory/Rocks_Factory");
+		converter->ExportMaterialData(L"Cemetery/Cemetery_OBJ_Tomb_02");
+		converter->ExportModelData(L"Cemetery/Cemetery_OBJ_Tomb_02");
 
 		//CustomData -> Memory;
 	}
@@ -255,11 +182,11 @@ void AssimpTool::Init()
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Rocks_gojuga.fbx");
+		converter->ReadAssetFile(L"Map2/Cemetery_OBJ_Tomb_03.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Rocks_gojuga/Rocks_gojuga");
-		converter->ExportModelData(L"Rocks_gojuga/Rocks_gojuga");
+		converter->ExportMaterialData(L"Cemetery/Cemetery_OBJ_Tomb_03");
+		converter->ExportModelData(L"Cemetery/Cemetery_OBJ_Tomb_03");
 
 		//CustomData -> Memory;
 	}
@@ -267,11 +194,11 @@ void AssimpTool::Init()
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Rocks_Harbor.fbx");
+		converter->ReadAssetFile(L"Map2/Cemetery_OBJ_Tombstone_08.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Rocks_Harbor/Rocks_Harbor");
-		converter->ExportModelData(L"Rocks_Harbor/Rocks_Harbor");
+		converter->ExportMaterialData(L"Cemetery/Cemetery_OBJ_Tombstone_08");
+		converter->ExportModelData(L"Cemetery/Cemetery_OBJ_Tombstone_08");
 
 		//CustomData -> Memory;
 	}
@@ -279,11 +206,11 @@ void AssimpTool::Init()
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Rocks_SandBeach.fbx");
+		converter->ReadAssetFile(L"Map2/Cemetery_OBJ_Tomb_04.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Rocks_SandBeach/Rocks_SandBeach");
-		converter->ExportModelData(L"Rocks_SandBeach/Rocks_SandBeach");
+		converter->ExportMaterialData(L"Cemetery/Cemetery_OBJ_Tomb_04");
+		converter->ExportModelData(L"Cemetery/Cemetery_OBJ_Tomb_04");
 
 		//CustomData -> Memory;
 	}
@@ -291,11 +218,11 @@ void AssimpTool::Init()
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/sand_beach.fbx");
+		converter->ReadAssetFile(L"Map2/Cemetery_OBJ_Tombstone_01.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"sand_beach/sand_beach");
-		converter->ExportModelData(L"sand_beach/sand_beach");
+		converter->ExportMaterialData(L"Cemetery/Cemetery_OBJ_Tombstone_01");
+		converter->ExportModelData(L"Cemetery/Cemetery_OBJ_Tombstone_01");
 
 		//CustomData -> Memory;
 	}
@@ -303,11 +230,24 @@ void AssimpTool::Init()
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Tree_Cemetery.fbx");
+		converter->ReadAssetFile(L"Map2/Cemetery_OBJ_Tombstone_07.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Tree_Cemetery/Tree_Cemetery");
-		converter->ExportModelData(L"Tree_Cemetery/Tree_Cemetery");
+		converter->ExportMaterialData(L"Cemetery/Cemetery_OBJ_Tombstone_07");
+		converter->ExportModelData(L"Cemetery/Cemetery_OBJ_Tombstone_07");
+
+		//CustomData -> Memory;
+	}
+
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetery_OBJ_Tombstone_02.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Cemetery_OBJ_Tombstone_02");
+		converter->ExportModelData(L"Cemetery/Cemetery_OBJ_Tombstone_02");
 
 		//CustomData -> Memory;
 	}
@@ -315,11 +255,11 @@ void AssimpTool::Init()
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Tree_Church.fbx");
+		converter->ReadAssetFile(L"Map2/Cemetery_OBJ_Tombstone_03.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Tree_Church/Tree_Church");
-		converter->ExportModelData(L"Tree_Church/Tree_Church");
+		converter->ExportMaterialData(L"Cemetery/Cemetery_OBJ_Tombstone_03");
+		converter->ExportModelData(L"Cemetery/Cemetery_OBJ_Tombstone_03");
 
 		//CustomData -> Memory;
 	}
@@ -327,11 +267,11 @@ void AssimpTool::Init()
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Tree_gojuga.fbx");
+		converter->ReadAssetFile(L"Map2/Cemetery_OBJ_Tombstone_04.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Tree_gojuga/Tree_gojuga");
-		converter->ExportModelData(L"Tree_gojuga/Tree_gojuga");
+		converter->ExportMaterialData(L"Cemetery/Cemetery_OBJ_Tombstone_04");
+		converter->ExportModelData(L"Cemetery/Cemetery_OBJ_Tombstone_04");
 
 		//CustomData -> Memory;
 	}
@@ -339,14 +279,436 @@ void AssimpTool::Init()
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Tree_Harbor.fbx");
+		converter->ReadAssetFile(L"Map2/Cemetery_OBJ_Tombstone_06.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Tree_Harbor/Tree_Harbor");
-		converter->ExportModelData(L"Tree_Harbor/Tree_Harbor");
+		converter->ExportMaterialData(L"Cemetery/Cemetery_OBJ_Tombstone_06");
+		converter->ExportModelData(L"Cemetery/Cemetery_OBJ_Tombstone_06");
 
 		//CustomData -> Memory;
 	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetery_STR_GraveBase_03_Wall_01_Fence.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Cemetery_STR_GraveBase_03_Wall_01_Fence");
+		converter->ExportModelData(L"Cemetery/Cemetery_STR_GraveBase_03_Wall_01_Fence");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetery_STR_House_01.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Cemetery_STR_House_01");
+		converter->ExportModelData(L"Cemetery/Cemetery_STR_House_01");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Common_OBJ_BrickDecoTop_03_Broken_01.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Common_OBJ_BrickDecoTop_03_Broken_01");
+		converter->ExportModelData(L"Cemetery/Common_OBJ_BrickDecoTop_03_Broken_01");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetery_STR_OuterWall_02_Fence.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Cemetery_STR_OuterWall_02_Fence");
+		converter->ExportModelData(L"Cemetery/Cemetery_STR_OuterWall_02_Fence");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetery_STR_GraveBase_03_Wall_01.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Cemetery_STR_GraveBase_03_Wall_01");
+		converter->ExportModelData(L"Cemetery/Cemetery_STR_GraveBase_03_Wall_01");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetery_STR_InnerWall_04.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Cemetery_STR_InnerWall_04");
+		converter->ExportModelData(L"Cemetery/Cemetery_STR_InnerWall_04");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetery_STR_OuterWall_03_Fence.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Cemetery_STR_OuterWall_03_Fence");
+		converter->ExportModelData(L"Cemetery/Cemetery_STR_OuterWall_03_Fence");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetery_STR_OuterWall_04_Fence.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Cemetery_STR_OuterWall_04_Fence");
+		converter->ExportModelData(L"Cemetery/Cemetery_STR_OuterWall_04_Fence");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetery_STR_OuterWall_04.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Cemetery_STR_OuterWall_04");
+		converter->ExportModelData(L"Cemetery/Cemetery_STR_OuterWall_04");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetery_STR_OuterWall_02.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Cemetery_STR_OuterWall_02");
+		converter->ExportModelData(L"Cemetery/Cemetery_STR_OuterWall_02");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetery_STR_InnerWall_02.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Cemetery_STR_InnerWall_02");
+		converter->ExportModelData(L"Cemetery/Cemetery_STR_InnerWall_02");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetery_STR_OuterWall_03.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Cemetery_STR_OuterWall_03");
+		converter->ExportModelData(L"Cemetery/Cemetery_STR_OuterWall_03");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Bg_Cemetery_STR_TextDeco_Set.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Bg_Cemetery_STR_TextDeco_Set");
+		converter->ExportModelData(L"Cemetery/Bg_Cemetery_STR_TextDeco_Set");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetery_STR_GraveBase_03_Wall_02.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Cemetery_STR_GraveBase_03_Wall_02");
+		converter->ExportModelData(L"Cemetery/Cemetery_STR_GraveBase_03_Wall_02");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetery_STR_GraveBase_02.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Cemetery_STR_GraveBase_02");
+		converter->ExportModelData(L"Cemetery/Cemetery_STR_GraveBase_02");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetery_STR_InnerWall_05.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Cemetery_STR_InnerWall_05");
+		converter->ExportModelData(L"Cemetery/Cemetery_STR_InnerWall_05");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetery_STR_House_01_Wall.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Cemetery_STR_House_01_Wall");
+		converter->ExportModelData(L"Cemetery/Cemetery_STR_House_01_Wall");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetery_STR_House_01_Interior.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Cemetery_STR_House_01_Interior");
+		converter->ExportModelData(L"Cemetery/Cemetery_STR_House_01_Interior");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetery_STR_OuterWall_02_Grass.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Cemetery_STR_OuterWall_02_Grass");
+		converter->ExportModelData(L"Cemetery/Cemetery_STR_OuterWall_02_Grass");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetery_STR_House_01_Wall_Grass.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Cemetery_STR_House_01_Wall_Grass");
+		converter->ExportModelData(L"Cemetery/Cemetery_STR_House_01_Wall_Grass");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Common_OBJ_Poster_03.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Common_OBJ_Poster_03");
+		converter->ExportModelData(L"Cemetery/Common_OBJ_Poster_03");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Common_OBJ_Poster_05.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Common_OBJ_Poster_05");
+		converter->ExportModelData(L"Cemetery/Common_OBJ_Poster_05");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Common_OBJ_Poster_06.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Common_OBJ_Poster_06");
+		converter->ExportModelData(L"Cemetery/Common_OBJ_Poster_06");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Common_OBJ_Poster_08.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Common_OBJ_Poster_08");
+		converter->ExportModelData(L"Cemetery/Common_OBJ_Poster_08");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Common_OBJ_Poster_09.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Common_OBJ_Poster_09");
+		converter->ExportModelData(L"Cemetery/Common_OBJ_Poster_09");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Common_OBJ_Poster_11.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Common_OBJ_Poster_11");
+		converter->ExportModelData(L"Cemetery/Common_OBJ_Poster_11");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Common_OBJ_Poster_04.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Common_OBJ_Poster_04");
+		converter->ExportModelData(L"Cemetery/Common_OBJ_Poster_04");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Common_OBJ_Poster_07.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Common_OBJ_Poster_07");
+		converter->ExportModelData(L"Cemetery/Common_OBJ_Poster_07");
+
+		//CustomData -> Memory;
+	}
+
+	//{
+	//	shared_ptr<Converter> converter = make_shared<Converter>();
+	//	//FBX -> Memory
+	//	converter->ReadAssetFile(L"Map2/Common_OBJ_WaterBush_03.fbx");
+
+	//	//Memory ->CustomData;
+	//	converter->ExportMaterialData(L"Cemetery/Common_OBJ_WaterBush_03");
+	//	converter->ExportModelData(L"Cemetery/Common_OBJ_WaterBush_03");
+
+	//	//CustomData -> Memory;
+	//}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Common_OBJ_Lotus_03.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Common_OBJ_Lotus_03");
+		converter->ExportModelData(L"Cemetery/Common_OBJ_Lotus_03");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Common_OBJ_WaterBush_01.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Common_OBJ_WaterBush_01");
+		converter->ExportModelData(L"Cemetery/Common_OBJ_WaterBush_01");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Common_OBJ_WaterBush_02.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Common_OBJ_WaterBush_02");
+		converter->ExportModelData(L"Cemetery/Common_OBJ_WaterBush_02");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Common_OBJ_Lotus_01.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Common_OBJ_Lotus_01");
+		converter->ExportModelData(L"Cemetery/Common_OBJ_Lotus_01");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Common_OBJ_Lotus_02.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Common_OBJ_Lotus_02");
+		converter->ExportModelData(L"Cemetery/Common_OBJ_Lotus_02");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Common_OBJ_Fishing_03.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Cemetery/Common_OBJ_Fishing_03");
+		converter->ExportModelData(L"Cemetery/Common_OBJ_Fishing_03");
+
+		//CustomData -> Memory;
+	}
+
+	
 	/*
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
