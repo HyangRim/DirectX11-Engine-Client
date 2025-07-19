@@ -1,0 +1,33 @@
+Cemetery_STR_OuterWall_02 (125.919, 16.927, 105.524) 
+Cemetery_STR_OuterWall_02_Fence (125.919, 16.927, 105.524) 
+Cemetery_STR_GraveBase_02
+Cemetery_STR_OuterWall_02_Grass (125.919, 17.176, 105.524) 
+Cemetery_STR_InnerWall_02
+
+125.9 17.85.524
+101   79.8   0.2
+
+24.9  -62  105.324
+
+Cemetery_STR_OuterWall_03 (160.2, 17.859, 63.083)
+Cemetery_STR_OuterWall_03_Fence (160.2, 17.859, 63.083)
+Cemetery_STR_House_01_Wall (142.178, 17.859, 29.834)
+Cemetery_STR_House_01 (142.178, 17.859, 29.834)
+Cemetery_STR_House_01_Interior (142.178, 17.859, 29.834)
+Cemetery_STR_House_01_Wall_Grass (142.178, 18.1, 29.834)
+
+Bg_Cemetery_STR_TextDeco_Set (114, 24.527, 26.665)
+Bg_Cemetery_STR_TextDeco_Set_01 (120.843, 24.965, 113)
+
+Cemetery_STR_OuterWall_04 (64.588, 17.859, 26.163)
+Cemetery_STR_OuterWall_04_Fence (64.588, 17.859, 26.163)
+
+Cemetery_STR_GraveBase_03_Wall_01 (92, 17.859, 55.934)
+Cemetery_STR_GraveBase_03_Wall_01_Fence (92, 17.859, 55.934)
+
+Cemetery_STR_GraveBase_03_Wall_02 (77.3, 17.429, 55.934)
+Cemetery_STR_GraveBase_03_Wall_02_01 (92, 17.429, 55.934)
+
+Cemetery_STR_InnerWall_04 (78.7, 17.865, 5.23)
+
+Cemetery_STR_InnerWall_05
