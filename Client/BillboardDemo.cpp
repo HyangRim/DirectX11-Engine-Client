@@ -42,6 +42,7 @@ void BillboardDemo::Init()
 	}
 
 	{
+
 		{
 			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_STR_Base", L"Cemetery/Cemetery_STR_Base");
 			//m2->ReadModel(L"forest/forest");

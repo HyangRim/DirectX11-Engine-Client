@@ -70,180 +70,53 @@ void AssimpTool::Init()
 
 	//}
 
-	//{
-	//	shared_ptr<Converter> converter = make_shared<Converter>();
-	//	//FBX -> Memory
-	//	converter->ReadAssetFile(L"alpha/Alpha_mesh.fbx");
-
-	//	//Memory ->CustomData;
-	//	converter->ExportMaterialData(L"alpha/Alpha_mesh");
-	//	converter->ExportModelData(L"alpha/Alpha_mesh");
-
-	//	//CustomData -> Memory;
-	//}
-
-	//{
-	//	shared_ptr<Converter> converter = make_shared<Converter>();
-	//	converter->ReadAssetFile(L"alpha/Alpha_appear_anim.fbx");
-	//	converter->ExportAnimationData(L"alpha/Alpha_appear_anim");
-	//}
-
-	//{
-	//	shared_ptr<Converter> converter = make_shared<Converter>();
-	//	converter->ReadAssetFile(L"alpha/Alpha_atk1_anim.fbx");
-	//	converter->ExportAnimationData(L"alpha/Alpha_atk1_anim");
-	//}
-	//{
-	//	shared_ptr<Converter> converter = make_shared<Converter>();
-	//	converter->ReadAssetFile(L"alpha/Alpha_atk2_anim.fbx");
-	//	converter->ExportAnimationData(L"alpha/Alpha_atk2_anim");
-	//}
-	//{
-	//	shared_ptr<Converter> converter = make_shared<Converter>();
-	//	converter->ReadAssetFile(L"alpha/Alpha_dance_anim.fbx");
-	//	converter->ExportAnimationData(L"alpha/Alpha_dance_anim");
-	//}
-	//{
-	//	shared_ptr<Converter> converter = make_shared<Converter>();
-	//	converter->ReadAssetFile(L"alpha/Alpha_death_anim.fbx");
-	//	converter->ExportAnimationData(L"alpha/Alpha_death_anim");
-	//}
-	//{
-	//	shared_ptr<Converter> converter = make_shared<Converter>();
-	//	converter->ReadAssetFile(L"alpha/Alpha_dying_anim.fbx");
-	//	converter->ExportAnimationData(L"alpha/Alpha_dying_anim");
-	//}
-	//{
-	//	shared_ptr<Converter> converter = make_shared<Converter>();
-	//	converter->ReadAssetFile(L"alpha/Alpha_skill1atk_anim.fbx");
-	//	converter->ExportAnimationData(L"alpha/Alpha_skill1atk_anim");
-	//}
-	//{
-	//	shared_ptr<Converter> converter = make_shared<Converter>();
-	//	converter->ReadAssetFile(L"alpha/Alpha_skill1ready_anim.fbx");
-	//	converter->ExportAnimationData(L"alpha/Alpha_skill1ready_anim");
-	//}
-	//{
-	//	shared_ptr<Converter> converter = make_shared<Converter>();
-	//	converter->ReadAssetFile(L"alpha/Alpha_skill2_anim.fbx");
-	//	converter->ExportAnimationData(L"alpha/Alpha_skill2_anim");
-	//}
-	//{
-	//	shared_ptr<Converter> converter = make_shared<Converter>();
-	//	converter->ReadAssetFile(L"alpha/Alpha_wait_anim.fbx");
-	//	converter->ExportAnimationData(L"alpha/Alpha_wait_anim");
-	//}
-	//{
-	//	shared_ptr<Converter> converter = make_shared<Converter>();
-	//	converter->ReadAssetFile(L"alpha/Alpha_walk_anim.fbx");
-	//	converter->ExportAnimationData(L"alpha/Alpha_walk_anim");
-	//}
-
-	//{
-	//	shared_ptr<Converter> converter = make_shared<Converter>();
-	//	//FBX -> Memory
-	//	converter->ReadAssetFile(L"Bianca/bianca_Coffin.fbx");
-
-	//	//Memory ->CustomData;
-	//	converter->ExportMaterialData(L"Bianca/bianca_Coffin");
-	//	converter->ExportModelData(L"Bianca/bianca_Coffin");
-
-	//	//CustomData -> Memory;
-	//}
-	//{
-	//	shared_ptr<Converter> converter = make_shared<Converter>();
-	//	//FBX -> Memory
-	//	converter->ReadAssetFile(L"Bianca/bianca_Umbrella.fbx");
-
-	//	//Memory ->CustomData;
-	//	converter->ExportMaterialData(L"Bianca/bianca_Umbrella");
-	//	converter->ExportModelData(L"Bianca/bianca_Umbrella");
-
-	//	//CustomData -> Memory;
-	//}
-	//{
-	//	shared_ptr<Converter> converter = make_shared<Converter>();
-	//	converter->ReadAssetFile(L"Bianca/bianca_Umbrella_anim1.fbx");
-	//	converter->ExportAnimationData(L"Bianca/bianca_Umbrella_anim1");
-	//}
-	//{
-	//	shared_ptr<Converter> converter = make_shared<Converter>();
-	//	converter->ReadAssetFile(L"Bianca/bianca_Umbrella_anim2.fbx");
-	//	converter->ExportAnimationData(L"Bianca/bianca_Umbrella_anim2");
-	//}
-
 
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//FBX -> Memory
-		converter->ReadAssetFile(L"wolf/wolf_mesh.fbx");
+		converter->ReadAssetFile(L"Bianca/BiancaCoffin_mesh.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"wolf/wolf_mesh");
-		converter->ExportModelData(L"wolf/wolf_mesh");
+		converter->ExportMaterialData(L"Bianca/BiancaCoffin_mesh");
+		converter->ExportModelData(L"Bianca/BiancaCoffin_mesh");
 
 		//CustomData -> Memory;
 	}
-
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		converter->ReadAssetFile(L"wolf/wolf_appear_anim.fbx");
-		converter->ExportAnimationData(L"wolf/wolf_appear_anim");
-	}
-
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		converter->ReadAssetFile(L"wolf/wolf_appearwait_anim.fbx");
-		converter->ExportAnimationData(L"wolf/wolf_appearwait_anim");
-	}
-
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		converter->ReadAssetFile(L"wolf/wolf_atk1_anim.fbx");
-		converter->ExportAnimationData(L"wolf/wolf_atk1_anim");
-	}
-
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		converter->ReadAssetFile(L"wolf/wolf_atk2_anim.fbx");
-		converter->ExportAnimationData(L"wolf/wolf_atk2_anim");
-	}
-
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		converter->ReadAssetFile(L"wolf/wolf_death_anim.fbx");
-		converter->ExportAnimationData(L"wolf/wolf_death_anim");
-	}
-
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		converter->ReadAssetFile(L"wolf/wolf_dying_anim.fbx");
-		converter->ExportAnimationData(L"wolf/wolf_dying_anim");
-	}
-
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		converter->ReadAssetFile(L"wolf/wolf_run_anim.fbx");
-		converter->ExportAnimationData(L"wolf/wolf_run_anim");
-	}
-
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		converter->ReadAssetFile(L"wolf/wolf_wait_anim.fbx");
-		converter->ExportAnimationData(L"wolf/wolf_wait_anim");
-	}
-
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Environment/CampFire.fbx");
+		converter->ReadAssetFile(L"Bianca/BiancaUmbrella_mesh.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Environment/CampFire");
-		converter->ExportModelData(L"Environment/CampFire");
+		converter->ExportMaterialData(L"Bianca/BiancaUmbrella_mesh");
+		converter->ExportModelData(L"Bianca/BiancaUmbrella_mesh");
 
 		//CustomData -> Memory;
 	}
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		converter->ReadAssetFile(L"Bianca/BiancaUmbrella_anim1.fbx");
+		converter->ExportAnimationData(L"Bianca/BiancaUmbrella_anim1");
+	}
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		converter->ReadAssetFile(L"Bianca/BiancaUmbrella_anim2.fbx");
+		converter->ExportAnimationData(L"Bianca/BiancaUmbrella_anim2");
+	}
+
+
+
+	//{
+	//	shared_ptr<Converter> converter = make_shared<Converter>();
+	//	//FBX -> Memory
+	//	converter->ReadAssetFile(L"Environment/CampFire.fbx");
+
+	//	//Memory ->CustomData;
+	//	converter->ExportMaterialData(L"Environment/CampFire");
+	//	converter->ExportModelData(L"Environment/CampFire");
+
+	//	//CustomData -> Memory;
+	//}
 
 
 
