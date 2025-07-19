@@ -3,6 +3,7 @@
 #include "BaseCollider.h"
 #include "AABBBoxCollider.h"
 #include "SphereCollider.h"
+#include "Camera.h"
 
 void ImGuiManager::Init()
 {
@@ -48,6 +49,8 @@ void ImGuiManager::ShowPickedObj()
 	//메모리 영역이 유효할 경우에.
 	if (!curPickedObj.expired()) {
 
+		ImGuizmo::BeginFrame();
+
 		//가져온 GameObject 정보를 ImGui에 넣기. 
 		//Transpose.
 		{
@@ -72,9 +75,9 @@ void ImGuiManager::ShowPickedObj()
 			ImGui::Text("Rotation");
 			ImGui::SameLine();
 			if (ImGui::InputFloat3("Local Rotation", vRot)) {
-				vRotation.x = vRot[0];
-				vRotation.y = vRot[1];
-				vRotation.z = vRot[2];
+				vRotation.x = vRot[0] * XM_PI / 180.f;
+				vRotation.y = vRot[1] * XM_PI / 180.f;
+				vRotation.z = vRot[2] * XM_PI / 180.f;
 				curPickedObj.lock()->GetTransform()->SetLocalRotation(vRotation);
 			}
 
@@ -86,6 +89,48 @@ void ImGuiManager::ShowPickedObj()
 				vScale.z = vSca[2];
 				curPickedObj.lock()->GetTransform()->SetLocalScale(vScale);
 			}
+
+			//Gizmo 사용한 방법. 
+			auto camera = CURSCENE->GetMainCamera(); 
+
+			if (camera) {
+				Matrix viewMat = camera->GetCamera()->GetViewMatrix();
+				Matrix projMat = camera->GetCamera()->GetProjectionMatrix();
+
+				//기즈모 조작 모드 설정
+				static ImGuizmo::OPERATION operation = ImGuizmo::TRANSLATE;
+				static ImGuizmo::MODE mode = ImGuizmo::LOCAL;
+
+				// 조작 모드 UI
+				if (ImGui::RadioButton("Translate", operation == ImGuizmo::TRANSLATE))
+					operation = ImGuizmo::TRANSLATE;
+				ImGui::SameLine();
+				if (ImGui::RadioButton("Rotate", operation == ImGuizmo::ROTATE))
+					operation = ImGuizmo::ROTATE;
+				ImGui::SameLine();
+				if (ImGui::RadioButton("Scale", operation == ImGuizmo::SCALE))
+					operation = ImGuizmo::SCALE;
+
+				// 5. World Matrix 가져오기 (더 간단한 방법)
+				Matrix gizmoMatrix = curPickedObj.lock()->GetTransform()->GetLocalMatrix();
+
+				// 6. 기즈모 렌더링 영역 설정
+				ImGuiIO& io = ImGui::GetIO();
+				ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+
+				// 7. 기즈모 조작
+				if (ImGuizmo::Manipulate(&viewMat._11, &projMat._11, operation, mode, &gizmoMatrix._11)) {
+					// 변경된 매트릭스를 Transform에 적용
+					Vec3 scale, translation, rot;
+					Quaternion rotation;
+					gizmoMatrix.Decompose(scale, rotation, translation);
+					curPickedObj.lock()->GetTransform()->SetLocalPosition(Vec3(translation.x, translation.y, translation.z));
+					rot = Transform::ToEulerAngles(rotation);
+					curPickedObj.lock()->GetTransform()->SetLocalRotation(rot);
+					curPickedObj.lock()->GetTransform()->SetLocalScale(Vec3(scale.x, scale.y, scale.z));
+					// 회전 적용 (필요시 Quaternion을 Euler로 변환)
+				}
+			}
 		}
 
 		//Collider Button
@@ -94,7 +139,9 @@ void ImGuiManager::ShowPickedObj()
 
 			if (collider != nullptr) {
 				Vec3 vOffset = collider->GetOffset();
+				Vec3 vOffsetScale = collider->GetOffsetScale();
 				float vOff[3] = { vOffset.x, vOffset.y, vOffset.z };
+				float vOffScale[3] = { vOffsetScale.x, vOffsetScale.y, vOffsetScale.z };
 				ImGui::Text("Offset");
 				ImGui::SameLine();
 				if (ImGui::InputFloat3("ColliderOffset", vOff)) {
@@ -102,6 +149,15 @@ void ImGuiManager::ShowPickedObj()
 					vOffset.y = vOff[1];
 					vOffset.z = vOff[2];
 					collider->SetOffset(vOffset);
+				}
+
+				ImGui::Text("Offset Scale");
+				ImGui::SameLine();
+				if (ImGui::InputFloat3("ColliderOffsetScale", vOffScale)) {
+					vOffsetScale.x = vOffScale[0];
+					vOffsetScale.y = vOffScale[1];
+					vOffsetScale.z = vOffScale[2];
+					collider->SetOffsetScale(vOffsetScale);
 				}
 			}
 			else {

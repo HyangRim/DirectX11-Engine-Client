@@ -262,6 +262,9 @@
     <ClCompile Include="BiancaESkillState.cpp">
       <Filter>04. Component\Animation\Bianca\Skill\Skill_E</Filter>
     </ClCompile>
+    <ClCompile Include="ImGuizmo.cpp">
+      <Filter>98. Utils\ImGui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Types.h">
@@ -539,6 +542,9 @@
     </ClInclude>
     <ClInclude Include="BiancaESkillState.h">
       <Filter>04. Component\Animation\Bianca\Skill\Skill_E</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuizmo.h">
+      <Filter>98. Utils\ImGui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

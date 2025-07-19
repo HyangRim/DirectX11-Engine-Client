@@ -110,7 +110,6 @@ float4 PS_FOW_DEBUG(MeshOutput input) : SV_TARGET
 }
 
 
-
 ////////////////
 // Techniques //
 ////////////////
@@ -122,9 +121,8 @@ technique11 T0
     PASS_VP(P0, VS_Mesh, PS_FOW)
     PASS_VP(P1, VS_Model, PS_FOW)
     PASS_VP(P2, VS_Animation, PS_FOW)
-    
+    PASS_RS_VP(P3, FillModeWireFrame, VS_Mesh, PS_FOW_DEBUG)
     // 성능 최적화용 간단한 FOW
-    PASS_VP(P3, VS_Mesh, PS_FOW_Simple)
     PASS_VP(P4, VS_Model, PS_FOW_Simple)
     PASS_VP(P5, VS_Animation, PS_FOW_Simple)
 }

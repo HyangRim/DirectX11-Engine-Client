@@ -45,6 +45,7 @@ public:
 	Vec3 GetLook() { return m_matWorld.Backward(); }
 
 	Matrix GetWorldMatrix() { return m_matWorld; }
+	Matrix GetLocalMatrix() { return m_matWorld; }
 
 	bool HasParent() { return  m_parent != nullptr; }
 	shared_ptr<Transform> GetParent() { return m_parent; }

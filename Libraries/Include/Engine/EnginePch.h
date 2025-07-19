@@ -61,6 +61,7 @@ using namespace Microsoft::WRL;
 #include "imgui.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
+#include "ImGuizmo.h"
 
 // Libs
 #pragma comment(lib, "d3d11.lib")

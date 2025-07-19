@@ -31,6 +31,9 @@ public:
 	void SetOffset(Vec3 _offsetPos) { m_offSetPos = _offsetPos; }
 	Vec3 GetOffset() { return m_offSetPos; }
 
+	void SetOffsetScale(Vec3 _offsetScale) { m_offsetScale = _offsetScale; }
+	Vec3 GetOffsetScale() { return m_offsetScale; }
+
 protected:
 	ColliderType m_colliderType;
 
@@ -38,5 +41,6 @@ protected:
 	bool m_active = true;	//충돌체 활성화 여부. 
 
 	Vec3 m_offSetPos = { 0,0,0 };
+	Vec3 m_offsetScale = { 200, 200, 200 };
 };
 
