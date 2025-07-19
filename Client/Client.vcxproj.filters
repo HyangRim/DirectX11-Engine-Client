@@ -40,6 +40,9 @@
     <Filter Include="Scripts\PlayerTest">
       <UniqueIdentifier>{eac17648-82fa-433d-bcb1-91e9d825662c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\InGame">
+      <UniqueIdentifier>{30a1463b-9e9c-486d-8a3f-8e626c260bf2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -98,6 +101,9 @@
     </ClCompile>
     <ClCompile Include="BiancaCamera.cpp">
       <Filter>Scripts\PlayerTest</Filter>
+    </ClCompile>
+    <ClCompile Include="LumiaIsland.cpp">
+      <Filter>Game\InGame</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +166,9 @@
     </ClInclude>
     <ClInclude Include="BiancaCamera.h">
       <Filter>Scripts\PlayerTest</Filter>
+    </ClInclude>
+    <ClInclude Include="LumiaIsland.h">
+      <Filter>Game\InGame</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

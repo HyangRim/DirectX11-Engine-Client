@@ -14,6 +14,7 @@
 #include "ParticleDemo.h"
 #include "UITestDemo.h"
 #include "dxgidebug.h"
+#include "LumiaIsland.h"
 
 #ifdef _DEBUG
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
@@ -52,7 +53,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	desc.width = 1366;
 	desc.height = 768;
 	desc.clearColor = Color(0.2f, 0.2f, 0.2f, 0.2f);
-	desc.app = make_shared<UITestDemo>();
+	desc.app = make_shared<LumiaIsland>();
 
 	GAME->Run(desc);
 

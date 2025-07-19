@@ -28,6 +28,7 @@
     <ClInclude Include="FogOfWar.h" />
     <ClInclude Include="GroupBufferDemo.h" />
     <ClInclude Include="Loader.h" />
+    <ClInclude Include="LumiaIsland.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="OrthoGraphicDemo.h" />
     <ClInclude Include="ParticleDemo.h" />
@@ -49,6 +50,7 @@
     <ClCompile Include="FogOfWar.cpp" />
     <ClCompile Include="GroupBufferDemo.cpp" />
     <ClCompile Include="Loader.cpp" />
+    <ClCompile Include="LumiaIsland.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="OrthoGraphicDemo.cpp" />
     <ClCompile Include="ParticleDemo.cpp" />
