@@ -21,7 +21,6 @@ private:
 	// NavMesh 관련 추가
 	void CreateNavMesh();
 	void TestNavMeshPathfinding();
-	void CreatePathVisualizer();
 
 private:
 	shared_ptr<GameObject> m_CemeteryParent;
@@ -29,10 +28,6 @@ private:
 
 	// 테스트용
 	shared_ptr<GameObject> nicky;
-	shared_ptr<GameObject> m_NavMeshObject;
-	vector<shared_ptr<GameObject>> m_ObstacleObjects;
-	vector<Vec3> m_currentPath;
-	shared_ptr<GameObject> m_pathVisualizer;
 };
 
 

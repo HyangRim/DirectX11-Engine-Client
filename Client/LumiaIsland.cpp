@@ -15,8 +15,6 @@
 #include "BiancaESkillState.h"
 #include "BiancaRSkillState.h"
 
-#include "NavMesh.h"
-
 void LumiaIsland::Init()
 {
 	m_defaultshader = make_shared<Shader>(L"FOW.fx");
@@ -817,98 +815,5 @@ void LumiaIsland::CreateNavMesh()
 
 
 		CURSCENE->Add(nicky);
-	}
-}
-
-void LumiaIsland::CreatePathVisualizer()
-{
-	m_pathVisualizer = make_shared<GameObject>();
-	m_pathVisualizer->SetName(L"PathVisualizer");
-	m_pathVisualizer->AddComponent(make_shared<MeshRenderer>());
-	m_pathVisualizer->AddComponent(make_shared<AABBBoxCollider>());
-	m_pathVisualizer->GetMeshRenderer()->SetMesh(RESOURCES->Get<Mesh>(L"Sphere"));
-
-	// 경로용 머티리얼 (빨간색)
-	shared_ptr<Material> pathMaterial = make_shared<Material>();
-	pathMaterial->SetShader(m_defaultshader);
-	MaterialDesc& desc = pathMaterial->GetMaterialDesc();
-	desc.ambient = Vec4(1.0f, 0.0f, 0.0f, 1.0f);
-	desc.diffuse = Vec4(1.0f, 0.2f, 0.2f, 1.0f);
-	desc.specular = Vec4(1.0f, 0.0f, 0.0f, 1.0f);
-
-	m_pathVisualizer->GetMeshRenderer()->SetMaterial(pathMaterial);
-	m_pathVisualizer->GetTransform()->SetScale(Vec3(0.3f));
-
-	CURSCENE->Add(m_pathVisualizer);
-}
-
-
-
-void LumiaIsland::TestNavMeshPathfinding()
-{
-	static float testTimer = 0.0f;
-	testTimer += DT;
-
-	// 5초마다 새로운 경로 테스트
-	if (testTimer >= 5.0f)
-	{
-		testTimer = 0.0f;
-
-		if (m_NavMeshObject)
-		{
-			auto navMesh = m_NavMeshObject->GetFixedComponent<NavMesh>(ComponentType::NavMesh);
-			if (navMesh)
-			{
-				// 랜덤한 시작점과 끝점으로 경로 찾기 테스트
-				Vec3 start(
-					m_CemeteryParent->GetTransform()->GetPosition().x + (rand() % 40 - 20),
-					m_CemeteryParent->GetTransform()->GetPosition().y,
-					m_CemeteryParent->GetTransform()->GetPosition().z + (rand() % 40 - 20)
-				);
-
-				Vec3 end(
-					m_CemeteryParent->GetTransform()->GetPosition().x + (rand() % 40 - 20),
-					m_CemeteryParent->GetTransform()->GetPosition().y,
-					m_CemeteryParent->GetTransform()->GetPosition().z + (rand() % 40 - 20)
-				);
-
-				m_currentPath = navMesh->FindPath(start, end);
-
-				if (!m_currentPath.empty())
-				{
-					cout << "경로 찾기 성공: " << m_currentPath.size() << "개 웨이포인트" << endl;
-
-					// 첫 번째 웨이포인트에 시각화 객체 이동
-					if (m_pathVisualizer)
-					{
-						m_pathVisualizer->GetTransform()->SetPosition(m_currentPath[0]);
-					}
-				}
-			}
-		}
-	}
-
-	// 경로를 따라 시각화 객체 이동
-	if (!m_currentPath.empty() && m_pathVisualizer)
-	{
-		static size_t currentWaypoint = 0;
-		static float moveTimer = 0.0f;
-		moveTimer += DT;
-
-		if (moveTimer >= 1.0f) // 1초마다 다음 웨이포인트로
-		{
-			moveTimer = 0.0f;
-			currentWaypoint++;
-
-			if (currentWaypoint >= m_currentPath.size())
-			{
-				currentWaypoint = 0;
-				m_currentPath.clear(); // 경로 완주
-			}
-			else
-			{
-				m_pathVisualizer->GetTransform()->SetPosition(m_currentPath[currentWaypoint]);
-			}
-		}
 	}
 }
