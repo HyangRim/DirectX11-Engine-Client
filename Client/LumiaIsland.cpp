@@ -15,10 +15,12 @@
 #include "BiancaESkillState.h"
 #include "BiancaRSkillState.h"
 
+#include "NavMesh.h"
+
 void LumiaIsland::Init()
 {
 	m_defaultshader = make_shared<Shader>(L"FOW.fx");
-	CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\snowcube1024.dds", L"Sky.fx"));
+	//CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\snowcube1024.dds", L"Sky.fx"));
 	
 	CreateMainCamera();
 	CreateUICamera();
@@ -43,11 +45,16 @@ void LumiaIsland::Init()
 		CURSCENE->Add(light);
 	}
 	CreateCemeteryBase();
-	CreateCemeteryInterior();
+	//CreateCemeteryInterior();
+	//CreateCemeteryEnvironment();
+
+	// NavMesh 생성 추가
+	CreateNavMesh();
 }
 
 void LumiaIsland::Update()
 {
+	
 }
 
 void LumiaIsland::Render()
@@ -58,9 +65,13 @@ void LumiaIsland::CreateMainCamera()
 {
 	// Camera
 	auto camera = make_shared<GameObject>();
+	//camera->GetTransform()->SetPosition(Vec3(0.f, 15.f, 15.f));
+	camera->GetTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
 	camera->AddComponent(make_shared<Camera>());
 	camera->AddComponent(make_shared<CameraScript>());
+
 	camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
+	camera->GetCamera()->SetProjectionType(ProjectionType::Perspective);
 	CURSCENE->Add(camera);
 }
 
@@ -91,6 +102,8 @@ void LumiaIsland::CreateCemeteryBase()
 	obj->SetName(L"Cemetery_STR_Base");
 	obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
 	obj->GetTransform()->SetLocalPosition(Vec3(0, 0, 0));
+	obj->GetTransform()->SetLocalRotation(Vec3(0, 0.f, 0));
+	obj->AddComponent(make_shared<SphereCollider>());
 	obj->GetTransform()->SetLocalScale(Vec3(0.02f));
 	obj->SetType(OBJECTTYPE::MAP);
 
@@ -487,7 +500,7 @@ void LumiaIsland::CreateCemeteryInterior()
 			obj->SetName(L"Cemetery_STR_GraveBase_03_Wall_02");
 			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
 			obj->GetTransform()->SetLocalPosition(Vec3(92, 17.429, 55.934));
-			obj->AddComponent(make_shared<AABBBoxCollider>());
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
 			obj->SetType(OBJECTTYPE::MAP);
 
@@ -570,4 +583,332 @@ void LumiaIsland::CreateCemeteryInterior()
 
 void LumiaIsland::CreateCemeteryEnvironment()
 {
+	//가운데 기준 11시쪽 무덤 - 1
+	{
+		shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_OBJ_Tombstone_02", L"Cemetery/Cemetery_OBJ_Tombstone_02");
+		//m2->ReadModel(L"forest/forest");
+		m2->ReadMaterial(L"Cemetery/Cemetery_OBJ_Tombstone_02");
+		auto obj = make_shared<GameObject>();
+		obj->SetName(L"Cemetery_OBJ_Tombstone_01");
+		obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+		obj->GetTransform()->SetLocalPosition(Vec3(96.002, 20, 79.367));
+		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 5486.223f, 0.f));
+		obj->AddComponent(make_shared<AABBBoxCollider>());
+		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+		obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+		{
+			obj->GetModelRenderer()->SetModel(m2);
+			obj->GetModelRenderer()->SetPass(1);
+		}
+		CURSCENE->Add(obj);
+	}
+
+
+
+	//가운데 기준 5시쪽 무덤 - 1
+	{
+		shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_OBJ_Tombstone_02", L"Cemetery/Cemetery_OBJ_Tombstone_02");
+		//m2->ReadModel(L"forest/forest");
+		m2->ReadMaterial(L"Cemetery/Cemetery_OBJ_Tombstone_02");
+		auto obj = make_shared<GameObject>();
+		obj->SetName(L"Cemetery_OBJ_Tombstone_01");
+		obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+		obj->GetTransform()->SetLocalPosition(Vec3(124.576, 20.117, 44.456));
+		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 2557.334, 0.f));
+		obj->AddComponent(make_shared<AABBBoxCollider>());
+		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+		obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+		{
+			obj->GetModelRenderer()->SetModel(m2);
+			obj->GetModelRenderer()->SetPass(1);
+		}
+		CURSCENE->Add(obj);
+	}
+
+
+	//가운데 기준 11시쪽 무덤 - 2
+	{
+		shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_OBJ_Tombstone_03", L"Cemetery/Cemetery_OBJ_Tombstone_03");
+		//m2->ReadModel(L"forest/forest");
+		m2->ReadMaterial(L"Cemetery/Cemetery_OBJ_Tombstone_03");
+		auto obj = make_shared<GameObject>();
+		obj->SetName(L"Cemetery_OBJ_Tombstone_03");
+		obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+		obj->GetTransform()->SetLocalPosition(Vec3(83.649, 20, 79.549));
+		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 4395.447, 0.f));
+		obj->AddComponent(make_shared<AABBBoxCollider>());
+		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+		obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+		{
+			obj->GetModelRenderer()->SetModel(m2);
+			obj->GetModelRenderer()->SetPass(1);
+		}
+		CURSCENE->Add(obj);
+	}
+
+
+
+	//가운데 기준 5시시쪽 무덤 - 2
+	{
+		shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_OBJ_Tombstone_04", L"Cemetery/Cemetery_OBJ_Tombstone_04");
+		//m2->ReadModel(L"forest/forest");
+		m2->ReadMaterial(L"Cemetery/Cemetery_OBJ_Tombstone_04");
+		auto obj = make_shared<GameObject>();
+		obj->SetName(L"Cemetery_OBJ_Tombstone_04");
+		obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+		obj->GetTransform()->SetLocalPosition(Vec3(120.567, 20, 44.595));
+		obj->GetTransform()->SetLocalRotation(Vec3(0.f, -1263.546, 0.f));
+		obj->AddComponent(make_shared<AABBBoxCollider>());
+		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+		obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+		{
+			obj->GetModelRenderer()->SetModel(m2);
+			obj->GetModelRenderer()->SetPass(1);
+		}
+		CURSCENE->Add(obj);
+	}
+
+	//가운데 기준 5시시쪽 무덤 - 3
+	{
+		shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_OBJ_Tombstone_04", L"Cemetery/Cemetery_OBJ_Tombstone_04");
+		//m2->ReadModel(L"forest/forest");
+		m2->ReadMaterial(L"Cemetery/Cemetery_OBJ_Tombstone_04");
+		auto obj = make_shared<GameObject>();
+		obj->SetName(L"Cemetery_OBJ_Tombstone_04");
+		obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+		obj->GetTransform()->SetLocalPosition(Vec3(110.770, 20, 44.711));
+		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
+		obj->AddComponent(make_shared<AABBBoxCollider>());
+		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+		obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+		{
+			obj->GetModelRenderer()->SetModel(m2);
+			obj->GetModelRenderer()->SetPass(1);
+		}
+		CURSCENE->Add(obj);
+	}
+
+
+
+
+	//가운데 기준 1시시쪽 무덤 - 1
+	{
+		shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_OBJ_Tomb_02", L"Cemetery/Cemetery_OBJ_Tomb_02");
+		//m2->ReadModel(L"forest/forest");
+		m2->ReadMaterial(L"Cemetery/Cemetery_OBJ_Tomb_02");
+		auto obj = make_shared<GameObject>();
+		obj->SetName(L"Cemetery_OBJ_Tomb_02");
+		obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+		obj->GetTransform()->SetLocalPosition(Vec3(124.497, 20, 69.716));
+		obj->GetTransform()->SetLocalRotation(Vec3(0.f, -47.64, 0.f));
+		obj->AddComponent(make_shared<AABBBoxCollider>());
+		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+		obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+		{
+			obj->GetModelRenderer()->SetModel(m2);
+			obj->GetModelRenderer()->SetPass(1);
+		}
+		CURSCENE->Add(obj);
+	}
+
+	//가운데 기준 7시시쪽 무덤 - 1
+	{
+		shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_OBJ_Tomb_03", L"Cemetery/Cemetery_OBJ_Tomb_03");
+		//m2->ReadModel(L"forest/forest");
+		m2->ReadMaterial(L"Cemetery/Cemetery_OBJ_Tomb_03");
+		auto obj = make_shared<GameObject>();
+		obj->SetName(L"Cemetery_OBJ_Tomb_03");
+		obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+		obj->GetTransform()->SetLocalPosition(Vec3(83.009, 21.389, 45.124));
+		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 169, 0.f));
+		obj->AddComponent(make_shared<AABBBoxCollider>());
+		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+		obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+		{
+			obj->GetModelRenderer()->SetModel(m2);
+			obj->GetModelRenderer()->SetPass(1);
+		}
+		CURSCENE->Add(obj);
+	}
+
+
+	//가운데 기준 11시시쪽 무덤 - 3
+	{
+		shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_OBJ_Tomb_03", L"Cemetery/Cemetery_OBJ_Tomb_03");
+		//m2->ReadModel(L"forest/forest");
+		m2->ReadMaterial(L"Cemetery/Cemetery_OBJ_Tomb_03");
+		auto obj = make_shared<GameObject>();
+		obj->SetName(L"Cemetery_OBJ_Tomb_03");
+		obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+		obj->GetTransform()->SetLocalPosition(Vec3(83.232, 20, 71.818));
+		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 169, 0.f));
+		obj->AddComponent(make_shared<AABBBoxCollider>());
+		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+		obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+		{
+			obj->GetModelRenderer()->SetModel(m2);
+			obj->GetModelRenderer()->SetPass(1);
+		}
+		CURSCENE->Add(obj);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void LumiaIsland::CreateNavMesh()
+{
+	// Animation
+	shared_ptr<Model> m1 = make_shared<Model>();
+
+	m1->ReadModel(L"NavMesh/NavMesh");
+	m1->ReadMaterial(L"NavMesh/NavMesh");
+
+
+	for (int32 i = 0; i < 1; i++)
+	{
+
+		nicky = make_shared<GameObject>();
+		nicky->SetName(to_wstring(i));
+
+		nicky->GetTransform()->SetPosition(Vec3(-76.7, 20, -57));
+		nicky->GetTransform()->SetScale(Vec3(2.f));
+		nicky->GetTransform()->SetLocalRotation(Vec3(270.f, 90.f, 90.f));
+
+		nicky->AddComponent(make_shared<SphereCollider>());
+		nicky->AddComponent(make_shared<Rigidbody>());
+		nicky->GetCollider()->SetOffset(Vec3(0.f, 1.f, 0.f));
+		nicky->GetRigidbody()->SetStatic(true);
+
+	
+
+		nicky->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+		{
+			nicky->GetModelRenderer()->SetModel(m1);
+			nicky->GetModelRenderer()->SetPass(0);
+		}
+
+
+		CURSCENE->Add(nicky);
+	}
+}
+
+void LumiaIsland::CreatePathVisualizer()
+{
+	m_pathVisualizer = make_shared<GameObject>();
+	m_pathVisualizer->SetName(L"PathVisualizer");
+	m_pathVisualizer->AddComponent(make_shared<MeshRenderer>());
+	m_pathVisualizer->AddComponent(make_shared<AABBBoxCollider>());
+	m_pathVisualizer->GetMeshRenderer()->SetMesh(RESOURCES->Get<Mesh>(L"Sphere"));
+
+	// 경로용 머티리얼 (빨간색)
+	shared_ptr<Material> pathMaterial = make_shared<Material>();
+	pathMaterial->SetShader(m_defaultshader);
+	MaterialDesc& desc = pathMaterial->GetMaterialDesc();
+	desc.ambient = Vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	desc.diffuse = Vec4(1.0f, 0.2f, 0.2f, 1.0f);
+	desc.specular = Vec4(1.0f, 0.0f, 0.0f, 1.0f);
+
+	m_pathVisualizer->GetMeshRenderer()->SetMaterial(pathMaterial);
+	m_pathVisualizer->GetTransform()->SetScale(Vec3(0.3f));
+
+	CURSCENE->Add(m_pathVisualizer);
+}
+
+
+
+void LumiaIsland::TestNavMeshPathfinding()
+{
+	static float testTimer = 0.0f;
+	testTimer += DT;
+
+	// 5초마다 새로운 경로 테스트
+	if (testTimer >= 5.0f)
+	{
+		testTimer = 0.0f;
+
+		if (m_NavMeshObject)
+		{
+			auto navMesh = m_NavMeshObject->GetFixedComponent<NavMesh>(ComponentType::NavMesh);
+			if (navMesh)
+			{
+				// 랜덤한 시작점과 끝점으로 경로 찾기 테스트
+				Vec3 start(
+					m_CemeteryParent->GetTransform()->GetPosition().x + (rand() % 40 - 20),
+					m_CemeteryParent->GetTransform()->GetPosition().y,
+					m_CemeteryParent->GetTransform()->GetPosition().z + (rand() % 40 - 20)
+				);
+
+				Vec3 end(
+					m_CemeteryParent->GetTransform()->GetPosition().x + (rand() % 40 - 20),
+					m_CemeteryParent->GetTransform()->GetPosition().y,
+					m_CemeteryParent->GetTransform()->GetPosition().z + (rand() % 40 - 20)
+				);
+
+				m_currentPath = navMesh->FindPath(start, end);
+
+				if (!m_currentPath.empty())
+				{
+					cout << "경로 찾기 성공: " << m_currentPath.size() << "개 웨이포인트" << endl;
+
+					// 첫 번째 웨이포인트에 시각화 객체 이동
+					if (m_pathVisualizer)
+					{
+						m_pathVisualizer->GetTransform()->SetPosition(m_currentPath[0]);
+					}
+				}
+			}
+		}
+	}
+
+	// 경로를 따라 시각화 객체 이동
+	if (!m_currentPath.empty() && m_pathVisualizer)
+	{
+		static size_t currentWaypoint = 0;
+		static float moveTimer = 0.0f;
+		moveTimer += DT;
+
+		if (moveTimer >= 1.0f) // 1초마다 다음 웨이포인트로
+		{
+			moveTimer = 0.0f;
+			currentWaypoint++;
+
+			if (currentWaypoint >= m_currentPath.size())
+			{
+				currentWaypoint = 0;
+				m_currentPath.clear(); // 경로 완주
+			}
+			else
+			{
+				m_pathVisualizer->GetTransform()->SetPosition(m_currentPath[currentWaypoint]);
+			}
+		}
+	}
 }

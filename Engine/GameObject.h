@@ -22,6 +22,7 @@ class Text;
 class UIPanel;
 class ImageUI;
 class AnimationStateMachine;
+class NavMesh;
 
 enum class OBJECTTYPE {
 	DEFAULT,
@@ -63,6 +64,7 @@ public:
 	shared_ptr<UIPanel> GetUIPanel();
 	shared_ptr<ImageUI> GetImageUI();
 	shared_ptr<AnimationStateMachine> GetAnimationStateMachine();
+	shared_ptr<NavMesh> GetNavMesh();
 
 
 

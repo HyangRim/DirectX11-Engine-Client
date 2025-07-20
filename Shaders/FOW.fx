@@ -109,6 +109,17 @@ float4 PS_FOW_DEBUG(MeshOutput input) : SV_TARGET
     return float4(1, 0, 0, 1); // 간단한 형태
 }
 
+// NavMesh 전용 픽셀 셰이더 추가
+float4 PS_NavMesh_Debug(MeshOutput input) : SV_TARGET
+{
+    return float4(0.0f, 1.0f, 0.0f, 0.5f); // 반투명 녹색
+}
+
+float4 PS_NavMesh_Wireframe(MeshOutput input) : SV_TARGET
+{
+    return float4(0.0f, 0.8f, 0.0f, 1.0f); // 불투명 녹색
+}
+
 
 ////////////////
 // Techniques //
@@ -125,6 +136,10 @@ technique11 T0
     // 성능 최적화용 간단한 FOW
     PASS_VP(P4, VS_Model, PS_FOW_Simple)
     PASS_VP(P5, VS_Animation, PS_FOW_Simple)
+
+// NavMesh 디버그 렌더링 추가
+    PASS_BS_VP(P6, AlphaBlend, VS_Mesh, PS_NavMesh_Debug)
+    PASS_RS_VP(P7, FillModeWireFrame, VS_Mesh, PS_NavMesh_Wireframe)
 }
 
 // 그림자 테크닉 (기존과 동일)

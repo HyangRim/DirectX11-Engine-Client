@@ -36,31 +36,31 @@ void AssimpTool::Init()
 	};
 
 
-	//{
-	//	
-	//	shared_ptr<Converter> converter = make_shared<Converter>();
+	{
+		
+		shared_ptr<Converter> converter = make_shared<Converter>();
 
-	//	//FBX -> Memory
-	//	converter->ReadAssetFile(L"Aya/Aya_S005.fbx");
+		//FBX -> Memory
+		converter->ReadAssetFile(L"NavMesh/NavMesh.fbx");
 
-	//	//Memory ->CustomData;
-	//	converter->ExportMaterialData(L"Aya/Aya");
-	//	converter->ExportModelData(L"Aya/Aya");
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"NavMesh/NavMesh");
+		converter->ExportModelData(L"NavMesh/NavMesh");
 
-	//	//CustomData -> Memory;
-	//	
+		//CustomData -> Memory;
+		
 
-	//	for (int i = 0; i < 14; i++)
-	//	{
-	//		shared_ptr<Converter> converter = make_shared<Converter>();
+		//for (int i = 0; i < 14; i++)
+		//{
+		//	shared_ptr<Converter> converter = make_shared<Converter>();
 
-	//		//FBX -> Memory
-	//		converter->ReadAssetFile(name2[i]);
+		//	//FBX -> Memory
+		//	converter->ReadAssetFile(name2[i]);
 
-	//		//Memory ->CustomData;
-	//		converter->ExportAnimationData(name[i]);
-	//	}
-	//}
+		//	//Memory ->CustomData;
+		//	converter->ExportAnimationData(name[i]);
+		//}
+	}
 	
 
 	//{
@@ -71,38 +71,38 @@ void AssimpTool::Init()
 	//}
 
 
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		//FBX -> Memory
-		converter->ReadAssetFile(L"Bianca/BiancaCoffin_mesh.fbx");
+	//{
+	//	shared_ptr<Converter> converter = make_shared<Converter>();
+	//	//FBX -> Memory
+	//	converter->ReadAssetFile(L"Bianca/BiancaCoffin_mesh.fbx");
 
-		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Bianca/BiancaCoffin_mesh");
-		converter->ExportModelData(L"Bianca/BiancaCoffin_mesh");
+	//	//Memory ->CustomData;
+	//	converter->ExportMaterialData(L"Bianca/BiancaCoffin_mesh");
+	//	converter->ExportModelData(L"Bianca/BiancaCoffin_mesh");
 
-		//CustomData -> Memory;
-	}
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		//FBX -> Memory
-		converter->ReadAssetFile(L"Bianca/BiancaUmbrella_mesh.fbx");
+	//	//CustomData -> Memory;
+	//}
+	//{
+	//	shared_ptr<Converter> converter = make_shared<Converter>();
+	//	//FBX -> Memory
+	//	converter->ReadAssetFile(L"Bianca/BiancaUmbrella_mesh.fbx");
 
-		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Bianca/BiancaUmbrella_mesh");
-		converter->ExportModelData(L"Bianca/BiancaUmbrella_mesh");
+	//	//Memory ->CustomData;
+	//	converter->ExportMaterialData(L"Bianca/BiancaUmbrella_mesh");
+	//	converter->ExportModelData(L"Bianca/BiancaUmbrella_mesh");
 
-		//CustomData -> Memory;
-	}
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		converter->ReadAssetFile(L"Bianca/BiancaUmbrella_anim1.fbx");
-		converter->ExportAnimationData(L"Bianca/BiancaUmbrella_anim1");
-	}
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		converter->ReadAssetFile(L"Bianca/BiancaUmbrella_anim2.fbx");
-		converter->ExportAnimationData(L"Bianca/BiancaUmbrella_anim2");
-	}
+	//	//CustomData -> Memory;
+	//}
+	//{
+	//	shared_ptr<Converter> converter = make_shared<Converter>();
+	//	converter->ReadAssetFile(L"Bianca/BiancaUmbrella_anim1.fbx");
+	//	converter->ExportAnimationData(L"Bianca/BiancaUmbrella_anim1");
+	//}
+	//{
+	//	shared_ptr<Converter> converter = make_shared<Converter>();
+	//	converter->ReadAssetFile(L"Bianca/BiancaUmbrella_anim2.fbx");
+	//	converter->ExportAnimationData(L"Bianca/BiancaUmbrella_anim2");
+	//}
 
 
 

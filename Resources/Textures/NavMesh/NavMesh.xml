@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Materials>
+    <Material>
+        <Name>System_Navi</Name>
+        <DiffuseFile>veigar.jpg</DiffuseFile>
+        <SpecularFile>veigar.jpg</SpecularFile>
+        <NormalFile>veigar.jpg</NormalFile>
+        <Ambient R="0" G="0" B="0" A="1"/>
+        <Diffuse R="1" G="0.23921537" B="0.23921537" A="1"/>
+        <Specular R="1" G="0.23921537" B="0.23921537" A="20"/>
+        <Emissive R="0" G="0" B="0" A="1"/>
+    </Material>
+</Materials>

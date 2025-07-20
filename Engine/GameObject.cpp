@@ -23,6 +23,7 @@
 #include "AABBBoxCollider.h"
 #include "SphereCollider.h"
 #include "AnimationStateMachine.h"
+#include "NavMesh.h"
 
 GameObject::GameObject()
 {
@@ -227,6 +228,12 @@ shared_ptr<AnimationStateMachine> GameObject::GetAnimationStateMachine()
 {
 	shared_ptr<Component> component = GetFixedComponent(ComponentType::AnimationStateMachine);
 	return static_pointer_cast<AnimationStateMachine>(component);
+}
+
+shared_ptr<NavMesh> GameObject::GetNavMesh()
+{
+	shared_ptr<Component> component = GetFixedComponent(ComponentType::NavMesh);
+	return static_pointer_cast<NavMesh>(component);
 }
 
 

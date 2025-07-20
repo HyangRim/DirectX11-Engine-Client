@@ -59,7 +59,7 @@ void UITestDemo::Init()
 		camera->AddComponent(make_shared<Camera>());
 		camera->AddComponent(make_shared<CameraScript>());
 		camera->GetCamera()->SetNear(1.f);
-		camera->GetCamera()->SetFar(100.f);
+		camera->GetCamera()->SetFar(500.f);
 		camera->GetCamera()->SetProjectionType(ProjectionType::Perspective);
 		camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
 		CURSCENE->Add(camera);
@@ -89,42 +89,42 @@ void UITestDemo::Init()
 		// Animation
 		shared_ptr<Model> m1 = make_shared<Model>();
 
-		m1->ReadModel(L"Nicky/Nicky");
-		m1->ReadMaterial(L"Nicky/Nicky");
+		m1->ReadModel(L"NavMesh/NavMesh");
+		m1->ReadMaterial(L"NavMesh/NavMesh");
 
 
 
-		//대기
-		m1->ReadAnimation(L"Wait", L"Nicky/Nicky_Glove_Wait");
-		
-		//달리기
-		m1->ReadAnimation(L"Run", L"Nicky/Nicky_Glove_Run");
+		////대기
+		//m1->ReadAnimation(L"Wait", L"Nicky/Nicky_Glove_Wait");
+		//
+		////달리기
+		//m1->ReadAnimation(L"Run", L"Nicky/Nicky_Glove_Run");
 
-		//평타
-		m1->ReadAnimation(L"BaseAttack_01", L"Nicky/Nicky_Glove_Atk_01");
-		m1->ReadAnimation(L"BaseAttack_02", L"Nicky/Nicky_Glove_Atk_02");
+		////평타
+		//m1->ReadAnimation(L"BaseAttack_01", L"Nicky/Nicky_Glove_Atk_01");
+		//m1->ReadAnimation(L"BaseAttack_02", L"Nicky/Nicky_Glove_Atk_02");
 
-		////Q
-		m1->ReadAnimation(L"Skill_01_Attack", L"Nicky/Nicky_Glove_Skill_01_Attack");
-		m1->ReadAnimation(L"Skill_01_Rush", L"Nicky/Nicky_Glove_Skill_01_Rush");
-		m1->ReadAnimation(L"Skill_01_End", L"Nicky/Nicky_Glove_Skill_01_End");
-		//Q Charge
-		m1->ReadAnimation(L"Skill_01_Charge_Loop_Run", L"Nicky/Nicky_Glove_Skill_01_Charge_Loop_Run");
-		m1->ReadAnimation(L"Skill_01_Charge_Start_Run", L"Nicky/Nicky_Glove_Skill_01_Charge_Start_Run");
-		m1->ReadAnimation(L"Skill_01_Charge_Loop_Wait", L"Nicky/Nicky_Glove_Skill_01_Charge_Loop_Wait");
-		m1->ReadAnimation(L"Skill_01_Charge_Start_Wait", L"Nicky/Nicky_Glove_Skill_01_Charge_Start_Wait");
+		//////Q
+		//m1->ReadAnimation(L"Skill_01_Attack", L"Nicky/Nicky_Glove_Skill_01_Attack");
+		//m1->ReadAnimation(L"Skill_01_Rush", L"Nicky/Nicky_Glove_Skill_01_Rush");
+		//m1->ReadAnimation(L"Skill_01_End", L"Nicky/Nicky_Glove_Skill_01_End");
+		////Q Charge
+		//m1->ReadAnimation(L"Skill_01_Charge_Loop_Run", L"Nicky/Nicky_Glove_Skill_01_Charge_Loop_Run");
+		//m1->ReadAnimation(L"Skill_01_Charge_Start_Run", L"Nicky/Nicky_Glove_Skill_01_Charge_Start_Run");
+		//m1->ReadAnimation(L"Skill_01_Charge_Loop_Wait", L"Nicky/Nicky_Glove_Skill_01_Charge_Loop_Wait");
+		//m1->ReadAnimation(L"Skill_01_Charge_Start_Wait", L"Nicky/Nicky_Glove_Skill_01_Charge_Start_Wait");
 
-		//W
-		m1->ReadAnimation(L"Skill_02_Guard", L"Nicky/Nicky_Glove_Skill_02_Guard");
-		m1->ReadAnimation(L"Skill_02_Loop", L"Nicky/Nicky_Glove_Skill_02_Loop");
+		////W
+		//m1->ReadAnimation(L"Skill_02_Guard", L"Nicky/Nicky_Glove_Skill_02_Guard");
+		//m1->ReadAnimation(L"Skill_02_Loop", L"Nicky/Nicky_Glove_Skill_02_Loop");
 	
-		//E
-		m1->ReadAnimation(L"Skill_03", L"Nicky/Nicky_Glove_Skill_03");
+		////E
+		//m1->ReadAnimation(L"Skill_03", L"Nicky/Nicky_Glove_Skill_03");
 
-		//R
-		m1->ReadAnimation(L"Skill_04_Attack", L"Nicky/Nicky_Glove_Skill_04_Attack");
-		m1->ReadAnimation(L"Skill_04_Ready", L"Nicky/Nicky_Glove_Skill_04_Ready");
-		m1->ReadAnimation(L"Skill_04_Start", L"Nicky/Nicky_Glove_Skill_04_Start");
+		////R
+		//m1->ReadAnimation(L"Skill_04_Attack", L"Nicky/Nicky_Glove_Skill_04_Attack");
+		//m1->ReadAnimation(L"Skill_04_Ready", L"Nicky/Nicky_Glove_Skill_04_Ready");
+		//m1->ReadAnimation(L"Skill_04_Start", L"Nicky/Nicky_Glove_Skill_04_Start");
 
 		
 
@@ -142,36 +142,36 @@ void UITestDemo::Init()
 			nicky->GetCollider()->SetOffset(Vec3(0.f, 1.f, 0.f));
 			nicky->GetRigidbody()->SetStatic(true);
 
-			nicky->AddComponent(make_shared<ModelAnimator>(renderShader));
+		/*	nicky->AddComponent(make_shared<ModelAnimator>(renderShader));
 			{
 				nicky->GetModelAnimator()->SetModel(m1);
 				nicky->GetModelAnimator()->SetPass(2);
-			}
-
-			/*obj->AddComponent(make_shared<ModelRenderer>(renderShader));
-			{
-				obj->GetModelRenderer()->SetModel(m1);
-				obj->GetModelRenderer()->SetPass(1);
 			}*/
 
-			// FSM 추가
-			auto stateMachine = make_shared<AnimationStateMachine>();
-			nicky->AddComponent(stateMachine);
+			nicky->AddComponent(make_shared<ModelRenderer>(renderShader));
+			{
+				nicky->GetModelRenderer()->SetModel(m1);
+				nicky->GetModelRenderer()->SetPass(0);
+			}
 
-			nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait, make_shared<NickyWaitState>());
-			nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Run, make_shared<NickyRunState>());
+			//// FSM 추가
+			//auto stateMachine = make_shared<AnimationStateMachine>();
+			//nicky->AddComponent(stateMachine);
 
-			nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_2, make_shared<NickyWSkillState>());
-			nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_3, make_shared<NickyESkillState>());
-			nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4, make_shared<NickyRSkillState>());
-			nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1, make_shared<NickyQSkillState>());
+			//nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait, make_shared<NickyWaitState>());
+			//nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Run, make_shared<NickyRunState>());
+
+			//nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_2, make_shared<NickyWSkillState>());
+			//nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_3, make_shared<NickyESkillState>());
+			//nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4, make_shared<NickyRSkillState>());
+			//nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1, make_shared<NickyQSkillState>());
 
 
-			// 기존 시퀀스 생성 코드는 유지 (필요시 사용)
-			auto animator = nicky->GetModelAnimator();
-			// E 스킬 시퀀스 (Skill_03 단일)
-			vector<wstring> skill3Anims = { L"Skill_03" };
-			animator->CreateSequence(L"Skill_3_Sequence", skill3Anims, false);
+			//// 기존 시퀀스 생성 코드는 유지 (필요시 사용)
+			//auto animator = nicky->GetModelAnimator();
+			//// E 스킬 시퀀스 (Skill_03 단일)
+			//vector<wstring> skill3Anims = { L"Skill_03" };
+			//animator->CreateSequence(L"Skill_3_Sequence", skill3Anims, false);
 		
 			//// 평타 시퀀스 (BaseAttack_01 -> BaseAttack_02)
 			//vector<wstring> baseAttackAnims = { L"BaseAttack_02", L"BaseAttack_01" };
@@ -183,22 +183,22 @@ void UITestDemo::Init()
 			//vector<float> skill1Durations = { 0.5f, 1.0f, 0.7f }; 
 			//animator->CreateSequence(L"Skill_1_Sequence", skill1Anims, skill1Durations, false);
 
-			// W 스킬 시퀀스 (Skill_02_Guard -> Skill_02_Loop)
-			vector<wstring> skill2Anims = { L"Skill_02_Guard" };
-			animator->CreateSequence(L"Skill_2_Sequence", skill2Anims, false);
+			//// W 스킬 시퀀스 (Skill_02_Guard -> Skill_02_Loop)
+			//vector<wstring> skill2Anims = { L"Skill_02_Guard" };
+			//animator->CreateSequence(L"Skill_2_Sequence", skill2Anims, false);
 
-			//// E 스킬 시퀀스 (Skill_03 단일)
-			//vector<wstring> skill3Anims = { L"Skill_03" };
-			//animator->CreateSequence(L"Skill_3_Sequence", skill3Anims, false);
+			////// E 스킬 시퀀스 (Skill_03 단일)
+			////vector<wstring> skill3Anims = { L"Skill_03" };
+			////animator->CreateSequence(L"Skill_3_Sequence", skill3Anims, false);
 
-			// R 스킬 시퀀스 (Skill_04_Ready -> Skill_04_Start -> Skill_04_Attack)
-			vector<wstring> skill4Anims = { L"Skill_04_Ready", L"Skill_04_Start", L"Skill_01_Rush", L"Skill_04_Attack"};
-			vector<float> skill4Durations; 
-			skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_04_Ready"));  
-			skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_04_Start"));  
-			skill4Durations.push_back(3.f); 
-			skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_04_Attack"));  
-			animator->CreateSequence(L"Skill_4_Sequence", skill4Anims, skill4Durations, false);
+			//// R 스킬 시퀀스 (Skill_04_Ready -> Skill_04_Start -> Skill_04_Attack)
+			//vector<wstring> skill4Anims = { L"Skill_04_Ready", L"Skill_04_Start", L"Skill_01_Rush", L"Skill_04_Attack"};
+			//vector<float> skill4Durations; 
+			//skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_04_Ready"));  
+			//skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_04_Start"));  
+			//skill4Durations.push_back(3.f); 
+			//skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_04_Attack"));  
+			//animator->CreateSequence(L"Skill_4_Sequence", skill4Anims, skill4Durations, false);
 			
 			
 

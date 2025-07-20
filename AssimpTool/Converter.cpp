@@ -184,6 +184,9 @@ void Converter::ReadStaticMeshData(aiNode* _node)
 	}
 }
 
+
+
+
 void Converter::ReadModelData(aiNode* _node, int32 _index, int32 _parent)
 {
 	string nodeName = _node->mName.C_Str();

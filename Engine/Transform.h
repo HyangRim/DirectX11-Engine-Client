@@ -21,7 +21,7 @@ public:
 	Vec3 GetLocalRotation() { return m_localRotation; }
 	void SetLocalRotation(const Vec3& _localRotation) {
 
-		m_localRotation = _localRotation;
+		m_localRotation = NormalizeAngles(_localRotation);  // 정규화 추가
 		UpdateTransform(); 
 	
 	}
