@@ -1,17 +1,17 @@
-#ifndef _DLIGHT_FX_
-#define _DLIGHT_FX_
-
+#ifndef _DEFERRED_LIGHTING_FX_
+#define _DEFERRED_LIGHTING_FX_
 
 #include "00. Global.fx"
 #include "00. Light.fx"
 
+// G-Buffer 텍스처들
 Texture2D GBufferAlbedo : register(t0);
 Texture2D GBufferNormal : register(t1);
 Texture2D GBufferPosition : register(t2);
 Texture2D GBufferMaterial : register(t3);
 
-// FOW Buffer
-cbuffer FogOfWarData : register(b5)
+// FOW 상수 버퍼
+cbuffer FogOfWarBuffer : register(b5)
 {
     float3 g_playerWorldPos;
     float g_sightRange;
@@ -21,15 +21,7 @@ cbuffer FogOfWarData : register(b5)
     float g_time;
 }
 
-//���� �� ����Ʈ ����
-#define MAX_LIGHTS 20
-cbuffer MultiLightBuffer
-{
-    LightDesc lIGHTS[MAX_LIGHTS];
-    int ActiveLightCount;
-    float3 Mpadding;
-};
-
+// 풀스크린 쿼드용 구조체
 struct VertexQuad
 {
     float4 position : POSITION;
@@ -42,6 +34,7 @@ struct VertexQuadOutput
     float2 uv : TEXCOORD;
 };
 
+// 풀스크린 쿼드 버텍스 셰이더
 VertexQuadOutput VS_Quad(VertexQuad input)
 {
     VertexQuadOutput output;
@@ -50,7 +43,7 @@ VertexQuadOutput VS_Quad(VertexQuad input)
     return output;
 }
 
-// FOW ��� �Լ� (������ ����)
+// FOW 계산 함수
 float CalculateFogOfWar(float3 worldPos)
 {
     float distance = length(worldPos - g_playerWorldPos);
@@ -78,10 +71,54 @@ float CalculateFogOfWar(float3 worldPos)
     return fogFactor;
 }
 
+// 디퍼드 라이팅용 라이팅 계산 함수
+float4 ComputeDeferredLight(float4 albedo, float3 normal, float3 worldPos, float shadow)
+{
+    float4 ambientColor = 0;
+    float4 diffuseColor = 0;
+    float4 specularColor = 0;
+    float4 emissiveColor = 0;
+    
+    // Ambient
+    ambientColor = albedo * GlobalLight.ambient * Material.ambient;
+    
+    // Diffuse
+    float3 lightDir = -normalize(GlobalLight.direction);
+    float NdotL = saturate(dot(normal, lightDir));
+    diffuseColor = albedo * GlobalLight.diffuse * Material.diffuse * NdotL;
+    
+    // Specular
+    if (NdotL > 0)
+    {
+        float3 reflectDir = reflect(-lightDir, normal);
+        float3 viewDir = normalize(CamPos - worldPos);
+        float spec = pow(saturate(dot(viewDir, reflectDir)), 10);
+        specularColor = GlobalLight.specular * Material.specular * spec;
+    }
+    
+    // Emissive
+    float3 viewDir = normalize(CamPos - worldPos);
+    float viewDotNormal = saturate(dot(viewDir, normal));
+    float emissive = 1.0f - viewDotNormal;
+    emissive = smoothstep(0.0f, 1.0f, emissive);
+    emissive = pow(emissive, 2);
+    emissiveColor = GlobalLight.emissive * Material.emissive * emissive;
+    
+    // 최종 색상 계산
+    float4 finalColor = ambientColor + (diffuseColor + specularColor + emissiveColor) * shadow;
+    
+    // 최소 밝기 보장 (기존 ComputeLight와 동일)
+    finalColor.rgb = max(finalColor.rgb, albedo.rgb * 0.95f);
+    
+    return finalColor;
+}
+
+// 디퍼드 라이팅 픽셀 셰이더
 float4 PS_DeferredLightingWithFOW(VertexQuadOutput input) : SV_Target
 {
     int2 screenPos = (int2) (input.position.xy);
     
+    // G-Buffer에서 데이터 로드
     float4 albedo = GBufferAlbedo.Load(int3(screenPos, 0));
     float4 normalData = GBufferNormal.Load(int3(screenPos, 0));
     float4 positionData = GBufferPosition.Load(int3(screenPos, 0));
@@ -90,17 +127,19 @@ float4 PS_DeferredLightingWithFOW(VertexQuadOutput input) : SV_Target
         discard;
     
     float3 worldPos = positionData.xyz;
-    float3 normal = normalData.xyz;
+    float3 normal = normalize(normalData.xyz);
     
-    //�׸��� ���
+    // 섀도우 계산
     float4 shadowPosH = mul(float4(worldPos, 1.0f), ShadowTransform);
     float shadow = CalcShadowFactor(ShadowMap, shadowPosH);
     
-    float4 baseColor = ComputeLight(normal, input.uv, worldPos, shadow);
+    // 디퍼드 라이팅 계산
+    float4 baseColor = ComputeDeferredLight(albedo, normal, worldPos, shadow);
     
+    // FOW 계산
     float fogFactor = CalculateFogOfWar(worldPos);
     
-    // FOW ȿ�� ����
+    // FOW 효과 적용
     float3 grayColor = dot(baseColor.rgb, float3(0.299, 0.587, 0.114));
     grayColor = grayColor * float3(0.7, 0.7, 0.8);
     
@@ -110,6 +149,7 @@ float4 PS_DeferredLightingWithFOW(VertexQuadOutput input) : SV_Target
     float minBrightness = max(g_darkness, 0.4f);
     float3 finalColor = foggedColor * max(fogFactor, minBrightness);
     
+    // 어둠 영역에 푸른빛 색조 추가
     if (fogFactor < 0.6f)
     {
         float blueTint = (0.6f - fogFactor) * 0.1f;
@@ -119,8 +159,4 @@ float4 PS_DeferredLightingWithFOW(VertexQuadOutput input) : SV_Target
     return float4(finalColor, baseColor.a);
 }
 
-technique11 DeferredTech
-{
-    PASS_VP(P0, VS_Quad, PS_DeferredLightingWithFOW)
-}
 #endif

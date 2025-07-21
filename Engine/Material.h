@@ -32,14 +32,12 @@ public:
     virtual ~Material();
 
     shared_ptr<Shader> GetShader() { return m_shader; }
-    shared_ptr<Shader> GetGeometryShader() { return m_geometryShader; }
     RenderingMode GetRenderingMode() const { return m_renderMode; }
 
     MaterialDesc& GetMaterialDesc() { return m_desc; }
     shared_ptr<Texture> GetDiffuseMap() { return m_diffuseMap; }
     shared_ptr<Texture> GetNormalMap() { return m_normalMap; }
     shared_ptr<Texture> GetSpecularMap() { return m_specularMap; }
-    shared_ptr<Texture> GetRandomTex() { return m_randomMap; }
 
     void SetShader(shared_ptr<Shader> _shader);
     void SetGeometryShader(shared_ptr<Shader> _shader);
@@ -79,7 +77,6 @@ private:
     bool m_isTransparent = false;
 
     shared_ptr<Shader> m_shader;
-    shared_ptr<Shader> m_geometryShader;
 
 
     shared_ptr<Texture> m_diffuseMap;

@@ -6,7 +6,7 @@
 #include "Types.h"
 #include "Define.h"
 
-
+#include <string>
 // STL
 #include <memory>
 #include <iostream>

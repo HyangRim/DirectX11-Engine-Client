@@ -32,11 +32,13 @@ void Renderer::InnerRender(bool _isShadowTech)
     if (_isShadowTech) {
         // ¼¨µµ¿ì ¸Ê ·»´õ¸µ
         const auto& shader = m_material->GetShader();
+        shader->SetTechnique(L"T0");
         shader->PushGlobalData(Light::s_MatView, Light::s_MatProjection);
     }
     else if (GRAPHICS->IsCurrentPassGeometry()) {
         // G-Buffer ÆÐ½º (µðÆÛµå ·»´õ¸µ)
-        const auto& geometryShader = m_material->GetGeometryShader();
+        const auto& geometryShader = m_material->GetShader();
+        geometryShader->SetTechnique(L"GBufferTech");
         if (geometryShader) {
             m_material->Update(); // ÅØ½ºÃ³ ¹ÙÀÎµù
             geometryShader->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);
@@ -46,6 +48,7 @@ void Renderer::InnerRender(bool _isShadowTech)
     else {
         // Æ÷¿öµå ·»´õ¸µ ¶Ç´Â Åõ¸í °´Ã¼ ·»´õ¸µ
         const auto& shader = m_material->GetShader();
+        shader->SetTechnique(L"T0");
         m_material->Update();
 
         auto lightObj = CURSCENE->GetLight();
