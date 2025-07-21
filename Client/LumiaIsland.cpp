@@ -824,6 +824,7 @@ void LumiaIsland::CreateNavMesh()
 		}
 
 		m_navMesh->AddComponent(make_shared<NavMesh>());
+		
 	
 		CURSCENE->Add(m_navMesh);
 	}
@@ -895,6 +896,7 @@ void LumiaIsland::CreateCharacter()
 			nicky->GetModelAnimator()->SetModel(m1);
 			nicky->GetModelAnimator()->SetPass(2);
 		}
+		
 	
 		// FSM Ãß°¡
 		auto stateMachine = make_shared<AnimationStateMachine>();

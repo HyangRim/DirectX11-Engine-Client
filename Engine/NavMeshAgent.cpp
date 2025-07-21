@@ -6,7 +6,7 @@
 #include "NavMesh.h"
 #include "AnimationStateMachine.h"
 
-NavMeshAgent::NavMeshAgent() : Super(ComponentType::NavMeshAgent) // ComponentType에 NavMeshAgent 추가 필요
+NavMeshAgent::NavMeshAgent() : Super(ComponentType::NavMeshAgent)
 {
 }
 
@@ -58,7 +58,6 @@ void NavMeshAgent::SetDestination(const Vec3& destination)
     Vec3 startPos = transform->GetPosition();
     Vec3 targetPos = m_navMesh->GetNearestPointOnNavMesh(destination);
 
-    // 경로 계산
     m_path = m_navMesh->FindPath(startPos, targetPos);
     m_destination = targetPos;
     m_currentPathIndex = 0;
@@ -74,7 +73,6 @@ void NavMeshAgent::Stop()
     m_state = NavMeshAgentState::Idle;
     m_path.clear();
     m_currentPathIndex = 0;
-
     UpdateAnimation();
 }
 
@@ -92,9 +90,9 @@ void NavMeshAgent::UpdateMovement()
     Vec3 currentPos = transform->GetPosition();
     Vec3 targetPos = m_path[m_currentPathIndex];
 
-    // 목표점까지의 거리 계산
     float distance = Vec3::Distance(currentPos, targetPos);
 
+    // 현재 웨이포인트에 도달했으면 다음으로
     if (distance <= m_stoppingDistance)
     {
         m_currentPathIndex++;
@@ -106,25 +104,19 @@ void NavMeshAgent::UpdateMovement()
         targetPos = m_path[m_currentPathIndex];
     }
 
-    // 이동 방향 계산
+    // 이동 처리
     Vec3 direction = targetPos - currentPos;
     direction.y = 0; // Y축 고정
-    
+
     if (direction.Length() > 0.01f)
     {
         direction.Normalize();
 
-        float targetYaw = atan2(direction.x, direction.z) + 3.141592f;
-
+        // 회전 계산 및 적용
+        float targetYaw = atan2(direction.x, direction.z);
         Vec3 currentRotation = transform->GetLocalRotation();
         Vec3 newRotation = Vec3(currentRotation.x, targetYaw * 180.0f / 3.14159f, currentRotation.z);
-
-        // 회전 적용 및 즉시 업데이트
         transform->SetLocalRotation(newRotation);
-        transform->ForceUpdateTransform(); // 즉시 반영
-
-        cout << "Applied rotation Y: " << newRotation.y << " degrees" << endl;
-        cout << "World rotation after update: " << transform->GetRotation().y << " degrees" << endl;
 
         // 위치 업데이트
         Vec3 newPos = currentPos + direction * m_speed * DT;
@@ -140,7 +132,6 @@ void NavMeshAgent::UpdateAnimation()
 {
     if (!m_animator) return;
 
-    // 애니메이션 상태 머신에 현재 상태 알리기
     auto gameObject = GetGameObject();
     if (gameObject)
     {
