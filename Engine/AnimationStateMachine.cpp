@@ -3,6 +3,10 @@
 #include "AnimationStateMachine.h"
 #include "GameObject.h"
 #include "ModelAnimator.h"
+#include "NavMesh.h"
+#include "NavMeshAgent.h"
+#include "Camera.h"
+#include "Viewport.h"
 
 // ... 다른 상태들 include
 
@@ -52,48 +56,87 @@ void AnimationStateMachine::Update()
 
 void AnimationStateMachine::ProcessInput()
 {
-    // 이동 입력 처리
-    bool isMoving = INPUT->GetButton(KEY_TYPE::UP) ||
-        INPUT->GetButton(KEY_TYPE::DOWN) ||
-        INPUT->GetButton(KEY_TYPE::LEFT) ||
-        INPUT->GetButton(KEY_TYPE::RIGHT);
+    // NavMeshAgent 가져오기 - 올바른 ComponentType 사용
+    auto gameObject = GetGameObject();
+    auto navMeshAgent = gameObject->GetFixedComponent<NavMeshAgent>(ComponentType::NavMeshAgent);
 
-    // 이동 상태 변화 처리
-    if (isMoving && !m_wasMoving && CanChangeState(AnimationStateType::Run))
+    if (!navMeshAgent)
     {
-        ChangeState(AnimationStateType::Run);
+        cout << "NavMeshAgent not found!" << endl;
+        return;
     }
-    else if (!isMoving && m_wasMoving && CanChangeState(AnimationStateType::Wait))
+
+    // 우클릭 처리
+    if (INPUT->GetButtonDown(KEY_TYPE::RBUTTON))
+    {
+        // 마우스 위치 유효성 검사
+        POINT mousePos = INPUT->GetMousePos();
+        if (mousePos.x < 0 || mousePos.y < 0) return;
+
+        auto camera = CURSCENE->GetMainCamera();
+        if (!camera) return;
+
+        auto cameraComp = camera->GetCamera();
+        if (!cameraComp) return;
+
+        Ray ray = CreateRayFromMouse(mousePos, cameraComp);
+
+        // NavMesh 찾기 및 Ray cast
+        bool foundDestination = false;
+        for (auto& obj : CURSCENE->GetObjects())
+        {
+            auto navMesh = obj->GetFixedComponent<NavMesh>(ComponentType::NavMesh);
+            if (navMesh)
+            {
+                Vec3 hitPoint;
+                if (navMesh->RaycastNavMesh(ray, hitPoint))
+                {
+                    navMeshAgent->SetDestination(hitPoint);
+                    foundDestination = true;
+
+                    // 이동 명령이 성공하면 즉시 Run 상태로 전환
+                    if (CanChangeState(AnimationStateType::Run))
+                    {
+                        ChangeState(AnimationStateType::Run);
+                    }
+                    break;
+                }
+            }
+        }
+
+        if (!foundDestination)
+        {
+            cout << "No valid destination found on NavMesh" << endl;
+        }
+    }
+
+    // NavMeshAgent 상태 지속적 모니터링 (이동 완료 감지용)
+    if (navMeshAgent->HasReachedDestination() && IsInState(AnimationStateType::Run))
     {
         ChangeState(AnimationStateType::Wait);
     }
 
-    // 스킬 입력 처리
+    // 스킬 입력 시 이동 중지
     if (INPUT->GetButtonDown(KEY_TYPE::B))
     {
+        navMeshAgent->Stop(); // 이동 중지
         ChangeState(AnimationStateType::Skill_1);
-        //m_isChargingQ = true;
     }
-    // 스킬 입력 처리
     if (INPUT->GetButtonDown(KEY_TYPE::W))
     {
+        navMeshAgent->Stop();
         ChangeState(AnimationStateType::Skill_2);
-        //m_isChargingQ = true;
     }
-    // 스킬 입력 처리
     if (INPUT->GetButtonDown(KEY_TYPE::E))
     {
+        navMeshAgent->Stop();
         ChangeState(AnimationStateType::Skill_3);
-        //m_isChargingQ = true;
     }
-    // 스킬 입력 처리
     if (INPUT->GetButtonDown(KEY_TYPE::R))
     {
+        navMeshAgent->Stop();
         ChangeState(AnimationStateType::Skill_4);
-        //m_isChargingQ = true;
     }
-
-    m_wasMoving = isMoving; 
 }
 
 void AnimationStateMachine::ChangeState(AnimationStateType newState)
@@ -181,4 +224,39 @@ void AnimationStateMachine::HandleSpecialStateTransitions()
 void AnimationStateMachine::RegisterState(AnimationStateType type, shared_ptr<AnimationState> state)
 {
     m_states[type] = state;
+}
+
+
+Ray AnimationStateMachine::CreateRayFromMouse(POINT mousePos, shared_ptr<Camera> camera)
+{
+    Viewport viewport = GRAPHICS->GetViewport();
+    Matrix worldMatrix = Matrix::Identity;
+    Matrix viewMatrix = camera->GetViewMatrix();
+    Matrix projMatrix = camera->GetProjectionMatrix();
+
+    // 화면 좌표를 NDC로 변환
+    float x = (2.0f * mousePos.x) / viewport.GetWidth() - 1.0f;
+    float y = 1.0f - (2.0f * mousePos.y) / viewport.GetHeight();
+
+    // Near와 Far 평면의 월드 좌표 계산
+    Vec3 nearPoint = viewport.UnProject(Vec3(mousePos.x, mousePos.y, 0.0f), worldMatrix, viewMatrix, projMatrix);
+    Vec3 farPoint = viewport.UnProject(Vec3(mousePos.x, mousePos.y, 1.0f), worldMatrix, viewMatrix, projMatrix);
+
+    Vec3 rayDirection = farPoint - nearPoint;
+    rayDirection.Normalize();
+
+    // 디버깅 출력
+    cout << "=== Ray Generation Debug ===" << endl;
+    cout << "Mouse Position: (" << mousePos.x << ", " << mousePos.y << ")" << endl;
+    cout << "Viewport: " << viewport.GetWidth() << "x" << viewport.GetHeight() << endl;
+    cout << "Near Point: (" << nearPoint.x << ", " << nearPoint.y << ", " << nearPoint.z << ")" << endl;
+    cout << "Far Point: (" << farPoint.x << ", " << farPoint.y << ", " << farPoint.z << ")" << endl;
+    cout << "Ray Direction: (" << rayDirection.x << ", " << rayDirection.y << ", " << rayDirection.z << ")" << endl;
+
+    // Ray 방향이 아래쪽을 향하는지 확인
+    if (rayDirection.y > 0) {
+        cout << "WARNING: Ray pointing upward!" << endl;
+    }
+
+    return Ray(nearPoint, rayDirection);
 }

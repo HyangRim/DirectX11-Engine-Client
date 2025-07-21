@@ -25,6 +25,7 @@ enum class ComponentType : uint8 {
 	Image,
 	AnimationStateMachine,
 	NavMesh,
+	NavMeshAgent,
 	// ...
 	Script,
 	End

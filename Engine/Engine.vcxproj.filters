@@ -265,6 +265,12 @@
     <ClCompile Include="ImGuizmo.cpp">
       <Filter>98. Utils\ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="NavMesh.cpp">
+      <Filter>04. Component\NavMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="NavMeshAgent.cpp">
+      <Filter>04. Component\NavMesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Types.h">
@@ -546,6 +552,12 @@
     <ClInclude Include="ImGuizmo.h">
       <Filter>98. Utils\ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="NavMesh.h">
+      <Filter>04. Component\NavMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="NavMeshAgent.h">
+      <Filter>04. Component\NavMesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Engine">
@@ -658,6 +670,9 @@
     </Filter>
     <Filter Include="04. Component\Animation\Bianca\Skill\Skill_E">
       <UniqueIdentifier>{ffb7ef8b-8e89-4233-9701-3bf16510273e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\NavMesh">
+      <UniqueIdentifier>{bb0affca-4019-4ad1-b1d2-40f2224fff0b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

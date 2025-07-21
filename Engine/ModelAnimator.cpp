@@ -391,6 +391,8 @@ void ModelAnimator::SetupBoneData()
     }
 
     m_shader->PushBoneData(boneDesc);
+
+  
 }
 
 void ModelAnimator::RenderMeshes(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech)
@@ -528,6 +530,8 @@ void ModelAnimator::CreateAnimationTransform(const wstring& _tag)
             m_animTransform[_tag].transforms[frame][bone] = tbone->m_offsetMatrix * tempAnimBoneTransforms[bone];
         }
     }
+
+
 }
 
 // ============================================================================
@@ -629,3 +633,4 @@ float ModelAnimator::GetTimePerFrame(const wstring& animTag, float speed)
 {
     return 1.0f / GetCorrectedFrameRate(animTag, speed);
 }
+

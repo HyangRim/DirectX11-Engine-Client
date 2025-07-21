@@ -20,13 +20,14 @@ private:
 	void CreateCemeteryEnvironment();
 	// NavMesh 관련 추가
 	void CreateNavMesh();
-	void TestNavMeshPathfinding();
+	void CreateCharacter();
 
 private:
 	shared_ptr<GameObject> m_CemeteryParent;
 	shared_ptr<Shader> m_defaultshader = nullptr;
-
+	shared_ptr<Shader> m_testShader = nullptr;
 	// 테스트용
+	shared_ptr<GameObject> m_navMesh;
 	shared_ptr<GameObject> nicky;
 };
 

@@ -64,6 +64,21 @@ public:
 	
 	static Vec3 ToEulerAngles(Quaternion q);
 
+public:
+	void ForceUpdateTransform() {
+		UpdateTransform();
+
+		// 부모-자식 관계에서도 즉시 업데이트
+		if (HasParent()) {
+			m_parent->UpdateTransform();
+		}
+
+		// 자식들도 업데이트
+		for (const shared_ptr<Transform>& child : m_children) {
+			child->ForceUpdateTransform();
+		}
+	}
+
 private:
 	Vec3 NormalizeAngles(const Vec3& _angles);
 

@@ -204,6 +204,8 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="InstancingBuffer.h" />
+    <ClInclude Include="NavMesh.h" />
+    <ClInclude Include="NavMeshAgent.h" />
     <ClInclude Include="NickyESkillState.h" />
     <ClInclude Include="NickyQSkillState.h" />
     <ClInclude Include="NickyRSkillState.h" />
@@ -318,6 +320,8 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="InstancingBuffer.cpp" />
+    <ClCompile Include="NavMesh.cpp" />
+    <ClCompile Include="NavMeshAgent.cpp" />
     <ClCompile Include="NickyESkillState.cpp" />
     <ClCompile Include="NickyQSkillState.cpp" />
     <ClCompile Include="NickyRSkillState.cpp" />

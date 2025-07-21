@@ -15,9 +15,20 @@
 #include "BiancaESkillState.h"
 #include "BiancaRSkillState.h"
 
+#include "NickyWaitState.h"
+#include "NickyRunState.h"
+#include "NickyESkillState.h"
+#include "NickyWSkillState.h"
+#include "NickyQSkillState.h"
+#include "NickyRSkillState.h"
+
+#include "NavMesh.h"
+#include "NavMeshAgent.h"
+
 void LumiaIsland::Init()
 {
 	m_defaultshader = make_shared<Shader>(L"FOW.fx");
+	m_testShader = make_shared<Shader>(L"23. RenderDemo.fx");
 	//CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\snowcube1024.dds", L"Sky.fx"));
 	
 	CreateMainCamera();
@@ -42,9 +53,10 @@ void LumiaIsland::Init()
 		static_pointer_cast<Light>(light->GetFixedComponent(ComponentType::Light))->SetLightDesc(lightDesc);
 		CURSCENE->Add(light);
 	}
-	CreateCemeteryBase();
+	//CreateCemeteryBase();
 	//CreateCemeteryInterior();
 	//CreateCemeteryEnvironment();
+	CreateCharacter();
 
 	// NavMesh 생성 추가
 	CreateNavMesh();
@@ -69,7 +81,6 @@ void LumiaIsland::CreateMainCamera()
 	camera->AddComponent(make_shared<CameraScript>());
 
 	camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
-	camera->GetCamera()->SetProjectionType(ProjectionType::Perspective);
 	CURSCENE->Add(camera);
 }
 
@@ -793,27 +804,145 @@ void LumiaIsland::CreateNavMesh()
 	for (int32 i = 0; i < 1; i++)
 	{
 
-		nicky = make_shared<GameObject>();
-		nicky->SetName(to_wstring(i));
+		m_navMesh = make_shared<GameObject>();
+		m_navMesh->SetName(to_wstring(i));
 
-		nicky->GetTransform()->SetPosition(Vec3(-76.7, 20, -57));
-		nicky->GetTransform()->SetScale(Vec3(2.f));
-		nicky->GetTransform()->SetLocalRotation(Vec3(270.f, 90.f, 90.f));
+		m_navMesh->GetTransform()->SetPosition(Vec3(-76.7, 20, -57));
+		m_navMesh->GetTransform()->SetScale(Vec3(2.f));
+		m_navMesh->GetTransform()->SetLocalRotation(Vec3(270.f, 90.f, 90.f));
+
+		m_navMesh->AddComponent(make_shared<SphereCollider>());
+		m_navMesh->AddComponent(make_shared<Rigidbody>());
+		m_navMesh->GetCollider()->SetOffset(Vec3(0.f, 1.f, 0.f));
+		m_navMesh->GetRigidbody()->SetStatic(true);
+		m_navMesh->SetType(OBJECTTYPE::MAP);
+
+		m_navMesh->AddComponent(make_shared<ModelRenderer>(m_testShader));
+		{
+			m_navMesh->GetModelRenderer()->SetModel(m1);
+			m_navMesh->GetModelRenderer()->SetPass(0);
+		}
+
+		m_navMesh->AddComponent(make_shared<NavMesh>());
+	
+		CURSCENE->Add(m_navMesh);
+	}
+}
+
+void LumiaIsland::CreateCharacter()
+{
+	// Animation
+	shared_ptr<Model> m1 = make_shared<Model>();
+
+	m1->ReadModel(L"Nicky/Nicky");
+	m1->ReadMaterial(L"Nicky/Nicky");
+
+
+
+	//대기
+	m1->ReadAnimation(L"Wait", L"Nicky/Nicky_Glove_Wait");
+
+	//달리기
+	m1->ReadAnimation(L"Run", L"Nicky/Nicky_Glove_Run");
+
+	//평타
+	m1->ReadAnimation(L"BaseAttack_01", L"Nicky/Nicky_Glove_Atk_01");
+	m1->ReadAnimation(L"BaseAttack_02", L"Nicky/Nicky_Glove_Atk_02");
+
+	////Q
+	m1->ReadAnimation(L"Skill_01_Attack", L"Nicky/Nicky_Glove_Skill_01_Attack");
+	m1->ReadAnimation(L"Skill_01_Rush", L"Nicky/Nicky_Glove_Skill_01_Rush");
+	m1->ReadAnimation(L"Skill_01_End", L"Nicky/Nicky_Glove_Skill_01_End");
+	//Q Charge
+	m1->ReadAnimation(L"Skill_01_Charge_Loop_Run", L"Nicky/Nicky_Glove_Skill_01_Charge_Loop_Run");
+	m1->ReadAnimation(L"Skill_01_Charge_Start_Run", L"Nicky/Nicky_Glove_Skill_01_Charge_Start_Run");
+	m1->ReadAnimation(L"Skill_01_Charge_Loop_Wait", L"Nicky/Nicky_Glove_Skill_01_Charge_Loop_Wait");
+	m1->ReadAnimation(L"Skill_01_Charge_Start_Wait", L"Nicky/Nicky_Glove_Skill_01_Charge_Start_Wait");
+
+	//W
+	m1->ReadAnimation(L"Skill_02_Guard", L"Nicky/Nicky_Glove_Skill_02_Guard");
+	m1->ReadAnimation(L"Skill_02_Loop", L"Nicky/Nicky_Glove_Skill_02_Loop");
+
+	//E
+	m1->ReadAnimation(L"Skill_03", L"Nicky/Nicky_Glove_Skill_03");
+
+	//R
+	m1->ReadAnimation(L"Skill_04_Attack", L"Nicky/Nicky_Glove_Skill_04_Attack");
+	m1->ReadAnimation(L"Skill_04_Ready", L"Nicky/Nicky_Glove_Skill_04_Ready");
+	m1->ReadAnimation(L"Skill_04_Start", L"Nicky/Nicky_Glove_Skill_04_Start");
+
+
+
+	for (int32 i = 0; i < 1; i++)
+	{
+
+		nicky = make_shared<GameObject>();
+		nicky->SetName(L"Nicky");
+		
+
+		nicky->GetTransform()->SetPosition(Vec3(15, 20, 5));
+		nicky->GetTransform()->SetScale(Vec3(1.f));
 
 		nicky->AddComponent(make_shared<SphereCollider>());
 		nicky->AddComponent(make_shared<Rigidbody>());
+		nicky->AddComponent(make_shared<NavMeshAgent>());
+
 		nicky->GetCollider()->SetOffset(Vec3(0.f, 1.f, 0.f));
 		nicky->GetRigidbody()->SetStatic(true);
 
-	
-
-		nicky->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+		nicky->AddComponent(make_shared<ModelAnimator>(m_defaultshader));
 		{
-			nicky->GetModelRenderer()->SetModel(m1);
-			nicky->GetModelRenderer()->SetPass(0);
+			nicky->GetModelAnimator()->SetModel(m1);
+			nicky->GetModelAnimator()->SetPass(2);
 		}
+	
+		// FSM 추가
+		auto stateMachine = make_shared<AnimationStateMachine>();
+		nicky->AddComponent(stateMachine);
+
+		nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait, make_shared<NickyWaitState>());
+		nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Run, make_shared<NickyRunState>());
+
+		nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_2, make_shared<NickyWSkillState>());
+		nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_3, make_shared<NickyESkillState>());
+		nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4, make_shared<NickyRSkillState>());
+		nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1, make_shared<NickyQSkillState>());
+
+
+		// 기존 시퀀스 생성 코드는 유지 (필요시 사용)
+		auto animator = nicky->GetModelAnimator();
+	
+		// 평타 시퀀스 (BaseAttack_01 -> BaseAttack_02)
+		vector<wstring> baseAttackAnims = { L"BaseAttack_02", L"BaseAttack_01" };
+		vector<float> baseAttackDurations = { 0.8f, 1.2f }; 
+		animator->CreateSequence(L"BaseAttack_Sequence", baseAttackAnims, baseAttackDurations, false);
+
+		// Q 스킬 시퀀스 (Skill_01_Attack -> Skill_01_Rush -> Skill_01_End)
+		vector<wstring> skill1Anims = { L"Skill_01_Attack", L"Skill_01_Rush", L"Skill_01_End" };
+		vector<float> skill1Durations = { 0.5f, 1.0f, 0.7f }; 
+		animator->CreateSequence(L"Skill_1_Sequence", skill1Anims, skill1Durations, false);
+
+		// W 스킬 시퀀스 (Skill_02_Guard -> Skill_02_Loop)
+		vector<wstring> skill2Anims = { L"Skill_02_Guard" };
+		animator->CreateSequence(L"Skill_2_Sequence", skill2Anims, false);
+
+		// E 스킬 시퀀스 (Skill_03 단일)
+		vector<wstring> skill3Anims = { L"Skill_03" };
+		animator->CreateSequence(L"Skill_3_Sequence", skill3Anims, false);
+
+		// R 스킬 시퀀스 (Skill_04_Ready -> Skill_04_Start -> Skill_04_Attack)
+		vector<wstring> skill4Anims = { L"Skill_04_Ready", L"Skill_04_Start", L"Skill_01_Rush", L"Skill_04_Attack"};
+		vector<float> skill4Durations; 
+		skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_04_Ready"));  
+		skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_04_Start"));  
+		skill4Durations.push_back(3.f); 
+		skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_04_Attack"));  
+		animator->CreateSequence(L"Skill_4_Sequence", skill4Anims, skill4Durations, false);
+
+
 
 
 		CURSCENE->Add(nicky);
 	}
 }
+

@@ -1,5 +1,6 @@
 #pragma once
 #include "Renderer.h"
+#include "ModelAnimation.h"
 
 // ============================================================================
 // 전방 선언 및 구조체

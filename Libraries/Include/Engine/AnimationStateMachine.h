@@ -26,6 +26,8 @@ public:
     void ProcessInput();
     void RegisterState(AnimationStateType type, shared_ptr<AnimationState> state);
 
+    Ray CreateRayFromMouse(POINT mousePos, shared_ptr<Camera> camera);
+
 private:
     void InitializeStates();
     void HandleSpecialStateTransitions();  // Ãß°¡

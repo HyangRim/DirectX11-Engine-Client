@@ -89,42 +89,42 @@ void UITestDemo::Init()
 		// Animation
 		shared_ptr<Model> m1 = make_shared<Model>();
 
-		m1->ReadModel(L"NavMesh/NavMesh");
-		m1->ReadMaterial(L"NavMesh/NavMesh");
+		m1->ReadModel(L"Nicky/Nicky");
+		m1->ReadMaterial(L"Nicky/Nicky");
 
 
 
-		////대기
-		//m1->ReadAnimation(L"Wait", L"Nicky/Nicky_Glove_Wait");
-		//
-		////달리기
-		//m1->ReadAnimation(L"Run", L"Nicky/Nicky_Glove_Run");
+		//대기
+		m1->ReadAnimation(L"Wait", L"Nicky/Nicky_Glove_Wait");
+		
+		//달리기
+		m1->ReadAnimation(L"Run", L"Nicky/Nicky_Glove_Run");
 
-		////평타
-		//m1->ReadAnimation(L"BaseAttack_01", L"Nicky/Nicky_Glove_Atk_01");
-		//m1->ReadAnimation(L"BaseAttack_02", L"Nicky/Nicky_Glove_Atk_02");
+		//평타
+		m1->ReadAnimation(L"BaseAttack_01", L"Nicky/Nicky_Glove_Atk_01");
+		m1->ReadAnimation(L"BaseAttack_02", L"Nicky/Nicky_Glove_Atk_02");
 
-		//////Q
-		//m1->ReadAnimation(L"Skill_01_Attack", L"Nicky/Nicky_Glove_Skill_01_Attack");
-		//m1->ReadAnimation(L"Skill_01_Rush", L"Nicky/Nicky_Glove_Skill_01_Rush");
-		//m1->ReadAnimation(L"Skill_01_End", L"Nicky/Nicky_Glove_Skill_01_End");
-		////Q Charge
-		//m1->ReadAnimation(L"Skill_01_Charge_Loop_Run", L"Nicky/Nicky_Glove_Skill_01_Charge_Loop_Run");
-		//m1->ReadAnimation(L"Skill_01_Charge_Start_Run", L"Nicky/Nicky_Glove_Skill_01_Charge_Start_Run");
-		//m1->ReadAnimation(L"Skill_01_Charge_Loop_Wait", L"Nicky/Nicky_Glove_Skill_01_Charge_Loop_Wait");
-		//m1->ReadAnimation(L"Skill_01_Charge_Start_Wait", L"Nicky/Nicky_Glove_Skill_01_Charge_Start_Wait");
+		////Q
+		m1->ReadAnimation(L"Skill_01_Attack", L"Nicky/Nicky_Glove_Skill_01_Attack");
+		m1->ReadAnimation(L"Skill_01_Rush", L"Nicky/Nicky_Glove_Skill_01_Rush");
+		m1->ReadAnimation(L"Skill_01_End", L"Nicky/Nicky_Glove_Skill_01_End");
+		//Q Charge
+		m1->ReadAnimation(L"Skill_01_Charge_Loop_Run", L"Nicky/Nicky_Glove_Skill_01_Charge_Loop_Run");
+		m1->ReadAnimation(L"Skill_01_Charge_Start_Run", L"Nicky/Nicky_Glove_Skill_01_Charge_Start_Run");
+		m1->ReadAnimation(L"Skill_01_Charge_Loop_Wait", L"Nicky/Nicky_Glove_Skill_01_Charge_Loop_Wait");
+		m1->ReadAnimation(L"Skill_01_Charge_Start_Wait", L"Nicky/Nicky_Glove_Skill_01_Charge_Start_Wait");
 
-		////W
-		//m1->ReadAnimation(L"Skill_02_Guard", L"Nicky/Nicky_Glove_Skill_02_Guard");
-		//m1->ReadAnimation(L"Skill_02_Loop", L"Nicky/Nicky_Glove_Skill_02_Loop");
+		//W
+		m1->ReadAnimation(L"Skill_02_Guard", L"Nicky/Nicky_Glove_Skill_02_Guard");
+		m1->ReadAnimation(L"Skill_02_Loop", L"Nicky/Nicky_Glove_Skill_02_Loop");
 	
-		////E
-		//m1->ReadAnimation(L"Skill_03", L"Nicky/Nicky_Glove_Skill_03");
+		//E
+		m1->ReadAnimation(L"Skill_03", L"Nicky/Nicky_Glove_Skill_03");
 
-		////R
-		//m1->ReadAnimation(L"Skill_04_Attack", L"Nicky/Nicky_Glove_Skill_04_Attack");
-		//m1->ReadAnimation(L"Skill_04_Ready", L"Nicky/Nicky_Glove_Skill_04_Ready");
-		//m1->ReadAnimation(L"Skill_04_Start", L"Nicky/Nicky_Glove_Skill_04_Start");
+		//R
+		m1->ReadAnimation(L"Skill_04_Attack", L"Nicky/Nicky_Glove_Skill_04_Attack");
+		m1->ReadAnimation(L"Skill_04_Ready", L"Nicky/Nicky_Glove_Skill_04_Ready");
+		m1->ReadAnimation(L"Skill_04_Start", L"Nicky/Nicky_Glove_Skill_04_Start");
 
 		
 
