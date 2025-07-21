@@ -113,7 +113,7 @@ void NavMeshAgent::UpdateMovement()
         direction.Normalize();
 
         // 회전 계산 및 적용
-        float targetYaw = atan2(direction.x, direction.z);
+        float targetYaw = atan2(direction.x, direction.z) + 3.141592f; //3.141592 더해야 방향 제대로 됨
         Vec3 currentRotation = transform->GetLocalRotation();
         Vec3 newRotation = Vec3(currentRotation.x, targetYaw * 180.0f / 3.14159f, currentRotation.z);
         transform->SetLocalRotation(newRotation);
