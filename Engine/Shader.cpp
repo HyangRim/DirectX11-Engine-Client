@@ -530,6 +530,19 @@ void Shader::PushFOWData(const FogOfWarData& _desc)
 	m_fowEffectBuffer->SetConstantBuffer(m_fowBuffer->GetComPtr().Get());
 }
 
+void Shader::PushMultiLightData(const MultiLightDesc& _desc)
+{
+	if (m_multiLightBuffer == nullptr) {
+		m_multiLightBuffer = make_shared<ConstantBuffer<MultiLightDesc>>();
+		m_multiLightBuffer->Create();
+		m_multiLightEffectBuffer = GetConstantBuffer("MultiLightBuffer");
+	}
+
+	m_multiLightDesc = _desc;
+	m_multiLightBuffer->CopyData(m_multiLightDesc);
+	m_multiLightEffectBuffer->SetConstantBuffer(m_multiLightBuffer->GetComPtr().Get());
+}
+
 bool Shader::IsFOWShader() const
 {
 	return m_file.find(L"FOW.fx") != wstring::npos;

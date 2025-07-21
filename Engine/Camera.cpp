@@ -193,10 +193,10 @@ void Camera::SetStaticData() {
 
 void Camera::Render_Forward(bool _isShadowTech)
 {
-	RENDER->Render(m_vecForward, _isShadowTech);
+	RENDER->RenderForward(m_vecForward, _isShadowTech);
 }
 
 void Camera::Render_Backward(bool _isShadowTech)
 {
-	RENDER->Render(m_vecBackward, _isShadowTech);
+	RENDER->RenderForward(m_vecBackward, _isShadowTech);
 }

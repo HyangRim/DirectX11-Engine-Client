@@ -3,6 +3,13 @@
 
 Material::Material() : Super(ResourceType::Material)
 {
+	static shared_ptr<Shader> s_geometryShader = nullptr;
+	if (s_geometryShader == nullptr) {
+		s_geometryShader = make_shared<Shader>(L"00. GBuffer.fx");
+	}
+	SetGeometryShader(s_geometryShader);
+	SetTransparent(false);
+	SetRenderingMode(RenderingMode::Deferred);
 }
 
 Material::~Material()
@@ -23,9 +30,20 @@ void Material::SetShader(shared_ptr<Shader> _shader)
 	
 }
 
+void Material::SetGeometryShader(shared_ptr<Shader> _shader)
+{
+	m_geometryShader = _shader;
+	m_diffuseEffectBuffer = m_geometryShader->GetSRV("DiffuseMap");
+	m_normalEffectBuffer = m_geometryShader->GetSRV("NormalMap");
+	m_specularEffectBuffer = m_geometryShader->GetSRV("SpecularMap");
+	m_randomEffectBuffer = m_geometryShader->GetSRV("RandomMap");
+	m_cubeMapEffectBuffer = m_geometryShader->GetSRV("CubeMap");
+	m_shadowMapEffectBuffer = m_geometryShader->GetSRV("ShadowMap");
+}
+
 void Material::Update()
 {
-	if (m_shader == nullptr)
+	if (m_shader == nullptr || m_geometryShader == nullptr)
 		return;
 
 	//RENDER->PushMaterialData(m_desc);

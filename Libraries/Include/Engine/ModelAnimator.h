@@ -57,6 +57,10 @@ public:
     void SetPass(uint8 _pass) { m_pass = _pass; }
     shared_ptr<Shader> GetShader();
 
+    void SetGeometryShader(shared_ptr<Shader> _shader) { m_geometryShader = _shader; }
+    shared_ptr<Shader> GetGeometryShader() { return m_geometryShader; }
+
+
     // ============================================================================
     // 애니메이션 제어 메서드들 (FSM에서 호출)
     // ============================================================================
@@ -89,6 +93,8 @@ public:
     // 렌더링 관련
     // ============================================================================
     void RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech);
+    void RenderInstancingDeferred(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech);
+
     InstanceID GetInstanceID();
     TweenDesc GetTweenDesc() { return m_tweenDesc; }
 
@@ -139,6 +145,7 @@ private:
 
     // 셰이더 및 모델 관련
     shared_ptr<Shader> m_shader;
+    shared_ptr<Shader> m_geometryShader;
     shared_ptr<Model> m_model;
     uint8 m_pass = 0;
 

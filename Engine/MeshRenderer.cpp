@@ -84,6 +84,33 @@ void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer,
 	//shader->DrawIndexedInstanced(0, m_pass, m_mesh->GetIndexBuffer()->GetCount(), _buffer->GetCount());
 }
 
+void MeshRenderer::RenderInstancingDeferred(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech)
+{
+	// 기존 검증 로직 활용 (그림자 기법은 false로)
+	if (Super::Render(false) == false)
+		return;
+
+	if (m_mesh == nullptr)
+		return;
+
+	// G-Buffer용 셰이더 사용 (포워드 셰이더 대신)
+	auto geometryShader = m_material->GetGeometryShader();
+	if (geometryShader == nullptr)
+		return;
+
+	// 기존 InnerRender 로직과 유사하지만 G-Buffer용 셰이더 사용
+	DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	geometryShader->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);
+	geometryShader->PushTransformData(TransformDesc{ GetTransform()->GetWorldMatrix() });
+
+	m_mesh->GetVertexBuffer()->PushData();
+	m_mesh->GetIndexBuffer()->PushData();
+	_buffer->PushData();
+
+	geometryShader->DrawIndexedInstanced(0, m_pass,
+		m_mesh->GetIndexBuffer()->GetCount(), _buffer->GetCount());
+}
+
 InstanceID MeshRenderer::GetInstanceID()
 {
 	//포인터를 통한 ID발급.

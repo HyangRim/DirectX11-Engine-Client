@@ -27,27 +27,33 @@ bool Renderer::Render(bool _isShadowTech)
 
 void Renderer::InnerRender(bool _isShadowTech)
 {
-	DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	
-	const auto& shader = m_material->GetShader();
-	if (shader == nullptr)
-		return;
+    DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	if (_isShadowTech == false) {
-		m_material->Update();
-		
-		//Light
-		auto lightObj = CURSCENE->GetLight();
+    if (_isShadowTech) {
+        // ¼¨µµ¿ì ¸Ê ·»´õ¸µ
+        const auto& shader = m_material->GetShader();
+        shader->PushGlobalData(Light::s_MatView, Light::s_MatProjection);
+    }
+    else if (GRAPHICS->IsCurrentPassGeometry()) {
+        // G-Buffer ÆÐ½º (µðÆÛµå ·»´õ¸µ)
+        const auto& geometryShader = m_material->GetGeometryShader();
+        if (geometryShader) {
+            m_material->Update(); // ÅØ½ºÃ³ ¹ÙÀÎµù
+            geometryShader->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);
+            geometryShader->PushTransformData(TransformDesc{ GetTransform()->GetWorldMatrix() });
+        }
+    }
+    else {
+        // Æ÷¿öµå ·»´õ¸µ ¶Ç´Â Åõ¸í °´Ã¼ ·»´õ¸µ
+        const auto& shader = m_material->GetShader();
+        m_material->Update();
 
-		if (lightObj) {
-			shader->PushLightData(lightObj->GetLight()->GetLightDesc());
-		}
-		shader->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);
-		shader->PushShadowData(Light::s_ShadowTransform);
-	}
-	else {
-		shader->PushGlobalData(Light::s_MatView, Light::s_MatProjection);
-	}
-
-	shader->PushTransformData(TransformDesc{ GetTransform()->GetWorldMatrix() });
+        auto lightObj = CURSCENE->GetLight();
+        if (lightObj) {
+            shader->PushLightData(lightObj->GetLight()->GetLightDesc());
+        }
+        shader->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);
+        shader->PushShadowData(Light::s_ShadowTransform);
+        shader->PushTransformData(TransformDesc{ GetTransform()->GetWorldMatrix() });
+    }
 }

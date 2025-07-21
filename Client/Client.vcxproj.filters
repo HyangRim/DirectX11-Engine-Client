@@ -220,5 +220,11 @@
     <FxCompile Include="..\Shaders\ImageShader.fx">
       <Filter>Shaders\Text</Filter>
     </FxCompile>
+    <FxCompile Include="..\Shaders\00. GBuffer.fx">
+      <Filter>Shaders\Common</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\00. DeferredLighting.fx">
+      <Filter>Shaders\Common</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

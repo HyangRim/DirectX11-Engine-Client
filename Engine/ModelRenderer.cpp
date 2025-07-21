@@ -79,6 +79,50 @@ void ModelRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer
 	}
 }
 
+void ModelRenderer::RenderInstancingDeferred(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech)
+{
+	if (m_model == nullptr)
+		return;
+
+	// 기존 검증 로직 활용
+	if (Super::Render(false) == false)
+		return;
+
+	// G-Buffer용 셰이더 사용
+	auto geometryShader = m_material->GetGeometryShader();
+	if (geometryShader == nullptr)
+		return;
+
+	// 기존 RenderInstancing과 유사한 로직
+	DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	geometryShader->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);
+
+	// 본 데이터 푸시 (기존 로직 유지)
+	BoneDesc boneDesc;
+	const uint32 boneCount = m_model->GetBoneCount();
+	for (uint32 i = 0; i < boneCount; ++i)
+	{
+		shared_ptr<ModelBone> bone = m_model->GetBoneByIndex(i);
+		boneDesc.transforms[i] = bone->m_transform;
+	}
+	geometryShader->PushBoneData(boneDesc);
+
+	const auto& meshes = m_model->GetMeshes();
+	for (auto& mesh : meshes)
+	{
+		if (mesh->m_material)
+			mesh->m_material->Update();
+
+		geometryShader->GetScalar("BoneIndex")->SetInt(mesh->m_boneIndex);
+
+		mesh->m_vertexBuffer->PushData();
+		mesh->m_indexBuffer->PushData();
+		_buffer->PushData();
+
+		geometryShader->DrawIndexedInstanced(0, 0, mesh->m_indexBuffer->GetCount(), _buffer->GetCount());
+	}
+}
+
 InstanceID ModelRenderer::GetInstanceID()
 {
 	//포인터를 통한 ID발급.

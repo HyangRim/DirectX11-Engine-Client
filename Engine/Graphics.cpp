@@ -5,6 +5,16 @@
 
 Graphics::~Graphics()
 {
+	// 기존 코드 유지하고 추가
+	for (int i = 0; i < GBUFFER_COUNT; ++i) {
+		if (m_gBufferSRVs[i]) m_gBufferSRVs[i].Reset();
+		if (m_gBufferRTVs[i]) m_gBufferRTVs[i].Reset();
+		if (m_gBufferTextures[i]) m_gBufferTextures[i].Reset();
+	}
+
+	if (m_fullScreenQuadVB) m_fullScreenQuadVB.Reset();
+	if (m_fullScreenQuadIB) m_fullScreenQuadIB.Reset();
+
 	if (m_deviceContext != nullptr) {
 		m_deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 		m_deviceContext->Flush();
@@ -25,6 +35,8 @@ Graphics::~Graphics()
 		m_swapChain.Reset();
 	if (m_device != nullptr)
 		m_device.Reset();
+
+
 }
 
 
@@ -36,6 +48,10 @@ void Graphics::Init(HWND hwnd)
 	CreateDeviceAndSwapChain();
 	CreateRenderTargetView();
 	CreateDepthStencilView();
+
+	CreateGBuffer();
+	CreateFullScreenQuad();
+
 	SetViewport(GAME->GetGameDesc().width, GAME->GetGameDesc().height);
 }
 
@@ -206,11 +222,154 @@ void Graphics::CreateDepthStencilView()
 
 }
 
+void Graphics::BeginGeometryPass()
+{
+	m_currentPass = RenderPass::GEOMETRY;
+	m_deviceContext->OMSetRenderTargets(GBUFFER_COUNT, m_gBufferRTVs->GetAddressOf(), m_depthStencilView.Get());
+
+
+	for (int idx = 0; idx < GBUFFER_COUNT; ++idx) {
+		m_deviceContext->ClearRenderTargetView(m_gBufferRTVs[idx].Get(), (float*)(&GAME->GetGameDesc().clearColor));
+	}
+}
+
+void Graphics::BeginLightingPass()
+{
+	m_currentPass = RenderPass::LIGHTING;
+	//최종 렌더타겟으로 전환
+	m_deviceContext->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(), nullptr);
+
+	m_deviceContext->PSSetShaderResources(0, GBUFFER_COUNT, m_gBufferSRVs->GetAddressOf());
+}
+
+void Graphics::CreateGBuffer()
+{
+	UINT width = GAME->GetGameDesc().width;
+	UINT height = GAME->GetGameDesc().height;
+
+	// Albedo Buffer (RGBA8)
+	D3D11_TEXTURE2D_DESC albedoDesc = {};
+	albedoDesc.Width = width;
+	albedoDesc.Height = height;
+	albedoDesc.MipLevels = 1;
+	albedoDesc.ArraySize = 1;
+	albedoDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	albedoDesc.SampleDesc.Count = 1;
+	albedoDesc.SampleDesc.Quality = 0;
+	albedoDesc.Usage = D3D11_USAGE_DEFAULT;
+	albedoDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	albedoDesc.CPUAccessFlags = 0;
+	albedoDesc.MiscFlags = 0;
+
+	HRESULT hr = m_device->CreateTexture2D(&albedoDesc, nullptr, m_gBufferTextures[0].GetAddressOf());
+	CHECK(hr);
+	hr = m_device->CreateRenderTargetView(m_gBufferTextures[0].Get(), nullptr, m_gBufferRTVs[0].GetAddressOf());
+	CHECK(hr);
+	hr = m_device->CreateShaderResourceView(m_gBufferTextures[0].Get(), nullptr, m_gBufferSRVs[0].GetAddressOf());
+	CHECK(hr);
+
+	// Normal Buffer (RGBA16_FLOAT)
+	D3D11_TEXTURE2D_DESC normalDesc = albedoDesc;
+	normalDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	hr = m_device->CreateTexture2D(&normalDesc, nullptr, m_gBufferTextures[1].GetAddressOf());
+	CHECK(hr);
+	hr = m_device->CreateRenderTargetView(m_gBufferTextures[1].Get(), nullptr, m_gBufferRTVs[1].GetAddressOf());
+	CHECK(hr);
+	hr = m_device->CreateShaderResourceView(m_gBufferTextures[1].Get(), nullptr, m_gBufferSRVs[1].GetAddressOf());
+	CHECK(hr);
+
+	// Position Buffer (RGBA16_FLOAT)
+	D3D11_TEXTURE2D_DESC positionDesc = albedoDesc;
+	positionDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	// 더 높은 정밀도가 필요하다면 RGBA32_FLOAT 사용 가능
+	// positionDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	hr = m_device->CreateTexture2D(&positionDesc, nullptr, m_gBufferTextures[2].GetAddressOf());
+	CHECK(hr);
+	hr = m_device->CreateRenderTargetView(m_gBufferTextures[2].Get(), nullptr, m_gBufferRTVs[2].GetAddressOf());
+	CHECK(hr);
+	hr = m_device->CreateShaderResourceView(m_gBufferTextures[2].Get(), nullptr, m_gBufferSRVs[2].GetAddressOf());
+	CHECK(hr);
+
+	// Material Buffer (RGBA8)
+	D3D11_TEXTURE2D_DESC materialDesc = albedoDesc;
+	materialDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	hr = m_device->CreateTexture2D(&materialDesc, nullptr, m_gBufferTextures[3].GetAddressOf());
+	CHECK(hr);
+	hr = m_device->CreateRenderTargetView(m_gBufferTextures[3].Get(), nullptr, m_gBufferRTVs[3].GetAddressOf());
+	CHECK(hr);
+	hr = m_device->CreateShaderResourceView(m_gBufferTextures[3].Get(), nullptr, m_gBufferSRVs[3].GetAddressOf());
+	CHECK(hr);
+}
+
+void Graphics::CreateFullScreenQuad()
+{
+
+	// 풀스크린 쿼드 버텍스 데이터
+	struct QuadVertex
+	{
+		Vec3 position;
+		Vec2 uv;
+	};
+
+	QuadVertex vertices[] = {
+		{ Vec3(-1.0f, -1.0f, 0.0f), Vec2(0.0f, 1.0f) }, // 좌하단
+		{ Vec3(-1.0f,  1.0f, 0.0f), Vec2(0.0f, 0.0f) }, // 좌상단
+		{ Vec3(1.0f,  1.0f, 0.0f), Vec2(1.0f, 0.0f) }, // 우상단
+		{ Vec3(1.0f, -1.0f, 0.0f), Vec2(1.0f, 1.0f) }  // 우하단
+	};
+
+	UINT indices[] = { 0, 1, 2, 0, 2, 3 };
+
+	// 버텍스 버퍼 생성
+	D3D11_BUFFER_DESC vbDesc = {};
+	vbDesc.ByteWidth = sizeof(vertices);
+	vbDesc.Usage = D3D11_USAGE_IMMUTABLE;
+	vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+	D3D11_SUBRESOURCE_DATA vbData = {};
+	vbData.pSysMem = vertices;
+
+	HRESULT hr = m_device->CreateBuffer(&vbDesc, &vbData, m_fullScreenQuadVB.GetAddressOf());
+	CHECK(hr);
+
+	// 인덱스 버퍼 생성
+	D3D11_BUFFER_DESC ibDesc = {};
+	ibDesc.ByteWidth = sizeof(indices);
+	ibDesc.Usage = D3D11_USAGE_IMMUTABLE;
+	ibDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+
+	D3D11_SUBRESOURCE_DATA ibData = {};
+	ibData.pSysMem = indices;
+
+	hr = m_device->CreateBuffer(&ibDesc, &ibData, m_fullScreenQuadIB.GetAddressOf());
+	CHECK(hr);
+}
+
 
 
 void Graphics::SetViewport(float _width, float _height, float _x, float _y, float _minDepth, float _maxDepth)
 {
 	m_viewport.Set(_width, _height, _x, _y, _minDepth, _maxDepth);
 	m_shadowVP.Set(SHADOWMAP_SIZE, SHADOWMAP_SIZE, _x, _y, _minDepth, _maxDepth);
+}
+
+void Graphics::BindGBufferSRVs(UINT _startSlot) const
+{
+	m_deviceContext->PSSetShaderResources(_startSlot, GBUFFER_COUNT, m_gBufferSRVs->GetAddressOf());
+}
+
+ID3D11ShaderResourceView* Graphics::GetGBufferSRV(int _idx) const
+{
+	return (_idx < 0 || _idx >= GBUFFER_COUNT) ? nullptr : m_gBufferSRVs[_idx].Get();
+}
+
+void Graphics::BindFullScreenQuad() const
+{
+	UINT stride = sizeof(Vec3) + sizeof(Vec2);
+	UINT offset = 0;
+	ID3D11Buffer* vb = m_fullScreenQuadVB.Get();
+	m_deviceContext->IASetVertexBuffers(0, 1, &vb, &stride, &offset);
+	m_deviceContext->IASetIndexBuffer(m_fullScreenQuadIB.Get(), DXGI_FORMAT_R32_UINT, 0);
+	m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 

@@ -60,7 +60,7 @@ bool FogOfWar::IsFOWShader(shared_ptr<Shader> _shader)
 	return _shader->IsFOWShader();
 }
 
-void FogOfWar::UpdateShadersWithFOWData(const FogOfWarData& _fowData)
+void FogOfWar::UpdateShadersWithFOWData(FogOfWarData& _fowData)
 {
 
 	const auto& objects = CURSCENE->GetQuadTree()->GetInsertedObject();
@@ -69,7 +69,7 @@ void FogOfWar::UpdateShadersWithFOWData(const FogOfWarData& _fowData)
 	Vec3 playerPos = _fowData.playerWorldPos;
 	float maxRange = _fowData.sightRange * 1.2f;
 
-	for (auto& obj : objects) {
+	/*for (auto& obj : objects) {
 		if (CURSCENE->GetQuadTree()->IsObjectVisible(obj, camera)) {
 			Vec3 objPos = obj->GetTransform()->GetPosition();
 			float distance = Vec3::Distance(playerPos, objPos);
@@ -88,9 +88,17 @@ void FogOfWar::UpdateShadersWithFOWData(const FogOfWarData& _fowData)
 				}
 			}
 		}
+	}*/
+	for (auto& obj : objects) {
+		if (CURSCENE->GetQuadTree()->IsObjectVisible(obj, camera)) {
+			Vec3 objPos = obj->GetTransform()->GetPosition();
+			float distance = Vec3::Distance(playerPos, objPos);
+
+			if (distance <= maxRange) {
+				RENDER->SetFOWData(_fowData);
+			}
+		}
 	}
-
-
 }
 
 void FogOfWar::UpdateFOWShader()

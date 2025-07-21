@@ -74,6 +74,8 @@ public:
 	void PushShadowData(const Matrix& _desc);
 	void PushTextData(const Vec4& textColor, const Vec4& outlineColor, float alpha, float outlineWidth);
 	void PushFOWData(const FogOfWarData& _desc);
+	void PushMultiLightData(const MultiLightDesc& _desc);
+
 
 	vector<Technique>& GetTechniqes() { return m_techniques; }
 	bool IsFOWShader() const;
@@ -134,7 +136,9 @@ private:
 	shared_ptr<ConstantBuffer<FogOfWarData>> m_fowBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> m_fowEffectBuffer;
 
-
+	MultiLightDesc m_multiLightDesc;
+	shared_ptr<ConstantBuffer<MultiLightDesc>> m_multiLightBuffer;
+	ComPtr<ID3DX11EffectConstantBuffer> m_multiLightEffectBuffer;
 };
 
 class ShaderManager

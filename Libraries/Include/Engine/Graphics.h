@@ -31,13 +31,28 @@ private:
 	void CreateDeviceAndSwapChain();
 	void CreateRenderTargetView();
 	void CreateDepthStencilView();
+	
+public:
+	//디퍼드 렌더링 용.
+	void BeginGeometryPass();
+	void BeginLightingPass();
+	void CreateGBuffer();
+	void CreateFullScreenQuad();
 
+	void BindGBufferSRVs(UINT _startSlot = 0) const;
+	ID3D11ShaderResourceView* GetGBufferSRV(int _idx) const;
+	void BindFullScreenQuad() const;
 public:
 	void SetViewport(float _width, float _height, float _x = 0, float _y = 0, float _minDepth = 0, float _maxDepth = 1);
 	Viewport& GetViewport() { return m_viewport; }
 	Viewport& GetShadowViewport() { return m_shadowVP; }
-
+	int GetGBUFFER_COUNT() { return GBUFFER_COUNT; }
 	shared_ptr<Texture> GetShadowMap() { return m_shadowMap; }
+
+
+	// 풀스크린 쿼드 접근 함수들 추가
+	ComPtr<ID3D11Buffer> GetFullScreenQuadVB() { return m_fullScreenQuadVB; }
+	ComPtr<ID3D11Buffer> GetFullScreenQuadIB() { return m_fullScreenQuadIB; }
 
 private:
 	HWND m_hwnd = {};
@@ -63,5 +78,23 @@ private:
 	// Misc
 	Viewport m_viewport;
 	Viewport m_shadowVP;
+
+public:
+	static const int GBUFFER_COUNT = 4;
+	enum class RenderPass { NONE, GEOMETRY, LIGHTING, FORWARD};
+
+public:
+	RenderPass GetCurrentPass() const { return m_currentPass; }
+	bool IsCurrentPassGeometry() const { return m_currentPass == RenderPass::GEOMETRY; }
+private:
+	ComPtr<ID3D11Texture2D> m_gBufferTextures[GBUFFER_COUNT];
+	ComPtr<ID3D11RenderTargetView> m_gBufferRTVs[GBUFFER_COUNT];
+	ComPtr<ID3D11ShaderResourceView> m_gBufferSRVs[GBUFFER_COUNT];
+
+	// 풀스크린 쿼드용
+	ComPtr<ID3D11Buffer> m_fullScreenQuadVB;
+	ComPtr<ID3D11Buffer> m_fullScreenQuadIB;
+	RenderPass m_currentPass = RenderPass::NONE;
+
 };
 

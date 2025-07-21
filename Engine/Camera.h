@@ -36,6 +36,7 @@ public:
     float GetWidth() { return m_width;}
     float GetHeight() { return m_height; }
 
+    vector<shared_ptr<GameObject>>& GetForwardObjects() {return m_vecForward;}
 private:
     ProjectionType m_type = ProjectionType::Perspective;
 

@@ -67,6 +67,8 @@
     <ClCompile Include="ViewportDemo.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Shaders\00. DeferredLighting.fx" />
+    <FxCompile Include="..\Shaders\00. GBuffer.fx" />
     <FxCompile Include="..\Shaders\00. Global.fx" />
     <FxCompile Include="..\Shaders\00. Light.fx" />
     <FxCompile Include="..\Shaders\00. Render.fx" />

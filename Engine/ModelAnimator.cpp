@@ -375,6 +375,10 @@ void ModelAnimator::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer
     RenderMeshes(_buffer, _isShadowTech);
 }
 
+void ModelAnimator::RenderInstancingDeferred(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech)
+{
+}
+
 void ModelAnimator::SetupBoneData()
 {
     BoneDesc boneDesc;

@@ -21,6 +21,9 @@ public:
     void SetPass(uint8 _pass) { m_pass = _pass; }
 
     void RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech);
+    void RenderInstancingDeferred(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech);
+
+    
     InstanceID GetInstanceID();
 
     void SetMaterial(shared_ptr <Material> _material) override;

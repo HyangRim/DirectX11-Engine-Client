@@ -28,6 +28,7 @@ WPARAM Game::Run(GameDesc& desc)
 	GUI->Init();
 	RESOURCES->Init();
 	SOUND->Init();
+	RENDER->Init();
 	
 	_desc.app->Init();
 

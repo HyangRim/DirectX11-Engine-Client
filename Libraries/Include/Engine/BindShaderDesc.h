@@ -120,3 +120,10 @@ struct FogOfWarData {
 	float smoothness;
 	float time;
 };
+
+#define MAX_LIGHTS 20
+struct MultiLightDesc {
+	LightDesc lights[MAX_LIGHTS];
+	int activeLightCount;
+	float padding[3];
+};

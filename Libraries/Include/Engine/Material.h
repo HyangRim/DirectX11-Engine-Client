@@ -16,6 +16,12 @@ enum class RenderQueue {
     Max
 };
 
+enum class RenderingMode {
+    Forward,
+    Deferred,
+    Transparent
+};
+
 class Material :
     public ResourceBase
 {
@@ -26,6 +32,8 @@ public:
     virtual ~Material();
 
     shared_ptr<Shader> GetShader() { return m_shader; }
+    shared_ptr<Shader> GetGeometryShader() { return m_geometryShader; }
+    RenderingMode GetRenderingMode() const { return m_renderMode; }
 
     MaterialDesc& GetMaterialDesc() { return m_desc; }
     shared_ptr<Texture> GetDiffuseMap() { return m_diffuseMap; }
@@ -34,16 +42,23 @@ public:
     shared_ptr<Texture> GetRandomTex() { return m_randomMap; }
 
     void SetShader(shared_ptr<Shader> _shader);
+    void SetGeometryShader(shared_ptr<Shader> _shader);
+
     void SetDiffuseMap(shared_ptr<Texture> _diffuseMap) { m_diffuseMap = _diffuseMap; }
     void SetNormalMap(shared_ptr<Texture> _normalMap) { m_normalMap = _normalMap; }
     void SetSpecularMap(shared_ptr<Texture> _specularMap) { m_specularMap = _specularMap; }
     void SetRandomTex(shared_ptr<Texture> _randomTex) { m_randomMap = _randomTex; }
     void SetCubeMap(shared_ptr<Texture> _cubeMap) { m_cubeMap = _cubeMap; }
 
+    void SetTransparent(bool _transparent) { m_isTransparent = _transparent; }
+    bool IsTransparent() const { return m_isTransparent; }
 
     void SetRenderQueue(RenderQueue _renderQueue) { m_renderQueue = _renderQueue; }
     RenderQueue GetRenderQueue() { return m_renderQueue; }
-    
+
+    void SetRenderingMode(RenderingMode _mode) { m_renderMode = _mode; }
+    RenderingMode GetRenderingMode() { return m_renderMode; }
+
     void SetCastShadow(bool _castShadow) { m_castShadow = _castShadow; }
     bool GetCastShadow() { return m_castShadow; }
 
@@ -58,9 +73,13 @@ private:
     MaterialDesc m_desc;
 
     RenderQueue m_renderQueue = RenderQueue::Opaque;
+    RenderingMode m_renderMode = RenderingMode::Deferred;
+
     bool m_castShadow = true;
+    bool m_isTransparent = false;
 
     shared_ptr<Shader> m_shader;
+    shared_ptr<Shader> m_geometryShader;
 
 
     shared_ptr<Texture> m_diffuseMap;

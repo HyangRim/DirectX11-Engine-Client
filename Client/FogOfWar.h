@@ -42,7 +42,7 @@ public:
 	void SetSmoothness(float _smoothness) { m_smoothness = _smoothness; }
 
 	bool IsFOWShader(shared_ptr<Shader> _shader);
-	void UpdateShadersWithFOWData(const FogOfWarData& _fowData);
+	void UpdateShadersWithFOWData(FogOfWarData& _fowData);
 private:
 	void UpdateFOWShader();
 	bool IsMapObject(shared_ptr<GameObject> _object);

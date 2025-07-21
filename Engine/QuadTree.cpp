@@ -667,7 +667,7 @@ bool QuadTree::IsObjectVisible(shared_ptr<GameObject> _object, Camera* _camera)
 	Vec3 cameraLook = _camera->GetTransform()->GetLook();
 
 	float dot = dirToObj.Dot(cameraLook);
-	if (dot < -0.1f) return false;
+	if (dot < -0.2f) return false;
 
 	// 3. 추가 : 화면 투영 검사. 
 	Viewport viewport = GRAPHICS->GetViewport();
@@ -678,7 +678,7 @@ bool QuadTree::IsObjectVisible(shared_ptr<GameObject> _object, Camera* _camera)
 	Vec3 screenPos = viewport.Project(worldPos, worldMatrix, viewMatrix, projMatrix);
 
 	//화면 경계 검사. (여유 공간 최소화)
-	float margin = 150.0f; // 여유 공간 줄임
+	float margin = 250.0f; // 여유 공간 줄임
 	if (screenPos.x < -margin || screenPos.x > viewport.GetWidth() + margin ||
 		screenPos.y < -margin || screenPos.y > viewport.GetHeight() + margin ||
 		screenPos.z < 0 || screenPos.z > 1)
@@ -696,7 +696,7 @@ bool QuadTree::IsObjectVisible(shared_ptr<GameObject> _object, Camera* _camera)
 	float right = localPos.Dot(cameraRight);
 	float up = localPos.Dot(cameraUp);
 
-	if (forward <= 0.05f) return false; // 너무 가까운 객체 제외
+	if (forward <= 0.03f) return false; // 너무 가까운 객체 제외
 
 	// FOV 기반 시야각 검사
 	float fov = XMConvertToDegrees(_camera->GetFOV());
@@ -708,8 +708,8 @@ bool QuadTree::IsObjectVisible(shared_ptr<GameObject> _object, Camera* _camera)
 	float horizontalAngle = XMConvertToDegrees(atan2(abs(right), forward));
 	float verticalAngle = XMConvertToDegrees(atan2(abs(up), forward));
 
-	if (horizontalAngle > horizontalFOV / 2.0f + 20.0f || // 15도 여유
-		verticalAngle > verticalFOV / 2.0f + 20.0f)
+	if (horizontalAngle > horizontalFOV / 2.0f + 30.0f || // 15도 여유
+		verticalAngle > verticalFOV / 2.0f + 30.0f)
 	{
 		return false;
 	}
