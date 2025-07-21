@@ -30,10 +30,4 @@ GBufferOutput PS_GeometryPass(MeshOutput input)
     return output;
 }
 
-technique11 GeometryTech
-{
-    PASS_VP(P0, VS_Mesh, PS_GeometryPass)
-    PASS_VP(P1, VS_Model, PS_GeometryPass)
-    PASS_VP(P2, VS_Animation, PS_GeometryPass)
-}
 #endif

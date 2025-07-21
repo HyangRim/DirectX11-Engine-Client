@@ -9,19 +9,7 @@
 #define MAX_MODEL_KEYFRAMES 300
 #define MAX_MODEL_INSTANCE 250
 
-////////////////
-// FOW Buffer //
-////////////////
 
-cbuffer FogOfWarData : register(b5)
-{
-    float3 g_playerWorldPos; // 플레이어 월드 기준 위치. 
-    float g_sightRange; // 시야 거리
-    float g_darkness; // 어둠 강도 (0.0 ~ 1.0)
-    float g_fadeDistance; // 페이드 거리
-    float g_smoothness; // 경계 부드러움
-    float g_time; // 시간 (애니메이션용)
-}
 
 //Mesh Render
 

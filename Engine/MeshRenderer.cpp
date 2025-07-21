@@ -94,7 +94,7 @@ void MeshRenderer::RenderInstancingDeferred(shared_ptr<class InstancingBuffer>& 
 		return;
 
 	// G-Buffer용 셰이더 사용 (포워드 셰이더 대신)
-	auto geometryShader = m_material->GetGeometryShader();
+	auto geometryShader = m_material->GetShader();
 	if (geometryShader == nullptr)
 		return;
 

@@ -76,7 +76,7 @@ ATOM Game::MyRegisterClass()
 
 BOOL Game::InitInstance(int cmdShow)
 {
-	RECT windowRect = { 0, 0, _desc.width, _desc.height };
+	RECT windowRect = { 0, 0, static_cast<LONG>(_desc.width), static_cast<LONG>(_desc.height) };
 	::AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, false);
 
 	_desc.hWnd = CreateWindowW(_desc.appName.c_str(), _desc.appName.c_str(), WS_OVERLAPPEDWINDOW,

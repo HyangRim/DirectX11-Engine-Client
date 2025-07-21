@@ -84,7 +84,7 @@ void Camera::SortGameObjects()
 
         // IFogOfWar 인터페이스 구현체 찾기
         for (auto& obj : gameObjects) {
-            auto scripts = obj->GetScripts();
+            auto& scripts = obj->GetScripts();
             for (auto& comp : scripts) {
                 IFogOfWar* fogInterface = dynamic_cast<IFogOfWar*>(comp.get());
                 if (fogInterface) {

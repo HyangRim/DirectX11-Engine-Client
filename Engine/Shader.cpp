@@ -85,9 +85,10 @@ void Shader::CreateEffect()
 			pass.m_inputLayout = CreateInputLayout(m_shaderDesc.m_blob, &pass.m_effectVsDesc, pass.m_signatureDescs);
 			pass.m_stateBlock = m_initialStateBlock;
 
+
 			technique.m_passes.push_back(pass);
 		}
-
+		m_techniqueMap[technique.m_name] = static_cast<int>(t);
 		m_techniques.push_back(technique);
 	}
 
@@ -225,6 +226,17 @@ void Shader::DrawIndexedInstanced(UINT _technique, UINT _pass, UINT _indexCountP
 	m_techniques[_technique].m_passes[_pass].DrawIndexedInstanced(_indexCountPerInstance, _instanceCount, _startIndexLocation, _baseVertexLocation, _startInstanceLocation);
 }
 
+void Shader::DrawIndexedInstancedCurTech(UINT _pass, UINT _indexCountPerInstance, UINT _instanceCount, UINT _startIndexLocation, INT _baseVertexLocation, UINT _startInstanceLocation)
+{
+	auto currentTech = GetCurrentTechnique();
+	if (currentTech)
+	{
+		currentTech->DrawIndexedInstanced(_pass, _indexCountPerInstance, _instanceCount,
+			_startIndexLocation, _baseVertexLocation, _startInstanceLocation);
+	}
+}
+
+
 void Shader::BeginDraw(UINT _technique, UINT _pass)
 {
 	m_techniques[_technique].m_passes[_pass].BeginDraw();
@@ -309,6 +321,59 @@ ComPtr<ID3DX11EffectSamplerVariable> Shader::GetSampler(string _name)
 {
 	return m_shaderDesc.m_effect->GetVariableByName(_name.c_str())->AsSampler();
 }
+
+void Shader::SetTechnique(const wstring& _name)
+{
+	auto it = m_techniqueMap.find(_name);
+	if (it != m_techniqueMap.end())
+	{
+		m_currentTechniqueIndex = it->second;
+	}
+	else
+	{
+		OutputDebugStringA("Technique not found: ");
+	}
+}
+
+void Shader::SetTechnique(int _index)
+{
+	if (_index >= 0 && _index < m_techniques.size())
+	{
+		m_currentTechniqueIndex = _index;
+	}
+}
+
+Technique* Shader::GetCurrentTechnique()
+{
+	if (m_currentTechniqueIndex >= 0 && m_currentTechniqueIndex < m_techniques.size())
+	{
+		return &m_techniques[m_currentTechniqueIndex];
+	}
+	return nullptr;
+}
+
+Technique* Shader::GetTechnique(const wstring& _name)
+{
+	auto iter = m_techniqueMap.find(_name);
+	if (iter != m_techniqueMap.end()) {
+		return GetTechnique(iter->second);
+	}
+	else {
+		return nullptr;
+	}
+}
+
+Technique* Shader::GetTechnique(int _idx)
+{
+	if (_idx >= 0 && _idx < m_techniques.size())
+	{
+		return &m_techniques[_idx];
+	}
+	else {
+		return nullptr;
+	}
+}
+
 
 ComPtr<ID3DX11EffectUnorderedAccessViewVariable> Shader::GetUAV(string _name)
 {

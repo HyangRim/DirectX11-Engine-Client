@@ -1,45 +1,15 @@
 #include "00. Global.fx"
 #include "00. Light.fx"
 #include "00. Render.fx"
+#include "00. GBuffer.fx"
+#include "00. DeferredLighting.fx"
+
 
 
 ////////////////
 // Functions  //
 ////////////////
 
-// FOW 계산 함수
-float CalculateFogOfWar(float3 worldPos)
-{
-    // 플레이어로부터의 거리 계산
-    float distance = length(worldPos - g_playerWorldPos);
-    
-    // 성능 최적화: 너무 멀리 있으면 조기 종료
-    if (distance > g_sightRange * 1.2f)
-    {
-        return max(g_darkness, 0.4f);
-    }
-    
-    float fogFactor = 1.0f;
-    
-    if (distance > g_sightRange)
-    {
-        // 시야 범위 밖: 어둡게
-        fogFactor = max(g_darkness, 0.4f);
-    }
-    else if (distance > (g_sightRange - g_fadeDistance))
-    {
-        // 페이드 영역: 부드러운 전환
-        float fadeRatio = (distance - (g_sightRange - g_fadeDistance)) / g_fadeDistance;
-        
-        // 부드러운 곡선 적용
-        fadeRatio = smoothstep(0.0f, 1.0f, fadeRatio);
-        fadeRatio = pow(fadeRatio, g_smoothness);
-        
-        fogFactor = lerp(1.0f, max(g_darkness, 0.4f), fadeRatio);
-    }
-    
-    return fogFactor;
-}
 
 ////////////////
 // Pixel Shaders
@@ -120,6 +90,25 @@ float4 PS_NavMesh_Wireframe(MeshOutput input) : SV_TARGET
     return float4(0.0f, 0.8f, 0.0f, 1.0f); // 불투명 녹색
 }
 
+// G-Buffer 출력용 픽셀 셰이더
+GBufferOutput PS_GBuffer(MeshOutput input)
+{
+    GBufferOutput output;
+    
+    // 디퓨즈 텍스처 샘플링
+    float4 albedo = DiffuseMap.Sample(LinearSampler, input.uv);
+    
+    if (albedo.a < 0.01f)
+        discard;
+    
+    // G-Buffer 데이터 출력
+    output.albedo = albedo;
+    output.normal = float4(normalize(input.normal), 1.0f);
+    output.position = float4(input.worldPosition, input.position.z);
+    output.material = float4(1, 1, 1, 1); // 기본 머티리얼 속성
+    
+    return output;
+}
 
 ////////////////
 // Techniques //
@@ -148,4 +137,11 @@ technique11 shadowTech
     PASS_SHADOW_V(P0, VS_Mesh)
     PASS_SHADOW_V(P1, VS_Model)
     PASS_SHADOW_V(P2, VS_Animation)
+}
+
+technique11 GBufferTech
+{
+    PASS_VP(P0, VS_Mesh, PS_GBuffer)
+    PASS_VP(P1, VS_Model, PS_GBuffer)
+    PASS_VP(P2, VS_Animation, PS_GBuffer)
 }

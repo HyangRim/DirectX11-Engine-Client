@@ -89,7 +89,7 @@ void ModelRenderer::RenderInstancingDeferred(shared_ptr<class InstancingBuffer>&
 		return;
 
 	// G-Buffer용 셰이더 사용
-	auto geometryShader = m_material->GetGeometryShader();
+	auto geometryShader = m_material->GetShader();
 	if (geometryShader == nullptr)
 		return;
 

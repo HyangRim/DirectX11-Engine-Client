@@ -25,7 +25,8 @@ public:
 	void DrawIndexed(UINT _technique, UINT _pass, UINT _indexCount, UINT _startIndexLocation = 0, INT _baseVertexLocation = 0);
 	void DrawInstanced(UINT _technique, UINT _pass, UINT _vertexCountPerInstance, UINT _instanceCount, UINT _startVertexLocation = 0, UINT _startInstanceLocation = 0);
 	void DrawIndexedInstanced(UINT _technique, UINT _pass, UINT _indexCountPerInstance, UINT _instanceCount, UINT _startIndexLocation = 0, INT _baseVertexLocation = 0, UINT _startInstanceLocation = 0);
-
+	void DrawIndexedInstancedCurTech(UINT _pass, UINT _indexCountPerInstance, UINT _instanceCount,
+		UINT _startIndexLocation = 0, INT _baseVertexLocation = 0, UINT _startInstanceLocation = 0);
 	void BeginDraw(UINT _technique, UINT _pass);
 	void EndDraw(UINT _technique, UINT _pass);
 
@@ -47,6 +48,13 @@ public:
 	ComPtr<ID3DX11EffectRasterizerVariable> GetRasterizer(string _name);
 	ComPtr<ID3DX11EffectSamplerVariable> GetSampler(string _name);
 
+	void SetTechnique(const wstring& _name);
+	void SetTechnique(int _index);
+
+	Technique* GetCurrentTechnique();
+	Technique* GetTechnique(const wstring& _name);
+	Technique* GetTechnique(int _idx);
+
 private:
 	void CreateEffect();
 	ComPtr<ID3D11InputLayout> CreateInputLayout(ComPtr<ID3DBlob> _fxBlob, D3DX11_EFFECT_SHADER_DESC* _effectVsDesc, vector<D3D11_SIGNATURE_PARAMETER_DESC>& _params);
@@ -57,8 +65,9 @@ private:
 	D3DX11_EFFECT_DESC m_effectDesc;
 	shared_ptr<StateBlock> m_initialStateBlock;
 	vector<Technique> m_techniques;
+	int m_currentTechniqueIndex = 0;
 
-
+	unordered_map<wstring, int> m_techniqueMap;
 
 public:
 	//셰이더에서 이걸 직접 관리함. 
@@ -77,7 +86,7 @@ public:
 	void PushMultiLightData(const MultiLightDesc& _desc);
 
 
-	vector<Technique>& GetTechniqes() { return m_techniques; }
+	vector<Technique>& GetTechniques() { return m_techniques; }
 	bool IsFOWShader() const;
 
 private:
