@@ -9,6 +9,7 @@
 
 #include "AnimationStateMachine.h"
 
+
 #include "BiancaRunState.h"
 #include "BiancaQSkillState.h"
 #include "BiancaWaitState.h"
@@ -28,7 +29,7 @@
 void LumiaIsland::Init()
 {
 	m_defaultshader = make_shared<Shader>(L"FOW.fx");
-	m_testShader = make_shared<Shader>(L"23. RenderDemo.fx");
+	//m_testShader = make_shared<Shader>(L"23. RenderDemo.fx");
 	//CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\snowcube1024.dds", L"Sky.fx"));
 	
 	CreateMainCamera();

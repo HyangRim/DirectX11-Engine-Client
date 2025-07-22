@@ -23,7 +23,7 @@ struct PathNode {
     PathNode() : triangleIndex(-1), gCost(0), hCost(0), fCost(0), parent(-1) {}
 
     bool operator<(const PathNode& other) const {
-        return fCost > other.fCost; // priority_queue를 위한 비교연산자
+        return fCost > other.fCost;
     }
 };
 
@@ -38,10 +38,10 @@ public:
     virtual void Start() override;
     virtual void Update() override;
 
-    // 핵심 기능
+    // 핵심 기능 - 성능 최적화된 참조 버전
     void LoadNavMeshData();
     Vec3 GetNearestPointOnNavMesh(const Vec3& worldPos);
-    vector<Vec3> FindPath(const Vec3& start, const Vec3& end);
+    void FindPath(const Vec3& start, const Vec3& end, vector<Vec3>& outPath); // 참조로 변경
     bool IsOnNavMesh(const Vec3& worldPos, float tolerance = 1.0f);
     bool RaycastNavMesh(const Ray& ray, Vec3& hitPoint);
 
@@ -57,13 +57,13 @@ private:
     void BuildTriangleConnections();
     bool AreTrianglesAdjacent(const NavMeshTriangle& tri1, const NavMeshTriangle& tri2);
 
-    // A* 경로찾기
-    vector<int> FindTrianglePath(int startTriangle, int endTriangle);
-    vector<int> ReconstructPath(const vector<PathNode>& allNodes, int endTriangle);
+    // A* 경로찾기 - 성능 최적화된 참조 버전
+    bool FindTrianglePath(int startTriangle, int endTriangle, vector<int>& outPath); // 참조로 변경
+    void ReconstructPath(const vector<PathNode>& allNodes, int endTriangle, vector<int>& outPath); // 참조로 변경
 
-    // 경로 변환 및 최적화
-    vector<Vec3> ConvertTrianglePathToWorldPath(const vector<int>& trianglePath, const Vec3& start, const Vec3& end);
-    vector<Vec3> SmoothPath(const vector<Vec3>& originalPath);
+    // 경로 변환 및 최적화 - 성능 최적화된 참조 버전
+    void ConvertTrianglePathToWorldPath(const vector<int>& trianglePath, const Vec3& start, const Vec3& end, vector<Vec3>& outPath); // 참조로 변경
+    void SmoothPath(const vector<Vec3>& originalPath, vector<Vec3>& outPath); // 참조로 변경
 
     // 유틸리티 함수
     int FindTriangleContaining(const Vec3& point);

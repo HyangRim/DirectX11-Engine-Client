@@ -174,4 +174,5 @@ technique11 GBufferTech
     PASS_VP(P0, VS_Mesh, PS_GBuffer)
     PASS_VP(P1, VS_Model, PS_GBuffer)
     PASS_VP(P2, VS_Animation, PS_GBuffer)
+    PASS_RS_VP(P3, FillModeWireFrame, VS_Mesh, PS_FOW_DEBUG)
 }

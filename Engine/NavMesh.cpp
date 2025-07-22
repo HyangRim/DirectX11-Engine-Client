@@ -141,9 +141,9 @@ bool NavMesh::IsOnNavMesh(const Vec3& worldPos, float tolerance)
     return GetDistance(worldPos, nearestPoint) <= tolerance;
 }
 
-vector<Vec3> NavMesh::FindPath(const Vec3& start, const Vec3& end)
+void NavMesh::FindPath(const Vec3& start, const Vec3& end, vector<Vec3>& outPath)
 {
-    vector<Vec3> path;
+    outPath.clear(); // 기존 내용 제거
 
     int startTriangle = FindTriangleContaining(start);
     int endTriangle = FindTriangleContaining(end);
@@ -151,38 +151,44 @@ vector<Vec3> NavMesh::FindPath(const Vec3& start, const Vec3& end)
     // NavMesh 위에 없는 점들을 가장 가까운 점으로 보정
     if (startTriangle == -1 || endTriangle == -1)
     {
-        path.push_back(GetNearestPointOnNavMesh(start));
-        path.push_back(GetNearestPointOnNavMesh(end));
-        return path;
+        outPath.reserve(2); // 미리 메모리 할당
+        outPath.push_back(GetNearestPointOnNavMesh(start));
+        outPath.push_back(GetNearestPointOnNavMesh(end));
+        return;
     }
 
     // 같은 삼각형에 있으면 직선 경로
     if (startTriangle == endTriangle)
     {
-        path.push_back(start);
-        path.push_back(end);
-        return path;
+        outPath.reserve(2);
+        outPath.push_back(start);
+        outPath.push_back(end);
+        return;
     }
 
     // A* 알고리즘으로 삼각형 경로 찾기
-    vector<int> trianglePath = FindTrianglePath(startTriangle, endTriangle);
-
-    if (trianglePath.empty())
+    vector<int> trianglePath;
+    if (!FindTrianglePath(startTriangle, endTriangle, trianglePath))
     {
-        path.push_back(GetNearestPointOnNavMesh(start));
-        path.push_back(GetNearestPointOnNavMesh(end));
-        return path;
+        outPath.reserve(2);
+        outPath.push_back(GetNearestPointOnNavMesh(start));
+        outPath.push_back(GetNearestPointOnNavMesh(end));
+        return;
     }
 
-    // 삼각형 경로를 월드 좌표 경로로 변환 후 스무딩
-    vector<Vec3> rawPath = ConvertTrianglePathToWorldPath(trianglePath, start, end);
-    path = SmoothPath(rawPath);
+    // 삼각형 경로를 월드 좌표 경로로 변환
+    vector<Vec3> rawPath;
+    ConvertTrianglePathToWorldPath(trianglePath, start, end, rawPath);
 
-    return path;
+    // 스무딩 적용
+    SmoothPath(rawPath, outPath);
 }
 
-vector<int> NavMesh::FindTrianglePath(int startTriangle, int endTriangle)
+
+bool NavMesh::FindTrianglePath(int startTriangle, int endTriangle, vector<int>& outPath)
 {
+    outPath.clear();
+
     priority_queue<PathNode> openList;
     vector<bool> closedList(m_triangles.size(), false);
     vector<PathNode> allNodes(m_triangles.size());
@@ -209,7 +215,8 @@ vector<int> NavMesh::FindTrianglePath(int startTriangle, int endTriangle)
 
         if (currentNode.triangleIndex == endTriangle)
         {
-            return ReconstructPath(allNodes, endTriangle);
+            ReconstructPath(allNodes, endTriangle, outPath);
+            return true; // 성공
         }
 
         // 인접 삼각형들 검사
@@ -236,75 +243,101 @@ vector<int> NavMesh::FindTrianglePath(int startTriangle, int endTriangle)
         }
     }
 
-    return vector<int>(); // 경로를 찾을 수 없음
+    return false; // 경로를 찾을 수 없음
 }
 
-vector<int> NavMesh::ReconstructPath(const vector<PathNode>& allNodes, int endTriangle)
+void NavMesh::ReconstructPath(const vector<PathNode>& allNodes, int endTriangle, vector<int>& outPath)
 {
-    vector<int> path;
+    outPath.clear();
+
+    // 역방향으로 경로 구성
+    vector<int> reversePath;
     int current = endTriangle;
 
     while (current != -1)
     {
-        path.push_back(current);
+        reversePath.push_back(current);
         current = allNodes[current].parent;
     }
 
-    reverse(path.begin(), path.end());
-    return path;
+    // 정방향으로 복사 (메모리 미리 할당)
+    outPath.reserve(reversePath.size());
+    for (auto it = reversePath.rbegin(); it != reversePath.rend(); ++it)
+    {
+        outPath.push_back(*it);
+    }
 }
 
-vector<Vec3> NavMesh::ConvertTrianglePathToWorldPath(const vector<int>& trianglePath, const Vec3& start, const Vec3& end)
+void NavMesh::ConvertTrianglePathToWorldPath(const vector<int>& trianglePath, const Vec3& start, const Vec3& end, vector<Vec3>& outPath)
 {
-    vector<Vec3> worldPath;
-    if (trianglePath.empty()) return worldPath;
+    outPath.clear();
+    if (trianglePath.empty()) return;
 
-    worldPath.push_back(start);
+    // 예상 크기로 메모리 미리 할당
+    outPath.reserve(trianglePath.size() + 1);
+
+    outPath.push_back(start);
 
     for (size_t i = 1; i < trianglePath.size() - 1; i++)
     {
-        worldPath.push_back(m_triangles[trianglePath[i]].center);
+        outPath.push_back(m_triangles[trianglePath[i]].center);
     }
 
-    worldPath.push_back(end);
-    return worldPath;
+    outPath.push_back(end);
 }
 
-vector<Vec3> NavMesh::SmoothPath(const vector<Vec3>& originalPath)
+void NavMesh::SmoothPath(const vector<Vec3>& originalPath, vector<Vec3>& outPath)
 {
-    if (originalPath.size() <= 2) return originalPath;
-
-    vector<Vec3> smoothedPath;
-    smoothedPath.push_back(originalPath[0]);
-
-    size_t currentIndex = 0;
-    while (currentIndex < originalPath.size() - 1)
+    outPath.clear();
+    if (originalPath.size() <= 2)
     {
-        size_t farthestIndex = currentIndex + 1;
-
-        // 직선으로 갈 수 있는 가장 먼 지점 찾기
-        for (size_t i = currentIndex + 2; i < originalPath.size(); i++)
-        {
-            if (HasLineOfSight(smoothedPath.back(), originalPath[i]))
-            {
-                farthestIndex = i;
-            }
-            else
-            {
-                break;
-            }
-        }
-
-        if (farthestIndex < originalPath.size() - 1)
-        {
-            smoothedPath.push_back(originalPath[farthestIndex]);
-        }
-
-        currentIndex = farthestIndex;
+        outPath = originalPath; // 작은 경우에만 복사
+        return;
     }
 
-    smoothedPath.push_back(originalPath.back());
-    return smoothedPath;
+    // 예상 크기로 메모리 미리 할당 (원본보다 작을 것으로 예상)
+    outPath.reserve(originalPath.size());
+    outPath.push_back(originalPath[0]);
+
+    const float minDist = 3.0f, maxDist = 10.0f;
+    size_t cur = 0;
+
+    while (cur + 1 < originalPath.size())
+    {
+        Vec3 curPos = outPath.back();
+        vector<size_t> candidates;
+        candidates.reserve(10); // 일반적인 후보 개수 예상
+
+        // 시야 확보된 모든 지점 수집
+        for (size_t i = cur + 1; i < originalPath.size(); ++i)
+        {
+            if (HasLineOfSight(curPos, originalPath[i]))
+            {
+                float d = GetDistance(curPos, originalPath[i]);
+                if (d >= minDist && d <= maxDist)
+                    candidates.push_back(i);
+            }
+            else break;
+        }
+
+        // 후보 중 가장 진행도가 높은(가장 뒤) 지점 선택
+        size_t next = (candidates.empty() ? cur + 1 : candidates.back());
+
+        // NavMesh 외 추돌 검사
+        if (!IsLineOnNavMesh(curPos, originalPath[next]))
+        {
+            Vec3 safe = GetNearestPointOnNavMesh(originalPath[next]);
+            outPath.push_back(safe);
+        }
+        else
+        {
+            outPath.push_back(originalPath[next]);
+        }
+        cur = next;
+    }
+
+    // 마지막 목적지 추가
+    outPath.push_back(originalPath.back());
 }
 
 // Private 유틸리티 함수들

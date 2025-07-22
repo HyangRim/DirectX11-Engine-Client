@@ -75,7 +75,10 @@ void ModelRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer
 		//쉐이더한테 여기서 각 오브젝트별 WORLDPOSITION을 넣어주는 중. 
 		_buffer->PushData();
 
-		m_shader->DrawIndexedInstanced(GET_TECH(_isShadowTech), m_pass, mesh->m_indexBuffer->GetCount(), _buffer->GetCount());
+		//////////////////////////////////////////////////////////////////////////////////
+		//m_shader->DrawIndexedInstanced(GET_TECH(_isShadowTech), m_pass, mesh->m_indexBuffer->GetCount(), _buffer->GetCount());
+		m_shader->DrawIndexedInstanced(0, m_pass, mesh->m_indexBuffer->GetCount(), _buffer->GetCount());
+		//////////////////////////////////////////////////////////////////////////////////
 	}
 }
 
