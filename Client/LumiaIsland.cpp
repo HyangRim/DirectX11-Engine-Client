@@ -8,8 +8,8 @@
 #include "CameraScript.h"
 
 #include "AnimationStateMachine.h"
-#include "BiancaRunState.h"
 
+#include "BiancaRunState.h"
 #include "BiancaQSkillState.h"
 #include "BiancaWaitState.h"
 #include "BiancaESkillState.h"
@@ -56,7 +56,8 @@ void LumiaIsland::Init()
 	//CreateCemeteryBase();
 	//CreateCemeteryInterior();
 	//CreateCemeteryEnvironment();
-	CreateCharacter();
+	//CreateCharacterNicky();
+	CreateCharacterBianca();
 
 	// NavMesh 생성 추가
 	CreateNavMesh();
@@ -830,7 +831,7 @@ void LumiaIsland::CreateNavMesh()
 	}
 }
 
-void LumiaIsland::CreateCharacter()
+void LumiaIsland::CreateCharacterNicky()
 {
 	// Animation
 	shared_ptr<Model> m1 = make_shared<Model>();
@@ -948,3 +949,75 @@ void LumiaIsland::CreateCharacter()
 	}
 }
 
+
+void LumiaIsland::CreateCharacterBianca()
+{
+	//Animation
+	shared_ptr<Model> m1 = make_shared<Model>();
+
+	m1->ReadModel(L"Bianca2/Bianca");
+	m1->ReadMaterial(L"Bianca2/Bianca");
+	m1->ReadAnimation(L"Wait", L"Bianca2/Bianca_wait");
+	m1->ReadAnimation(L"Run", L"Bianca2/Bianca_run");
+
+	m1->ReadAnimation(L"Skill_1", L"Bianca2/Bianca_skill1");
+
+	m1->ReadAnimation(L"Skill_3_1", L"Bianca2/Bianca_skill3-1");
+	m1->ReadAnimation(L"Skill_3_2", L"Bianca2/Bianca_skill3-2");
+	m1->ReadAnimation(L"Skill_3_3", L"Bianca2/Bianca_skill3-3");
+
+
+	m1->ReadAnimation(L"Skill_4_1", L"Bianca2/Bianca_skill4");
+	m1->ReadAnimation(L"Skill_4_2", L"Bianca2/Bianca_skill4-2");
+
+
+
+	for (int32 i = 0; i < 1; i++)
+	{
+
+		bianca = make_shared<GameObject>();
+		bianca->GetTransform()->SetPosition(Vec3(15, 20, 5));
+		bianca->GetTransform()->SetScale(Vec3(1.f));
+
+		bianca->AddComponent(make_shared<ModelAnimator>(m_defaultshader));
+		{
+			bianca->GetModelAnimator()->SetModel(m1);
+			bianca->GetModelAnimator()->SetPass(2);
+		}
+		bianca->AddComponent(make_shared<SphereCollider>());
+		bianca->AddComponent(make_shared<Rigidbody>());
+		bianca->AddComponent(make_shared<NavMeshAgent>());
+		bianca->GetCollider()->SetOffset(Vec3(0.f, 1.f, 0.f));
+		bianca->GetRigidbody()->SetStatic(true);
+		
+		
+		auto animator = bianca->GetModelAnimator();
+		// FSM 추가
+		auto stateMachine = make_shared<AnimationStateMachine>();
+		bianca->AddComponent(stateMachine);
+
+		bianca->GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait, make_shared<BiancaWaitState>());
+		bianca->GetAnimationStateMachine()->RegisterState(AnimationStateType::Run, make_shared<BiancaRunState>());
+		bianca->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1, make_shared<BiancaQSkillState>());
+		bianca->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_3, make_shared<BiancaESkillState>());
+		bianca->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4, make_shared<BiancaRSkillState>());
+
+		// Q 스킬 시퀀스 
+		vector<wstring> skill1Anims = { L"Skill_1" };
+		animator->CreateSequence(L"Skill_1_Sequence", skill1Anims, false);
+
+		// R 스킬 시퀀스 (Skill_04_Ready -> Skill_04_Start -> Skill_04_Attack)
+		vector<wstring> skill4Anims = { L"Skill_4_1", L"Skill_4_2" };
+		animator->CreateSequence(L"Skill_4_Sequence", skill4Anims, false);
+
+		CURSCENE->Add(bianca);
+
+		//camera->GetTransform()->SetParent(obj->GetTransform());
+		//auto BiancaCam = make_shared<BiancaCamera>();
+		//camera->AddComponent(BiancaCam);
+		//BiancaCam->SetTarget(obj);
+		//BiancaCam->SetOffset(Vec3(0.f, 12.f, -12.5f));
+		//camera->GetTransform()->SetRotation(Vec3{ 45.f, 0.f, 0.f });
+
+	} 
+}

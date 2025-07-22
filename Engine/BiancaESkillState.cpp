@@ -4,6 +4,8 @@
 #include "GameObject.h"
 #include "Model.h"
 #include "ModelAnimation.h"
+#include "NavMeshAgent.h"
+#include "Component.h"
 
 BiancaESkillState::BiancaESkillState()
     : AnimationState(AnimationStateType::Skill_3)
@@ -33,16 +35,23 @@ void BiancaESkillState::Enter(shared_ptr<ModelAnimator> animator)
 
     cout << "비앙카 E 스킬 상태 진입" << endl;
 
-    // 현재 이동 상태 확인하여 초기 상태 설정
-    bool currentlyMoving = INPUT->GetButton(KEY_TYPE::UP) ||
-        INPUT->GetButton(KEY_TYPE::DOWN) ||
-        INPUT->GetButton(KEY_TYPE::LEFT) ||
-        INPUT->GetButton(KEY_TYPE::RIGHT);
-
-    m_isMoving = currentlyMoving;
+    // NavMeshAgent 상태를 기반으로 초기 이동 상태 설정
+    auto gameObject = GetGameObject();
+    if (gameObject)
+    {
+        auto navMeshAgent = gameObject->GetFixedComponent<NavMeshAgent>(ComponentType::NavMeshAgent);
+        if (navMeshAgent)
+        {
+            m_isMoving = navMeshAgent->IsMoving();
+        }
+        else
+        {
+            m_isMoving = false;
+        }
+    }
 
     // 초기 차징 상태 설정
-    if (currentlyMoving)
+    if (m_isMoving)
     {
         TransitionToSkillState(BiancaESkillChargeState::ChargingRun);
     }
@@ -115,11 +124,15 @@ void BiancaESkillState::HandleSkillInput()
 
 void BiancaESkillState::HandleMovementInput()
 {
-    // 현재 이동 상태 확인
-    bool currentlyMoving = INPUT->GetButton(KEY_TYPE::UP) ||
-        INPUT->GetButton(KEY_TYPE::DOWN) ||
-        INPUT->GetButton(KEY_TYPE::LEFT) ||
-        INPUT->GetButton(KEY_TYPE::RIGHT);
+    // NavMeshAgent의 이동 상태 확인
+    auto gameObject = GetGameObject();
+    if (!gameObject) return;
+
+    auto navMeshAgent = gameObject->GetFixedComponent<NavMeshAgent>(ComponentType::NavMeshAgent);
+    if (!navMeshAgent) return;
+
+    // NavMeshAgent의 이동 상태로 현재 이동 여부 판단
+    bool currentlyMoving = navMeshAgent->IsMoving();
 
     // 이동 상태 변화 처리
     if (currentlyMoving != m_isMoving)
@@ -186,6 +199,15 @@ void BiancaESkillState::UpdateEnding()
         m_isComplete = true;
         cout << "비앙카 E 스킬 완료!" << endl;
     }
+}
+
+shared_ptr<GameObject> BiancaESkillState::GetGameObject() const
+{
+    if (m_cachedAnimator)
+    {
+        return m_cachedAnimator->GetGameObject();
+    }
+    return nullptr;
 }
 
 void BiancaESkillState::ReleaseSkill()

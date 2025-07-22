@@ -43,6 +43,9 @@ private:
     void ReleaseSkill();
 
 private:
+    shared_ptr<GameObject> GetGameObject() const;
+
+private:
     QSkillChargeState m_chargeState = QSkillChargeState::Default;
     float m_chargeTime = 0.0f;
     float m_skillTime = 0.0f;

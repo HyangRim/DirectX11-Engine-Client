@@ -20,7 +20,8 @@ private:
 	void CreateCemeteryEnvironment();
 	// NavMesh 관련 추가
 	void CreateNavMesh();
-	void CreateCharacter();
+	void CreateCharacterNicky();
+	void CreateCharacterBianca();
 
 private:
 	shared_ptr<GameObject> m_CemeteryParent;
@@ -29,6 +30,7 @@ private:
 	// 테스트용
 	shared_ptr<GameObject> m_navMesh;
 	shared_ptr<GameObject> nicky;
+	shared_ptr<GameObject> bianca;
 };
 
 

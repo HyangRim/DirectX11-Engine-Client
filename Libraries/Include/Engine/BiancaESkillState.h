@@ -36,6 +36,9 @@ private:
     void TransitionToSkillState(BiancaESkillChargeState newState);
 
 private:
+    shared_ptr<GameObject> GetGameObject() const;
+
+private:
     BiancaESkillChargeState m_skillState = BiancaESkillChargeState::ChargingWait;
     float m_chargeTime = 0.0f;
     float m_skillTime = 0.0f;

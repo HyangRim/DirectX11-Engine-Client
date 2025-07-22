@@ -4,6 +4,8 @@
 #include "GameObject.h"
 #include "Model.h"
 #include "ModelAnimation.h"
+#include "NavMeshAgent.h"
+#include "Component.h"
 
 NickyQSkillState::NickyQSkillState()
     : AnimationState(AnimationStateType::Skill_1)
@@ -34,14 +36,8 @@ void NickyQSkillState::Enter(shared_ptr<ModelAnimator> animator)
 
     cout << "Q 스킬 차징 상태 진입" << endl;
 
-    // 현재 이동 상태 확인하여 초기 상태 설정
-    bool currentlyMoving = INPUT->GetButton(KEY_TYPE::UP) ||
-        INPUT->GetButton(KEY_TYPE::DOWN) ||
-        INPUT->GetButton(KEY_TYPE::LEFT) ||
-        INPUT->GetButton(KEY_TYPE::RIGHT);
-
-    // 즉시 초기 상태 설정
-    SetInitialMovementState(currentlyMoving);
+    // NavMeshAgent 상태를 기반으로 초기 상태 설정
+    SetInitialMovementState(false); // wasMoving 매개변수는 이제 사용하지 않음
 }
 
 void NickyQSkillState::Update(shared_ptr<ModelAnimator> animator)
@@ -102,11 +98,16 @@ void NickyQSkillState::HandleSkillInput()
 
 void NickyQSkillState::HandleMovementInput()
 {
-    // 현재 이동 상태 확인
-    bool currentlyMoving = INPUT->GetButton(KEY_TYPE::UP) ||
-        INPUT->GetButton(KEY_TYPE::DOWN) ||
-        INPUT->GetButton(KEY_TYPE::LEFT) ||
-        INPUT->GetButton(KEY_TYPE::RIGHT);
+
+    // NavMeshAgent의 이동 상태 확인
+    auto gameObject = GetGameObject();
+    if (!gameObject) return;
+
+    auto navMeshAgent = gameObject->GetFixedComponent<NavMeshAgent>(ComponentType::NavMeshAgent);
+    if (!navMeshAgent) return;
+
+    // NavMeshAgent의 이동 상태로 현재 이동 여부 판단
+    bool currentlyMoving = navMeshAgent->IsMoving();
 
     // 이동 상태 변화 처리
     if (currentlyMoving != m_isMoving)
@@ -197,12 +198,24 @@ void NickyQSkillState::UpdateReleasing()
 
 void NickyQSkillState::SetInitialMovementState(bool wasMoving)
 {
-    m_wasMoving = wasMoving;
-    m_isMoving = wasMoving;
+    // NavMeshAgent의 현재 상태로 초기 이동 상태 설정
+    auto gameObject = GetGameObject();
+    if (gameObject)
+    {
+        auto navMeshAgent = gameObject->GetFixedComponent<NavMeshAgent>(ComponentType::NavMeshAgent);
+        if (navMeshAgent)
+        {
+            m_isMoving = navMeshAgent->IsMoving();
+        }
+        else
+        {
+            m_isMoving = false; // NavMeshAgent가 없으면 정지 상태로 간주
+        }
+    }
 
-    cout << "초기 이동 상태 설정: " << (wasMoving ? "이동" : "정지") << endl;
+    cout << "초기 이동 상태 설정: " << (m_isMoving ? "이동" : "정지") << endl;
 
-    if (wasMoving)
+    if (m_isMoving)
     {
         // 달리는 상태에서 시작 - 바로 루프로
         TransitionToChargeState(QSkillChargeState::ChargingRunLoop);
@@ -236,6 +249,15 @@ void NickyQSkillState::ReleaseSkill()
         // 시퀀스 재생
         m_cachedAnimator->PlaySequence(L"Dynamic_Rush_Sequence");
     }
+}
+
+shared_ptr<GameObject> NickyQSkillState::GetGameObject() const
+{
+    if (m_cachedAnimator)
+    {
+        return m_cachedAnimator->GetGameObject();
+    }
+    return nullptr;
 }
 
 void NickyQSkillState::TransitionToChargeState(QSkillChargeState newState)
