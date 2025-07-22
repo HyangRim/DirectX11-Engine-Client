@@ -185,6 +185,7 @@ ComPtr<ID3D11InputLayout> Shader::CreateInputLayout(ComPtr<ID3DBlob> _fxBlob, D3
 	const void* code = _effectVsDesc->pBytecode;
 	UINT codeSize = _effectVsDesc->BytecodeLength;
 
+
 	if (inputLayoutDesc.size() > 0)
 	{
 		ComPtr<ID3D11InputLayout> inputLayout;

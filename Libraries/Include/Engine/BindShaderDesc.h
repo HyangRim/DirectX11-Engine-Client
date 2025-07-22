@@ -127,3 +127,10 @@ struct MultiLightDesc {
 	int activeLightCount;
 	float padding[3];
 };
+
+// 풀스크린 쿼드 버텍스 데이터
+struct QuadVertex
+{
+	Vec3 position;
+	Vec2 uv;
+};

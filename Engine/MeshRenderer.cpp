@@ -106,8 +106,8 @@ void MeshRenderer::RenderInstancingDeferred(shared_ptr<class InstancingBuffer>& 
 	m_mesh->GetVertexBuffer()->PushData();
 	m_mesh->GetIndexBuffer()->PushData();
 	_buffer->PushData();
-
-	geometryShader->DrawIndexedInstanced(0, m_pass,
+	//geometryShader->SetTechnique(L"GBufferTech");
+	geometryShader->DrawIndexedInstancedCurTech(m_pass,
 		m_mesh->GetIndexBuffer()->GetCount(), _buffer->GetCount());
 }
 

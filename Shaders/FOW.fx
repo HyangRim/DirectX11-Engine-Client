@@ -1,3 +1,6 @@
+// 셰이더 파일에 디버그 심볼 추가
+#pragma enable_d3d11_debug_symbols
+
 #include "00. Global.fx"
 #include "00. Light.fx"
 #include "00. Render.fx"
@@ -103,13 +106,33 @@ GBufferOutput PS_GBuffer(MeshOutput input)
     
     // G-Buffer 데이터 출력
     output.albedo = albedo;
+    //output.albedo = float4(0, 0, 0, 1);
+    //return output;
     output.normal = float4(normalize(input.normal), 1.0f);
     output.position = float4(input.worldPosition, input.position.z);
     output.material = float4(1, 1, 1, 1); // 기본 머티리얼 속성
     
+    
+    // 임시 디버깅: 단계적으로 테스트
+    //output.albedo = float4(1, 0, 0, 1); // 빨간색으로 고정
+    //output.normal = float4(0, 1, 0, 1); // 초록색으로 고정  
+    //output.position = float4(0, 0, 1, 1); // 파란색으로 고정
+    //output.material = float4(1, 1, 0, 1); // 노란색으로 고정
     return output;
 }
 
+
+float4 PS_DebugSRV(VertexQuadOutput IN) : SV_Target
+{
+    // t0만 샘플링
+    float4 a = GBufferAlbedo.Sample(LinearSampler, IN.uv);
+    
+    if (a.r == 0 && a.g == 0 && a.b == 0 && a.a == 0)
+    {
+        return float4(1, 0, 1, 1);
+    }
+    return a;
+}
 ////////////////
 // Techniques //
 ////////////////
@@ -118,17 +141,21 @@ GBufferOutput PS_GBuffer(MeshOutput input)
 technique11 T0
 {
     // 기본 FOW 렌더링
-    PASS_VP(P0, VS_Mesh, PS_FOW)
-    PASS_VP(P1, VS_Model, PS_FOW)
-    PASS_VP(P2, VS_Animation, PS_FOW)
+    //PASS_VP(P0, VS_Mesh, PS_FOW)
+    //PASS_VP(P1, VS_Model, PS_FOW)
+    //PASS_VP(P2, VS_Animation, PS_FOW)
+
+    PASS_VP(P0, VS_Mesh, PS_GBuffer)
+    PASS_VP(P1, VS_Model, PS_GBuffer)
+    PASS_VP(P2, VS_Animation, PS_GBuffer)
     PASS_RS_VP(P3, FillModeWireFrame, VS_Mesh, PS_FOW_DEBUG)
-    // 성능 최적화용 간단한 FOW
-    PASS_VP(P4, VS_Model, PS_FOW_Simple)
-    PASS_VP(P5, VS_Animation, PS_FOW_Simple)
+
 
 // NavMesh 디버그 렌더링 추가
     PASS_BS_VP(P6, AlphaBlend, VS_Mesh, PS_NavMesh_Debug)
     PASS_RS_VP(P7, FillModeWireFrame, VS_Mesh, PS_NavMesh_Wireframe)
+
+    PASS_VP(P8, VS_Quad, PS_DebugGBuffer)
 }
 
 // 그림자 테크닉 (기존과 동일)
@@ -137,6 +164,12 @@ technique11 shadowTech
     PASS_SHADOW_V(P0, VS_Mesh)
     PASS_SHADOW_V(P1, VS_Model)
     PASS_SHADOW_V(P2, VS_Animation)
+}
+
+
+technique11 DeferredLightingTech
+{
+    PASS_VP(P0, VS_Quad, PS_DeferredLightingWithFOW)
 }
 
 technique11 GBufferTech

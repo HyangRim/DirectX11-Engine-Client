@@ -11,7 +11,7 @@ Texture2D GBufferPosition : register(t2);
 Texture2D GBufferMaterial : register(t3);
 
 // FOW 상수 버퍼
-cbuffer FogOfWarBuffer : register(b5)
+cbuffer FogOfWarData : register(b5)
 {
     float3 g_playerWorldPos;
     float g_sightRange;
@@ -159,4 +159,28 @@ float4 PS_DeferredLightingWithFOW(VertexQuadOutput input) : SV_Target
     return float4(finalColor, baseColor.a);
 }
 
+
+// 디퍼드 라이팅 픽셀 디버그
+float4 PS_DeferredDEBUG(VertexQuadOutput input) : SV_Target
+{
+    return float4(1, 0, 0, 1);
+}
+
+float4 PS_DebugGBuffer(VertexQuadOutput IN) : SV_Target
+{
+    float4 a = GBufferAlbedo.Sample(LinearSampler, IN.uv);
+    float4 n = GBufferNormal.Sample(LinearSampler, IN.uv);
+    float4 p = GBufferPosition.Sample(LinearSampler, IN.uv);
+    float4 m = GBufferMaterial.Sample(LinearSampler, IN.uv);
+
+    // 좌측 25% 알베도, 다음 25% 노말, 등 분할
+    if (IN.uv.x < 0.25)
+        return (a.r == 0 ? float4(1, 0, 1, 1) : a);
+    else if (IN.uv.x < 0.5)
+        return (n.r == 0 ? float4(0, 1, 1, 1) : n);
+    else if (IN.uv.x < 0.75)
+        return (p.r == 0 ? float4(1, 1, 0, 1) : p);
+    else
+        return (m.r == 0 ? float4(1, 0.5, 0, 1) : m);
+}
 #endif

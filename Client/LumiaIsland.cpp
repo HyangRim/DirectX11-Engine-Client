@@ -53,13 +53,13 @@ void LumiaIsland::Init()
 		static_pointer_cast<Light>(light->GetFixedComponent(ComponentType::Light))->SetLightDesc(lightDesc);
 		CURSCENE->Add(light);
 	}
-	//CreateCemeteryBase();
+	CreateCemeteryBase();
 	//CreateCemeteryInterior();
 	//CreateCemeteryEnvironment();
 	CreateCharacter();
 
 	// NavMesh 생성 추가
-	CreateNavMesh();
+	//CreateNavMesh();
 }
 
 void LumiaIsland::Update()
@@ -76,7 +76,7 @@ void LumiaIsland::CreateMainCamera()
 	// Camera
 	auto camera = make_shared<GameObject>();
 	//camera->GetTransform()->SetPosition(Vec3(0.f, 15.f, 15.f));
-	camera->GetTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
+	camera->GetTransform()->SetPosition(Vec3{ 0.f, 30.f, -5.f });
 	camera->AddComponent(make_shared<Camera>());
 	camera->AddComponent(make_shared<CameraScript>());
 
