@@ -144,12 +144,10 @@ technique11 T0
     //PASS_VP(P0, VS_Mesh, PS_FOW)
     //PASS_VP(P1, VS_Model, PS_FOW)
     //PASS_VP(P2, VS_Animation, PS_FOW)
-
     PASS_VP(P0, VS_Mesh, PS_GBuffer)
     PASS_VP(P1, VS_Model, PS_GBuffer)
     PASS_VP(P2, VS_Animation, PS_GBuffer)
     PASS_RS_VP(P3, FillModeWireFrame, VS_Mesh, PS_FOW_DEBUG)
-
 
 // NavMesh 디버그 렌더링 추가
     PASS_BS_VP(P6, AlphaBlend, VS_Mesh, PS_NavMesh_Debug)
@@ -165,7 +163,6 @@ technique11 shadowTech
     PASS_SHADOW_V(P1, VS_Model)
     PASS_SHADOW_V(P2, VS_Animation)
 }
-
 
 technique11 DeferredLightingTech
 {

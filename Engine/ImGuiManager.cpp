@@ -4,6 +4,7 @@
 #include "AABBBoxCollider.h"
 #include "SphereCollider.h"
 #include "Camera.h"
+#include "Transform.h"
 
 void ImGuiManager::Init()
 {
@@ -55,8 +56,22 @@ void ImGuiManager::ShowPickedObj()
 		//Transpose.
 		{
 			auto vTranslate = curPickedObj.lock()->GetTransform()->GetLocalPosition();
+
+			// 수정된 코드 - 정규화 추가
 			auto vRotation = curPickedObj.lock()->GetTransform()->GetLocalRotation();
-			vRotation = (vRotation / XM_PI) * 180.f;
+			//vRotation = (vRotation / XM_PI) * 180.f;
+
+			//// 정규화 (-180~180도 범위)
+			//auto normalizeAngle = [](float angle) -> float {
+			//	while (angle > 180.0f) angle -= 360.0f;
+			//	while (angle < -180.0f) angle += 360.0f;
+			//	return angle;
+			//	};
+
+			//vRotation.x = normalizeAngle(vRotation.x);
+			//vRotation.y = normalizeAngle(vRotation.y);
+			//vRotation.z = normalizeAngle(vRotation.z);
+
 			auto vScale = curPickedObj.lock()->GetTransform()->GetLocalScale();
 
 			float vPos[3] = { vTranslate.x, vTranslate.y, vTranslate.z };
@@ -65,6 +80,7 @@ void ImGuiManager::ShowPickedObj()
 
 			ImGui::Text("Transform");
 			ImGui::SameLine();
+			
 			if (ImGui::InputFloat3("Local Position", vPos)) {
 				vTranslate.x = vPos[0];
 				vTranslate.y = vPos[1];
@@ -74,10 +90,12 @@ void ImGuiManager::ShowPickedObj()
 
 			ImGui::Text("Rotation");
 			ImGui::SameLine();
+		
 			if (ImGui::InputFloat3("Local Rotation", vRot)) {
-				vRotation.x = vRot[0] * XM_PI / 180.f;
-				vRotation.y = vRot[1] * XM_PI / 180.f;
-				vRotation.z = vRot[2] * XM_PI / 180.f;
+			
+				vRotation.x = vRot[0] ;
+				vRotation.y = vRot[1] ;
+				vRotation.z = vRot[2] ;
 				curPickedObj.lock()->GetTransform()->SetLocalRotation(vRotation);
 			}
 

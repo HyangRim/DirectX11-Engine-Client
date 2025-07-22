@@ -53,14 +53,14 @@ void LumiaIsland::Init()
 		static_pointer_cast<Light>(light->GetFixedComponent(ComponentType::Light))->SetLightDesc(lightDesc);
 		CURSCENE->Add(light);
 	}
-	CreateCemeteryBase();
+	//CreateCemeteryBase();
 	//CreateCemeteryInterior();
 	//CreateCemeteryEnvironment();
-	//CreateCharacterNicky();
-	CreateCharacterBianca();
+	CreateCharacterNicky();
+	//CreateCharacterBianca();
 
 	// NavMesh 생성 추가
-	//CreateNavMesh();
+	CreateNavMesh();
 }
 
 void LumiaIsland::Update()
@@ -818,7 +818,7 @@ void LumiaIsland::CreateNavMesh()
 		m_navMesh->GetRigidbody()->SetStatic(true);
 		m_navMesh->SetType(OBJECTTYPE::MAP);
 
-		m_navMesh->AddComponent(make_shared<ModelRenderer>(m_testShader));
+		m_navMesh->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 		{
 			m_navMesh->GetModelRenderer()->SetModel(m1);
 			m_navMesh->GetModelRenderer()->SetPass(0);
