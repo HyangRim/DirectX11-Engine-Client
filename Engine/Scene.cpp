@@ -115,16 +115,18 @@ void Scene::RenderGameCamera(Camera* cam)
     GRAPHICS->SetRTVAndDSV();
     GRAPHICS->ClearDepthStencilView(); // 이 줄 추가
 
+    cam->SetStaticData();
+
 
     //if (GetQuadTree() == nullptr) return;
     //if (GetQuadTree()->GetInsertedObject().empty()) return;
     //vector<shared_ptr<GameObject>> objects(GetQuadTree()->GetInsertedObject().begin(), GetQuadTree()->GetInsertedObject().end());
-    //RENDER->Render(objects, false);
+    RENDER->Render(cam->GetForwardObjects(), false);
 
-    cam->Render_Forward(false);
+    /*cam->Render_Forward(false);
     if (m_objectManager->m_sky)
         m_objectManager->m_sky->Render(cam);
-    cam->Render_Backward(false);
+    cam->Render_Backward(false);*/
 }
 
 void Scene::RenderUICamera(Camera* cam)

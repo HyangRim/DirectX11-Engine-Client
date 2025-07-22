@@ -42,7 +42,10 @@ void Renderer::InnerRender(bool _isShadowTech)
         if (geometryShader) {
             m_material->Update(); // 텍스처 바인딩
             geometryShader->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);
-            geometryShader->PushTransformData(TransformDesc{ GetTransform()->GetWorldMatrix() });
+            TransformDesc txDesc;
+            txDesc.W = GetTransform()->GetWorldMatrix();
+            
+            geometryShader->PushTransformData(txDesc);
         }
     }
     else {

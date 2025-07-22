@@ -148,6 +148,7 @@ private:
 	MultiLightDesc m_multiLightDesc;
 	shared_ptr<ConstantBuffer<MultiLightDesc>> m_multiLightBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> m_multiLightEffectBuffer;
+
 };
 
 class ShaderManager

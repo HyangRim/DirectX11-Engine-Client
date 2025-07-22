@@ -22,6 +22,7 @@ public:
 
 	void ClearDepthStencilView();
 	void ClearShadowDepthStencilView();
+	void ClearGBufferView();
 	void SetShadowDepthStencilView();
 	void SetRTVAndDSV();
 
@@ -49,6 +50,10 @@ public:
 	int GetGBUFFER_COUNT() { return GBUFFER_COUNT; }
 	shared_ptr<Texture> GetShadowMap() { return m_shadowMap; }
 
+	ComPtr<ID3D11RenderTargetView>* GetGBuffersRTVs() { return m_gBufferRTVs; }
+	ComPtr<ID3D11DepthStencilView> GetDepthStencilView() { return m_depthStencilView; }
+	ComPtr<ID3D11RenderTargetView> GetRenderTargetView() { return m_renderTargetView; }
+	ComPtr<IDXGISwapChain> GetSwapChain() { return m_swapChain; }
 
 	// 풀스크린 쿼드 접근 함수들 추가
 	ComPtr<ID3D11Buffer> GetFullScreenQuadVB() { return m_fullScreenQuadVB; }
@@ -86,7 +91,8 @@ public:
 public:
 	RenderPass GetCurrentPass() const { return m_currentPass; }
 	bool IsCurrentPassGeometry() const { return m_currentPass == RenderPass::GEOMETRY; }
-private:
+
+public:
 	ComPtr<ID3D11Texture2D> m_gBufferTextures[GBUFFER_COUNT];
 	ComPtr<ID3D11RenderTargetView> m_gBufferRTVs[GBUFFER_COUNT];
 	ComPtr<ID3D11ShaderResourceView> m_gBufferSRVs[GBUFFER_COUNT];

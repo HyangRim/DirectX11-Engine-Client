@@ -377,6 +377,25 @@ void ModelAnimator::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer
 
 void ModelAnimator::RenderInstancingDeferred(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech)
 {
+    if (m_model == nullptr)
+        return;
+
+    // 기존 검증 로직 완전 활용
+    if (Super::Render(_isShadowTech) == false)
+        return;
+
+    // 텍스처 생성 (최초 한 번)
+    if (!m_texture)
+        CreateTexture();
+
+    // 변환 맵 설정
+    m_shader->GetSRV("TransformMap")->SetResource(m_srv.Get());
+
+    // 본 데이터 설정
+    SetupBoneData();
+
+    // 메시 렌더링
+    RenderMeshes(_buffer, _isShadowTech);
 }
 
 void ModelAnimator::SetupBoneData()
@@ -397,6 +416,13 @@ void ModelAnimator::SetupBoneData()
 
 void ModelAnimator::RenderMeshes(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech)
 {
+    if (GRAPHICS->IsCurrentPassGeometry()) {
+        //m_shader->SetTechnique(L"GBufferTech");
+    }
+    else {
+        //m_shader->SetTechnique(L"T0");
+    }
+
     const auto& meshes = m_model->GetMeshes();
 
     for (auto& mesh : meshes)
@@ -410,9 +436,16 @@ void ModelAnimator::RenderMeshes(shared_ptr<class InstancingBuffer>& _buffer, bo
         mesh->m_indexBuffer->PushData();
         _buffer->PushData();
 
-        m_shader->DrawIndexedInstanced(GET_TECH(_isShadowTech), m_pass,
-            mesh->m_indexBuffer->GetCount(),
-            _buffer->GetCount());
+        if (GRAPHICS->IsCurrentPassGeometry()) {
+            m_shader->DrawIndexedInstancedCurTech(m_pass,
+                mesh->m_indexBuffer->GetCount(),
+                _buffer->GetCount());
+        }
+        else {
+            m_shader->DrawIndexedInstanced(GET_TECH(_isShadowTech), m_pass,
+                mesh->m_indexBuffer->GetCount(),
+                _buffer->GetCount());
+        }
     }
 }
 

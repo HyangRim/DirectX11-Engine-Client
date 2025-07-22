@@ -17,12 +17,18 @@ class GameObject;
 
 void RenderManager::Init()
 {
-	// 디퍼드 라이팅 셰이더 생성 및 설정
-	auto deferredShader = make_shared<Shader>(L"00. DeferredLighting.fx");
-	SetDeferredLightingShader(deferredShader);
-
+	m_deferredLightingShader = make_shared<Shader>(L"FOW.fx");
+	m_deferredLightingShader->SetTechnique(L"DeferredLightingTech");
 	// 디퍼드 렌더링 활성화
 	SetDeferredRendering(true);
+
+	//m_FogData
+	m_FogData.darkness = 0.f;
+	m_FogData.fadeDistance = 250.f;
+	m_FogData.playerWorldPos = Vec3(0, 0, 0);
+	m_FogData.sightRange = 250.f;
+	m_FogData.smoothness = 0.f;
+	m_FogData.time = 0.f;
 }
 
 void RenderManager::Render(vector<shared_ptr<GameObject>>& _gameObjects, bool _isShadowTech)
@@ -67,13 +73,16 @@ void RenderManager::RenderForward(vector<shared_ptr<GameObject>>& _gameObjects, 
 void RenderManager::RenderDeferred(vector<shared_ptr<GameObject>>& _gameObjects, bool _isShadowTech)
 {
 	ClearData();
+
+	GRAPHICS->ClearDepthStencilView();
+	GRAPHICS->ClearGBufferView();
 	m_isShadowTech = _isShadowTech;
 
 	// 1단계: G-Buffer 패스
 	GRAPHICS->BeginGeometryPass();
 	RenderGeometryPass(_gameObjects);
 
-	// 2단계: 디퍼드 라이팅 패스
+	//2단계: 디퍼드 라이팅 패스
 	GRAPHICS->BeginLightingPass();
 	RenderDeferredLighting();
 
@@ -356,8 +365,8 @@ void RenderManager::RenderAnimRendererDeferred(vector<shared_ptr<GameObject>>& _
 		}
 
 		// G-Buffer 셰이더에 TweenDesc 전송
-		if (vec[0]->GetModelAnimator()->GetGeometryShader()) {
-			vec[0]->GetModelAnimator()->GetGeometryShader()->PushTweenData(*tweenDesc.get());
+		if (vec[0]->GetModelAnimator()->GetShader()) {
+			vec[0]->GetModelAnimator()->GetShader()->PushTweenData(*tweenDesc.get());
 		}
 
 		shared_ptr<InstancingBuffer>& buffer = m_buffers[instanceID];
@@ -378,6 +387,7 @@ void RenderManager::AddData(InstanceID _instanceID, InstancingData& _data)
 
 void RenderManager::RenderGeometryPass(vector<shared_ptr<GameObject>>& _gameObjects)
 {
+
 	RenderMeshRendererDeferred(_gameObjects);
 	RenderModelRendererDeferred(_gameObjects);
 	RenderAnimRendererDeferred(_gameObjects);
@@ -388,27 +398,43 @@ void RenderManager::RenderDeferredLighting()
 	if (m_deferredLightingShader == nullptr)
 		return;
 
-	GRAPHICS->BindGBufferSRVs();
+	for (int i = 0; i < 4; ++i) {
+		assert(GRAPHICS->m_gBufferSRVs[i] != nullptr);
+	}
+	
+	GRAPHICS->BindGBufferSRVs(0);
+	m_deferredLightingShader->SetTechnique(L"DeferredLightingTech");
 
 	m_deferredLightingShader->GetSRV("ShadowMap")->SetResource(GRAPHICS->GetShadowMap()->GetComPtr().Get());
-
+	m_deferredLightingShader->GetSRV("GBufferAlbedo")->SetResource(GRAPHICS->m_gBufferSRVs[0].Get());
+	m_deferredLightingShader->GetSRV("GBufferNormal")->SetResource(GRAPHICS->m_gBufferSRVs[1].Get());
+	m_deferredLightingShader->GetSRV("GBufferPosition")->SetResource(GRAPHICS->m_gBufferSRVs[2].Get());
+	m_deferredLightingShader->GetSRV("GBufferMaterial")->SetResource(GRAPHICS->m_gBufferSRVs[3].Get());
+	
 	auto lightObj = CURSCENE->GetLight();
+
+	m_deferredLightingShader->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);
 
 	if (lightObj) {
 		m_deferredLightingShader->PushLightData(lightObj->GetLight()->GetLightDesc());
 	}
-
-	m_deferredLightingShader->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);
 	m_deferredLightingShader->PushFOWData(m_FogData);
 
 	DC->OMSetDepthStencilState(nullptr, 0);
 	DC->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
 
 	GRAPHICS->BindFullScreenQuad();
-	DC->DrawIndexedInstanced(6, 1, 0, 0, 0);
+	m_deferredLightingShader->DrawIndexedInstancedCurTech(0, 6, 1, 0, 0, 0);
+
+
 	ID3D11ShaderResourceView* nullSRVs[Graphics::GBUFFER_COUNT] = {nullptr};
 	DC->PSSetShaderResources(0, Graphics::GBUFFER_COUNT, nullSRVs);
 	m_deferredLightingShader->GetSRV("ShadowMap")->SetResource(nullptr);
+
+	m_deferredLightingShader->GetSRV("GBufferAlbedo")->SetResource(nullptr);
+	m_deferredLightingShader->GetSRV("GBufferNormal")->SetResource(nullptr);
+	m_deferredLightingShader->GetSRV("GBufferPosition")->SetResource(nullptr);
+	m_deferredLightingShader->GetSRV("GBufferMaterial")->SetResource(nullptr);
 }
 
 void RenderManager::RenderTransparentObjects(vector<shared_ptr<GameObject>>& _gameObjects)

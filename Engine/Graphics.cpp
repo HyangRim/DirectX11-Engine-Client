@@ -94,6 +94,14 @@ void Graphics::ClearShadowDepthStencilView()
 		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
 }
 
+void Graphics::ClearGBufferView()
+{
+	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	for (int idx = 0; idx < GBUFFER_COUNT; ++idx) {
+		m_deviceContext->ClearRenderTargetView(m_gBufferRTVs[idx].Get(), clearColor);
+	}
+}
+
 void Graphics::SetShadowDepthStencilView()
 {
 	m_shadowVP.RSSetViewport();
@@ -225,7 +233,7 @@ void Graphics::CreateDepthStencilView()
 void Graphics::BeginGeometryPass()
 {
 	m_currentPass = RenderPass::GEOMETRY;
-	m_deviceContext->OMSetRenderTargets(GBUFFER_COUNT, m_gBufferRTVs->GetAddressOf(), m_depthStencilView.Get());
+	m_deviceContext->OMSetRenderTargets(4, m_gBufferRTVs->GetAddressOf(), m_depthStencilView.Get());
 
 
 	for (int idx = 0; idx < GBUFFER_COUNT; ++idx) {
@@ -238,8 +246,7 @@ void Graphics::BeginLightingPass()
 	m_currentPass = RenderPass::LIGHTING;
 	//최종 렌더타겟으로 전환
 	m_deviceContext->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(), nullptr);
-
-	m_deviceContext->PSSetShaderResources(0, GBUFFER_COUNT, m_gBufferSRVs->GetAddressOf());
+	m_deviceContext->PSSetShaderResources(0, 4, m_gBufferSRVs->GetAddressOf());
 }
 
 void Graphics::CreateGBuffer()
@@ -253,7 +260,7 @@ void Graphics::CreateGBuffer()
 	albedoDesc.Height = height;
 	albedoDesc.MipLevels = 1;
 	albedoDesc.ArraySize = 1;
-	albedoDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	albedoDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	albedoDesc.SampleDesc.Count = 1;
 	albedoDesc.SampleDesc.Quality = 0;
 	albedoDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -270,7 +277,7 @@ void Graphics::CreateGBuffer()
 
 	// Normal Buffer (RGBA16_FLOAT)
 	D3D11_TEXTURE2D_DESC normalDesc = albedoDesc;
-	normalDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	normalDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	hr = m_device->CreateTexture2D(&normalDesc, nullptr, m_gBufferTextures[1].GetAddressOf());
 	CHECK(hr);
 	hr = m_device->CreateRenderTargetView(m_gBufferTextures[1].Get(), nullptr, m_gBufferRTVs[1].GetAddressOf());
@@ -280,7 +287,7 @@ void Graphics::CreateGBuffer()
 
 	// Position Buffer (RGBA16_FLOAT)
 	D3D11_TEXTURE2D_DESC positionDesc = albedoDesc;
-	positionDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	positionDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	// 더 높은 정밀도가 필요하다면 RGBA32_FLOAT 사용 가능
 	// positionDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	hr = m_device->CreateTexture2D(&positionDesc, nullptr, m_gBufferTextures[2].GetAddressOf());
@@ -292,7 +299,7 @@ void Graphics::CreateGBuffer()
 
 	// Material Buffer (RGBA8)
 	D3D11_TEXTURE2D_DESC materialDesc = albedoDesc;
-	materialDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	materialDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	hr = m_device->CreateTexture2D(&materialDesc, nullptr, m_gBufferTextures[3].GetAddressOf());
 	CHECK(hr);
 	hr = m_device->CreateRenderTargetView(m_gBufferTextures[3].Get(), nullptr, m_gBufferRTVs[3].GetAddressOf());
@@ -303,14 +310,6 @@ void Graphics::CreateGBuffer()
 
 void Graphics::CreateFullScreenQuad()
 {
-
-	// 풀스크린 쿼드 버텍스 데이터
-	struct QuadVertex
-	{
-		Vec3 position;
-		Vec2 uv;
-	};
-
 	QuadVertex vertices[] = {
 		{ Vec3(-1.0f, -1.0f, 0.0f), Vec2(0.0f, 1.0f) }, // 좌하단
 		{ Vec3(-1.0f,  1.0f, 0.0f), Vec2(0.0f, 0.0f) }, // 좌상단

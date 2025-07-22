@@ -92,7 +92,7 @@ void ModelRenderer::RenderInstancingDeferred(shared_ptr<class InstancingBuffer>&
 	auto geometryShader = m_material->GetShader();
 	if (geometryShader == nullptr)
 		return;
-
+	//geometryShader->SetTechnique(L"GBufferTech");
 	// 기존 RenderInstancing과 유사한 로직
 	DC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	geometryShader->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);
@@ -119,7 +119,7 @@ void ModelRenderer::RenderInstancingDeferred(shared_ptr<class InstancingBuffer>&
 		mesh->m_indexBuffer->PushData();
 		_buffer->PushData();
 
-		geometryShader->DrawIndexedInstanced(0, 0, mesh->m_indexBuffer->GetCount(), _buffer->GetCount());
+		geometryShader->DrawIndexedInstancedCurTech(m_pass, mesh->m_indexBuffer->GetCount(), _buffer->GetCount());
 	}
 }
 
