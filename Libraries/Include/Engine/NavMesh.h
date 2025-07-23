@@ -53,6 +53,8 @@ private:
     vector<NavMeshTriangle> m_triangles;
     shared_ptr<Model> m_navMeshModel;
 
+    mutable int m_lastFoundTriangle = -1;
+
     // 초기화 및 전처리
     void BuildTriangleConnections();
     bool AreTrianglesAdjacent(const NavMeshTriangle& tri1, const NavMeshTriangle& tri2);
@@ -64,7 +66,7 @@ private:
     // 경로 변환 및 최적화 - 성능 최적화된 참조 버전
     void ConvertTrianglePathToWorldPath(const vector<int>& trianglePath, const Vec3& start, const Vec3& end, vector<Vec3>& outPath); // 참조로 변경
     void SmoothPath(const vector<Vec3>& originalPath, vector<Vec3>& outPath); // 참조로 변경
-
+    void SmoothPathOri(const vector<Vec3>& originalPath, vector<Vec3>& outPath);
     // 유틸리티 함수
     int FindTriangleContaining(const Vec3& point);
     Vec3 ProjectPointOnTriangle(const Vec3& point, const NavMeshTriangle& triangle);

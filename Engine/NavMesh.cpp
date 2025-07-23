@@ -144,7 +144,6 @@ bool NavMesh::IsOnNavMesh(const Vec3& worldPos, float tolerance)
 void NavMesh::FindPath(const Vec3& start, const Vec3& end, vector<Vec3>& outPath)
 {
     outPath.clear(); // 기존 내용 제거
-
     int startTriangle = FindTriangleContaining(start);
     int endTriangle = FindTriangleContaining(end);
 
@@ -179,9 +178,10 @@ void NavMesh::FindPath(const Vec3& start, const Vec3& end, vector<Vec3>& outPath
     // 삼각형 경로를 월드 좌표 경로로 변환
     vector<Vec3> rawPath;
     ConvertTrianglePathToWorldPath(trianglePath, start, end, rawPath);
-
     // 스무딩 적용
+    
     SmoothPath(rawPath, outPath);
+
 }
 
 
@@ -304,6 +304,61 @@ void NavMesh::SmoothPath(const vector<Vec3>& originalPath, vector<Vec3>& outPath
 
     while (cur + 1 < originalPath.size())
     {
+        int bestNext = cur + 1;
+        bool foundValidPath = false;
+
+        Vec3 curPos = outPath.back();
+        vector<size_t> candidates;
+        candidates.reserve(10); // 일반적인 후보 개수 예상
+
+        // 시야 확보된 모든 지점 수집
+        for (size_t i = cur + 1; i < originalPath.size(); ++i)
+        {
+            bool hasLOS = HasLineOfSight(curPos, originalPath[i]);
+
+            if (hasLOS) {
+                bestNext = static_cast<int>(i);
+                foundValidPath = true;
+            }
+        }
+
+        // 중복 검사 제거: foundValidPath가 true면 IsLineOnNavMesh 생략
+        if (!foundValidPath && !IsLineOnNavMesh(curPos, originalPath[bestNext]))
+        {
+            Vec3 safe = GetNearestPointOnNavMesh(originalPath[bestNext]);
+            outPath.push_back(safe);
+        }
+        else
+        {
+            outPath.push_back(originalPath[bestNext]);
+        }
+        
+        cur = bestNext;
+        curPos = outPath.back();
+    }
+
+    // 마지막 목적지 추가
+    outPath.push_back(originalPath.back());
+}
+
+void NavMesh::SmoothPathOri(const vector<Vec3>& originalPath, vector<Vec3>& outPath)
+{
+    outPath.clear();
+    if (originalPath.size() <= 2)
+    {
+        outPath = originalPath; // 작은 경우에만 복사
+        return;
+    }
+
+    // 예상 크기로 메모리 미리 할당 (원본보다 작을 것으로 예상)
+    outPath.reserve(originalPath.size());
+    outPath.push_back(originalPath[0]);
+
+    const float minDist = 3.0f, maxDist = 10.0f;
+    size_t cur = 0;
+
+    while (cur + 1 < originalPath.size())
+    {
         Vec3 curPos = outPath.back();
         vector<size_t> candidates;
         candidates.reserve(10); // 일반적인 후보 개수 예상
@@ -380,6 +435,19 @@ bool NavMesh::AreTrianglesAdjacent(const NavMeshTriangle& tri1, const NavMeshTri
 
 int NavMesh::FindTriangleContaining(const Vec3& point)
 {
+    if (m_lastFoundTriangle != -1 && IsPointInTriangle(point, m_triangles[m_lastFoundTriangle])) {
+        return m_lastFoundTriangle;
+    }
+
+    if (m_lastFoundTriangle != -1) {
+        for (int neighbor : m_triangles[m_lastFoundTriangle].neighbors) {
+            if (IsPointInTriangle(point, m_triangles[neighbor])) {
+                m_lastFoundTriangle = neighbor;
+                return neighbor;
+            }
+        }
+    }
+
     for (size_t i = 0; i < m_triangles.size(); i++)
     {
         if (IsPointInTriangle(point, m_triangles[i]))
@@ -445,11 +513,13 @@ bool NavMesh::IsLineOnNavMesh(const Vec3& start, const Vec3& end, float stepSize
 {
     Vec3 direction = end - start;
     float distance = direction.Length();
-    if (distance < 0.001f) return true;
+    if (distance < 0.05f) return true;
 
     direction.Normalize();
+    
+    int maxSamples = 16;
+    float adaptiveStepSize = max(stepSize, distance / maxSamples);
     int steps = static_cast<int>(distance / stepSize) + 1;
-
     for (int i = 1; i < steps; i++)
     {
         float t = static_cast<float>(i) / steps;
