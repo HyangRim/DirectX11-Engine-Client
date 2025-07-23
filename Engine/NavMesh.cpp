@@ -17,6 +17,7 @@ void NavMesh::Start()
 {
     Super::Start();
     LoadNavMeshData();
+    InitializeSpatialGrid();
     DebugPrintTriangles();
 }
 
@@ -96,7 +97,23 @@ Vec3 NavMesh::GetNearestPointOnNavMesh(const Vec3& worldPos)
     Vec3 nearestPoint = worldPos;
     float minDistance = FLT_MAX;
 
-    for (const auto& triangle : m_triangles)
+    auto key = m_spatialGrid.GetKey(worldPos);
+    auto it = m_spatialGrid.grid.find(key);
+
+    if (it != m_spatialGrid.grid.end()) {
+        for (int idx : it->second) {
+            Vec3 projectedPoint = ProjectPointOnTriangle(worldPos, m_triangles[idx]);
+            float distance = GetDistance(worldPos, projectedPoint);
+
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                nearestPoint = projectedPoint;
+            }
+        }
+    }
+    //전수 조사 방식. 
+    /*for (const auto& triangle : m_triangles)
     {
         Vec3 projectedPoint = ProjectPointOnTriangle(worldPos, triangle);
         float distance = GetDistance(worldPos, projectedPoint);
@@ -106,7 +123,7 @@ Vec3 NavMesh::GetNearestPointOnNavMesh(const Vec3& worldPos)
             minDistance = distance;
             nearestPoint = projectedPoint;
         }
-    }
+    }*/
 
     return nearestPoint;
 }
@@ -179,9 +196,10 @@ void NavMesh::FindPath(const Vec3& start, const Vec3& end, vector<Vec3>& outPath
     vector<Vec3> rawPath;
     ConvertTrianglePathToWorldPath(trianglePath, start, end, rawPath);
     // 스무딩 적용
-    
+    //auto stime = std::chrono::high_resolution_clock::now();
     SmoothPath(rawPath, outPath);
-
+    //auto etime = std::chrono::high_resolution_clock::now();
+    //cout << std::chrono::duration_cast<std::chrono::microseconds>(etime - stime).count() << "\n";
 }
 
 
@@ -413,6 +431,15 @@ void NavMesh::BuildTriangleConnections()
     }
 }
 
+void NavMesh::InitializeSpatialGrid()
+{
+    m_spatialGrid.grid.clear();
+
+    for (size_t i = 0; i < m_triangles.size(); ++i) {
+        m_spatialGrid.AddTriangle(static_cast<int>(i), m_triangles[i]);
+    }
+}
+
 bool NavMesh::AreTrianglesAdjacent(const NavMeshTriangle& tri1, const NavMeshTriangle& tri2)
 {
     const float EPSILON = 0.01f;
@@ -448,13 +475,27 @@ int NavMesh::FindTriangleContaining(const Vec3& point)
         }
     }
 
-    for (size_t i = 0; i < m_triangles.size(); i++)
+    uint64 key = m_spatialGrid.GetKey(point);
+    auto it = m_spatialGrid.grid.find(key);
+
+    if (it != m_spatialGrid.grid.end()) {
+        for (int idx : it->second) {
+            if (IsPointInTriangle(point, m_triangles[idx]))
+            {
+                return idx;
+            }
+        }
+    }
+
+
+    //전수 조사 방식. 
+    /*for (size_t i = 0; i < m_triangles.size(); i++)
     {
         if (IsPointInTriangle(point, m_triangles[i]))
         {
             return static_cast<int>(i);
         }
-    }
+    }*/
     return -1;
 }
 
