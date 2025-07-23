@@ -89,8 +89,12 @@ public:
 	virtual void OnCollisionExit(shared_ptr<GameObject> _other);
 
 public:
-	void SetName(wstring _name) { m_Name = _name; }
+	//move로 복사 최소화.
+	void SetName(const wstring& _name) { m_Name = _name; }
+	void SetName(wstring&& _name) { m_Name = move(_name); }
+	 
 	wstring GetName() { return m_Name; }
+
 
 	void SetType(OBJECTTYPE _type) { m_objType = _type; }
 	OBJECTTYPE GetType() { return m_objType; }

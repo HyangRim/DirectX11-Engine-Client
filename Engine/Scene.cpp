@@ -121,8 +121,15 @@ void Scene::RenderGameCamera(Camera* cam)
     //if (GetQuadTree() == nullptr) return;
     //if (GetQuadTree()->GetInsertedObject().empty()) return;
     //vector<shared_ptr<GameObject>> objects(GetQuadTree()->GetInsertedObject().begin(), GetQuadTree()->GetInsertedObject().end());
-    RENDER->Render(cam->GetForwardObjects(), false);
-
+    vector<shared_ptr<GameObject>> combined;
+    vector<shared_ptr<GameObject>> forward = cam->GetForwardObjects();
+    vector<shared_ptr<GameObject>> backward = cam->GetBackwardObjects();
+    combined.reserve(forward.size() + backward.size());
+    combined.insert(combined.end(), forward.begin(), forward.end());
+    combined.insert(combined.end(), backward.begin(), backward.end());
+    
+    RENDER->Render(combined, false);
+    //RENDER->Render(cam->GetBackwardObjects(), false);
     /*cam->Render_Forward(false);
     if (m_objectManager->m_sky)
         m_objectManager->m_sky->Render(cam);
