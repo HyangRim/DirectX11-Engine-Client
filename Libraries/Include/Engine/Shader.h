@@ -65,8 +65,8 @@ private:
 	D3DX11_EFFECT_DESC m_effectDesc;
 	shared_ptr<StateBlock> m_initialStateBlock;
 	vector<Technique> m_techniques;
-	int m_currentTechniqueIndex = 0;
 
+	int m_currentTechniqueIndex = 0;
 	unordered_map<wstring, int> m_techniqueMap;
 
 public:

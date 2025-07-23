@@ -17,6 +17,7 @@ void NavMesh::Start()
 {
     Super::Start();
     LoadNavMeshData();
+    InitializeSpatialGrid();
     DebugPrintTriangles();
 }
 
@@ -96,7 +97,23 @@ Vec3 NavMesh::GetNearestPointOnNavMesh(const Vec3& worldPos)
     Vec3 nearestPoint = worldPos;
     float minDistance = FLT_MAX;
 
-    for (const auto& triangle : m_triangles)
+    auto key = m_spatialGrid.GetKey(worldPos);
+    auto it = m_spatialGrid.grid.find(key);
+
+    if (it != m_spatialGrid.grid.end()) {
+        for (int idx : it->second) {
+            Vec3 projectedPoint = ProjectPointOnTriangle(worldPos, m_triangles[idx]);
+            float distance = GetDistance(worldPos, projectedPoint);
+
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                nearestPoint = projectedPoint;
+            }
+        }
+    }
+    //전수 조사 방식. 
+    /*for (const auto& triangle : m_triangles)
     {
         Vec3 projectedPoint = ProjectPointOnTriangle(worldPos, triangle);
         float distance = GetDistance(worldPos, projectedPoint);
@@ -106,7 +123,7 @@ Vec3 NavMesh::GetNearestPointOnNavMesh(const Vec3& worldPos)
             minDistance = distance;
             nearestPoint = projectedPoint;
         }
-    }
+    }*/
 
     return nearestPoint;
 }
@@ -144,7 +161,6 @@ bool NavMesh::IsOnNavMesh(const Vec3& worldPos, float tolerance)
 void NavMesh::FindPath(const Vec3& start, const Vec3& end, vector<Vec3>& outPath)
 {
     outPath.clear(); // 기존 내용 제거
-
     int startTriangle = FindTriangleContaining(start);
     int endTriangle = FindTriangleContaining(end);
 
@@ -179,9 +195,11 @@ void NavMesh::FindPath(const Vec3& start, const Vec3& end, vector<Vec3>& outPath
     // 삼각형 경로를 월드 좌표 경로로 변환
     vector<Vec3> rawPath;
     ConvertTrianglePathToWorldPath(trianglePath, start, end, rawPath);
-
     // 스무딩 적용
+    //auto stime = std::chrono::high_resolution_clock::now();
     SmoothPath(rawPath, outPath);
+    //auto etime = std::chrono::high_resolution_clock::now();
+    //cout << std::chrono::duration_cast<std::chrono::microseconds>(etime - stime).count() << "\n";
 }
 
 
@@ -304,6 +322,61 @@ void NavMesh::SmoothPath(const vector<Vec3>& originalPath, vector<Vec3>& outPath
 
     while (cur + 1 < originalPath.size())
     {
+        int bestNext = cur + 1;
+        bool foundValidPath = false;
+
+        Vec3 curPos = outPath.back();
+        vector<size_t> candidates;
+        candidates.reserve(10); // 일반적인 후보 개수 예상
+
+        // 시야 확보된 모든 지점 수집
+        for (size_t i = cur + 1; i < originalPath.size(); ++i)
+        {
+            bool hasLOS = HasLineOfSight(curPos, originalPath[i]);
+
+            if (hasLOS) {
+                bestNext = static_cast<int>(i);
+                foundValidPath = true;
+            }
+        }
+
+        // 중복 검사 제거: foundValidPath가 true면 IsLineOnNavMesh 생략
+        if (!foundValidPath && !IsLineOnNavMesh(curPos, originalPath[bestNext]))
+        {
+            Vec3 safe = GetNearestPointOnNavMesh(originalPath[bestNext]);
+            outPath.push_back(safe);
+        }
+        else
+        {
+            outPath.push_back(originalPath[bestNext]);
+        }
+        
+        cur = bestNext;
+        curPos = outPath.back();
+    }
+
+    // 마지막 목적지 추가
+    outPath.push_back(originalPath.back());
+}
+
+void NavMesh::SmoothPathOri(const vector<Vec3>& originalPath, vector<Vec3>& outPath)
+{
+    outPath.clear();
+    if (originalPath.size() <= 2)
+    {
+        outPath = originalPath; // 작은 경우에만 복사
+        return;
+    }
+
+    // 예상 크기로 메모리 미리 할당 (원본보다 작을 것으로 예상)
+    outPath.reserve(originalPath.size());
+    outPath.push_back(originalPath[0]);
+
+    const float minDist = 3.0f, maxDist = 10.0f;
+    size_t cur = 0;
+
+    while (cur + 1 < originalPath.size())
+    {
         Vec3 curPos = outPath.back();
         vector<size_t> candidates;
         candidates.reserve(10); // 일반적인 후보 개수 예상
@@ -358,6 +431,15 @@ void NavMesh::BuildTriangleConnections()
     }
 }
 
+void NavMesh::InitializeSpatialGrid()
+{
+    m_spatialGrid.grid.clear();
+
+    for (size_t i = 0; i < m_triangles.size(); ++i) {
+        m_spatialGrid.AddTriangle(static_cast<int>(i), m_triangles[i]);
+    }
+}
+
 bool NavMesh::AreTrianglesAdjacent(const NavMeshTriangle& tri1, const NavMeshTriangle& tri2)
 {
     const float EPSILON = 0.01f;
@@ -380,13 +462,40 @@ bool NavMesh::AreTrianglesAdjacent(const NavMeshTriangle& tri1, const NavMeshTri
 
 int NavMesh::FindTriangleContaining(const Vec3& point)
 {
-    for (size_t i = 0; i < m_triangles.size(); i++)
+    if (m_lastFoundTriangle != -1 && IsPointInTriangle(point, m_triangles[m_lastFoundTriangle])) {
+        return m_lastFoundTriangle;
+    }
+
+    if (m_lastFoundTriangle != -1) {
+        for (int neighbor : m_triangles[m_lastFoundTriangle].neighbors) {
+            if (IsPointInTriangle(point, m_triangles[neighbor])) {
+                m_lastFoundTriangle = neighbor;
+                return neighbor;
+            }
+        }
+    }
+
+    uint64 key = m_spatialGrid.GetKey(point);
+    auto it = m_spatialGrid.grid.find(key);
+
+    if (it != m_spatialGrid.grid.end()) {
+        for (int idx : it->second) {
+            if (IsPointInTriangle(point, m_triangles[idx]))
+            {
+                return idx;
+            }
+        }
+    }
+
+
+    //전수 조사 방식. 
+    /*for (size_t i = 0; i < m_triangles.size(); i++)
     {
         if (IsPointInTriangle(point, m_triangles[i]))
         {
             return static_cast<int>(i);
         }
-    }
+    }*/
     return -1;
 }
 
@@ -445,11 +554,13 @@ bool NavMesh::IsLineOnNavMesh(const Vec3& start, const Vec3& end, float stepSize
 {
     Vec3 direction = end - start;
     float distance = direction.Length();
-    if (distance < 0.001f) return true;
+    if (distance < 0.05f) return true;
 
     direction.Normalize();
+    
+    int maxSamples = 16;
+    float adaptiveStepSize = max(stepSize, distance / maxSamples);
     int steps = static_cast<int>(distance / stepSize) + 1;
-
     for (int i = 1; i < steps; i++)
     {
         float t = static_cast<float>(i) / steps;
