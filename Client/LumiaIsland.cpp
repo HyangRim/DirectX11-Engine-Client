@@ -889,6 +889,7 @@ void LumiaIsland::CreateCharacterNicky()
 		nicky->AddComponent(make_shared<SphereCollider>());
 		nicky->AddComponent(make_shared<Rigidbody>());
 		nicky->AddComponent(make_shared<NavMeshAgent>());
+		nicky->SetType(OBJECTTYPE::ITEMBOX);
 
 		nicky->GetCollider()->SetOffset(Vec3(0.f, 1.f, 0.f));
 		nicky->GetRigidbody()->SetStatic(true);

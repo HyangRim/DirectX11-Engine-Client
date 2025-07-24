@@ -39,6 +39,13 @@ void Renderer::InnerRender(bool _isShadowTech)
         // G-Buffer 패스 (디퍼드 렌더링)
         const auto& geometryShader = m_material->GetShader();
         geometryShader->SetTechnique(L"GBufferTech");
+        OutlineDesc objType;
+        objType.objType = 0;
+        if (GetGameObject()->GetType() == OBJECTTYPE::ITEMBOX) {
+            objType.objType = 1;
+        }
+        geometryShader->PushOutlineData(objType);
+
         if (geometryShader) {
             m_material->Update(); // 텍스처 바인딩
             geometryShader->PushGlobalData(Camera::s_MatView, Camera::s_MatProjection);

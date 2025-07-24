@@ -19,6 +19,8 @@ void RenderManager::Init()
 {
 	m_deferredLightingShader = make_shared<Shader>(L"FOW.fx");
 	m_deferredLightingShader->SetTechnique(L"DeferredLightingTech");
+
+	m_outlineShader = make_shared<Shader>(L"OutlinePostProcess.fx");
 	// 디퍼드 렌더링 활성화
 	SetDeferredRendering(true);
 
@@ -85,6 +87,8 @@ void RenderManager::RenderDeferred(vector<shared_ptr<GameObject>>& _gameObjects,
 	//2단계: 디퍼드 라이팅 패스
 	GRAPHICS->BeginLightingPass();
 	RenderDeferredLighting();
+
+	RenderOutlinePostProcess();
 
 	// 3단계: 투명 객체 (포워드 방식)
 	RenderTransparentObjects(_gameObjects);
@@ -435,6 +439,25 @@ void RenderManager::RenderDeferredLighting()
 	m_deferredLightingShader->GetSRV("GBufferNormal")->SetResource(nullptr);
 	m_deferredLightingShader->GetSRV("GBufferPosition")->SetResource(nullptr);
 	m_deferredLightingShader->GetSRV("GBufferMaterial")->SetResource(nullptr);
+}
+
+void RenderManager::RenderOutlinePostProcess()
+{
+	if (!m_outlineShader) {
+		m_outlineShader = make_shared<Shader>(L"OutlinePostProcess");
+	}
+	// G-Buffer만 사용 (Scene Color 불필요)
+	m_outlineShader->GetSRV("gNormalBuffer")->SetResource(GRAPHICS->m_gBufferSRVs[1].Get());
+	m_outlineShader->GetSRV("gPositionBuffer")->SetResource(GRAPHICS->m_gBufferSRVs[2].Get());
+	m_outlineShader->GetSRV("gMaterialBuffer")->SetResource(GRAPHICS->m_gBufferSRVs[3].Get());
+
+	GRAPHICS->BindFullScreenQuad();
+	m_outlineShader->DrawIndexedInstancedCurTech(0, 6, 1, 0, 0, 0);
+
+	// 리소스 해제
+	m_outlineShader->GetSRV("gNormalBuffer")->SetResource(nullptr);
+	m_outlineShader->GetSRV("gPositionBuffer")->SetResource(nullptr);
+	m_outlineShader->GetSRV("gMaterialBuffer")->SetResource(nullptr);
 }
 
 void RenderManager::RenderTransparentObjects(vector<shared_ptr<GameObject>>& _gameObjects)

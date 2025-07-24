@@ -48,6 +48,8 @@ private:
 
 	void RenderGeometryPass(vector<shared_ptr<GameObject>>& _gameObjects);
 	void RenderDeferredLighting();
+	void RenderOutlinePostProcess();
+
 	void RenderTransparentObjects(vector<shared_ptr<GameObject>>& _gameObjects);
 
 private:
@@ -59,5 +61,6 @@ private:
 	bool m_useDeferredRendering = true;
 
 	shared_ptr<Shader> m_deferredLightingShader;
+	shared_ptr<Shader> m_outlineShader;
 };
 

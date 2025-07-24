@@ -156,6 +156,10 @@ float4 PS_DeferredLightingWithFOW(VertexQuadOutput input) : SV_Target
         finalColor = lerp(finalColor, finalColor * float3(0.9f, 0.95f, 1.05f), blueTint);
     }
     
+    
+    //Outline
+    
+    
     return float4(finalColor, baseColor.a);
 }
 

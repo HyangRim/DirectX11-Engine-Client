@@ -43,6 +43,9 @@
     <Filter Include="Game\InGame">
       <UniqueIdentifier>{30a1463b-9e9c-486d-8a3f-8e626c260bf2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Player">
+      <UniqueIdentifier>{af9d922f-a947-49a3-b925-6b1ba52dbc81}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -104,6 +107,9 @@
     </ClCompile>
     <ClCompile Include="LumiaIsland.cpp">
       <Filter>Game\InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerOutlineEffect.cpp">
+      <Filter>Scripts\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -170,6 +176,9 @@
     <ClInclude Include="LumiaIsland.h">
       <Filter>Game\InGame</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerOutlineEffect.h">
+      <Filter>Scripts\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Shaders\00. Global.fx">
@@ -224,6 +233,9 @@
       <Filter>Shaders\Common</Filter>
     </FxCompile>
     <FxCompile Include="..\Shaders\00. DeferredLighting.fx">
+      <Filter>Shaders\Common</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\OutlinePostProcess.fx">
       <Filter>Shaders\Common</Filter>
     </FxCompile>
   </ItemGroup>
