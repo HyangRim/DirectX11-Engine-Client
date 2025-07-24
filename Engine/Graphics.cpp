@@ -39,8 +39,6 @@ Graphics::~Graphics()
 
 }
 
-
-
 void Graphics::Init(HWND hwnd)
 {
 	m_hwnd = hwnd;
