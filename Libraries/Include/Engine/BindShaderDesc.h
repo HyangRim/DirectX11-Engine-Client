@@ -134,3 +134,9 @@ struct QuadVertex
 	Vec3 position;
 	Vec2 uv;
 };
+
+
+struct OutlineDesc {
+	int objType;
+	int padding[3];
+};

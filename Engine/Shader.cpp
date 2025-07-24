@@ -609,6 +609,19 @@ void Shader::PushMultiLightData(const MultiLightDesc& _desc)
 	m_multiLightEffectBuffer->SetConstantBuffer(m_multiLightBuffer->GetComPtr().Get());
 }
 
+void Shader::PushOutlineData(const OutlineDesc& _desc)
+{
+	if (m_OutlineBuffer == nullptr) {
+		m_OutlineBuffer = make_shared<ConstantBuffer<OutlineDesc>>();
+		m_OutlineBuffer->Create();
+		m_OutlineEffectBuffer = GetConstantBuffer("OutlineBuffer");
+	}
+
+	m_OutlineDesc = _desc;
+	m_OutlineBuffer->CopyData(m_OutlineDesc);
+	m_OutlineEffectBuffer->SetConstantBuffer(m_OutlineBuffer->GetComPtr().Get());
+}
+
 bool Shader::IsFOWShader() const
 {
 	return m_file.find(L"FOW.fx") != wstring::npos;

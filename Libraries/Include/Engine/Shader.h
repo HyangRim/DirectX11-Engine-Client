@@ -84,6 +84,7 @@ public:
 	void PushTextData(const Vec4& textColor, const Vec4& outlineColor, float alpha, float outlineWidth);
 	void PushFOWData(const FogOfWarData& _desc);
 	void PushMultiLightData(const MultiLightDesc& _desc);
+	void PushOutlineData(const OutlineDesc& _desc);
 
 
 	vector<Technique>& GetTechniques() { return m_techniques; }
@@ -149,6 +150,10 @@ private:
 	shared_ptr<ConstantBuffer<MultiLightDesc>> m_multiLightBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> m_multiLightEffectBuffer;
 
+
+	OutlineDesc m_OutlineDesc;
+	shared_ptr<ConstantBuffer<OutlineDesc>> m_OutlineBuffer;
+	ComPtr<ID3DX11EffectConstantBuffer> m_OutlineEffectBuffer;
 };
 
 class ShaderManager

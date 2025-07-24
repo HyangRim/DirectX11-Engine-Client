@@ -31,6 +31,7 @@ enum class OBJECTTYPE {
 	PLAYER,
 	MONSTER,
 	ENVIRONMENT,
+	ITEMBOX
 };
 
 class GameObject : public enable_shared_from_this<GameObject>

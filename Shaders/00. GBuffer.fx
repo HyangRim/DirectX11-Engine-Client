@@ -14,6 +14,12 @@ struct GBufferOutput
     float4 material : SV_Target3;
 };
 
+cbuffer OutlineBuffer
+{
+    int objType;
+    int3 objTypePadding;
+};
+
 GBufferOutput PS_GeometryPass(MeshOutput input)
 {
     GBufferOutput output;

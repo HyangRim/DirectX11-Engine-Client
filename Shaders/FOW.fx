@@ -112,6 +112,16 @@ GBufferOutput PS_GBuffer(MeshOutput input)
     output.position = float4(input.worldPosition, input.position.z);
     output.material = float4(1, 1, 1, 1); // 기본 머티리얼 속성
     
+    // Material.r에 ObjectType 저장
+    float objectTypeValue = 0.0f;
+    if (objType == 1)
+    { // ITEMBOX
+        objectTypeValue = 1.0f;
+    }
+    
+    output.material = float4(objectTypeValue, 0.0f, 0.0f, 1.0f);
+    
+    
     
     // 임시 디버깅: 단계적으로 테스트
     //output.albedo = float4(1, 0, 0, 1); // 빨간색으로 고정
