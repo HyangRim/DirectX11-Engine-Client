@@ -148,6 +148,37 @@ void Camera::SortGameObjects()
 
 void Camera::SortUIObjects()
 {
+    //// UI 전용 깊이 스텐실 상태 생성 및 적용
+    //D3D11_DEPTH_STENCIL_DESC dsDesc = {};
+    //dsDesc.DepthEnable = true;                    // 깊이 테스트 비활성화
+    //dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;  // 깊이 쓰기 비활성화
+    //dsDesc.StencilEnable = true;
+
+    //ComPtr<ID3D11DepthStencilState> uiDepthState;
+    //GRAPHICS->GetDevice()->CreateDepthStencilState(&dsDesc, uiDepthState.GetAddressOf());
+
+    //// UI 렌더링 전에 적용
+    //GRAPHICS->GetDeviceContext()->OMSetDepthStencilState(uiDepthState.Get(), 0);
+
+    ///// UI 렌더링 전에 알파 블렌딩 상태 강제 설정
+    //D3D11_BLEND_DESC blendDesc = {};
+    //blendDesc.AlphaToCoverageEnable = false;
+    //blendDesc.IndependentBlendEnable = false;
+    //blendDesc.RenderTarget[0].BlendEnable = true;
+    //blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+    //blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+    //blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+    //blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+    //blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+    //blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+    //blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+    //ComPtr<ID3D11BlendState> alphaBlendState;
+    //GRAPHICS->GetDevice()->CreateBlendState(&blendDesc, alphaBlendState.GetAddressOf());
+
+    //float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+    //GRAPHICS->GetDeviceContext()->OMSetBlendState(alphaBlendState.Get(), blendFactor, 0xFFFFFFFF);
+
     shared_ptr<Scene> scene = CURSCENE;
 
     const unordered_set<shared_ptr<GameObject>>& uiObjects = scene->GetUIObjects();

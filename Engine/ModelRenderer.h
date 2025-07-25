@@ -27,8 +27,7 @@ public:
 
     InstanceID GetInstanceID();
 
-    void SetMaterial(shared_ptr <Material> _material) override;
-
+   
 private:
     shared_ptr<Shader>  m_shader;
     uint8               m_pass = 0;

@@ -73,7 +73,7 @@ private:
 private:
     Vec2 m_position = Vec2(0.0f, 0.0f);
     Vec2 m_size = Vec2(200.0f, 150.0f);
-    Vec4 m_backgroundColor = Vec4(0.f);
+    Vec4 m_backgroundColor = Vec4(1.f);
     bool m_visible = true;
 
     // 배경 렌더링용

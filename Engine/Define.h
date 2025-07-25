@@ -35,6 +35,7 @@ public:										\
 
 #define GET_TECH(_isShadow) _isShadow == true ? 1 : 0
 
+#define RESOLUTION_CONSTANT 0.711f
 
 enum LayerMask {
 	LAYER_DEFAULT = 0,

@@ -71,6 +71,7 @@ void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer,
 	if (Super::Render(_isShadowTech) == false)
 		return;
 
+
 	if (m_mesh == nullptr)
 		return;
 

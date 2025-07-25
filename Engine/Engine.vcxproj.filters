@@ -271,6 +271,9 @@
     <ClCompile Include="NavMeshAgent.cpp">
       <Filter>04. Component\NavMesh</Filter>
     </ClCompile>
+    <ClCompile Include="LobbyScene.cpp">
+      <Filter>02. Managers\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Types.h">
@@ -557,6 +560,9 @@
     </ClInclude>
     <ClInclude Include="NavMeshAgent.h">
       <Filter>04. Component\NavMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="LobbyScene.h">
+      <Filter>02. Managers\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

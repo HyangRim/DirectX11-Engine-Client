@@ -3,7 +3,6 @@
 #include "Scene.h"
 class SceneManager
 {
-
 	DECLARE_SINGLE(SceneManager);
 
 public:

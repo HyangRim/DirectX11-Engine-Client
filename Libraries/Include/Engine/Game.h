@@ -1,8 +1,11 @@
 #pragma once
+#include <functional>
+class Scene;
 
 struct GameDesc
 {
-	shared_ptr<class IExecute> app = nullptr;
+	//shared_ptr<class IExecute> app = nullptr;
+	std::function<shared_ptr<Scene>()> createInitialScene = nullptr;
 	wstring appName = L"GameCoding";
 	HINSTANCE hInstance = 0;
 	HWND hWnd = 0;

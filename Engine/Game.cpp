@@ -13,7 +13,7 @@ Game::~Game()
 WPARAM Game::Run(GameDesc& desc)
 {
 	_desc = desc;
-	assert(_desc.app != nullptr);
+	//assert(_desc.app != nullptr);
 
 	// 1) 윈도우 창 정보 등록
 	MyRegisterClass();
@@ -30,9 +30,18 @@ WPARAM Game::Run(GameDesc& desc)
 	SOUND->Init();
 	RENDER->Init();
 	
-	_desc.app->Init();
-
-	SCENE->ChangeScene(SCENE->GetCurScene());
+	////_desc.app->Init();
+	//  // 초기 씬 설정
+	////auto startScene = make_shared<StartScene>();
+	////SCENE->ChangeScene(startScene);
+	//SCENE->ChangeScene(SCENE->GetCurScene());
+	// 
+	// 콜백을 통한 초기 씬 생성 및 설정
+	if (_desc.createInitialScene)
+	{
+		auto initialScene = _desc.createInitialScene();
+		SCENE->ChangeScene(initialScene);
+	}
 
 	MSG msg = { 0 };
 
@@ -123,8 +132,8 @@ void Game::Update()
 
 	SCENE->Update();
 
-	_desc.app->Update();
-	_desc.app->Render();
+	//_desc.app->Update();
+	//_desc.app->Render();
 
 	GUI->Render();
 

@@ -141,3 +141,166 @@ shared_ptr<Model> ResourceManager::GetOrAddModel(const wstring& _key, const wstr
 
 	return model;
 }
+
+
+bool ResourceManager::GetPixelColor(const wstring& textureKey, int x, int y, PixelColor& outColor)
+{
+    auto texture = Get<Texture>(textureKey);
+    if (!texture) return false;
+
+    // Texture 클래스에서 ID3D11Texture2D 포인터를 얻어야 함
+    // (Texture 클래스에 GetTexture2D() 함수가 있다고 가정)
+    auto d3dTexture = texture->GetTexture2D();
+    if (!d3dTexture) return false;
+
+    D3D11_TEXTURE2D_DESC desc;
+    d3dTexture->GetDesc(&desc);
+
+    // 좌표 범위 체크
+    if (x < 0 || x >= static_cast<int>(desc.Width) ||
+        y < 0 || y >= static_cast<int>(desc.Height))
+        return false;
+
+    // Staging 텍스처 생성
+    ComPtr<ID3D11Texture2D> stagingTexture;
+    if (!CopyTextureToStaging(d3dTexture.Get(), stagingTexture))
+        return false;
+
+    // CPU에서 접근 가능하도록 맵핑
+    D3D11_MAPPED_SUBRESOURCE mapped = {};
+    HRESULT hr = DC->Map(stagingTexture.Get(), 0, D3D11_MAP_READ, 0, &mapped);
+    if (FAILED(hr)) return false;
+
+    // 픽셀 데이터 읽기 (RGBA 형식이라고 가정)
+    uint8_t* data = static_cast<uint8_t*>(mapped.pData);
+    int pixelIndex = y * mapped.RowPitch + x * 4;
+
+    outColor.r = data[pixelIndex + 0];
+    outColor.g = data[pixelIndex + 1];
+    outColor.b = data[pixelIndex + 2];
+    outColor.a = data[pixelIndex + 3];
+
+    DC->Unmap(stagingTexture.Get(), 0);
+    return true;
+}
+
+bool ResourceManager::GetTexturePixelData(const wstring& textureKey, vector<PixelColor>& outPixels,
+    uint32_t& outWidth, uint32_t& outHeight)
+{
+    auto texture = Get<Texture>(textureKey);
+    if (!texture) return false;
+
+    auto d3dTexture = texture->GetTexture2D();
+    if (!d3dTexture) return false;
+
+    D3D11_TEXTURE2D_DESC desc;
+    d3dTexture->GetDesc(&desc);
+
+    outWidth = desc.Width;
+    outHeight = desc.Height;
+
+    ComPtr<ID3D11Texture2D> stagingTexture;
+    if (!CopyTextureToStaging(d3dTexture.Get(), stagingTexture))
+        return false;
+
+    D3D11_MAPPED_SUBRESOURCE mapped = {};
+    HRESULT hr = DC->Map(stagingTexture.Get(), 0, D3D11_MAP_READ, 0, &mapped);
+    if (FAILED(hr)) return false;
+
+    uint8_t* data = static_cast<uint8_t*>(mapped.pData);
+    outPixels.resize(outWidth * outHeight);
+
+    for (uint32_t y = 0; y < outHeight; ++y)
+    {
+        for (uint32_t x = 0; x < outWidth; ++x)
+        {
+            int pixelIndex = y * mapped.RowPitch + x * 4;
+            int arrayIndex = y * outWidth + x;
+
+            outPixels[arrayIndex].r = data[pixelIndex + 0];
+            outPixels[arrayIndex].g = data[pixelIndex + 1];
+            outPixels[arrayIndex].b = data[pixelIndex + 2];
+            outPixels[arrayIndex].a = data[pixelIndex + 3];
+        }
+    }
+
+    DC->Unmap(stagingTexture.Get(), 0);
+    return true;
+}
+
+bool ResourceManager::GetAverageColor(const wstring& textureKey, int startX, int startY,
+    int width, int height, PixelColor& outColor)
+{
+    auto texture = Get<Texture>(textureKey);
+    if (!texture) return false;
+
+    auto d3dTexture = texture->GetTexture2D();
+    if (!d3dTexture) return false;
+
+    D3D11_TEXTURE2D_DESC desc;
+    d3dTexture->GetDesc(&desc);
+
+    // 영역 클램프
+    startX = max(0, min(startX, static_cast<int>(desc.Width) - 1));
+    startY = max(0, min(startY, static_cast<int>(desc.Height) - 1));
+    width = min(width, static_cast<int>(desc.Width) - startX);
+    height = min(height, static_cast<int>(desc.Height) - startY);
+
+    ComPtr<ID3D11Texture2D> stagingTexture;
+    if (!CopyTextureToStaging(d3dTexture.Get(), stagingTexture))
+        return false;
+
+    D3D11_MAPPED_SUBRESOURCE mapped = {};
+    HRESULT hr = DC->Map(stagingTexture.Get(), 0, D3D11_MAP_READ, 0, &mapped);
+    if (FAILED(hr)) return false;
+
+    uint8_t* data = static_cast<uint8_t*>(mapped.pData);
+
+    uint64_t totalR = 0, totalG = 0, totalB = 0, totalA = 0;
+    int pixelCount = 0;
+
+    for (int y = startY; y < startY + height; ++y)
+    {
+        for (int x = startX; x < startX + width; ++x)
+        {
+            int pixelIndex = y * mapped.RowPitch + x * 4;
+            totalR += data[pixelIndex + 0];
+            totalG += data[pixelIndex + 1];
+            totalB += data[pixelIndex + 2];
+            totalA += data[pixelIndex + 3];
+            ++pixelCount;
+        }
+    }
+
+    if (pixelCount > 0)
+    {
+        outColor.r = static_cast<uint8_t>(totalR / pixelCount);
+        outColor.g = static_cast<uint8_t>(totalG / pixelCount);
+        outColor.b = static_cast<uint8_t>(totalB / pixelCount);
+        outColor.a = static_cast<uint8_t>(totalA / pixelCount);
+    }
+
+    DC->Unmap(stagingTexture.Get(), 0);
+    return true;
+}
+
+bool ResourceManager::CopyTextureToStaging(ID3D11Texture2D* sourceTexture,
+    ComPtr<ID3D11Texture2D>& stagingTexture)
+{
+    D3D11_TEXTURE2D_DESC desc;
+    sourceTexture->GetDesc(&desc);
+
+    // Staging 텍스처 설정
+    D3D11_TEXTURE2D_DESC stagingDesc = desc;
+    stagingDesc.BindFlags = 0;
+    stagingDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+    stagingDesc.Usage = D3D11_USAGE_STAGING;
+    stagingDesc.MiscFlags = 0;
+
+    HRESULT hr = DEVICE->CreateTexture2D(&stagingDesc, nullptr, &stagingTexture);
+    if (FAILED(hr)) return false;
+
+    // GPU에서 CPU로 복사
+    DC->CopyResource(stagingTexture.Get(), sourceTexture);
+    return true;
+}

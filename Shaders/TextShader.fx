@@ -122,7 +122,6 @@ technique11 TextTech
     pass P0
     {
         SetBlendState(AlphaBlend, float4(0, 0, 0, 0), 0xFF);
-        SetDepthStencilState(NoDepthWrites, 0);
         SetVertexShader(CompileShader(vs_5_0, VS_Text()));
         SetPixelShader(CompileShader(ps_5_0, PS_OutlineText()));
     }

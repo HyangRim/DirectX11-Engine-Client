@@ -203,6 +203,8 @@ BlendState AdditiveBlendAlphaToCoverageEnable
     RenderTargetWriteMask[0] = 15;
 };
 
+
+
 ///////////////////
 //  DepthStencil //
 ///////////////////
@@ -218,7 +220,13 @@ DepthStencilState NoDepthWrites
     DepthEnable = true;
     DepthWriteMask = ZERO;
 };
-
+// Global.fx에 UI용 DepthStencilState 추가
+DepthStencilState UIDepthStencil
+{
+    DepthEnable = true; // UI는 깊이 테스트 비활성화
+    DepthWriteMask = ZERO; // 깊이 쓰기 비활성화
+    StencilEnable = true; // 스텐실 사용 안 함
+};
 
 ///////////////////
 //     Macro     //

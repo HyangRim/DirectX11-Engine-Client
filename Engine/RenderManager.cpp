@@ -121,19 +121,40 @@ void RenderManager::ClearData()
 void RenderManager::RenderMeshRendererForward(vector<shared_ptr<GameObject>>& _gameObjects)
 {
 
-	//인게임에 들어온 모든 아이들을 검사. 
-	map<InstanceID, vector<shared_ptr<GameObject>>> cache;
+	////인게임에 들어온 모든 아이들을 검사. 
+	//map<InstanceID, vector<shared_ptr<GameObject>>> cache;
 
 
-	//분류 단계
+	////분류 단계
+	//for (shared_ptr<GameObject>& gameObject : _gameObjects) {
+	//	if (gameObject->GetMeshRenderer() == nullptr)
+	//		continue;
+
+	//	//그 매쉬에 대한 포인터 값을 기반으로 ID값을 가져옴
+	//	//MESH와 MATERIAL 2개를 기반으로 ID값. 
+	//	const InstanceID instanceID = gameObject->GetMeshRenderer()->GetInstanceID();
+	//	cache[instanceID].push_back(gameObject);
+	//}
+
+	 // 순서를 보장하는 vector 사용
+	vector<pair<InstanceID, vector<shared_ptr<GameObject>>>> cache;
+
 	for (shared_ptr<GameObject>& gameObject : _gameObjects) {
 		if (gameObject->GetMeshRenderer() == nullptr)
 			continue;
 
-		//그 매쉬에 대한 포인터 값을 기반으로 ID값을 가져옴
-		//MESH와 MATERIAL 2개를 기반으로 ID값. 
 		const InstanceID instanceID = gameObject->GetMeshRenderer()->GetInstanceID();
-		cache[instanceID].push_back(gameObject);
+
+		// 기존 그룹 찾기
+		auto it = std::find_if(cache.begin(), cache.end(),
+			[instanceID](const auto& pair) { return pair.first == instanceID; });
+
+		if (it != cache.end()) {
+			it->second.push_back(gameObject);
+		}
+		else {
+			cache.emplace_back(instanceID, vector<shared_ptr<GameObject>>{gameObject});
+		}
 	}
 
 	//다 분류가 끝나면 같은 물체별로. 

@@ -58,7 +58,8 @@ namespace Delegate {
 			m_functionList.clear();
 			m_functionList.push_back(_func);
 		}
-		inline void operator()(Args... _types) {
+		// 여기가 문제였던 부분 - Args를 _Args로 수정
+		inline void operator()(_Args... _types) {
 			for (auto& func : m_functionList) {
 				func(std::forward<_Args>(_types)...);
 			}
@@ -97,4 +98,3 @@ namespace Delegate {
 		return [f](Args... args) ->R { return (*f)(args...); };
 	};
 }
-

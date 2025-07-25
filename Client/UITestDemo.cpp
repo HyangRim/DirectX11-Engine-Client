@@ -151,7 +151,7 @@ void UITestDemo::Init()
 			nicky->AddComponent(make_shared<ModelRenderer>(renderShader));
 			{
 				nicky->GetModelRenderer()->SetModel(m1);
-				nicky->GetModelRenderer()->SetPass(0);
+				nicky->GetModelRenderer()->SetPass(3);
 			}
 
 			//// FSM 추가
@@ -415,7 +415,7 @@ void UITestDemo::Init()
 
 
 
-		//CreatePanelWithImageUI();
+		CreatePanelWithImageUI();
 
 	
 		//
@@ -518,9 +518,7 @@ void UITestDemo::Update()
 	{// 또는 명시적으로
 		//CURSCENE->GetObjectManager()->MarkUIObjectForDestroyWithChildren(panelObj);
 		CURSCENE->Remove(nicky);
-	}
-	
-	
+	}	
 }
 
 void UITestDemo::Render()
@@ -529,6 +527,7 @@ void UITestDemo::Render()
 
 void UITestDemo::ShowImguiTransform()
 {
+
 }
 
 // UIPanel에 ImageUI 추가 사용 예제

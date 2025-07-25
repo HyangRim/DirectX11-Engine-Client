@@ -15,6 +15,8 @@
 #include "UITestDemo.h"
 #include "dxgidebug.h"
 #include "LumiaIsland.h"
+#include "StartScene.h"
+#include "CharacterSelectScene.h"
 
 #ifdef _DEBUG
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
@@ -43,7 +45,8 @@ void D3DMemoryLickCheck()
 
 #endif
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd){
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+{
 	
 	GameDesc desc;
 	desc.appName = L"GameCoding";
@@ -52,8 +55,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	desc.hWnd = NULL;
 	desc.width = 1366;
 	desc.height = 768;
-	desc.clearColor = Color(0.2f, 0.2f, 0.2f, 0.2f);
-	desc.app = make_shared<LumiaIsland>();
+	desc.clearColor = Color(0.f, 0.f, 0.f, 0.f);
+	//desc.app = make_shared<StartScene>();
+	  // 초기 씬 생성 콜백 설정
+	desc.createInitialScene = []() -> shared_ptr<Scene> {
+		return make_shared<StartScene>();
+		};
 
 	GAME->Run(desc);
 

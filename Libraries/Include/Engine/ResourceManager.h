@@ -8,6 +8,19 @@ class Mesh;
 class Model;
 class Material;
 
+struct PixelColor
+{
+	uint8_t r, g, b, a;
+
+	PixelColor() : r(0), g(0), b(0), a(0) {}
+	PixelColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A) : r(R), g(G), b(B), a(A) {}
+
+	// 편의 함수들
+	Vec4 ToVec4() const { return Vec4(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f); }
+	uint32_t ToUInt32() const { return (a << 24) | (b << 16) | (g << 8) | r; }
+	bool IsTransparent() const { return a < 10; } // 거의 투명한 픽셀 체크
+};
+
 class ResourceManager
 {
 	DECLARE_SINGLE(ResourceManager);
@@ -30,7 +43,22 @@ public:
 	template<typename T>
 	ResourceType GetResourceType();
 
-	
+public:
+	// 특정 좌표의 픽셀 색상 조회
+	bool GetPixelColor(const wstring& textureKey, int x, int y, PixelColor& outColor);
+
+	// 텍스처 전체 픽셀 데이터 조회 (디버깅용)
+	bool GetTexturePixelData(const wstring& textureKey, vector<PixelColor>& outPixels,
+		uint32_t& outWidth, uint32_t& outHeight);
+
+	// 특정 영역의 평균 색상 계산
+	bool GetAverageColor(const wstring& textureKey, int startX, int startY,
+		int width, int height, PixelColor& outColor);
+
+private:
+	// 헬퍼 함수: GPU 텍스처를 CPU로 복사
+	bool CopyTextureToStaging(ID3D11Texture2D* sourceTexture,
+		ComPtr<ID3D11Texture2D>& stagingTexture);
 
 private:
 	void CreateDefaultMesh();

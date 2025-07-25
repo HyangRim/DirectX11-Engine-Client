@@ -179,7 +179,7 @@ void ImageUI::CreateImageGameObject(ImageLayer& layer)
 
     Vec3 position = Vec3(x, y, z);
     layer.gameObject->GetTransform()->SetPosition(position);
-    layer.gameObject->GetTransform()->SetScale(Vec3(layer.size.x, layer.size.y, 1));
+    layer.gameObject->GetTransform()->SetScale(Vec3(layer.size.x * RESOLUTION_CONSTANT, layer.size.y * RESOLUTION_CONSTANT, 1));
 
     // 컴포넌트 설정
     layer.gameObject->SetLayerIndex(LAYER_UI);

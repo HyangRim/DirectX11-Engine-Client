@@ -46,6 +46,12 @@
     <Filter Include="Scripts\Player">
       <UniqueIdentifier>{af9d922f-a947-49a3-b925-6b1ba52dbc81}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\CharSelectScene">
+      <UniqueIdentifier>{dcc87d42-16e3-4355-af8e-5ef284f5953a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\StartScene">
+      <UniqueIdentifier>{74e8198b-c781-4bca-bb21-337509fd09c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -110,6 +116,12 @@
     </ClCompile>
     <ClCompile Include="PlayerOutlineEffect.cpp">
       <Filter>Scripts\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterSelectScene.cpp">
+      <Filter>Game\CharSelectScene</Filter>
+    </ClCompile>
+    <ClCompile Include="StartScene.cpp">
+      <Filter>Game\StartScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +190,12 @@
     </ClInclude>
     <ClInclude Include="PlayerOutlineEffect.h">
       <Filter>Scripts\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterSelectScene.h">
+      <Filter>Game\CharSelectScene</Filter>
+    </ClInclude>
+    <ClInclude Include="StartScene.h">
+      <Filter>Game\StartScene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

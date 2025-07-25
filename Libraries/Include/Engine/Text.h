@@ -51,7 +51,7 @@ private:
 
 private:
     wstring m_text = L"Text";
-    wstring m_fontName = L"Ink Free";
+    wstring m_fontName = L"Liberation Sans";
     Vec4 m_color = Vec4(0.0f, 0.0f, 0.0f, 1.0f);        // 기본 검은색
     Vec4 m_outlineColor = Vec4(1.0f, 1.0f, 1.0f, 1.0f); // 기본 흰색 외곽선
     Vec2 m_position = Vec2(0.0f, 0.0f);

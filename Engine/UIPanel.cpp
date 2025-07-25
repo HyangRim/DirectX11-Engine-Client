@@ -77,7 +77,7 @@ void UIPanel::Create(Vec2 screenPos, Vec2 size, shared_ptr<Material> backgroundM
     else {
         // 기본 배경 머티리얼 생성
         m_backgroundMaterial = make_shared<Material>();
-        auto shader = make_shared<Shader>(L"ImageShader.fx");
+        auto shader = make_shared<Shader>(L"FOW.fx");
         m_backgroundMaterial->SetShader(shader);
         m_backgroundMaterial->SetRenderQueue(RenderQueue::Transparent);
 
@@ -85,8 +85,8 @@ void UIPanel::Create(Vec2 screenPos, Vec2 size, shared_ptr<Material> backgroundM
         MaterialDesc& desc = m_backgroundMaterial->GetMaterialDesc();
         desc.ambient = m_backgroundColor;
         desc.diffuse = m_backgroundColor;
-        desc.specular = Vec4(0.0f, 0.0f, 0.0f, 0.0f);
-        desc.emissive = Vec4(0.0f, 0.0f, 0.0f, 0.0f);
+        desc.specular = Vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        desc.emissive = Vec4(0.0f, 0.0f, 0.0f, 1.0f);
     }
 
     go->GetMeshRenderer()->SetMaterial(m_backgroundMaterial);
@@ -192,7 +192,7 @@ shared_ptr<Button> UIPanel::AddButton(Vec2 localPos, Vec2 size, shared_ptr<Mater
 
     // 월드 좌표로 변환하여 버튼 생성
     Vec2 worldPos = LocalToWorldPosition(localPos);
-    buttonComponent->Create(worldPos, size, material);
+    buttonComponent->Create(worldPos, size, material, 1);
 
     // Z 위치를 패널보다 앞쪽으로 설정
     buttonObj->GetTransform()->SetPosition(Vec3(
@@ -368,11 +368,14 @@ void UIPanel::CreatePanelBackground()
 {
     // Quad 메시 생성
     m_backgroundMesh = make_shared<Mesh>();
-    m_backgroundMesh->CreateQuad();
+   // m_backgroundMesh->CreateQuad();
+    m_backgroundMesh = RESOURCES->Get<Mesh>(L"Quad");
+
+
 
     auto go = GetGameObject();
     go->GetMeshRenderer()->SetMesh(m_backgroundMesh);
-    go->GetMeshRenderer()->SetPass(0);
+    go->GetMeshRenderer()->SetPass(1);
 }
 
 void UIPanel::UpdateChildPositions()

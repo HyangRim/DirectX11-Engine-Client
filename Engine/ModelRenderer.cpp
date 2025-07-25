@@ -131,8 +131,3 @@ InstanceID ModelRenderer::GetInstanceID()
 	//포인터를 통한 ID발급.
 	return make_pair((uint64)m_model.get(), (uint64)m_shader.get());
 }
-
-void ModelRenderer::SetMaterial(shared_ptr<Material> _material)
-{
-	assert(false, "ModelRenderer::SetMaterial is not supported. Use SetModel instead.");
-}

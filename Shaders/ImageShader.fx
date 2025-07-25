@@ -44,9 +44,9 @@ float4 PS(VertexOutput2 input) : SV_TARGET
 {
     float4 color = DiffuseMap.Sample(ImageSampler, input.uv);
     
-    // 알파 테스트 (완전히 투명한 픽셀은 버림)
-    if (color.a < 0.01f)
-        discard;
+    //// 알파 테스트 (완전히 투명한 픽셀은 버림)
+    //if (color.a < 0.01)
+    //    discard;
     
     return color;
 }
@@ -56,10 +56,10 @@ float4 PS_Alpha(VertexOutput2 input) : SV_TARGET
 {
     float4 color = DiffuseMap.Sample(ImageSampler, input.uv);
     
-    // 알파 테스트 (완전히 투명한 픽셀은 버림)
-    if (color.a < 0.01f)
-        discard;
-   
+    // // 알파 테스트 (완전히 투명한 픽셀은 버림)
+    //if (color.a < 1)
+    //    discard;
+    
     return color;
 }
 
@@ -69,6 +69,7 @@ technique11 T0
     // 기본 패스 (알파 테스트)
     pass P0
     {
+ 
         SetVertexShader(CompileShader(vs_5_0, VS()));
         SetPixelShader(CompileShader(ps_5_0, PS()));
     }
@@ -76,9 +77,10 @@ technique11 T0
     // 알파 블렌딩 패스
     pass P1
     {
+        SetDepthStencilState(UIDepthStencil, 0); // UI 전용 깊이 스텐실 상태
         SetBlendState(AlphaBlend, float4(0, 0, 0, 0), 0xFF);
         SetVertexShader(CompileShader(vs_5_0, VS()));
-        SetPixelShader(CompileShader(ps_5_0, PS_Alpha()));
+        SetPixelShader(CompileShader(ps_5_0, PS()));
     }
 }
 

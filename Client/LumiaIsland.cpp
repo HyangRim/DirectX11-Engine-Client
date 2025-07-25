@@ -96,7 +96,7 @@ void LumiaIsland::CreateUICamera()
 	camera->GetCamera()->SetNear(1.0f);
 	camera->GetCamera()->SetFar(100.0f);
 	camera->GetCamera()->SetCullingMaskAll();
-	camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, false);
+	camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
 	CURSCENE->Add(camera);
 }
 
