@@ -46,11 +46,26 @@
     <Filter Include="Scripts\Player">
       <UniqueIdentifier>{af9d922f-a947-49a3-b925-6b1ba52dbc81}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\CharSelectScene">
-      <UniqueIdentifier>{dcc87d42-16e3-4355-af8e-5ef284f5953a}</UniqueIdentifier>
+    <Filter Include="Scripts\Player\Bianca">
+      <UniqueIdentifier>{cc339bee-045e-41fb-8dea-c8bc1fc806fd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\StartScene">
-      <UniqueIdentifier>{74e8198b-c781-4bca-bb21-337509fd09c5}</UniqueIdentifier>
+    <Filter Include="Scripts\Player\Nicky">
+      <UniqueIdentifier>{7bc5ddb6-d27e-452f-8181-b989e98e7337}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Item">
+      <UniqueIdentifier>{a99e0ae7-d986-4ea1-a65b-af53ac91b79f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Item\Equipment">
+      <UniqueIdentifier>{a47bf411-7dad-4b44-a14e-b1b8cda2087f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Item\Etc">
+      <UniqueIdentifier>{13463e65-7153-4a62-93bf-7203bf0394ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Monster">
+      <UniqueIdentifier>{0ae9907a-c8d1-443f-978e-5f702783a10e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Monster\AI">
+      <UniqueIdentifier>{4aba99c0-03f4-440f-8521-45f6b99547dc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -117,11 +132,23 @@
     <ClCompile Include="PlayerOutlineEffect.cpp">
       <Filter>Scripts\Player</Filter>
     </ClCompile>
-    <ClCompile Include="CharacterSelectScene.cpp">
-      <Filter>Game\CharSelectScene</Filter>
+    <ClCompile Include="Player.cpp">
+      <Filter>Scripts\Player</Filter>
     </ClCompile>
-    <ClCompile Include="StartScene.cpp">
-      <Filter>Game\StartScene</Filter>
+    <ClCompile Include="BaseSkill.cpp">
+      <Filter>Scripts\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>Scripts\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="EquipItem.cpp">
+      <Filter>Scripts\Item\Equipment</Filter>
+    </ClCompile>
+    <ClCompile Include="Monster.cpp">
+      <Filter>Scripts\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="AI.cpp">
+      <Filter>Scripts\Monster\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -191,11 +218,23 @@
     <ClInclude Include="PlayerOutlineEffect.h">
       <Filter>Scripts\Player</Filter>
     </ClInclude>
-    <ClInclude Include="CharacterSelectScene.h">
-      <Filter>Game\CharSelectScene</Filter>
+    <ClInclude Include="Player.h">
+      <Filter>Scripts\Player</Filter>
     </ClInclude>
-    <ClInclude Include="StartScene.h">
-      <Filter>Game\StartScene</Filter>
+    <ClInclude Include="BaseSkill.h">
+      <Filter>Scripts\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>Scripts\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="EquipItem.h">
+      <Filter>Scripts\Item\Equipment</Filter>
+    </ClInclude>
+    <ClInclude Include="Monster.h">
+      <Filter>Scripts\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="AI.h">
+      <Filter>Scripts\Monster\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
