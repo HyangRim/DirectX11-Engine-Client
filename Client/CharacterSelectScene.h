@@ -19,7 +19,8 @@ private:
 	void CreateMainCamera();
 	void CreateUICamera();
 
-	void CreateBackGround();
+	void CreateBackGround(); 
+	void CreateScrollableCharacterList();
 
 	void LoadCharacterSelectSceneImages();
 	void LoadBackGround();

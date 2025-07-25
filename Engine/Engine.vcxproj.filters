@@ -274,6 +274,9 @@
     <ClCompile Include="LobbyScene.cpp">
       <Filter>02. Managers\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="ScrollView.cpp">
+      <Filter>06. UI &amp; Effect\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Types.h">
@@ -563,6 +566,9 @@
     </ClInclude>
     <ClInclude Include="LobbyScene.h">
       <Filter>02. Managers\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="ScrollView.h">
+      <Filter>06. UI &amp; Effect\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

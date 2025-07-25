@@ -49,6 +49,7 @@ public:
 	Viewport& GetShadowViewport() { return m_shadowVP; }
 	int GetGBUFFER_COUNT() { return GBUFFER_COUNT; }
 	shared_ptr<Texture> GetShadowMap() { return m_shadowMap; }
+	HWND GetHwnd() { return m_hwnd; }
 
 	ComPtr<ID3D11RenderTargetView>* GetGBuffersRTVs() { return m_gBufferRTVs; }
 	ComPtr<ID3D11DepthStencilView> GetDepthStencilView() { return m_depthStencilView; }

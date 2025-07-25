@@ -64,6 +64,13 @@ public:
 	
 	const POINT& GetMousePos() { return m_mousePos; }
 
+
+	// 마우스 휠 지원 추가
+	int GetMouseWheelDelta() const { return m_wheelDelta; }
+	bool HasWheelInput() const { return m_wheelDelta != 0; }
+	void OnMouseWheel(int delta) { m_wheelDelta = delta; }
+	void ResetWheelDelta() { m_wheelDelta = 0; }
+
 private:
 	inline KEY_STATE GetState(KEY_TYPE key) { return m_states[static_cast<uint8>(key)]; }
 
@@ -71,5 +78,7 @@ private:
 	HWND m_hwnd;
 	vector<KEY_STATE> m_states;
 	POINT m_mousePos = {};
+
+	int m_wheelDelta = 0; // 마우스 휠 델타 저장
 };
 

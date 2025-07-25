@@ -11,6 +11,7 @@
 #include "Camera.h"
 
 #include "Material.h"
+#include "ScrollView.h"
 
 void CharacterSelectScene::Start()
 {	
@@ -43,7 +44,7 @@ void CharacterSelectScene::Start()
 	LoadCharacterSelectSceneImages();
 
 	CreateBackGround();
-
+	CreateScrollableCharacterList();
 	Scene::Start();
 }
 
@@ -164,4 +165,55 @@ void CharacterSelectScene::LoadBackGround()
 	backGroundDeco1Desc.diffuse = Vec4(1.f);
 	backGroundDeco1Desc.specular = Vec4(1.0f);
 	RESOURCES->Add(L"CSSceneBackGroundDeco_1", backGroundDeco1);
+}
+
+void CharacterSelectScene::CreateScrollableCharacterList()
+{
+	// ScrollView 생성
+	auto scrollViewObj = make_shared<GameObject>();
+	scrollViewObj->SetName(L"CharacterScrollView");
+
+	auto scrollView = make_shared<ScrollView>();
+	scrollViewObj->AddComponent(scrollView);
+
+	// 화면 중앙에 400x600 크기의 스크롤뷰 생성
+	float width = GRAPHICS->GetViewport().GetWidth();
+	float height = GRAPHICS->GetViewport().GetHeight();
+	Vec2 scrollPos = Vec2(width / 2.0f, height / 2.0f);
+	Vec2 scrollSize = Vec2(400.0f, 600.0f);
+
+	scrollView->Create(scrollPos, scrollSize, nullptr);
+	scrollView->SetScrollDirection(ScrollDirection::Vertical);
+	scrollView->SetContentSize(Vec2(400.0f, 1800.0f)); // 컨텐츠는 더 큰 크기
+	scrollView->SetScrollSpeed(30.0f);
+
+	// 캐릭터 카드들 추가
+	for (int i = 0; i < 10; i++) {
+		Vec2 cardPos = Vec2(0, i * 120.0f); // 세로로 배치
+		Vec2 cardSize = Vec2(350.0f, 100.0f);
+
+		auto characterPanel = scrollView->AddPanel(
+			cardPos,
+			cardSize,
+			nullptr,
+			L"CharacterCard_" + std::to_wstring(i)
+		);
+
+		// 텍스트 GameObject 생성하여 AddUIElement로 추가
+		auto textObj = make_shared<GameObject>();
+		textObj->SetName(L"CharacterText_" + std::to_wstring(i));
+
+		// Text 컴포넌트 추가 및 설정
+		auto textComponent = make_shared<Text>();
+		textObj->AddComponent(textComponent);
+
+		Vec2 textPos = Vec2(-100, i * 120.0f); // 패널 내 상대 위치
+		textComponent->Create(Vec2(0, 0), L"Character " + std::to_wstring(i + 1), 20.0f, Vec4(1, 1, 1, 1));
+
+		// ScrollView에 텍스트 요소 추가 (중요: AddUIElement 사용)
+		scrollView->AddUIElement(textObj, textPos);
+	}
+
+	AddUIObject(scrollViewObj, true);
+	RegisterUIParent(scrollViewObj);
 }

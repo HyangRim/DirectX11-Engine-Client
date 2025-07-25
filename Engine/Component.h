@@ -23,9 +23,11 @@ enum class ComponentType : uint8 {
 	UIPanel,
 	TextButton,
 	Image,
+	ScrollView,
 	AnimationStateMachine,
 	NavMesh,
 	NavMeshAgent,
+
 	// ...
 	Script,
 	End

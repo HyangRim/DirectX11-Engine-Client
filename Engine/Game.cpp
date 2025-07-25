@@ -110,6 +110,15 @@ LRESULT CALLBACK Game::WndProc(HWND handle, UINT message, WPARAM wParam, LPARAM 
 	{
 	case WM_SIZE:
 		break;
+	case WM_MOUSEWHEEL:
+	{
+		// ¸¶¿ì½º ÈÙ µ¨Å¸ °ª ÃßÃâ
+		int wheelDelta = GET_WHEEL_DELTA_WPARAM(wParam);
+		
+		INPUT->OnMouseWheel(wheelDelta);
+		return 0;
+	}
+		break;
 	case WM_CLOSE:
 	case WM_DESTROY:
 		PostQuitMessage(0);
@@ -117,6 +126,8 @@ LRESULT CALLBACK Game::WndProc(HWND handle, UINT message, WPARAM wParam, LPARAM 
 	default:
 		return ::DefWindowProc(handle, message, wParam, lParam);
 	}
+
+	return 0;
 }
 
 void Game::Update()

@@ -5,7 +5,6 @@
 #include <vector>
 #include <iostream>
 #include <type_traits>
-
 namespace Delegate {
 	template<typename ..._Args>
 	class Delegate
@@ -16,7 +15,8 @@ namespace Delegate {
 
 	public:
 		inline void Push(Function&& _func) {
-			m_functionList.push_back(_func);
+
+			m_functionList.emplace_back(move(_func));
 		}
 		inline void Pop(Function&& _func) {
 			for (int idx = 0; idx < m_functionList.size(); ++idx) {
@@ -32,13 +32,13 @@ namespace Delegate {
 
 
 	public:
-		inline void operator+=(const Function& _func) {
+		inline void operator+=(Function& _func) {
 			m_functionList.push_back(_func);
 		}
-		inline void operator+=(const Function&& _func) {
+		inline void operator+=(Function&& _func) {
 			m_functionList.push_back(_func);
 		}
-		inline void operator-=(const Function& _func) {
+		inline void operator-=(Function& _func) {
 			for (int idx = 0; idx < m_functionList.size(); ++idx) {
 				if (m_functionList[idx].target_type() == _func.target_type()) {
 					m_functionList.erase(std::next(m_functionList.begin(), idx));
@@ -46,7 +46,7 @@ namespace Delegate {
 				}
 			}
 		}
-		inline void operator-=(const Function&& _func) {
+		inline void operator-=(Function&& _func) {
 			for (int idx = 0; idx < m_functionList.size(); ++idx) {
 				if (m_functionList[idx].target_type() == _func.target_type()) {
 					m_functionList.erase(std::next(m_functionList.begin(), idx));
@@ -58,8 +58,7 @@ namespace Delegate {
 			m_functionList.clear();
 			m_functionList.push_back(_func);
 		}
-		// 여기가 문제였던 부분 - Args를 _Args로 수정
-		inline void operator()(_Args... _types) {
+		inline void operator()(_Args&&... _types) {
 			for (auto& func : m_functionList) {
 				func(std::forward<_Args>(_types)...);
 			}
@@ -98,3 +97,4 @@ namespace Delegate {
 		return [f](Args... args) ->R { return (*f)(args...); };
 	};
 }
+

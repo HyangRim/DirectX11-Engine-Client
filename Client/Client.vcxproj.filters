@@ -67,6 +67,12 @@
     <Filter Include="Scripts\Monster\AI">
       <UniqueIdentifier>{4aba99c0-03f4-440f-8521-45f6b99547dc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\StartScene">
+      <UniqueIdentifier>{cf8b3d55-c48c-41ad-a54a-de1a0f5e642a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\CSScene">
+      <UniqueIdentifier>{d0457b38-34ae-4d3a-88b7-b52d1dcf3c89}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -149,6 +155,12 @@
     </ClCompile>
     <ClCompile Include="AI.cpp">
       <Filter>Scripts\Monster\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="StartScene.cpp">
+      <Filter>Game\StartScene</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterSelectScene.cpp">
+      <Filter>Game\CSScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -235,6 +247,12 @@
     </ClInclude>
     <ClInclude Include="AI.h">
       <Filter>Scripts\Monster\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="StartScene.h">
+      <Filter>Game\StartScene</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterSelectScene.h">
+      <Filter>Game\CSScene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

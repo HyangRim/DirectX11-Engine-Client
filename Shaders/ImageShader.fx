@@ -63,13 +63,19 @@ float4 PS_Alpha(VertexOutput2 input) : SV_TARGET
     return color;
 }
 
+// 픽셀 셰이더 (단색 사용 - Material 색상 사용)
+float4 PS_SolidColor(VertexOutput2 input) : SV_TARGET
+{
+    return Material.diffuse; // Material 상수 버퍼의 diffuse 색상 사용
+}
+
+
 // 테크닉
 technique11 T0
 {
     // 기본 패스 (알파 테스트)
     pass P0
     {
- 
         SetVertexShader(CompileShader(vs_5_0, VS()));
         SetPixelShader(CompileShader(ps_5_0, PS()));
     }
@@ -81,6 +87,22 @@ technique11 T0
         SetBlendState(AlphaBlend, float4(0, 0, 0, 0), 0xFF);
         SetVertexShader(CompileShader(vs_5_0, VS()));
         SetPixelShader(CompileShader(ps_5_0, PS()));
+    }
+
+    // 단색 알파 블렌딩 패스
+    pass P2
+    {
+        SetDepthStencilState(UIDepthStencil, 0);
+        SetBlendState(AlphaBlend, float4(0, 0, 0, 0), 0xFF);
+        SetVertexShader(CompileShader(vs_5_0, VS()));
+        SetPixelShader(CompileShader(ps_5_0, PS_SolidColor()));
+    }
+
+    // 단색 패스
+    pass P3
+    {
+        SetVertexShader(CompileShader(vs_5_0, VS()));
+        SetPixelShader(CompileShader(ps_5_0, PS_SolidColor()));
     }
 }
 

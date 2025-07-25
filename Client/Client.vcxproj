@@ -26,6 +26,7 @@
     <ClInclude Include="BillboardDemo.h" />
     <ClInclude Include="ButtonDemo.h" />
     <ClInclude Include="CameraScript.h" />
+    <ClInclude Include="CharacterSelectScene.h" />
     <ClInclude Include="Client_Define.h" />
     <ClInclude Include="EquipItem.h" />
     <ClInclude Include="FogOfWar.h" />
@@ -43,6 +44,7 @@
     <ClInclude Include="RawBufferDemo.h" />
     <ClInclude Include="SceneDemo.h" />
     <ClInclude Include="SnowBillboardDemo.h" />
+    <ClInclude Include="StartScene.h" />
     <ClInclude Include="StructuredDemo.h" />
     <ClInclude Include="TextureBufferDemo.h" />
     <ClInclude Include="UITestDemo.h" />
@@ -56,6 +58,7 @@
     <ClCompile Include="BillboardDemo.cpp" />
     <ClCompile Include="ButtonDemo.cpp" />
     <ClCompile Include="CameraScript.cpp" />
+    <ClCompile Include="CharacterSelectScene.cpp" />
     <ClCompile Include="EquipItem.cpp" />
     <ClCompile Include="FogOfWar.cpp" />
     <ClCompile Include="GroupBufferDemo.cpp" />
@@ -75,6 +78,7 @@
     <ClCompile Include="RawBufferDemo.cpp" />
     <ClCompile Include="SceneDemo.cpp" />
     <ClCompile Include="SnowBillboardDemo.cpp" />
+    <ClCompile Include="StartScene.cpp" />
     <ClCompile Include="StructuredDemo.cpp" />
     <ClCompile Include="TextureBufferDemo.cpp" />
     <ClCompile Include="UITestDemo.cpp" />

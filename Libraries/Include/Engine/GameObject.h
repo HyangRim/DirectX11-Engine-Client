@@ -24,6 +24,7 @@ class ImageUI;
 class AnimationStateMachine;
 class NavMesh;
 class NavMeshAgent;
+class ScrollView;
 
 enum class OBJECTTYPE {
 	DEFAULT,
@@ -68,6 +69,7 @@ public:
 	shared_ptr<AnimationStateMachine> GetAnimationStateMachine();
 	shared_ptr<NavMesh> GetNavMesh();
 	shared_ptr<NavMeshAgent> GetNavMeshAgent();
+	shared_ptr<ScrollView> GetScrollView();
 
 
 
