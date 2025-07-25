@@ -4,6 +4,7 @@
 class Item;
 class EquipItem;
 class BaseSkill;
+struct ItemStatus;
 
 struct PlayerStatus {
     int level = 1;
@@ -74,33 +75,33 @@ public:
     //Helper Function.
     PlayerStatus& GetStatus() { return m_status; }
     
-    int SetLevel(int _value) { m_status.level = _value; }
-    int SetCurExpLimit(int _value) { m_status.curExpLimit = _value; }
-    int SetCurExp(int _value) { m_status.curExp = _value; LevelUp(); }
-    int32 SetMaxHP(int32 _value) { m_status.max_HP = _value; }
-    int32 SetHP(int32 _value) {
+    void SetLevel(int _value) { m_status.level = _value; }
+    void SetCurExpLimit(int _value) { m_status.curExpLimit = _value; }
+    void SetCurExp(int _value) { m_status.curExp = _value; LevelUp(); }
+    void SetMaxHP(int32 _value) { m_status.max_HP = _value; }
+    void SetHP(int32 _value) {
         if (_value > m_status.max_HP)
             m_status.hp = m_status.max_HP;
         else
             m_status.hp = _value;
     }
-    int32 SetMaxStamina(int32 _value) { m_status.max_Stamina = _value; }
-    int32 SetStamina(int32 _value) {
+    void SetMaxStamina(int32 _value) { m_status.max_Stamina = _value; }
+    void SetStamina(int32 _value) {
         if (_value > m_status.max_Stamina)
             m_status.stamina = m_status.max_Stamina;
         else
             m_status.stamina = _value;
     }
 
-    float SetAD(float _value) { m_status.adPower = _value; }
-    float SetAP(float _value) { m_status.apPower = _value; }
-    float SetHitRange(float _value) { m_status.hitRange = _value; }
-    float SetHitSpeed(float _value) { m_status.hitSpeed = _value; }
-    float SetDefense(float _value) { m_status.defense = _value; }
-    float SetCooldownReduction(float _value) { m_status.cooldownReduction = _value; }
-    float SetMoveSpeed(float _value) { m_status.moveSpeed = _value; }
-    float SetHealing(float _value) { m_status.healing = _value; }
-    float SetHealingStamina(float _value) { m_status.healing_Stamina = _value; }
+    void SetAD(float _value) { m_status.adPower = _value; }
+    void SetAP(float _value) { m_status.apPower = _value; }
+    void SetHitRange(float _value) { m_status.hitRange = _value; }
+    void SetHitSpeed(float _value) { m_status.hitSpeed = _value; }
+    void SetDefense(float _value) { m_status.defense = _value; }
+    void SetCooldownReduction(float _value) { m_status.cooldownReduction = _value; }
+    void SetMoveSpeed(float _value) { m_status.moveSpeed = _value; }
+    void SetHealing(float _value) { m_status.healing = _value; }
+    void SetHealingStamina(float _value) { m_status.healing_Stamina = _value; }
 
 
 private:

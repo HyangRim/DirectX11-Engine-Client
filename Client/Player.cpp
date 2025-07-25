@@ -146,8 +146,8 @@ void Player::LevelUp()
 
 void Player::ApplyEquipStatus(ItemStatus& _Equipstatus)
 {
-	float hpRatio = m_status.hp / m_status.max_HP;
-	float staminaRatio = m_status.hp / m_status.max_HP;
+	float hpRatio = static_cast<float>(m_status.hp) / static_cast<float>(m_status.max_HP);
+	float staminaRatio = static_cast<float>(m_status.hp) / static_cast<float>(m_status.max_HP);
 
 	m_status.max_HP += _Equipstatus.hp;
 	m_status.max_Stamina += _Equipstatus.stamina;
@@ -165,8 +165,8 @@ void Player::ApplyEquipStatus(ItemStatus& _Equipstatus)
 
 void Player::ReleaseEquipStatus(ItemStatus& _Equipstatus)
 {
-	float hpRatio = m_status.hp / m_status.max_HP;
-	float staminaRatio = m_status.hp / m_status.max_HP;
+	float hpRatio = static_cast<float>(m_status.hp) / static_cast<float>(m_status.max_HP);
+	float staminaRatio = static_cast<float>(m_status.hp) / static_cast<float>(m_status.max_HP);
 
 	m_status.max_HP -= _Equipstatus.hp;
 	m_status.max_Stamina -= _Equipstatus.stamina;
