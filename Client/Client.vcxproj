@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AI.h" />
     <ClInclude Include="BaseSkill.h" />
     <ClInclude Include="BiancaCamera.h" />
     <ClInclude Include="BiancaTest.h" />
@@ -33,6 +34,7 @@
     <ClInclude Include="Loader.h" />
     <ClInclude Include="LumiaIsland.h" />
     <ClInclude Include="Main.h" />
+    <ClInclude Include="Monster.h" />
     <ClInclude Include="OrthoGraphicDemo.h" />
     <ClInclude Include="ParticleDemo.h" />
     <ClInclude Include="pch.h" />
@@ -47,6 +49,7 @@
     <ClInclude Include="ViewportDemo.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AI.cpp" />
     <ClCompile Include="BaseSkill.cpp" />
     <ClCompile Include="BiancaCamera.cpp" />
     <ClCompile Include="BiancaTest.cpp" />
@@ -60,6 +63,7 @@
     <ClCompile Include="Loader.cpp" />
     <ClCompile Include="LumiaIsland.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Monster.cpp" />
     <ClCompile Include="OrthoGraphicDemo.cpp" />
     <ClCompile Include="ParticleDemo.cpp" />
     <ClCompile Include="pch.cpp">

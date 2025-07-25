@@ -61,6 +61,12 @@
     <Filter Include="Scripts\Item\Etc">
       <UniqueIdentifier>{13463e65-7153-4a62-93bf-7203bf0394ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Monster">
+      <UniqueIdentifier>{0ae9907a-c8d1-443f-978e-5f702783a10e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Monster\AI">
+      <UniqueIdentifier>{4aba99c0-03f4-440f-8521-45f6b99547dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -137,6 +143,12 @@
     </ClCompile>
     <ClCompile Include="EquipItem.cpp">
       <Filter>Scripts\Item\Equipment</Filter>
+    </ClCompile>
+    <ClCompile Include="Monster.cpp">
+      <Filter>Scripts\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="AI.cpp">
+      <Filter>Scripts\Monster\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -217,6 +229,12 @@
     </ClInclude>
     <ClInclude Include="EquipItem.h">
       <Filter>Scripts\Item\Equipment</Filter>
+    </ClInclude>
+    <ClInclude Include="Monster.h">
+      <Filter>Scripts\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="AI.h">
+      <Filter>Scripts\Monster\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

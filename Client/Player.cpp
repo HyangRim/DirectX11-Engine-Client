@@ -10,6 +10,20 @@ Player::Player()
 
 Player::~Player()
 {
+	for (auto skill : m_skills) {
+		if (skill != nullptr)
+			skill.reset();
+	}
+
+	for (auto equipment : m_curEquipment) {
+		if (equipment != nullptr)
+			equipment.reset();
+	}
+
+	for (auto item : m_inventory) {
+		if (item != nullptr)
+			item.reset();
+	}
 }
 
 void Player::Start()
