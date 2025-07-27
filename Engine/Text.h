@@ -75,4 +75,13 @@ private:
     ComPtr<ID3DX11EffectVectorVariable> m_outlineColorEffect;
     ComPtr<ID3DX11EffectScalarVariable> m_textAlphaEffect;
     ComPtr<ID3DX11EffectScalarVariable> m_outlineWidthEffect;
+
+    
+private:
+    Vec2 m_localPosition;  // 부모(UIPanel) 기준 로컬 위치
+
+public:
+    void UpdatePosition(const Vec2& parentWorldPos);  // 부모 위치 기준으로 업데이트
+    void SetLocalPosition(const Vec2& localPos) { m_localPosition = localPos; }
+    const Vec2& GetLocalPosition() const { return m_localPosition; }
 };

@@ -24,6 +24,7 @@ private:
 
 	void LoadCharacterSelectSceneImages();
 	void LoadBackGround();
+	void LoadCharacterSlotImages();
 
 
 private:

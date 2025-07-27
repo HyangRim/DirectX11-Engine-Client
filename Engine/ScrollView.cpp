@@ -165,6 +165,7 @@ shared_ptr<UIPanel> ScrollView::AddPanel(Vec2 localPos, Vec2 size, shared_ptr<Ma
 
     // 패널 GameObject 생성
     auto panelObj = make_shared<GameObject>();
+    panelObj->GetTransform()->SetPosition(Vec3(localPos.x, localPos.y, 0));
     panelObj->SetName(name);
 
     // UIPanel 컴포넌트 추가
@@ -311,6 +312,8 @@ void ScrollView::UpdateContentPosition()
             if (posIt != m_originalPositions.end()) {
                 Vec2 originalContentPos = posIt->second;
                 Vec2 screenPos = ContentToScreenPosition(originalContentPos);
+
+                //cout << "아마 panel : " << screenPos.x << " , " << screenPos.y << endl;
 
                 float height = GRAPHICS->GetViewport().GetHeight();
                 float width = GRAPHICS->GetViewport().GetWidth();

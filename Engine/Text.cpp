@@ -94,6 +94,8 @@ void Text::SetPosition(const Vec2& position)
         float x = position.x - width / 2.0f;
         float y = height / 2.0f - position.y;
 
+        cout << "final Text pos : " << x << " , " << y << endl;
+
         go->GetTransform()->SetPosition(Vec3(x, y, 0));
     }
 }
@@ -163,8 +165,10 @@ void Text::Create(Vec2 screenPos, const wstring& text, float fontSize,
     m_outlineWidth = outlineWidth;
     m_position = screenPos;
 
-    SetPosition(screenPos);
+    m_localPosition = screenPos;
 
+    SetPosition(screenPos);
+ 
     auto go = GetGameObject();
     go->GetTransform()->SetScale(Vec3(1, 1, 1));
 
@@ -330,4 +334,25 @@ void Text::PushTextData()
         // ConstantBuffer 방식으로 데이터 전달
         m_material->GetShader()->PushTextData(m_color, m_outlineColor, m_alpha, m_outlineWidth);
     }
+}
+
+// Button.cpp에 새로운 함수들 추가
+void Text::UpdatePosition(const Vec2& parentWorldPos)
+{
+    auto go = m_gameObject.lock();
+    if (!go) return;
+
+    // 부모의 월드 위치 + 로컬 위치로 새 월드 위치 계산
+    Vec2 newWorldPos;
+    newWorldPos.x = parentWorldPos.x + m_localPosition.x;
+    newWorldPos.y = parentWorldPos.y + m_localPosition.y;
+
+    // 화면 좌표를 월드 좌표로 변환
+    float height = GRAPHICS->GetViewport().GetHeight();
+    float width = GRAPHICS->GetViewport().GetWidth();
+
+    float x = newWorldPos.x - width / 2;
+    float y = height / 2 - newWorldPos.y;
+
+    go->GetTransform()->SetPosition(Vec3(x, y, -0.1f));
 }

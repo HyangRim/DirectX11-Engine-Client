@@ -16,6 +16,7 @@ public:
 
 	//virtual void Update() override;
 
+	shared_ptr<Mesh> GetMesh() { return m_mesh; }
 	void SetMesh(shared_ptr<Mesh> _mesh) { m_mesh = _mesh; }
 
 	void RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech);
@@ -27,5 +28,7 @@ private:
 	//shared_ptr<Texture> m_texture;
 	//shared_ptr<Shader> m_shader;
 	//텍스처랑 셰이더는 머테리얼 안으로 들어감. 
+
+
 };
 

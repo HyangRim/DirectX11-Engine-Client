@@ -63,6 +63,8 @@ private:
     void ClampScrollPosition();
     bool IsPointInViewport(POINT point);
     Vec2 ScreenToContentPosition(Vec2 screenPos);
+
+public:
     Vec2 ContentToScreenPosition(Vec2 contentPos);
 
     // 원래 위치 저장을 위한 헬퍼 함수

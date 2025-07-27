@@ -98,7 +98,7 @@ void ButtonDemo::Init()
 	{
 		auto obj = make_shared<GameObject>();
 		obj->AddComponent(make_shared<Button>());
-		obj->GetButton()->Create(Vec2(100, 100), Vec2(100, 100), RESOURCES->Get<Material>(L"Veigar"));
+		//obj->GetButton()->Create(Vec2(100, 100), Vec2(100, 100), RESOURCES->Get<Material>(L"Veigar"));
 	
 		obj->GetButton()->AddOnClickedEvent(ButtonDemo::Test);
 		CURSCENE->Add(obj);

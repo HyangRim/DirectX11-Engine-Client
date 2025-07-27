@@ -163,6 +163,10 @@ void ImageUI::CreateImageGameObject(ImageLayer& layer)
 {
     if (m_isDestroying) return;
 
+    auto go = GetGameObject();
+    Vec3 parentPos = go->GetTransform()->GetPosition();
+
+   
     // GameObject 생성
     layer.gameObject = make_shared<GameObject>();
     layer.gameObject->SetName(L"ImageLayer_" + std::to_wstring(layer.layer));
@@ -171,9 +175,13 @@ void ImageUI::CreateImageGameObject(ImageLayer& layer)
     float height = GRAPHICS->GetViewport().GetHeight();
     float width = GRAPHICS->GetViewport().GetWidth();
 
-    float x = layer.position.x - width / 2;
-    float y = height / 2 - layer.position.y;
+    /*float x = parentPos.x + layer.position.x - width / 2;
+    float y = parentPos.y + height / 2 - layer.position.y;*/
 
+    float x = parentPos.x + layer.position.x - width / 2;
+    float y = height / 2 - (parentPos.y + layer.position.y);
+
+  
     // 레이어 순서에 따른 Z값 계산
     float z = -0.1f - (static_cast<float>(layer.layer) * 0.001f);
 
@@ -267,4 +275,37 @@ void ImageUI::Update()
         SortLayersByOrder();
     }
     // UpdateLayers() 호출 제거 - 필요할 때만 호출
+}
+
+// Button.cpp에 새로운 함수들 추가
+void ImageUI::UpdatePosition(const Vec2& parentWorldPos)
+{
+    auto go = m_gameObject.lock();
+    if (!go) return;
+
+    // 부모의 월드 위치 + 로컬 위치로 새 월드 위치 계산
+    Vec2 newWorldPos;
+    newWorldPos.x = parentWorldPos.x + m_localPosition.x;
+    newWorldPos.y = parentWorldPos.y + m_localPosition.y;
+
+    // 화면 좌표를 월드 좌표로 변환
+    float height = GRAPHICS->GetViewport().GetHeight();
+    float width = GRAPHICS->GetViewport().GetWidth();
+
+    float x = newWorldPos.x - width / 2;
+    float y = height / 2 - newWorldPos.y;
+
+    go->GetTransform()->SetPosition(Vec3(x, y, 0.5f));
+
+    map<int, ImageLayer>::iterator iter = m_imageLayers.begin();
+    for (; iter != m_imageLayers.end(); iter++)
+    {
+        auto layerGameObject = iter->second.gameObject;
+        Vec3 imageUIPos = go->GetTransform()->GetPosition();
+
+        layerGameObject->GetTransform()->SetPosition(
+            Vec3(imageUIPos.x + iter->second.position.x
+                , imageUIPos.y + iter->second.position.y
+                , 0));
+    }
 }

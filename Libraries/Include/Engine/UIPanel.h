@@ -68,6 +68,8 @@ public:
 private:
     void CreatePanelBackground();
     void UpdateChildPositions();
+
+public:
     Vec2 LocalToWorldPosition(const Vec2& localPos);
 
 private:
@@ -87,4 +89,5 @@ private:
 
 private:
     bool m_isDestroying = false;  // 소멸 중 플래그 추가
+
 };

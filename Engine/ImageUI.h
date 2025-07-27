@@ -59,4 +59,15 @@ private:
     std::vector<int> m_sortedLayers;          // 정렬된 레이어 순서
     bool m_needsSort;
     bool m_isDestroying;  // 소멸 중인지 확인하는 플래그
+
+
+private:
+    Vec2 m_localPosition;  // 부모(UIPanel) 기준 로컬 위치
+    Vec2 m_size;           // 버튼 크기
+
+public:
+    void UpdatePosition(const Vec2& parentWorldPos);  // 부모 위치 기준으로 업데이트
+    void SetLocalPosition(const Vec2& localPos) { m_localPosition = localPos; }
+    const Vec2& GetLocalPosition() const { return m_localPosition; }
+    void UpdatePickingRect(const Vec2& screenPos);
 };

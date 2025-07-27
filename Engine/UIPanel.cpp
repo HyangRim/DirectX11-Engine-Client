@@ -44,18 +44,45 @@ void UIPanel::Update()
 {
     Super::Update();
 
-    // 자식 요소들의 가시성 업데이트 (weak_ptr 사용)
-    for (auto it = m_childElements.begin(); it != m_childElements.end();) {
-        if (auto child = it->lock()) {
-            // 패널이 보이지 않으면 자식들도 숨김
-            // 실제로는 Transform의 활성화/비활성화로 처리
-            ++it;
-        }
-        else {
-            // 만료된 weak_ptr 제거
-            it = m_childElements.erase(it);
+    // Transform 위치와 m_position 동기화
+    auto go = GetGameObject();
+    if (go) {
+        Vec3 currentWorldPos = go->GetTransform()->GetPosition();
+
+        // 월드 좌표를 화면 좌표로 변환
+        float height = GRAPHICS->GetViewport().GetHeight();
+        float width = GRAPHICS->GetViewport().GetWidth();
+
+        float screenX = currentWorldPos.x + width / 2.0f;
+        float screenY = height / 2.0f - currentWorldPos.y;
+
+        Vec2 newScreenPos = Vec2(screenX, screenY);
+
+        // 위치가 변경되었다면 업데이트
+        if (abs(newScreenPos.x - m_position.x) > 0.1f || abs(newScreenPos.y - m_position.y) > 0.1f) {
+            m_position = newScreenPos;
+            UpdateChildPositions();
         }
     }
+
+    //// 자식 요소들의 가시성 업데이트 (weak_ptr 사용)
+    //for (auto it = m_childElements.begin(); it != m_childElements.end();) {
+    //    if (auto child = it->lock()) {
+    //        // 패널이 보이지 않으면 자식들도 숨김
+    //        // 실제로는 Transform의 활성화/비활성화로 처리
+    //        ++it;
+    //    }
+    //    else {
+    //        // 만료된 weak_ptr 제거
+    //        it = m_childElements.erase(it);
+    //    }
+    //}
+
+
+    //m_position.x = GetGameObject()->GetTransform()->GetPosition().x;
+    //m_position.y = GetGameObject()->GetTransform()->GetPosition().y;
+
+    UpdateChildPositions();
 }
 
 void UIPanel::Create(Vec2 screenPos, Vec2 size, shared_ptr<Material> backgroundMaterial)
@@ -70,26 +97,33 @@ void UIPanel::Create(Vec2 screenPos, Vec2 size, shared_ptr<Material> backgroundM
     go->GetTransform()->SetScale(Vec3(size.x, size.y, 1));
 
     // 배경 머티리얼 설정
-    if (backgroundMaterial) {
+    if (backgroundMaterial) 
+    {
         m_backgroundMaterial = backgroundMaterial;
         go->GetMeshRenderer()->SetMaterial(m_backgroundMaterial);
+        go->GetMeshRenderer()->SetPass(1);
     }
-    else {
+    else 
+    {
         // 기본 배경 머티리얼 생성
         m_backgroundMaterial = make_shared<Material>();
-        auto shader = make_shared<Shader>(L"FOW.fx");
+        auto shader = make_shared<Shader>(L"ImageShader.fx");
         m_backgroundMaterial->SetShader(shader);
         m_backgroundMaterial->SetRenderQueue(RenderQueue::Transparent);
+        m_backgroundMaterial->SetTransparent(true);
+        m_backgroundMaterial->SetRenderingMode(RenderingMode::Forward);
 
-        // 기본 색상 설정
         MaterialDesc& desc = m_backgroundMaterial->GetMaterialDesc();
-        desc.ambient = m_backgroundColor;
-        desc.diffuse = m_backgroundColor;
-        desc.specular = Vec4(0.0f, 0.0f, 0.0f, 1.0f);
-        desc.emissive = Vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        desc.ambient = Vec4(0.f, 0.f, 0.f, 1.f);
+        desc.diffuse = Vec4(0.f, 0.f, 0.f, 1.f);
+        desc.specular = Vec4(0.f);
+        desc.emissive = Vec4(0.f);
+
+        go->GetMeshRenderer()->SetMaterial(m_backgroundMaterial);
+        go->GetMeshRenderer()->SetPass(2);
     }
 
-    go->GetMeshRenderer()->SetMaterial(m_backgroundMaterial);
+    //go->GetMeshRenderer()->SetMaterial(m_backgroundMaterial);
     go->SetLayerIndex(LAYER_UI);
 }
 
@@ -189,11 +223,15 @@ shared_ptr<Button> UIPanel::AddButton(Vec2 localPos, Vec2 size, shared_ptr<Mater
     // Button 컴포넌트 추가
     auto buttonComponent = make_shared<Button>();
     buttonObj->AddComponent(buttonComponent);
+    //buttonComponent->SetParent(GetGameObject());
 
     // 월드 좌표로 변환하여 버튼 생성
     Vec2 worldPos = LocalToWorldPosition(localPos);
     buttonComponent->Create(worldPos, size, material, 1);
 
+    // 로컬 위치 저장
+    buttonComponent->SetLocalPosition(localPos);
+     
     // Z 위치를 패널보다 앞쪽으로 설정
     buttonObj->GetTransform()->SetPosition(Vec3(
         buttonObj->GetTransform()->GetPosition().x,
@@ -227,7 +265,12 @@ shared_ptr<Text> UIPanel::AddText(Vec2 localPos, const wstring& text, float font
 
     // 월드 좌표로 변환하여 텍스트 생성
     Vec2 worldPos = LocalToWorldPosition(localPos);
+   
     textComponent->Create(worldPos, text, fontSize, color, alpha, outlineColor, outlineWidth);
+
+    // 로컬 위치 저장
+    textComponent->SetLocalPosition(localPos);
+
 
     // Z 위치를 패널보다 앞쪽으로 설정
     textObj->GetTransform()->SetPosition(Vec3(
@@ -261,11 +304,19 @@ shared_ptr<ImageUI> UIPanel::AddImageUI(Vec2 localPos, const wstring& name)
 
     // 위치 설정
     Vec2 worldPos = LocalToWorldPosition(localPos);
-    float height = GRAPHICS->GetViewport().GetHeight();
+   
+    /*float height = GRAPHICS->GetViewport().GetHeight();
     float width = GRAPHICS->GetViewport().GetWidth();
     float x = worldPos.x - width / 2.0f;
-    float y = height / 2.0f - worldPos.y;
+    float y = height / 2.0f - worldPos.y;*/
 
+    float height = GRAPHICS->GetViewport().GetHeight();
+    float width = GRAPHICS->GetViewport().GetWidth();
+    float x = worldPos.x;
+    float y = worldPos.y;
+
+    imageUIComponent->SetLocalPosition(localPos);
+    
     imageUIObj->GetTransform()->SetPosition(Vec3(x, y, -0.05f));
     imageUIObj->SetLayerIndex(LAYER_UI);
 
@@ -375,16 +426,30 @@ void UIPanel::CreatePanelBackground()
 
     auto go = GetGameObject();
     go->GetMeshRenderer()->SetMesh(m_backgroundMesh);
-    go->GetMeshRenderer()->SetPass(1);
+    //go->GetMeshRenderer()->SetPass(1);
 }
 
 void UIPanel::UpdateChildPositions()
 {
     // 패널 위치가 변경되면 자식 요소들의 위치도 업데이트
     // weak_ptr을 사용하여 안전하게 접근
+    Vec2 panelLeftTop = Vec2(m_position.x - m_size.x / 2.f
+        , m_position.y - m_size.y / 2.f);
+
     for (auto it = m_childElements.begin(); it != m_childElements.end();) {
         if (auto child = it->lock()) {
             // 자식 위치 업데이트 로직
+            if (auto button = child->GetButton()) {
+                button->UpdatePosition(panelLeftTop);
+            }
+            else if (auto text = child->GetText()) {
+                text->UpdatePosition(panelLeftTop);
+            }
+            else if (auto ImageUI = child->GetImageUI())
+            {
+                ImageUI->UpdatePosition(panelLeftTop);
+            }
+
             ++it;
         }
         else {
@@ -402,3 +467,4 @@ Vec2 UIPanel::LocalToWorldPosition(const Vec2& localPos)
     worldPos.y = m_position.y + localPos.y - (m_size.y / 2.0f);
     return worldPos;
 }
+

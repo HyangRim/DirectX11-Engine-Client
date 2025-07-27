@@ -111,13 +111,14 @@ void StartScene::CreateLobbyBackGround()
 			Vec2(width / 2.f,  height / 2.f),
 			Vec2(width, height),
 			RESOURCES->Get<Material>(L"LobbyImage")
+			//nullptr
 		);
 	// Panel Z값 명시적 설정
 	m_backPanel->GetTransform()->SetPosition(Vec3(0, 0, 0.9f));  // 가장 뒤쪽
 
 
 	// 패널에 버튼도 추가 가능
-	auto button = m_backPanel->GetUIPanel()->AddButton(Vec2(140.f, 197.f), Vec2(162,48),
+	auto button = m_backPanel->GetUIPanel()->AddButton(Vec2(185.f, 197.f), Vec2(162,48),
 		RESOURCES->Get<Material>(L"StartBtnRollOver"), L"StartBtnRollOver");
 
 	/*button->AddOnClickedEvent([button]() {
@@ -130,7 +131,7 @@ void StartScene::CreateLobbyBackGround()
 		});
 
 	m_backPanel->GetUIPanel()->AddText(
-		Vec2(130.f, 190.f),
+		Vec2(175.f, 190.f),
 		L"게임 시작",
 		22.f,
 		Color(1.f, 1.f, 1.f, 1.f),
@@ -141,22 +142,22 @@ void StartScene::CreateLobbyBackGround()
 	);
 
 	// 패널에 ImageUI 추가
-	auto imageUI = m_backPanel->GetUIPanel()->AddImageUI(Vec2(0, 0), L"MainImageUI");
+	auto imageUI = m_backPanel->GetUIPanel()->AddImageUI(Vec2(0,0), L"MainImageUI");
 
 	// ImageUI에 이미지 레이어들 추가
-	imageUI->AddImageLayer(0, Vec2(62, 130), Vec2(124, 42),
+	imageUI->AddImageLayer(0, Vec2(62, -130), Vec2(124, 42),
 		RESOURCES->Get<Material>(L"StartBtnDeco_1"), 1);
 
 	// ImageUI에 이미지 레이어들 추가
-	imageUI->AddImageLayer(1, Vec2(42, 190), Vec2(169, 169),
+	imageUI->AddImageLayer(1, Vec2(42, -190), Vec2(169, 169),
 		RESOURCES->Get<Material>(L"StartBtnDeco_3"), 1);
 
 	// ImageUI에 이미지 레이어들 추가
-	imageUI->AddImageLayer(2, Vec2(42, 190), Vec2(82, 93),
+	imageUI->AddImageLayer(2, Vec2(42, -190), Vec2(82, 93),
 		RESOURCES->Get<Material>(L"StartBtnDeco_4"), 1);
 
 	// ImageUI에 이미지 레이어들 추가
-	imageUI->AddImageLayer(3, Vec2(220, 200), Vec2(441, 59),
+	imageUI->AddImageLayer(3, Vec2(220, -200), Vec2(441, 59),
 		RESOURCES->Get<Material>(L"StartBtnDeco_2"), 1);
 
 

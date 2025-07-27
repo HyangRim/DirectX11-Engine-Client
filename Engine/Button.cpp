@@ -22,6 +22,8 @@ void Button::Create(Vec2 _screenPos, Vec2 _size, shared_ptr<class Material> _mat
 {
 	auto go = m_gameObject.lock();
 
+	m_size = _size;
+	
 	float height = GRAPHICS->GetViewport().GetHeight();
 	float width = GRAPHICS->GetViewport().GetWidth();
 
@@ -66,4 +68,36 @@ void Button::InvokeOnClicked()
 {
 	if (m_onClicked)
 		m_onClicked();
+}
+
+// Button.cpp에 새로운 함수들 추가
+void Button::UpdatePosition(const Vec2& parentWorldPos)
+{
+	auto go = m_gameObject.lock();
+	if (!go) return;
+
+	// 부모의 월드 위치 + 로컬 위치로 새 월드 위치 계산
+	Vec2 newWorldPos;
+	newWorldPos.x = parentWorldPos.x + m_localPosition.x;
+	newWorldPos.y = parentWorldPos.y + m_localPosition.y;
+
+	// 화면 좌표를 월드 좌표로 변환
+	float height = GRAPHICS->GetViewport().GetHeight();
+	float width = GRAPHICS->GetViewport().GetWidth();
+
+	float x = newWorldPos.x - width / 2;
+	float y = height / 2 - newWorldPos.y;
+
+	go->GetTransform()->SetPosition(Vec3(x, y, 0.5f));
+
+	// Picking RECT도 업데이트
+	UpdatePickingRect(newWorldPos);
+}
+
+void Button::UpdatePickingRect(const Vec2& screenPos)
+{
+	m_rect.left = static_cast<LONG>(screenPos.x - m_size.x / 2.f);
+	m_rect.right = static_cast<LONG>(screenPos.x + m_size.x / 2.f);
+	m_rect.top = static_cast<LONG>(screenPos.y - m_size.y / 2.f);
+	m_rect.bottom = static_cast<LONG>(screenPos.y + m_size.y / 2.f);
 }
