@@ -16,8 +16,7 @@ struct PlayerStatus {
     int32 max_Stamina = 300;
     int32 stamina = 300;
     
-    float adPower = 50;
-    float apPower = 0;
+    float hitAttack = 50;
     float hitRange = 15;
     float hitSpeed = 0.54f;
     float defense = 30;
@@ -36,8 +35,7 @@ struct PlayerGrowStatus {
     int32 hp = 78;
     int32 stamina = 46;
 
-    float adPower = 5;
-    float apPower = 4;
+    float HitAttack = 5;
     float hitSpeed = 0.04f;
     float defense = 7;
 
@@ -47,6 +45,7 @@ struct PlayerGrowStatus {
 class Player :
     public GameObject
 {
+    using Super = GameObject;
 public:
     Player();
     virtual ~Player();
@@ -93,8 +92,7 @@ public:
             m_status.stamina = _value;
     }
 
-    void SetAD(float _value) { m_status.adPower = _value; }
-    void SetAP(float _value) { m_status.apPower = _value; }
+    void SetHitAttack(float _value) { m_status.hitAttack = _value; }
     void SetHitRange(float _value) { m_status.hitRange = _value; }
     void SetHitSpeed(float _value) { m_status.hitSpeed = _value; }
     void SetDefense(float _value) { m_status.defense = _value; }
@@ -122,10 +120,17 @@ protected:
     //모든 아이템 전부 보유 가능.(기타, 소비, 장비)
     array<shared_ptr<Item>, 10> m_inventory;
 
+    //모델, 애니메이터
+    shared_ptr<Model> m_model;
+    shared_ptr<Rigidbody> m_rigidbody;
+    shared_ptr<SphereCollider> m_collider;
+    shared_ptr<NavMeshAgent> m_navAgent;
+    shared_ptr<Shader> m_defaultShader;
+
 
     //그 이외에 UI들(체력, 경험치 등등) 
     //연동 위해서 필요함. (따로 UI클래스들 만들어야함)
-
+    
 
 private:
     float m_healingCoolTime = 0.f;

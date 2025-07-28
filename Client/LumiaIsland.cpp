@@ -10,23 +10,21 @@
 #include "AnimationStateMachine.h"
 
 
-#include "BiancaRunState.h"
-#include "BiancaQSkillState.h"
-#include "BiancaWaitState.h"
-#include "BiancaESkillState.h"
-#include "BiancaRSkillState.h"
+#include "Bianca.h"
+#include "Nicky.h"
 
-#include "NickyWaitState.h"
-#include "NickyRunState.h"
 #include "NickyESkillState.h"
-#include "NickyWSkillState.h"
 #include "NickyQSkillState.h"
 #include "NickyRSkillState.h"
+#include "NickyMoveState.h"
+#include "NickyRunState.h"
+#include "NickyWaitState.h"
+#include "NickyWSkillState.h"
 
 #include "NavMesh.h"
 #include "NavMeshAgent.h"
 
-void LumiaIsland::Init()
+void LumiaIsland::Start()
 {
 	m_defaultshader = make_shared<Shader>(L"FOW.fx");
 	//m_testShader = make_shared<Shader>(L"23. RenderDemo.fx");
@@ -54,23 +52,37 @@ void LumiaIsland::Init()
 		static_pointer_cast<Light>(light->GetFixedComponent(ComponentType::Light))->SetLightDesc(lightDesc);
 		CURSCENE->Add(light);
 	}
-	//CreateCemeteryBase();
-	//CreateCemeteryInterior();
-	//CreateCemeteryEnvironment();
-	CreateCharacterNicky();
-	//CreateCharacterBianca();
+	CreateCemeteryBase();
+	CreateCemeteryInterior();
+	CreateCemeteryEnvironment();
+	//CreateCharacterNicky();
+	CreateCemeteryItemBox();
+	CreateCharacterBianca();
 
 	// NavMesh 생성 추가
 	CreateNavMesh();
+
+	Super::Start();
 }
 
 void LumiaIsland::Update()
 {
-	
+	Super::Update();
+}
+
+void LumiaIsland::FixedUpdate()
+{
+	Super::FixedUpdate();
+}
+
+void LumiaIsland::LateUpdate()
+{
+	Super::LateUpdate();
 }
 
 void LumiaIsland::Render()
 {
+	Super::Render();
 }
 
 void LumiaIsland::CreateMainCamera()
@@ -604,7 +616,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 		obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
 		obj->GetTransform()->SetLocalPosition(Vec3(96.002, 20, 79.367));
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 5486.223f, 0.f));
-		obj->AddComponent(make_shared<AABBBoxCollider>());
+		//obj->AddComponent(make_shared<AABBBoxCollider>());
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
 		obj->SetType(OBJECTTYPE::ENVIRONMENT);
 
@@ -628,7 +640,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 		obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
 		obj->GetTransform()->SetLocalPosition(Vec3(124.576, 20.117, 44.456));
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 2557.334, 0.f));
-		obj->AddComponent(make_shared<AABBBoxCollider>());
+		//obj->AddComponent(make_shared<AABBBoxCollider>());
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
 		obj->SetType(OBJECTTYPE::ENVIRONMENT);
 
@@ -651,7 +663,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 		obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
 		obj->GetTransform()->SetLocalPosition(Vec3(83.649, 20, 79.549));
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 4395.447, 0.f));
-		obj->AddComponent(make_shared<AABBBoxCollider>());
+		//obj->AddComponent(make_shared<AABBBoxCollider>());
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
 		obj->SetType(OBJECTTYPE::ENVIRONMENT);
 
@@ -675,7 +687,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 		obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
 		obj->GetTransform()->SetLocalPosition(Vec3(120.567, 20, 44.595));
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, -1263.546, 0.f));
-		obj->AddComponent(make_shared<AABBBoxCollider>());
+		//obj->AddComponent(make_shared<AABBBoxCollider>());
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
 		obj->SetType(OBJECTTYPE::ENVIRONMENT);
 
@@ -697,7 +709,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 		obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
 		obj->GetTransform()->SetLocalPosition(Vec3(110.770, 20, 44.711));
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
-		obj->AddComponent(make_shared<AABBBoxCollider>());
+		//obj->AddComponent(make_shared<AABBBoxCollider>());
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
 		obj->SetType(OBJECTTYPE::ENVIRONMENT);
 
@@ -722,7 +734,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 		obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
 		obj->GetTransform()->SetLocalPosition(Vec3(124.497, 20, 69.716));
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, -47.64, 0.f));
-		obj->AddComponent(make_shared<AABBBoxCollider>());
+		//obj->AddComponent(make_shared<AABBBoxCollider>());
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
 		obj->SetType(OBJECTTYPE::ENVIRONMENT);
 
@@ -744,7 +756,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 		obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
 		obj->GetTransform()->SetLocalPosition(Vec3(83.009, 21.389, 45.124));
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 169, 0.f));
-		obj->AddComponent(make_shared<AABBBoxCollider>());
+		//obj->AddComponent(make_shared<AABBBoxCollider>());
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
 		obj->SetType(OBJECTTYPE::ENVIRONMENT);
 
@@ -767,7 +779,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 		obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
 		obj->GetTransform()->SetLocalPosition(Vec3(83.232, 20, 71.818));
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 169, 0.f));
-		obj->AddComponent(make_shared<AABBBoxCollider>());
+		//obj->AddComponent(make_shared<AABBBoxCollider>());
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
 		obj->SetType(OBJECTTYPE::ENVIRONMENT);
 
@@ -778,6 +790,95 @@ void LumiaIsland::CreateCemeteryEnvironment()
 		}
 		CURSCENE->Add(obj);
 	}
+}
+
+void LumiaIsland::CreateCemeteryItemBox()
+{
+	//가운데 기준 11시시쪽 무덤 - 3
+	{
+		shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"ItemBox", L"Cemetery/ItemBox");
+		//m2->ReadModel(L"forest/forest");
+		m2->ReadMaterial(L"Cemetery/ItemBox");
+		auto obj = make_shared<GameObject>();
+		obj->SetName(L"ItemBox_01");
+		//obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+		obj->GetTransform()->SetLocalPosition(Vec3(96.9, 19.5, 59));
+		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
+		obj->AddComponent(make_shared<AABBBoxCollider>());
+		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+		obj->SetType(OBJECTTYPE::ITEMBOX);
+
+		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+		{
+			obj->GetModelRenderer()->SetModel(m2);
+			obj->GetModelRenderer()->SetPass(1);
+		}
+		CURSCENE->Add(obj);
+	}
+
+	{
+		shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"ItemBox", L"Cemetery/ItemBox");
+		//m2->ReadModel(L"forest/forest");
+		m2->ReadMaterial(L"Cemetery/ItemBox");
+		auto obj = make_shared<GameObject>();
+		obj->SetName(L"ItemBox_02");
+		//obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+		obj->GetTransform()->SetLocalPosition(Vec3(96.9, 20, 65.94));
+		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 180.f, 0.f));
+		obj->AddComponent(make_shared<AABBBoxCollider>());
+		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+		obj->SetType(OBJECTTYPE::ITEMBOX);
+
+		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+		{
+			obj->GetModelRenderer()->SetModel(m2);
+			obj->GetModelRenderer()->SetPass(1);
+		}
+		CURSCENE->Add(obj);
+	}
+
+	{
+		shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"ItemBox", L"Cemetery/ItemBox");
+		//m2->ReadModel(L"forest/forest");
+		m2->ReadMaterial(L"Cemetery/ItemBox");
+		auto obj = make_shared<GameObject>();
+		obj->SetName(L"ItemBox_03");
+		//obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+		obj->GetTransform()->SetLocalPosition(Vec3(111.6, 19.5, 59));
+		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
+		obj->AddComponent(make_shared<AABBBoxCollider>());
+		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+		obj->SetType(OBJECTTYPE::ITEMBOX);
+
+		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+		{
+			obj->GetModelRenderer()->SetModel(m2);
+			obj->GetModelRenderer()->SetPass(1);
+		}
+		CURSCENE->Add(obj);
+	}
+
+	{
+		shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"ItemBox", L"Cemetery/ItemBox");
+		//m2->ReadModel(L"forest/forest");
+		m2->ReadMaterial(L"Cemetery/ItemBox");
+		auto obj = make_shared<GameObject>();
+		obj->SetName(L"ItemBox_04");
+		//obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+		obj->GetTransform()->SetLocalPosition(Vec3(111.6, 20, 65.94));
+		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 180.f, 0.f));
+		obj->AddComponent(make_shared<AABBBoxCollider>());
+		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+		obj->SetType(OBJECTTYPE::ITEMBOX);
+
+		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+		{
+			obj->GetModelRenderer()->SetModel(m2);
+			obj->GetModelRenderer()->SetPass(1);
+		}
+		CURSCENE->Add(obj);
+	}
+
 }
 
 
@@ -834,192 +935,17 @@ void LumiaIsland::CreateNavMesh()
 
 void LumiaIsland::CreateCharacterNicky()
 {
-	// Animation
-	shared_ptr<Model> m1 = make_shared<Model>();
-
-	m1->ReadModel(L"Nicky/Nicky");
-	m1->ReadMaterial(L"Nicky/Nicky");
-
-
-
-	//대기
-	m1->ReadAnimation(L"Wait", L"Nicky/Nicky_Glove_Wait");
-
-	//달리기
-	m1->ReadAnimation(L"Run", L"Nicky/Nicky_Glove_Run");
-
-	//평타
-	m1->ReadAnimation(L"BaseAttack_01", L"Nicky/Nicky_Glove_Atk_01");
-	m1->ReadAnimation(L"BaseAttack_02", L"Nicky/Nicky_Glove_Atk_02");
-
-	////Q
-	m1->ReadAnimation(L"Skill_01_Attack", L"Nicky/Nicky_Glove_Skill_01_Attack");
-	m1->ReadAnimation(L"Skill_01_Rush", L"Nicky/Nicky_Glove_Skill_01_Rush");
-	m1->ReadAnimation(L"Skill_01_End", L"Nicky/Nicky_Glove_Skill_01_End");
-	//Q Charge
-	m1->ReadAnimation(L"Skill_01_Charge_Loop_Run", L"Nicky/Nicky_Glove_Skill_01_Charge_Loop_Run");
-	m1->ReadAnimation(L"Skill_01_Charge_Start_Run", L"Nicky/Nicky_Glove_Skill_01_Charge_Start_Run");
-	m1->ReadAnimation(L"Skill_01_Charge_Loop_Wait", L"Nicky/Nicky_Glove_Skill_01_Charge_Loop_Wait");
-	m1->ReadAnimation(L"Skill_01_Charge_Start_Wait", L"Nicky/Nicky_Glove_Skill_01_Charge_Start_Wait");
-
-	//W
-	m1->ReadAnimation(L"Skill_02_Guard", L"Nicky/Nicky_Glove_Skill_02_Guard");
-	m1->ReadAnimation(L"Skill_02_Loop", L"Nicky/Nicky_Glove_Skill_02_Loop");
-
-	//E
-	m1->ReadAnimation(L"Skill_03", L"Nicky/Nicky_Glove_Skill_03");
-
-	//R
-	m1->ReadAnimation(L"Skill_04_Attack", L"Nicky/Nicky_Glove_Skill_04_Attack");
-	m1->ReadAnimation(L"Skill_04_Ready", L"Nicky/Nicky_Glove_Skill_04_Ready");
-	m1->ReadAnimation(L"Skill_04_Start", L"Nicky/Nicky_Glove_Skill_04_Start");
-
-
-
-	for (int32 i = 0; i < 1; i++)
-	{
-
-		nicky = make_shared<GameObject>();
-		nicky->SetName(L"Nicky");
-		
-
-		nicky->GetTransform()->SetPosition(Vec3(15, 20, 5));
-		nicky->GetTransform()->SetScale(Vec3(1.f));
-
-		nicky->AddComponent(make_shared<SphereCollider>());
-		nicky->AddComponent(make_shared<Rigidbody>());
-		nicky->AddComponent(make_shared<NavMeshAgent>());
-		nicky->SetType(OBJECTTYPE::ITEMBOX);
-
-		nicky->GetCollider()->SetOffset(Vec3(0.f, 1.f, 0.f));
-		nicky->GetRigidbody()->SetStatic(true);
-
-		nicky->AddComponent(make_shared<ModelAnimator>(m_defaultshader));
-		{
-			nicky->GetModelAnimator()->SetModel(m1);
-			nicky->GetModelAnimator()->SetPass(2);
-		}
-		
-	
-		// FSM 추가
-		auto stateMachine = make_shared<AnimationStateMachine>();
-		nicky->AddComponent(stateMachine);
-
-		nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait, make_shared<NickyWaitState>());
-		nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Run, make_shared<NickyRunState>());
-
-		nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_2, make_shared<NickyWSkillState>());
-		nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_3, make_shared<NickyESkillState>());
-		nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4, make_shared<NickyRSkillState>());
-		nicky->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1, make_shared<NickyQSkillState>());
-
-
-		// 기존 시퀀스 생성 코드는 유지 (필요시 사용)
-		auto animator = nicky->GetModelAnimator();
-	
-		// 평타 시퀀스 (BaseAttack_01 -> BaseAttack_02)
-		vector<wstring> baseAttackAnims = { L"BaseAttack_02", L"BaseAttack_01" };
-		vector<float> baseAttackDurations = { 0.8f, 1.2f }; 
-		animator->CreateSequence(L"BaseAttack_Sequence", baseAttackAnims, baseAttackDurations, false);
-
-		// Q 스킬 시퀀스 (Skill_01_Attack -> Skill_01_Rush -> Skill_01_End)
-		vector<wstring> skill1Anims = { L"Skill_01_Attack", L"Skill_01_Rush", L"Skill_01_End" };
-		vector<float> skill1Durations = { 0.5f, 1.0f, 0.7f }; 
-		animator->CreateSequence(L"Skill_1_Sequence", skill1Anims, skill1Durations, false);
-
-		// W 스킬 시퀀스 (Skill_02_Guard -> Skill_02_Loop)
-		vector<wstring> skill2Anims = { L"Skill_02_Guard" };
-		animator->CreateSequence(L"Skill_2_Sequence", skill2Anims, false);
-
-		// E 스킬 시퀀스 (Skill_03 단일)
-		vector<wstring> skill3Anims = { L"Skill_03" };
-		animator->CreateSequence(L"Skill_3_Sequence", skill3Anims, false);
-
-		// R 스킬 시퀀스 (Skill_04_Ready -> Skill_04_Start -> Skill_04_Attack)
-		vector<wstring> skill4Anims = { L"Skill_04_Ready", L"Skill_04_Start", L"Skill_01_Rush", L"Skill_04_Attack"};
-		vector<float> skill4Durations; 
-		skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_04_Ready"));  
-		skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_04_Start"));  
-		skill4Durations.push_back(3.f); 
-		skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_04_Attack"));  
-		animator->CreateSequence(L"Skill_4_Sequence", skill4Anims, skill4Durations, false);
-
-
-
-
-		CURSCENE->Add(nicky);
-	}
+	shared_ptr<Nicky> nicky = make_shared<Nicky>(m_defaultshader);
+	nicky->GetTransform()->SetPosition(Vec3(15, 20, 5));
+	nicky->GetTransform()->SetScale(Vec3(1.f));
+	CURSCENE->Add(nicky);
 }
 
 
 void LumiaIsland::CreateCharacterBianca()
 {
-	//Animation
-	shared_ptr<Model> m1 = make_shared<Model>();
-
-	m1->ReadModel(L"Bianca2/Bianca");
-	m1->ReadMaterial(L"Bianca2/Bianca");
-	m1->ReadAnimation(L"Wait", L"Bianca2/Bianca_wait");
-	m1->ReadAnimation(L"Run", L"Bianca2/Bianca_run");
-
-	m1->ReadAnimation(L"Skill_1", L"Bianca2/Bianca_skill1");
-
-	m1->ReadAnimation(L"Skill_3_1", L"Bianca2/Bianca_skill3-1");
-	m1->ReadAnimation(L"Skill_3_2", L"Bianca2/Bianca_skill3-2");
-	m1->ReadAnimation(L"Skill_3_3", L"Bianca2/Bianca_skill3-3");
-
-
-	m1->ReadAnimation(L"Skill_4_1", L"Bianca2/Bianca_skill4");
-	m1->ReadAnimation(L"Skill_4_2", L"Bianca2/Bianca_skill4-2");
-
-
-
-	for (int32 i = 0; i < 1; i++)
-	{
-
-		bianca = make_shared<GameObject>();
-		bianca->GetTransform()->SetPosition(Vec3(15, 20, 5));
-		bianca->GetTransform()->SetScale(Vec3(1.f));
-
-		bianca->AddComponent(make_shared<ModelAnimator>(m_defaultshader));
-		{
-			bianca->GetModelAnimator()->SetModel(m1);
-			bianca->GetModelAnimator()->SetPass(2);
-		}
-		bianca->AddComponent(make_shared<SphereCollider>());
-		bianca->AddComponent(make_shared<Rigidbody>());
-		bianca->AddComponent(make_shared<NavMeshAgent>());
-		bianca->GetCollider()->SetOffset(Vec3(0.f, 1.f, 0.f));
-		bianca->GetRigidbody()->SetStatic(true);
-		
-		
-		auto animator = bianca->GetModelAnimator();
-		// FSM 추가
-		auto stateMachine = make_shared<AnimationStateMachine>();
-		bianca->AddComponent(stateMachine);
-
-		bianca->GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait, make_shared<BiancaWaitState>());
-		bianca->GetAnimationStateMachine()->RegisterState(AnimationStateType::Run, make_shared<BiancaRunState>());
-		bianca->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1, make_shared<BiancaQSkillState>());
-		bianca->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_3, make_shared<BiancaESkillState>());
-		bianca->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4, make_shared<BiancaRSkillState>());
-
-		// Q 스킬 시퀀스 
-		vector<wstring> skill1Anims = { L"Skill_1" };
-		animator->CreateSequence(L"Skill_1_Sequence", skill1Anims, false);
-
-		// R 스킬 시퀀스 (Skill_04_Ready -> Skill_04_Start -> Skill_04_Attack)
-		vector<wstring> skill4Anims = { L"Skill_4_1", L"Skill_4_2" };
-		animator->CreateSequence(L"Skill_4_Sequence", skill4Anims, false);
-
-		CURSCENE->Add(bianca);
-
-		//camera->GetTransform()->SetParent(obj->GetTransform());
-		//auto BiancaCam = make_shared<BiancaCamera>();
-		//camera->AddComponent(BiancaCam);
-		//BiancaCam->SetTarget(obj);
-		//BiancaCam->SetOffset(Vec3(0.f, 12.f, -12.5f));
-		//camera->GetTransform()->SetRotation(Vec3{ 45.f, 0.f, 0.f });
-
-	} 
+	shared_ptr<Bianca> bianca = make_shared<Bianca>(m_defaultshader);
+	bianca->GetTransform()->SetPosition(Vec3(15, 20, 5));
+	bianca->GetTransform()->SetScale(Vec3(1.f));
+	CURSCENE->Add(bianca);
 }

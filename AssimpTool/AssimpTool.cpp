@@ -2,7 +2,7 @@
 #include "AssimpTool.h"
 #include "Converter.h"
 
-void AssimpTool::Init()
+void AssimpTool::Start()
 {
 	wstring name[14] = {
 		L"Nicky/Nicky_Glove_Atk_01",
@@ -41,11 +41,11 @@ void AssimpTool::Init()
 		shared_ptr<Converter> converter = make_shared<Converter>();
 
 		//FBX -> Memory
-		converter->ReadAssetFile(L"NavMesh/NavMesh.fbx");
+		converter->ReadAssetFile(L"Map2/ItemBox.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"NavMesh/NavMesh");
-		converter->ExportModelData(L"NavMesh/NavMesh");
+		converter->ExportMaterialData(L"Cemetery/ItemBox");
+		converter->ExportModelData(L"Cemetery/ItemBox");
 
 		//CustomData -> Memory;
 		

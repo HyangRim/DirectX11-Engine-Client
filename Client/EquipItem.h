@@ -12,8 +12,7 @@ enum class EquipmentType {
 struct ItemStatus {
     int32 hp = 0;
     int32 stamina = 0;
-    float ad = 0;
-    float ap = 0;
+    float hitattack = 0;
 
     //기본 공속에 더하기 방식 
     float hitSpeed = 0;

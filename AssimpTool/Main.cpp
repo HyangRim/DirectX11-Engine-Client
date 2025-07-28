@@ -12,8 +12,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	desc.width = 1366;
 	desc.height = 768;
 	desc.clearColor = Color(0.f, 0.f, 0.f, 0.f);
-	desc.app = make_shared<AssimpTool>();
-	//desc.app = make_shared<ImGUIDemo>();
+	desc.createInitialScene = []() -> shared_ptr<Scene> {
+		return make_shared<AssimpTool>();
+	};
+
+	GAME->Run(desc);
 
 	GAME->Run(desc);
 

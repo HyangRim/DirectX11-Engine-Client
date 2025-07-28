@@ -1,13 +1,17 @@
 #pragma once
+#include "Engine/Scene.h"
 #include "IExecute.h"
 class GameObject;
 class LumiaIsland :
-    public IExecute
+    public Scene
 {
+	using Super = Scene;
 public:
-	void Init() override;
-	void Update() override;
-	void Render() override;
+	virtual void Start() override;
+	virtual void Update() override;
+	virtual void FixedUpdate() override;
+	virtual void LateUpdate() override;
+	virtual void Render() override;
 
 
 private:
@@ -18,6 +22,7 @@ private:
 	void CreateCemeteryBase();
 	void CreateCemeteryInterior();
 	void CreateCemeteryEnvironment();
+	void CreateCemeteryItemBox();
 	// NavMesh 관련 추가
 	void CreateNavMesh();
 	void CreateCharacterNicky();
