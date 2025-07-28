@@ -375,7 +375,7 @@ void CharacterSelectScene::CreateScrollableCharacterList()
 			button->SetPressedMaterial(uniqueMaterial3);
 
 			// Delegate에 함수 등록 (함수 호출이 아님!)
-			button->OnClick += []() {
+			/*button->OnClick += []() {
 				std::cout << "Button clicked!" << std::endl;
 				};
 
@@ -385,10 +385,10 @@ void CharacterSelectScene::CreateScrollableCharacterList()
 
 			button->OnHoverExit += []() {
 				std::cout << "Mouse exited button!" << std::endl;
-				};
+				};*/
 
 			// OnStateChanged에 함수 등록 - ButtonState 매개변수를 받는 함수
-			button->OnStateChanged += [](ButtonState state) {
+			/*button->OnStateChanged += [](ButtonState state) {
 				switch (state) {
 				case ButtonState::Normal:
 					std::cout << "Button state: Normal" << std::endl;
@@ -403,7 +403,7 @@ void CharacterSelectScene::CreateScrollableCharacterList()
 					std::cout << "Button state: Disabled" << std::endl;
 					break;
 				}
-				};
+				};*/
 
 			auto text = panel->AddText(
 				Vec2(50.f, 120.f),

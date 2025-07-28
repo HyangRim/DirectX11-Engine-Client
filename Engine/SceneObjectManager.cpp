@@ -327,7 +327,7 @@ shared_ptr<GameObject> SceneObjectManager::PickObjectOrUI()
             if (object->GetButton() == nullptr) continue;
             if (object->GetButton()->Picked(screenPt))
             {
-                object->GetButton()->InvokeOnClicked();
+                //object->GetButton()->InvokeOnClicked();
                 return nullptr;
             }
         }

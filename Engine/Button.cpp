@@ -14,7 +14,7 @@ Button::~Button()
 
 void Button::Update()
 {
-	Super::Update();
+    Super::Update();
 
     // Scene이 소멸 중이면 업데이트 중단
     if (CURSCENE->IsDestroying()) {
@@ -27,15 +27,15 @@ void Button::Update()
         return;
     }
 
-	if (m_isEnabled)
-	{
-		UpdateState();
-	}
+    if (m_isEnabled)
+    {
+        UpdateState();
+    }
 }
 
 bool Button::Picked(POINT _screenPos)
 {
-	return ::PtInRect(&m_rect, _screenPos);
+    return ::PtInRect(&m_rect, _screenPos);
 }
 
 
@@ -89,57 +89,59 @@ void Button::Create(Vec2 _localPos, Vec2 _size, shared_ptr<class Material> _mate
 //캡쳐 하는 바람에 영영 해제가 안되고 메모리 누수가 일어날 수 있음. 
 void Button::AddOnClickedEvent(std::function<void(void)> _func)
 {
-	m_onClicked = _func;
+    m_onClicked = _func;
 }
 
 void Button::InvokeOnClicked()
 {
-	if (m_onClicked)
-		m_onClicked();
+   /* if (m_onClicked)
+        m_onClicked();*/
+
+    OnClick();
 }
 
 // Button.cpp에 새로운 함수들 추가
 void Button::UpdatePosition(const Vec2& parentWorldPos)
 {
-	auto go = m_gameObject.lock();
-	if (!go) return;
+    auto go = m_gameObject.lock();
+    if (!go) return;
 
-	// 부모의 월드 위치 + 로컬 위치로 새 월드 위치 계산
-	Vec2 newWorldPos;
-	newWorldPos.x = parentWorldPos.x + m_localPosition.x;
-	newWorldPos.y = parentWorldPos.y + m_localPosition.y;
+    // 부모의 월드 위치 + 로컬 위치로 새 월드 위치 계산
+    Vec2 newWorldPos;
+    newWorldPos.x = parentWorldPos.x + m_localPosition.x;
+    newWorldPos.y = parentWorldPos.y + m_localPosition.y;
 
-	// 화면 좌표를 월드 좌표로 변환
-	float height = GRAPHICS->GetViewport().GetHeight();
-	float width = GRAPHICS->GetViewport().GetWidth();
+    // 화면 좌표를 월드 좌표로 변환
+    float height = GRAPHICS->GetViewport().GetHeight();
+    float width = GRAPHICS->GetViewport().GetWidth();
 
-	float x = newWorldPos.x - width / 2;
-	float y = height / 2 - newWorldPos.y;
+    float x = newWorldPos.x - width / 2;
+    float y = height / 2 - newWorldPos.y;
 
-	go->GetTransform()->SetPosition(Vec3(x, y, m_zPos));
+    go->GetTransform()->SetPosition(Vec3(x, y, m_zPos));
 
-	// Picking RECT도 업데이트
-	UpdatePickingRect(newWorldPos);
+    // Picking RECT도 업데이트
+    UpdatePickingRect(newWorldPos);
 }
 
 void Button::UpdatePickingRect(const Vec2& screenPos)
 {
-	m_rect.left = static_cast<LONG>(screenPos.x - m_size.x / 2.f);
-	m_rect.right = static_cast<LONG>(screenPos.x + m_size.x / 2.f);
-	m_rect.top = static_cast<LONG>(screenPos.y - m_size.y / 2.f);
-	m_rect.bottom = static_cast<LONG>(screenPos.y + m_size.y / 2.f);
+    m_rect.left = static_cast<LONG>(screenPos.x - m_size.x / 2.f);
+    m_rect.right = static_cast<LONG>(screenPos.x + m_size.x / 2.f);
+    m_rect.top = static_cast<LONG>(screenPos.y - m_size.y / 2.f);
+    m_rect.bottom = static_cast<LONG>(screenPos.y + m_size.y / 2.f);
 }
 
 
 void Button::SetMaterial(ButtonState state, shared_ptr<class Material> material)
 {
-	m_stateMaterials[state] = material;
+    m_stateMaterials[state] = material;
 
-	// 현재 상태와 같다면 즉시 적용
-	if (m_currentState == state)
-	{
-		ApplyCurrentMaterial();
-	}
+    // 현재 상태와 같다면 즉시 적용
+    if (m_currentState == state)
+    {
+        ApplyCurrentMaterial();
+    }
 }
 
 void Button::SetEnabled(bool enabled)
@@ -193,7 +195,7 @@ void Button::UpdateState()
         // 클릭된 경우
         if (isMouseClicked)
         {
-            InvokeOnClicked();
+            OnClick();
         }
     }
     else
@@ -265,6 +267,6 @@ void Button::ApplyCurrentMaterial()
     }
     else
     {
-        std::wcout << L"Button::ApplyCurrentMaterial - 적용할 Material이 없습니다!" << std::endl;
+        std::cout << "Button::ApplyCurrentMaterial - 적용할 Material이 없습니다!" << std::endl;
     }
 }

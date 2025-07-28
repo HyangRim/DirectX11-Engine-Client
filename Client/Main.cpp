@@ -59,7 +59,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//desc.app = make_shared<StartScene>();
 	  // 초기 씬 생성 콜백 설정
 	desc.createInitialScene = []() -> shared_ptr<Scene> {
-		return make_shared<LumiaIsland>();
+		return make_shared<StartScene>();
 		};
 
 	GAME->Run(desc);

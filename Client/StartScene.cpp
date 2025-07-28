@@ -131,23 +131,24 @@ void StartScene::CreateLobbyBackGround()
 	button->SetHoveredMaterial(hoverMaterial);
 	button->SetPressedMaterial(hoverMaterial);
 
-	// 기존 클릭 이벤트 유지
-	button->AddOnClickedEvent([this]() {
-		OnStartButtonClicked();
-		});
+	//// 기존 클릭 이벤트 유지
+	//button->AddOnClickedEvent([this]() {
+	//	OnStartButtonClicked();
+	//	});
 
-	// Delegate 이벤트도 추가 (선택사항)
+	// Delegate 이벤트도 추가 
 	button->OnClick += [this]() {
-		std::wcout << L"Delegate: Start Button Clicked!" << std::endl;
+		//std::cout << "Delegate: Start Button Clicked!" << std::endl;
+		OnStartButtonClicked();
 		};
 
-	button->OnHoverEnter += []() {
-		std::wcout << L"Start Button Hovered!" << std::endl;
-		};
+	//button->OnHoverEnter += []() {
+	//	//std::cout << "Start Button Hovered!" << std::endl;
+	//	};
 
-	button->OnHoverExit += []() {
-		std::wcout << L"Start Button Hover Exit!" << std::endl;
-		};
+	//button->OnHoverExit += []() {
+	//	//std::cout << "Start Button Hover Exit!" << std::endl;
+	//	};
 
 
 	m_backPanel->GetUIPanel()->AddText(

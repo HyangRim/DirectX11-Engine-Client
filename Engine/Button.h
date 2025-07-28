@@ -44,6 +44,12 @@ public:
 	void SetEnabled(bool enabled);
 	bool IsEnabled() const { return m_isEnabled; }
 
+	//위치관련
+	void UpdatePosition(const Vec2& parentWorldPos);  // 부모 위치 기준으로 업데이트
+	void SetLocalPosition(const Vec2& localPos) { m_localPosition = localPos; }
+	const Vec2& GetLocalPosition() const { return m_localPosition; }
+	void UpdatePickingRect(const Vec2& screenPos);
+
 private:
 	void UpdateState();
 	void ChangeState(ButtonState newState);
@@ -56,8 +62,7 @@ private:
 	RECT m_rect;
 	uint32 m_pass;
 	const float m_zPos = 0.6f;
-	
-private:
+
 	Vec2 m_localPosition;  // 부모(UIPanel) 기준 로컬 위치
 	Vec2 m_size;           // 버튼 크기
 
@@ -75,14 +80,9 @@ private:
 	shared_ptr<class Material> m_defaultMaterial = nullptr;
 
 
-public:
-	void UpdatePosition(const Vec2& parentWorldPos);  // 부모 위치 기준으로 업데이트
-	void SetLocalPosition(const Vec2& localPos) { m_localPosition = localPos; }
-	const Vec2& GetLocalPosition() const { return m_localPosition; }
-	void UpdatePickingRect(const Vec2& screenPos);
 };
 
 //인게임, 설계, 매니저등이 중요함
 //버튼, 이펙트는 그리 중요하지 않음.
 
-//코딩 난이도, 기술적인 거 포폴에 중요함. 
+//코딩 난이도, 기술적인 거 포폴에 중요함. #include "pch.h"
