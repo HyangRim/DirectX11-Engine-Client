@@ -1,11 +1,12 @@
 #pragma once
 
 #include "IExecute.h"
-class AssimpTool : public IExecute
+#include "Scene.h"
+class AssimpTool : public Scene
 {
 
 public:
-	void Init() override;
+	void Start() override;
 	void Update() override;
 	void Render() override;
 };

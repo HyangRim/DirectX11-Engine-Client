@@ -7,6 +7,7 @@
 #include "NickyRunState.h"
 #include "NickyWaitState.h"
 #include "NickyWSkillState.h"
+#include "FogOfWar.h"
 
 Nicky::Nicky(shared_ptr<Shader> _defaultShader)
 {
@@ -151,6 +152,7 @@ void Nicky::InitNickyComponent()
 	AddComponent(m_collider);
 	AddComponent(m_rigidbody);
 	AddComponent(m_navAgent);
+	AddComponent(make_shared<FogOfWar>());
 }
 
 void Nicky::InitNickySkill()

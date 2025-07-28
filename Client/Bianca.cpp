@@ -5,6 +5,7 @@
 #include "BiancaESkillState.h"
 #include "BiancaQSkillState.h"
 #include "BiancaRSkillState.h"
+#include "FogOfWar.h"
 
 
 Bianca::Bianca(shared_ptr<Shader> _defaultShader)
@@ -106,6 +107,7 @@ void Bianca::InitBiancaComponent()
 	AddComponent(m_collider);
 	AddComponent(m_rigidbody);
 	AddComponent(m_navAgent);
+	//AddComponent(make_shared<FogOfWar>());
 }
 
 void Bianca::InitBiancaSkill()

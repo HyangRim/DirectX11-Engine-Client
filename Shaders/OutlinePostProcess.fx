@@ -21,7 +21,7 @@ struct VertexQuadOutput
 };
 
 
-float4 outlineColor = float4(1, 1, 0, 1);
+float4 outlineColor = float4(1, 1, 1, 1);
 
 // 풀스크린 쿼드 버텍스 셰이더
 VertexQuadOutput VS_Quad(VertexQuad input)

@@ -22,6 +22,7 @@ private:
 	void CreateCemeteryBase();
 	void CreateCemeteryInterior();
 	void CreateCemeteryEnvironment();
+	void CreateCemeteryItemBox();
 	// NavMesh 관련 추가
 	void CreateNavMesh();
 	void CreateCharacterNicky();

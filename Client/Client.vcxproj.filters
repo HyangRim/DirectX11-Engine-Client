@@ -73,6 +73,9 @@
     <Filter Include="Game\CSScene">
       <UniqueIdentifier>{d0457b38-34ae-4d3a-88b7-b52d1dcf3c89}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Item\ITEMBOX">
+      <UniqueIdentifier>{7b4e6b20-939d-4cbc-85e7-0cf34b3055be}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -167,6 +170,9 @@
     </ClCompile>
     <ClCompile Include="Nicky.cpp">
       <Filter>Scripts\Player\Nicky</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemBox.cpp">
+      <Filter>Scripts\Item\ITEMBOX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -265,6 +271,9 @@
     </ClInclude>
     <ClInclude Include="Nicky.h">
       <Filter>Scripts\Player\Nicky</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemBox.h">
+      <Filter>Scripts\Item\ITEMBOX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

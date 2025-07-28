@@ -33,6 +33,7 @@
     <ClInclude Include="FogOfWar.h" />
     <ClInclude Include="GroupBufferDemo.h" />
     <ClInclude Include="Item.h" />
+    <ClInclude Include="ItemBox.h" />
     <ClInclude Include="Loader.h" />
     <ClInclude Include="LumiaIsland.h" />
     <ClInclude Include="Main.h" />
@@ -66,6 +67,7 @@
     <ClCompile Include="FogOfWar.cpp" />
     <ClCompile Include="GroupBufferDemo.cpp" />
     <ClCompile Include="Item.cpp" />
+    <ClCompile Include="ItemBox.cpp" />
     <ClCompile Include="Loader.cpp" />
     <ClCompile Include="LumiaIsland.cpp" />
     <ClCompile Include="Main.cpp" />
