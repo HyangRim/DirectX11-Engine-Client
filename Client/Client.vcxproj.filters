@@ -162,6 +162,12 @@
     <ClCompile Include="CharacterSelectScene.cpp">
       <Filter>Game\CSScene</Filter>
     </ClCompile>
+    <ClCompile Include="Bianca.cpp">
+      <Filter>Scripts\Player\Bianca</Filter>
+    </ClCompile>
+    <ClCompile Include="Nicky.cpp">
+      <Filter>Scripts\Player\Nicky</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -253,6 +259,12 @@
     </ClInclude>
     <ClInclude Include="CharacterSelectScene.h">
       <Filter>Game\CSScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Bianca.h">
+      <Filter>Scripts\Player\Bianca</Filter>
+    </ClInclude>
+    <ClInclude Include="Nicky.h">
+      <Filter>Scripts\Player\Nicky</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -28,10 +28,12 @@ Player::~Player()
 
 void Player::Start()
 {
+	Super::Start();
 }
 
 void Player::Update()
 {
+	Super::Update();
 	m_healingCoolTime += TIME->GetDeltaTime();
 
 	if (m_healingCoolTime >= 0.25f) {
@@ -42,10 +44,12 @@ void Player::Update()
 
 void Player::LateUpdate()
 {
+	Super::LateUpdate();
 }
 
 void Player::FixedUpdate()
 {
+	Super::FixedUpdate();
 }
 
 void Player::WearEquipment(shared_ptr<EquipItem> _item)
@@ -149,8 +153,7 @@ void Player::LevelUp()
 	m_status.max_Stamina += m_growStatus.stamina;
 	m_status.stamina += m_growStatus.stamina;
 
-	m_status.adPower += m_growStatus.adPower;
-	m_status.apPower += m_growStatus.apPower;
+	m_status.hitAttack += m_growStatus.HitAttack;
 
 	m_status.hitSpeed += m_growStatus.hitSpeed;
 	m_status.defense += m_growStatus.defense;
@@ -165,8 +168,7 @@ void Player::ApplyEquipStatus(ItemStatus& _Equipstatus)
 
 	m_status.max_HP += _Equipstatus.hp;
 	m_status.max_Stamina += _Equipstatus.stamina;
-	m_status.adPower += _Equipstatus.ad;
-	m_status.apPower += _Equipstatus.ap;
+	m_status.hitAttack += _Equipstatus.hitattack;
 	m_status.hitSpeed += _Equipstatus.hitSpeed;
 	m_status.defense += _Equipstatus.defense;
 	m_status.cooldownReduction += _Equipstatus.cooldownReduction;
@@ -184,8 +186,7 @@ void Player::ReleaseEquipStatus(ItemStatus& _Equipstatus)
 
 	m_status.max_HP -= _Equipstatus.hp;
 	m_status.max_Stamina -= _Equipstatus.stamina;
-	m_status.adPower -= _Equipstatus.ad;
-	m_status.apPower -= _Equipstatus.ap;
+	m_status.hitAttack -= _Equipstatus.hitattack;
 	m_status.hitSpeed -= _Equipstatus.hitSpeed;
 	m_status.defense -= _Equipstatus.defense;
 	m_status.cooldownReduction -= _Equipstatus.cooldownReduction;

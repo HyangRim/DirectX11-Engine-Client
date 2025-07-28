@@ -5,6 +5,7 @@
 
 #include "GameObject.h"
 #include "GeometryHelper.h"
+#include "Shader.h"
 #include "Camera.h"
 #include "MeshRenderer.h"
 #include "Mesh.h"
@@ -33,3 +34,7 @@
 #include "Sky.h"
 #include "Rigidbody.h"
 #include "SceneObjectManager.h"
+#include "AnimationState.h"
+#include "AnimationStateMachine.h"
+#include "NavMesh.h"
+#include "NavMeshAgent.h"

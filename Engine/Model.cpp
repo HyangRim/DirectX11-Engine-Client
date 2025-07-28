@@ -16,7 +16,7 @@ Model::~Model()
 {
 }
 
-void Model::ReadMaterial(wstring _filename)
+void Model::ReadMaterial(const wstring& _filename)
 {
     wstring fullPath = _texturePath + _filename + L".xml";
     auto parentPath = filesystem::path(fullPath).parent_path();
@@ -141,7 +141,7 @@ void Model::ReadMaterial(wstring _filename)
     BindCacheInfo();
 }
 
-void Model::ReadModel(wstring _filename)
+void Model::ReadModel(const wstring& _filename)
 {
     wstring fullPath = _modelPath + _filename + L".mesh";
 
@@ -212,7 +212,7 @@ void Model::ReadModel(wstring _filename)
     BindCacheInfo();
 }
 
-void Model::ReadAnimation(wstring _tag, wstring _filename)
+void Model::ReadAnimation(const wstring& _tag, const wstring& _filename)
 {
     wstring fullPath = _modelPath + _filename + L".clip";
 

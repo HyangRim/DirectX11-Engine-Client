@@ -12,9 +12,9 @@ public:
     ~Model();
 
 public:
-    void ReadMaterial(wstring _filename);
-    void ReadModel(wstring _filename);
-    void ReadAnimation(wstring _tag, wstring _filename);  // tag 매개변수 추가
+    void ReadMaterial(const wstring& _filename);
+    void ReadModel(const wstring& _filename);
+    void ReadAnimation(const wstring& _tag, const wstring& _filename);  // tag 매개변수 추가
     //void ReadAnimation(wstring _filename);  // 기존 버전 주석처리
 
     uint32 GetMaterialCount() { return static_cast<uint32>(m_materials.size()); }
