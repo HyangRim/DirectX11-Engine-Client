@@ -11,6 +11,7 @@
 #include "Scene.h"
 #include "SceneObjectManager.h"
 #include "Graphics.h"
+#include "ImageUI.h"
 
 ScrollView::ScrollView() : Super(ComponentType::ScrollView)
 {
@@ -51,6 +52,17 @@ void ScrollView::Update()
     UpdateScrollPosition();
     UpdateContentPosition();
 
+    // 클리핑 셰이더 데이터 업데이트
+    if (m_enablePixelClipping)
+    {
+        UpdateClippingShaderData();
+    }
+
+    // 뷰포트 기반 UI 요소 가시성 업데이트 추가
+    if (m_enableViewportCulling) {
+        UpdateUIElementVisibility();
+    }
+
     // 만료된 컨텐츠 요소 정리
     for (auto it = m_contentElements.begin(); it != m_contentElements.end();) {
         if (it->expired()) {
@@ -78,7 +90,7 @@ void ScrollView::Create(Vec2 screenPos, Vec2 viewSize, shared_ptr<Material> back
     float x = screenPos.x - width / 2.0f;
     float y = height / 2.0f - screenPos.y;
 
-    go->GetTransform()->SetPosition(Vec3(x, y, 0.0f));
+    go->GetTransform()->SetPosition(Vec3(x, y, m_zScrollViewPos));
     go->GetTransform()->SetScale(Vec3(viewSize.x, viewSize.y, 1.0f));
 
     // 뷰포트 영역 설정
@@ -113,7 +125,13 @@ void ScrollView::Create(Vec2 screenPos, Vec2 viewSize, shared_ptr<Material> back
         go->GetMeshRenderer()->SetPass(2);
     }
 
-  
+    // 셰이더 변수 가져오기 (ImageShader 사용 시)
+    if (backgroundMaterial && backgroundMaterial->GetShader())
+    {
+        auto shader = backgroundMaterial->GetShader();
+        m_clippingRectEffect = shader->GetVector("ClippingRect");
+        m_enableClippingEffect = shader->GetScalar("EnableClipping");
+    }
 }
 
 void ScrollView::SetContentSize(Vec2 contentSize)
@@ -165,7 +183,7 @@ shared_ptr<UIPanel> ScrollView::AddPanel(Vec2 localPos, Vec2 size, shared_ptr<Ma
 
     // 패널 GameObject 생성
     auto panelObj = make_shared<GameObject>();
-    panelObj->GetTransform()->SetPosition(Vec3(localPos.x, localPos.y, 0));
+    panelObj->GetTransform()->SetPosition(Vec3(localPos.x, localPos.y, m_zPanelPos));
     panelObj->SetName(name);
 
     // UIPanel 컴포넌트 추가
@@ -321,7 +339,7 @@ void ScrollView::UpdateContentPosition()
                 float x = screenPos.x - width / 2.0f;
                 float y = height / 2.0f - screenPos.y;
 
-                element->GetTransform()->SetPosition(Vec3(x, y, -0.1f));
+                element->GetTransform()->SetPosition(Vec3(x, y, m_zPanelPos));
             }
             ++it;
         }
@@ -392,4 +410,256 @@ bool ScrollView::HandleMouseWheel(int wheelDelta)
 
     ScrollBy(scrollDelta);
     return true;
+}
+
+
+// 뷰포트 영역 내에 UI 요소가 있는지 체크하는 함수
+bool ScrollView::IsUIElementVisible(const Vec2& elementPos, const Vec2& elementSize) const
+{
+    // 뷰포트 영역 계산 (스크롤 고려)
+    Vec2 viewportMin = m_position - m_viewSize * 0.5f;
+    Vec2 viewportMax = m_position + m_viewSize * 0.5f;
+
+    // UI 요소의 영역 계산
+    Vec2 elementMin = elementPos - elementSize * 0.5f;
+    Vec2 elementMax = elementPos + elementSize * 0.5f;
+
+    // AABB 충돌 체크 (겹치는 부분이 있으면 보임)
+    return !(elementMax.x < viewportMin.x || elementMin.x > viewportMax.x ||
+        elementMax.y < viewportMin.y || elementMin.y > viewportMax.y);
+}
+
+// UI 요소들의 가시성을 업데이트하는 함수
+void ScrollView::UpdateUIElementVisibility()
+{
+    for (auto it = m_contentElements.begin(); it != m_contentElements.end(); ++it) {
+        if (auto element = it->lock()) {
+            // UIPanel인지 확인
+            if (auto uiPanel = element->GetUIPanel()) {
+                // UIPanel의 화면 좌표와 크기 계산
+                Vec3 panelWorldPos = element->GetTransform()->GetPosition();
+                Vec3 panelScale = element->GetTransform()->GetScale();
+
+                // 월드 좌표를 화면 좌표로 변환
+                float width = GRAPHICS->GetViewport().GetWidth();
+                float height = GRAPHICS->GetViewport().GetHeight();
+
+                Vec2 panelScreenPos = Vec2(
+                    panelWorldPos.x + width / 2.0f,
+                    height / 2.0f - panelWorldPos.y
+                );
+
+                Vec2 panelSize = Vec2(panelScale.x, panelScale.y);
+
+                // UIPanel이 뷰포트 영역에 보이는지 체크
+                bool isPanelVisible = IsUIElementVisible(panelScreenPos, panelSize);
+
+                // UIPanel의 가시성 설정
+                SetGameObjectVisibility(element, isPanelVisible);
+
+                // UIPanel의 자식 요소들도 함께 처리
+                if (isPanelVisible) {
+                    // 패널이 보이면 자식들의 개별 가시성도 체크
+                    UpdateChildElementsVisibility(uiPanel, panelScreenPos, panelSize);
+                }
+                else {
+                    // 패널이 안 보이면 모든 자식들도 숨김
+                    SetChildElementsVisibility(uiPanel, false);
+                }
+            }
+        }
+    }
+}
+
+
+void ScrollView::UpdateChildElementsVisibility(shared_ptr<UIPanel> panel, const Vec2& panelScreenPos, const Vec2& panelSize)
+{
+    const auto& childElements = panel->GetChildElements();
+
+    for (const auto& weakChild : childElements)
+    {
+        if (auto child = weakChild.lock())
+        {
+            Vec3 childWorldPos = child->GetTransform()->GetPosition();
+            Vec3 childScale = child->GetTransform()->GetScale();
+
+            // 화면 좌표 변환을 일관되게 처리
+            float width = GRAPHICS->GetViewport().GetWidth();
+            float height = GRAPHICS->GetViewport().GetHeight();
+
+            Vec2 childScreenPos = Vec2(
+                childWorldPos.x + width / 2.0f,
+                height / 2.0f - childWorldPos.y
+            );
+
+            if (child->GetImageUI())
+            {
+                auto layers = child->GetImageUI()->GetLayers();
+                for (auto& layer : layers)
+                {
+                    // ImageLayer의 위치는 child의 위치를 기준으로 상대적 오프셋
+                    Vec2 layerScreenPos = Vec2(
+                        childScreenPos.x + layer.second.position.x,
+                        childScreenPos.y + layer.second.position.y
+                    );
+
+                    Vec2 layerSize = layer.second.size;
+
+                    // Layer별로 개별 가시성 체크
+                    bool isLayerVisible = IsUIElementVisible(layerScreenPos, layerSize);
+                 
+                    if (layer.second.gameObject && layer.second.gameObject->GetMeshRenderer()) {
+                        layer.second.gameObject->GetMeshRenderer()->SetActive(isLayerVisible);
+                    }
+                }
+            }
+            else
+            {
+                Vec2 childSize = Vec2(childScale.x, childScale.y);
+                bool isChildVisible = IsUIElementVisible(childScreenPos, childSize);
+                SetGameObjectVisibility(child, isChildVisible);
+            }
+        }
+    }
+}
+
+
+// UIPanel의 모든 자식 요소들 가시성 일괄 설정
+void ScrollView::SetChildElementsVisibility(shared_ptr<UIPanel> panel, bool visible)
+{
+    const auto& childElements = panel->GetChildElements();
+
+    for (const auto& weakChild : childElements) 
+    {
+        if (auto child = weakChild.lock()) 
+        {
+            if (child->GetImageUI())
+            {
+                SetImageLayerVisibility(child, visible);
+            }
+            else
+            {
+                SetGameObjectVisibility(child, visible);
+            }
+        }
+    }
+}
+
+// GameObject의 가시성을 설정하는 헬퍼 함수
+void ScrollView::SetGameObjectVisibility(shared_ptr<GameObject> obj, bool visible)
+{
+    if (!obj) return;
+
+    // MeshRenderer가 있으면 활성화/비활성화
+    if (auto meshRenderer = obj->GetMeshRenderer()) {
+        meshRenderer->SetActive(visible);
+    }
+}
+
+// GameObject의 가시성을 설정하는 헬퍼 함수
+void ScrollView::SetImageLayerVisibility(shared_ptr<GameObject> obj, bool visible)
+{
+    if (!obj) return;
+
+    // MeshRenderer가 있으면 활성화/비활성화
+    if (auto meshRenderer = obj->GetMeshRenderer()) {
+        meshRenderer->SetActive(visible);
+    }
+
+    map<int, ImageLayer>& layers = obj->GetImageUI()->GetLayers();
+
+    auto iter = layers.begin();
+    for (; iter != layers.end(); iter++)
+    {
+        iter->second.gameObject->GetMeshRenderer()->SetActive(visible);
+    }  
+}
+
+void ScrollView::UpdateClippingShaderData()
+{
+    // 클리핑 영역을 스크린 좌표로 설정
+    Vec4 clippingRect;
+    clippingRect.x = m_position.x - m_viewSize.x / 2.0f; // left
+    clippingRect.y = m_position.y - m_viewSize.y / 2.0f; // top
+    clippingRect.z = m_position.x + m_viewSize.x / 2.0f; // right
+    clippingRect.w = m_position.y + m_viewSize.y / 2.0f; // bottom
+
+    // 모든 컨텐츠 요소에 클리핑 데이터 적용
+    for (auto it = m_contentElements.begin(); it != m_contentElements.end(); ++it)
+    {
+        if (auto element = it->lock())
+        {
+            SetupClippingForElement(element);
+        }
+    }
+}
+
+void ScrollView::SetupClippingForElement(shared_ptr<GameObject> element)
+{
+    if (!element) return;
+
+    // MeshRenderer가 있는 경우
+    if (auto meshRenderer = element->GetMeshRenderer())
+    {
+        auto material = meshRenderer->GetMaterial();
+        if (material && material->GetShader())
+        {
+            auto shader = material->GetShader();
+
+            // 클리핑 영역 설정
+            Vec4 clippingRect;
+            clippingRect.x = m_position.x - m_viewSize.x / 2.0f;
+            clippingRect.y = m_position.y - m_viewSize.y / 2.0f;
+            clippingRect.z = m_position.x + m_viewSize.x / 2.0f;
+            clippingRect.w = m_position.y + m_viewSize.y / 2.0f;
+
+            // 셰이더에 클리핑 데이터 전달
+            auto clippingRectVar = shader->GetVector("ClippingRect");
+            auto enableClippingVar = shader->GetScalar("EnableClipping");
+
+            if (clippingRectVar)
+            {
+                clippingRectVar->SetFloatVector(reinterpret_cast<float*>(&clippingRect));
+            }
+
+            if (enableClippingVar)
+            {
+                float enable = m_enablePixelClipping ? 1.0f : 0.0f;
+                enableClippingVar->SetFloat(enable);
+            }
+
+            if (element->GetText())
+                meshRenderer->SetPass(1);
+
+            // 클리핑 패스 사용 (Pass 4)
+            else
+                meshRenderer->SetPass(4);
+        }
+    }
+
+    // UIPanel인 경우 자식 요소들도 처리
+    if (auto uiPanel = element->GetUIPanel())
+    {
+        const auto& childElements = uiPanel->GetChildElements();
+        for (const auto& weakChild : childElements)
+        {
+            if (auto child = weakChild.lock())
+            {
+                SetupClippingForElement(child);
+
+                // ImageUI의 레이어들도 처리
+                if (auto imageUI = child->GetImageUI())
+                {
+                    auto& layers = imageUI->GetLayers();
+                    for (auto& layer : layers)
+                    {
+                        if (layer.second.gameObject)
+                        {
+                            SetupClippingForElement(layer.second.gameObject);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

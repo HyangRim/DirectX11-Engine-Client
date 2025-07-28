@@ -96,7 +96,7 @@ void Text::SetPosition(const Vec2& position)
 
         cout << "final Text pos : " << x << " , " << y << endl;
 
-        go->GetTransform()->SetPosition(Vec3(x, y, 0));
+        go->GetTransform()->SetPosition(Vec3(x, y, m_zPos));
     }
 }
 
@@ -120,6 +120,15 @@ void Text::SetAlpha(float alpha)
 {
     if (m_alpha != alpha) {
         m_alpha = clamp(alpha, 0.0f, 1.0f);
+        m_needUpdate = true;
+    }
+}
+
+void Text::SetAlignment(TextAlignment alignment)
+{
+    if (m_alignment != alignment) {
+        m_alignment = alignment;
+        CalculateAlignmentOffset();
         m_needUpdate = true;
     }
 }
@@ -151,7 +160,7 @@ void Text::EnableOutline(bool enable)
 
 
 void Text::Create(Vec2 screenPos, const wstring& text, float fontSize,
-    Vec4 color, float alpha, Vec4 outlineColor, float outlineWidth)
+    Vec4 color, float alpha, Vec4 outlineColor, float outlineWidth, TextAlignment alignment)
 {
     if (!m_material) {
         Init();
@@ -162,6 +171,7 @@ void Text::Create(Vec2 screenPos, const wstring& text, float fontSize,
     m_color = color;
     m_alpha = alpha;
     m_outlineColor = outlineColor;
+    m_alignment = alignment; // 정렬 설정 추가
     m_outlineWidth = outlineWidth;
     m_position = screenPos;
 
@@ -240,9 +250,27 @@ void Text::CreateTextTexture()
     ::SetTextColor(hdc, RGB(255, 255, 255));
     ::SetBkMode(hdc, TRANSPARENT);
 
-    // 텍스트를 중앙에 그리기
-    int textX = (m_textWidth - textSize.cx) / 2;
-    int textY = (m_textHeight - textSize.cy) / 2;
+    //// 텍스트를 중앙에 그리기
+    //int textX = (m_textWidth - textSize.cx) / 2;
+    //int textY = (m_textHeight - textSize.cy) / 2;
+    // 정렬에 따른 텍스트 위치 계산
+    int textX, textY;
+    textY = (m_textHeight - textSize.cy) / 2; // 세로는 항상 중앙
+
+    switch (m_alignment) {
+    case TextAlignment::Left:
+        textX = 4; // 왼쪽 여백
+        break;
+    case TextAlignment::Center:
+        textX = (m_textWidth - textSize.cx) / 2; // 중앙
+        break;
+    case TextAlignment::Right:
+        textX = m_textWidth - textSize.cx - 4; // 오른쪽 여백
+        break;
+    default:
+        textX = 4;
+        break;
+    }
     TextOut(hdc, textX, textY, m_text.c_str(), static_cast<int>(m_text.length()));
 
     // 픽셀 데이터 처리 (BGRA -> RGBA 변환 및 알파 채널 설정)
@@ -301,6 +329,7 @@ void Text::CreateTextTexture()
                 float scaleY = static_cast<float>(m_textHeight);
                 go->GetTransform()->SetScale(Vec3(scaleX, scaleY, 1.0f));
             }
+            CalculateAlignmentOffset();
         }
     }
 
@@ -311,7 +340,17 @@ void Text::CreateTextTexture()
     DeleteObject(hFont);
     DeleteDC(hdc);
 
+}
 
+
+void Text::CalculateAlignmentOffset()
+{
+    // 정렬을 위한 오프셋은 텍스처 생성 단계에서 이미 처리되므로
+    // 여기서는 추가적인 Transform 조정만 필요한 경우 사용
+    m_alignmentOffset = Vec2::Zero;
+
+    // 필요에 따라 추가적인 위치 조정을 여기서 할 수 있음
+    // 예: 특정 정렬에서 미세 조정이 필요한 경우
 }
 
 void Text::UpdateMaterial()
@@ -344,8 +383,8 @@ void Text::UpdatePosition(const Vec2& parentWorldPos)
 
     // 부모의 월드 위치 + 로컬 위치로 새 월드 위치 계산
     Vec2 newWorldPos;
-    newWorldPos.x = parentWorldPos.x + m_localPosition.x;
-    newWorldPos.y = parentWorldPos.y + m_localPosition.y;
+    newWorldPos.x = parentWorldPos.x + m_localPosition.x + m_alignmentOffset.x;
+    newWorldPos.y = parentWorldPos.y + m_localPosition.y + m_alignmentOffset.y;
 
     // 화면 좌표를 월드 좌표로 변환
     float height = GRAPHICS->GetViewport().GetHeight();
@@ -354,5 +393,5 @@ void Text::UpdatePosition(const Vec2& parentWorldPos)
     float x = newWorldPos.x - width / 2;
     float y = height / 2 - newWorldPos.y;
 
-    go->GetTransform()->SetPosition(Vec3(x, y, -0.1f));
+    go->GetTransform()->SetPosition(Vec3(x, y, m_zPos));
 }

@@ -55,6 +55,7 @@ public:
 
 
     bool IsDestroying() { return m_isDestroying; }
+    void SetDestroying(bool destroying) { m_isDestroying = destroying; }
 
     void CheckCollision();
     void CheckCollisionWithQuadTree();

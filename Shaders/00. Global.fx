@@ -24,7 +24,13 @@ cbuffer TransformBuffer
 {
     matrix W;
 };
-
+// Global.fx¿¡ Ãß°¡
+cbuffer ClippingBuffer
+{
+    float4 ClippingRect; // x=left, y=top, z=right, w=bottom (screen coordinates)
+    bool EnableClipping;
+    float3 ClippingPadding;
+};
 
 ////////////////
 //Vertex Data //

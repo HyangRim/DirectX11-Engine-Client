@@ -14,6 +14,11 @@
 #include "Scene.h"
 #include "SceneObjectManager.h"
 
+const float Z_UIPANEL = 0.8f;         
+const float Z_BUTTON = 0.6f;                  
+const float Z_IMAGEUI_BASE = 0.4f;    
+const float Z_TEXT = 0.2f; 
+
 UIPanel::UIPanel() : Super(ComponentType::UIPanel)
 {
 }
@@ -179,7 +184,7 @@ void UIPanel::SetPosition(const Vec2& position)
         float x = position.x - width / 2.0f;
         float y = height / 2.0f - position.y;
 
-        go->GetTransform()->SetPosition(Vec3(x, y, 0.0f));
+        go->GetTransform()->SetPosition(Vec3(x, y, Z_UIPANEL));
     }
 
     // 자식 요소들의 위치도 업데이트
@@ -236,7 +241,7 @@ shared_ptr<Button> UIPanel::AddButton(Vec2 localPos, Vec2 size, shared_ptr<Mater
     buttonObj->GetTransform()->SetPosition(Vec3(
         buttonObj->GetTransform()->GetPosition().x,
         buttonObj->GetTransform()->GetPosition().y,
-        -0.1f  // 패널보다 앞쪽
+        Z_BUTTON  // 패널보다 앞쪽
     ));
 
     buttonObj->SetLayerIndex(LAYER_UI);
@@ -253,7 +258,8 @@ shared_ptr<Button> UIPanel::AddButton(Vec2 localPos, Vec2 size, shared_ptr<Mater
 }
 
 shared_ptr<Text> UIPanel::AddText(Vec2 localPos, const wstring& text, float fontSize,
-    Vec4 color, float alpha, Vec4 outlineColor, float outlineWidth, const wstring& name)
+    Vec4 color, float alpha, Vec4 outlineColor, float outlineWidth, const wstring& name, 
+    TextAlignment alignment)
 {
     // 텍스트 GameObject 생성
     auto textObj = make_shared<GameObject>();
@@ -266,17 +272,16 @@ shared_ptr<Text> UIPanel::AddText(Vec2 localPos, const wstring& text, float font
     // 월드 좌표로 변환하여 텍스트 생성
     Vec2 worldPos = LocalToWorldPosition(localPos);
    
-    textComponent->Create(worldPos, text, fontSize, color, alpha, outlineColor, outlineWidth);
+    textComponent->Create(worldPos, text, fontSize, color, alpha, outlineColor, outlineWidth, alignment);
 
     // 로컬 위치 저장
     textComponent->SetLocalPosition(localPos);
-
 
     // Z 위치를 패널보다 앞쪽으로 설정
     textObj->GetTransform()->SetPosition(Vec3(
         textObj->GetTransform()->GetPosition().x,
         textObj->GetTransform()->GetPosition().y,
-        -0.15f  // 버튼보다도 앞쪽
+        Z_TEXT  // 버튼보다도 앞쪽
     ));
 
     textObj->SetLayerIndex(LAYER_UI);
@@ -317,7 +322,7 @@ shared_ptr<ImageUI> UIPanel::AddImageUI(Vec2 localPos, const wstring& name)
 
     imageUIComponent->SetLocalPosition(localPos);
     
-    imageUIObj->GetTransform()->SetPosition(Vec3(x, y, -0.05f));
+    imageUIObj->GetTransform()->SetPosition(Vec3(x, y, Z_IMAGEUI_BASE));
     imageUIObj->SetLayerIndex(LAYER_UI);
 
     // 자식 요소로 등록 (weak_ptr 사용)

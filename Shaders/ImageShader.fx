@@ -25,6 +25,7 @@ struct VertexOutput2
 {
     float4 position : SV_POSITION;
     float2 uv : TEXCOORD;
+    float4 screenPos : TEXCOORD1; // 스크린 좌표 추가
 };
 
 // 버텍스 셰이더
@@ -34,9 +35,36 @@ VertexOutput2 VS(VertexInput2 input)
     
     output.position = mul(input.position, W);
     output.position = mul(output.position, VP);
+    output.screenPos = output.position; // 스크린 좌표 저장
     output.uv = input.uv;
     
     return output;
+}
+
+// 클리핑이 적용된 픽셀 셰이더
+float4 PS_Clipped(VertexOutput2 input) : SV_TARGET
+{
+    // 스크린 좌표로 변환
+    float2 screenPos = input.screenPos.xy / input.screenPos.w;
+    screenPos = screenPos * 0.5f + 0.5f; // [-1,1] -> [0,1]
+    screenPos.y = 1.0f - screenPos.y; // Y축 뒤집기
+    
+    // 뷰포트 크기로 스케일링
+    screenPos.x *= 1366.0f; // 실제 화면 너비로 조정
+    screenPos.y *= 768.0f; // 실제 화면 높이로 조정
+    
+    // 클리핑 영역 체크
+    if (EnableClipping)
+    {
+        if (screenPos.x < ClippingRect.x || screenPos.x > ClippingRect.z ||
+            screenPos.y < ClippingRect.y || screenPos.y > ClippingRect.w)
+        {
+            discard; // 클리핑 영역 밖의 픽셀은 버림
+        }
+    }
+    
+    float4 color = DiffuseMap.Sample(ImageSampler, input.uv);
+    return color;
 }
 
 // 픽셀 셰이더
@@ -103,6 +131,15 @@ technique11 T0
     {
         SetVertexShader(CompileShader(vs_5_0, VS()));
         SetPixelShader(CompileShader(ps_5_0, PS_SolidColor()));
+    }
+
+    // 클리핑 패스 추가
+    pass P4
+    {
+        SetDepthStencilState(UIDepthStencil, 0);
+        SetBlendState(AlphaBlend, float4(0, 0, 0, 0), 0xFF);
+        SetVertexShader(CompileShader(vs_5_0, VS()));
+        SetPixelShader(CompileShader(ps_5_0, PS_Clipped()));
     }
 }
 

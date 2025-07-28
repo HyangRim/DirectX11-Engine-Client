@@ -58,9 +58,15 @@ namespace Delegate {
 			m_functionList.clear();
 			m_functionList.push_back(_func);
 		}
-		inline void operator()(_Args&&... _types) {
+		/*inline void operator()(_Args&&... _types) {
 			for (auto& func : m_functionList) {
 				func(std::forward<_Args>(_types)...);
+			}
+		}*/
+		// 기존 operator() 함수를 다음과 같이 수정
+		inline void operator()(_Args... _types) {  // && 제거
+			for (auto& func : m_functionList) {
+				func(_types...);  // std::forward 제거
 			}
 		}
 

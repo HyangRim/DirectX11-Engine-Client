@@ -183,7 +183,7 @@ void ImageUI::CreateImageGameObject(ImageLayer& layer)
 
   
     // 레이어 순서에 따른 Z값 계산
-    float z = -0.1f - (static_cast<float>(layer.layer) * 0.001f);
+    float z = m_zPos - (static_cast<float>(layer.layer) * 0.001f);
 
     Vec3 position = Vec3(x, y, z);
     layer.gameObject->GetTransform()->SetPosition(position);
@@ -247,7 +247,7 @@ void ImageUI::SortLayersByOrder()
         {
             Vec3 pos = imageLayer.gameObject->GetTransform()->GetPosition();
             // 레이어 번호가 낮을수록 뒤쪽(더 작은 Z값)
-            pos.z = -0.1f - (static_cast<float>(layer) * 0.001f);
+            pos.z = m_zPos - (static_cast<float>(layer) * 0.001f);
             imageLayer.gameObject->GetTransform()->SetPosition(pos);
         }
     }
@@ -286,7 +286,7 @@ void ImageUI::UpdatePosition(const Vec2& parentWorldPos)
     // 부모의 월드 위치 + 로컬 위치로 새 월드 위치 계산
     Vec2 newWorldPos;
     newWorldPos.x = parentWorldPos.x + m_localPosition.x;
-    newWorldPos.y = parentWorldPos.y + m_localPosition.y;
+    newWorldPos.y = parentWorldPos.y - m_localPosition.y;
 
     // 화면 좌표를 월드 좌표로 변환
     float height = GRAPHICS->GetViewport().GetHeight();
@@ -295,7 +295,7 @@ void ImageUI::UpdatePosition(const Vec2& parentWorldPos)
     float x = newWorldPos.x - width / 2;
     float y = height / 2 - newWorldPos.y;
 
-    go->GetTransform()->SetPosition(Vec3(x, y, 0.5f));
+    go->GetTransform()->SetPosition(Vec3(x, y, m_zPos));
 
     map<int, ImageLayer>::iterator iter = m_imageLayers.begin();
     for (; iter != m_imageLayers.end(); iter++)
@@ -305,7 +305,7 @@ void ImageUI::UpdatePosition(const Vec2& parentWorldPos)
 
         layerGameObject->GetTransform()->SetPosition(
             Vec3(imageUIPos.x + iter->second.position.x
-                , imageUIPos.y + iter->second.position.y
-                , 0));
+                , imageUIPos.y - iter->second.position.y
+                , m_zPos - (static_cast<float>(iter->second.layer) * 0.001f)));
     }
 }

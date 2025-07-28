@@ -19,5 +19,12 @@ protected:
 protected:
     shared_ptr<Material> m_material;
     uint8 m_pass = 0;
+
+public:
+    void SetActive(bool active) { m_isActive = active; }
+    bool IsActive() const { return m_isActive; }
+
+protected:
+    bool m_isActive = true;
 };
 

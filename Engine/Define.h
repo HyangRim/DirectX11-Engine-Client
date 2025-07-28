@@ -37,6 +37,7 @@ public:										\
 
 #define RESOLUTION_CONSTANT 0.711f
 
+
 enum LayerMask {
 	LAYER_DEFAULT = 0,
 	LAYER_UI = 1

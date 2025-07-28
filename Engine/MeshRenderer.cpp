@@ -69,6 +69,7 @@ void MeshRenderer::Update()
 
 void MeshRenderer::RenderInstancing(shared_ptr<class InstancingBuffer>& _buffer, bool _isShadowTech)
 {
+	if (!m_isActive) return;  // 비활성화되면 렌더링 안 함
 
 	if (Super::Render(_isShadowTech) == false)
 		return;

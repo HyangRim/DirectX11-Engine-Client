@@ -5,6 +5,13 @@ class Material;
 class Mesh;
 class Texture;
 
+enum class TextAlignment
+{
+    Left,
+    Center,
+    Right
+};
+
 class Text : public Component
 {
     using Super = Component;
@@ -23,6 +30,7 @@ public:
     void SetFontSize(float size);
     void SetFontName(const wstring& fontName);
     void SetAlpha(float alpha);
+    void SetAlignment(TextAlignment alignment);// 정렬 기능 추가
 
     // 외곽선 관련 함수들
     void SetOutlineColor(const Vec4& color);
@@ -38,16 +46,18 @@ public:
     float GetAlpha() const { return m_alpha; }
     float GetOutlineWidth() const { return m_outlineWidth; }
     bool IsOutlineEnabled() const { return m_enableOutline; }
+    TextAlignment GetAlignment() const { return m_alignment; }
 
     // 간단한 생성 함수
     void Create(Vec2 screenPos, const wstring& text, float fontSize = 16.0f,
         Vec4 color = Vec4(0, 0, 0, 1), float alpha = 1.0f,
-        Vec4 outlineColor = Vec4(1, 1, 1, 1), float outlineWidth = 1.0f);
+        Vec4 outlineColor = Vec4(1, 1, 1, 1), float outlineWidth = 1.0f, TextAlignment alignment = TextAlignment::Left);
 
 private:
     void CreateTextTexture();
     void UpdateMaterial();
     void PushTextData();
+    void CalculateAlignmentOffset(); // 정렬 오프셋 계산 함수 추가
 
 private:
     wstring m_text = L"Text";
@@ -59,6 +69,7 @@ private:
     float m_alpha = 1.0f;
     float m_outlineWidth = 1.0f;
     bool m_enableOutline = true;
+    TextAlignment m_alignment = TextAlignment::Left; // 기본값: 좌측 정렬
 
     bool m_needUpdate = true;
 
@@ -79,6 +90,8 @@ private:
     
 private:
     Vec2 m_localPosition;  // 부모(UIPanel) 기준 로컬 위치
+    Vec2 m_alignmentOffset = Vec2::Zero; // 정렬을 위한 오프셋
+    const float m_zPos = 0.2f;
 
 public:
     void UpdatePosition(const Vec2& parentWorldPos);  // 부모 위치 기준으로 업데이트

@@ -105,4 +105,40 @@ private:
 
     // 소멸 관리
     bool m_isDestroying = false;
+
+    const float m_zPanelPos = 0.8f;
+    const float m_zScrollViewPos = 0.7f;
+
+
+public:
+    // 뷰포트 컬링 활성화/비활성화
+    void SetViewportCulling(bool enable) { m_enableViewportCulling = enable; }
+    bool IsViewportCullingEnabled() const { return m_enableViewportCulling; }
+
+private:
+    // 뷰포트 컬링 관련 함수들
+    bool IsUIElementVisible(const Vec2& elementPos, const Vec2& elementSize) const;
+    void UpdateUIElementVisibility();
+    void UpdateChildElementsVisibility(shared_ptr<UIPanel> panel, const Vec2& panelScreenPos, const Vec2& panelSize);
+    void SetChildElementsVisibility(shared_ptr<UIPanel> panel, bool visible);
+    void SetGameObjectVisibility(shared_ptr<GameObject> obj, bool visible);
+    void SetImageLayerVisibility(shared_ptr<GameObject> obj, bool visible);
+
+    // 뷰포트 컬링 설정
+    bool m_enableViewportCulling = true;
+
+    // ScrollView.h에 추가
+private:
+    // 클리핑 관련
+    bool m_enablePixelClipping = true;
+    ComPtr<ID3DX11EffectVectorVariable> m_clippingRectEffect;
+    ComPtr<ID3DX11EffectScalarVariable> m_enableClippingEffect;
+
+public:
+    void SetPixelClipping(bool enable) { m_enablePixelClipping = enable; }
+    bool IsPixelClippingEnabled() const { return m_enablePixelClipping; }
+
+private:
+    void UpdateClippingShaderData();
+    void SetupClippingForElement(shared_ptr<GameObject> element);
 };

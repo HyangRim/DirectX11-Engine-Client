@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "Text.h"
 
 class Material;
 class Mesh;
@@ -31,7 +32,8 @@ public:
     shared_ptr<Text> AddText(Vec2 localPos, const wstring& text, float fontSize = 16.0f,
         Vec4 color = Vec4(1, 1, 1, 1), float alpha = 1.0f,
         Vec4 outlineColor = Vec4(0, 0, 0, 1), float outlineWidth = 1.0f,
-        const wstring& name = L"Text");
+        const wstring& name = L"Text",
+        TextAlignment alignment = TextAlignment::Left);
     // ImageUI 추가 함수
     shared_ptr<ImageUI> AddImageUI(Vec2 localPos, const wstring& name = L"ImageUI");
 

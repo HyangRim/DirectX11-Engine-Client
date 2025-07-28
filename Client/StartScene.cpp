@@ -115,20 +115,40 @@ void StartScene::CreateLobbyBackGround()
 		);
 	// Panel Z값 명시적 설정
 	m_backPanel->GetTransform()->SetPosition(Vec3(0, 0, 0.9f));  // 가장 뒤쪽
+	// 버튼 생성 - Normal과 Hover Material 준비
+	shared_ptr<Material> normalMaterial = RESOURCES->Get<Material>(L"NormalBtnRollOver")->Clone();
+	shared_ptr<Material> hoverMaterial = RESOURCES->Get<Material>(L"StartBtnRollOver")->Clone();
+	// 패널에 버튼 추가
+	auto button = m_backPanel->GetUIPanel()->AddButton(
+		Vec2(185.f, 197.f),
+		Vec2(162, 48),
+		normalMaterial,  // 기본 Material을 Normal로 설정
+		L"StartButton"
+	);
 
+	// 상태별 Material 설정
+	button->SetNormalMaterial(normalMaterial);
+	button->SetHoveredMaterial(hoverMaterial);
+	button->SetPressedMaterial(hoverMaterial);
 
-	// 패널에 버튼도 추가 가능
-	auto button = m_backPanel->GetUIPanel()->AddButton(Vec2(185.f, 197.f), Vec2(162,48),
-		RESOURCES->Get<Material>(L"StartBtnRollOver"), L"StartBtnRollOver");
-
-	/*button->AddOnClickedEvent([button]() {
-		std::wcout << button->GetGameObject()->GetName() << " : clicked\n";
-		
-		});*/
-
+	// 기존 클릭 이벤트 유지
 	button->AddOnClickedEvent([this]() {
 		OnStartButtonClicked();
 		});
+
+	// Delegate 이벤트도 추가 (선택사항)
+	button->OnClick += [this]() {
+		std::wcout << L"Delegate: Start Button Clicked!" << std::endl;
+		};
+
+	button->OnHoverEnter += []() {
+		std::wcout << L"Start Button Hovered!" << std::endl;
+		};
+
+	button->OnHoverExit += []() {
+		std::wcout << L"Start Button Hover Exit!" << std::endl;
+		};
+
 
 	m_backPanel->GetUIPanel()->AddText(
 		Vec2(175.f, 190.f),
@@ -143,21 +163,22 @@ void StartScene::CreateLobbyBackGround()
 
 	// 패널에 ImageUI 추가
 	auto imageUI = m_backPanel->GetUIPanel()->AddImageUI(Vec2(0,0), L"MainImageUI");
+	// **각 패널마다 Material을 복제하여 사용**
 
 	// ImageUI에 이미지 레이어들 추가
-	imageUI->AddImageLayer(0, Vec2(62, -130), Vec2(124, 42),
+	imageUI->AddImageLayer(0, Vec2(62, 130), Vec2(124, 42),
 		RESOURCES->Get<Material>(L"StartBtnDeco_1"), 1);
 
 	// ImageUI에 이미지 레이어들 추가
-	imageUI->AddImageLayer(1, Vec2(42, -190), Vec2(169, 169),
+	imageUI->AddImageLayer(1, Vec2(42, 190), Vec2(169, 169),
 		RESOURCES->Get<Material>(L"StartBtnDeco_3"), 1);
 
 	// ImageUI에 이미지 레이어들 추가
-	imageUI->AddImageLayer(2, Vec2(42, -190), Vec2(82, 93),
+	imageUI->AddImageLayer(2, Vec2(42, 190), Vec2(82, 93),
 		RESOURCES->Get<Material>(L"StartBtnDeco_4"), 1);
 
 	// ImageUI에 이미지 레이어들 추가
-	imageUI->AddImageLayer(3, Vec2(220, -200), Vec2(441, 59),
+	imageUI->AddImageLayer(3, Vec2(220, 200), Vec2(441, 59),
 		RESOURCES->Get<Material>(L"StartBtnDeco_2"), 1);
 
 

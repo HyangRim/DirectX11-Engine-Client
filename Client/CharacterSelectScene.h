@@ -22,10 +22,13 @@ private:
 	void CreateBackGround(); 
 	void CreateScrollableCharacterList();
 
+
+
 	void LoadCharacterSelectSceneImages();
+
 	void LoadBackGround();
 	void LoadCharacterSlotImages();
-
+	void LoadCharacterImages();
 
 private:
 	shared_ptr<Shader> m_defaultshader = nullptr;

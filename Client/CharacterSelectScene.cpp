@@ -13,6 +13,50 @@
 #include "Material.h"
 #include "ScrollView.h"
 
+const vector<wstring> characterNames = {
+		L"Bianca",
+		L"Nicky",
+		L"Abigail",
+		L"Aiden",
+		L"Chiara",
+		L"Daniel",
+		L"Darko",
+		L"DebiMarlene",
+		L"Eva",
+		L"Garnet",
+		L"Isol",
+		L"Laura",
+		L"Nadine",
+		L"Nathapon",
+		L"Niah",
+		L"Silvia",
+		L"Sua",
+		L"Tia",
+		L"Yuki"
+};
+
+const vector<wstring> characterKoreanNames = {
+		L"비앙카",
+		L"니키",
+		L"아비게일",
+		L"에이든",
+		L"키아라",
+		L"다니엘",
+		L"다르코",
+		L"데비마를렌",
+		L"이바",
+		L"가넷",
+		L"아이솔",
+		L"라우라",
+		L"나딘",
+		L"나타폰",
+		L"니아",
+		L"실비아",
+		L"수아",
+		L"띠아",
+		L"유키"
+};
+
 void CharacterSelectScene::Start()
 {	
 	m_defaultshader = make_shared<Shader>(L"FOW.fx");
@@ -41,8 +85,8 @@ void CharacterSelectScene::Start()
 	// 디퍼드 렌더링 비활성화
 	//RENDER->SetDeferredRendering(false);
 
+
 	LoadCharacterSelectSceneImages();
-	LoadCharacterSlotImages();
 
 	CreateBackGround();
 	CreateScrollableCharacterList();
@@ -134,6 +178,8 @@ void CharacterSelectScene::CreateBackGround()
 
 void CharacterSelectScene::LoadCharacterSelectSceneImages()
 {
+	LoadCharacterSlotImages();
+	LoadCharacterImages();
 	LoadBackGround();
 }
 
@@ -176,28 +222,83 @@ void CharacterSelectScene::LoadCharacterSlotImages()
 		material->SetRenderQueue(RenderQueue::Transparent);
 		material->SetTransparent(true);  // 모든 UI에 추가
 		material->SetRenderingMode(RenderingMode::Forward);
+		}; 
+	
+	vector<wstring> slotNames = {
+		L"CharSlotNormal",
+		L"CharRandomSlotNormal",
+		L"CharRandomSlotRollOver",
+		L"CharSlotRollOver",
+	};
+	vector<wstring> fileNames = {
+		L"Img_Slot_Character_Route.png",
+		L"Img_Slot_CharacterList_Random.png",
+		L"Img_Slot_CharacterList_Random_Over.png",
+		L"Img_Slot_CharacterList_Select.png"
+	};
+
+
+	wstring prefixPath = L"..\\Resources\\Textures\\UI\\CharacterSelectScene\\";
+	for (int i = 0; i < slotNames.size(); i++)
+	{
+		shared_ptr<Material> slot = make_shared<Material>();
+		SetupUIMaterial(slot);
+
+		wstring finalPath = prefixPath + fileNames[i];
+
+		auto slotTexture = RESOURCES->Load<Texture>(slotNames[i], finalPath);
+		
+		slot->SetDiffuseMap(slotTexture);
+		MaterialDesc& slotDesc = slot->GetMaterialDesc();
+		slotDesc.ambient = Vec4(1.f);
+		slotDesc.diffuse = Vec4(1.f);
+		slotDesc.specular = Vec4(1.0f);
+		RESOURCES->Add(slotNames[i], slot);
+	}
+
+
+	shared_ptr<Material> charRandomImage = make_shared<Material>();
+	SetupUIMaterial(charRandomImage);
+	auto charRandomImageTexture = RESOURCES->Load<Texture>(L"CharLobbyRandom", L"..\\Resources\\Textures\\UI\\CharacterSelectScene\\CharLobby_Random.png");
+	charRandomImage->SetDiffuseMap(charRandomImageTexture);
+	MaterialDesc& charRandomImageDesc = charRandomImage->GetMaterialDesc();
+	charRandomImageDesc.ambient = Vec4(1.f);
+	charRandomImageDesc.diffuse = Vec4(1.f);
+	charRandomImageDesc.specular = Vec4(1.0f);
+	RESOURCES->Add(L"CharLobbyRandom", charRandomImage);
+}
+
+void CharacterSelectScene::LoadCharacterImages()
+{
+	// 모든 UI 머티리얼에 동일한 설정 적용
+	auto SetupUIMaterial = [&](shared_ptr<Material> material) {
+		material->SetShader(m_imageShader);
+		material->SetRenderQueue(RenderQueue::Transparent);
+		material->SetTransparent(true);  // 모든 UI에 추가
+		material->SetRenderingMode(RenderingMode::Forward);
 		};
 
-	shared_ptr<Material> charSlotNormal = make_shared<Material>();
-	SetupUIMaterial(charSlotNormal);
-	auto charSlotNormalTexture = RESOURCES->Load<Texture>(L"CharSlotNormal", L"..\\Resources\\Textures\\UI\\CharacterSelectScene\\Img_Slot_Character_Route.png");
-	charSlotNormal->SetDiffuseMap(charSlotNormalTexture);
-	MaterialDesc& charSlotNormalDesc = charSlotNormal->GetMaterialDesc();
-	charSlotNormalDesc.ambient = Vec4(1.f);
-	charSlotNormalDesc.diffuse = Vec4(1.f);
-	charSlotNormalDesc.specular = Vec4(1.0f);
-	RESOURCES->Add(L"CharSlotNormal", charSlotNormal);
+	
+	wstring prefixTag = L"CharLobby";
+	wstring prefixPath = L"..\\Resources\\Textures\\UI\\CharacterSelectScene\\CharacterImages\\";
 
+	for (int i = 0; i < characterNames.size(); i++)
+	{
+		shared_ptr<Material> charLobbyImage = make_shared<Material>();
+		SetupUIMaterial(charLobbyImage);
 
-	shared_ptr<Material> charLobbyNicky = make_shared<Material>();
-	SetupUIMaterial(charLobbyNicky);
-	auto charLobbyNickyTexture = RESOURCES->Load<Texture>(L"CharLobbyNicky", L"..\\Resources\\Textures\\UI\\CharacterSelectScene\\CharacterImages\\CharLobby_Nicky_S000.png");
-	charLobbyNicky->SetDiffuseMap(charLobbyNickyTexture);
-	MaterialDesc& charLobbyNickyDesc = charLobbyNicky->GetMaterialDesc();
-	charLobbyNickyDesc.ambient = Vec4(1.f);
-	charLobbyNickyDesc.diffuse = Vec4(1.f);
-	charLobbyNickyDesc.specular = Vec4(1.0f);
-	RESOURCES->Add(L"CharLobbyNicky", charLobbyNicky);
+		wstring tag = prefixTag + characterNames[i];
+		wstring path = prefixPath + characterNames[i] + L"\\" + prefixTag + L"_" + characterNames[i] + L"_S000.png";
+		auto charLobbyTexture = RESOURCES->Load<Texture>(tag, path);
+		
+		
+		charLobbyImage->SetDiffuseMap(charLobbyTexture);
+		MaterialDesc& charLobbyDesc = charLobbyImage->GetMaterialDesc();
+		charLobbyDesc.ambient =		Vec4(1.f);
+		charLobbyDesc.diffuse =		Vec4(1.f);
+		charLobbyDesc.specular =	Vec4(1.0f);
+		RESOURCES->Add(tag, charLobbyImage);
+	}
 }
 
 void CharacterSelectScene::CreateScrollableCharacterList()
@@ -212,83 +313,115 @@ void CharacterSelectScene::CreateScrollableCharacterList()
 	// 화면 중앙에 400x600 크기의 스크롤뷰 생성
 	float width = GRAPHICS->GetViewport().GetWidth();
 	float height = GRAPHICS->GetViewport().GetHeight();
-	Vec2 scrollPos = Vec2(width / 2.0f, height / 2.0f);
-	Vec2 scrollSize = Vec2(400.0f, 600.0f);
+	Vec2 scrollPos = Vec2(280, 340);
+	Vec2 scrollSize = Vec2(500, 415);
 
 	scrollView->Create(scrollPos, scrollSize, nullptr);
 	scrollView->SetScrollDirection(ScrollDirection::Vertical);
-	scrollView->SetContentSize(Vec2(400.0f, 1800.0f)); // 컨텐츠는 더 큰 크기
+	scrollView->SetContentSize(Vec2(500.0f, 1800.0f)); // 컨텐츠는 더 큰 크기
 	scrollView->SetScrollSpeed(30.0f);
+	// 픽셀 클리핑 활성화
+	scrollView->SetPixelClipping(true);	
 
-	// 캐릭터 카드들 추가
-	for (int i = 0; i < 3; i++) {
-		Vec2 cardPos = Vec2(300, i * 150.0f); // 세로로 배치
-		Vec2 cardSize = Vec2(350.0f, 100.0f);
 
+	int characterIndex = 0;
+
+	for (int i = 0; i < 20; i++)
+	{
+
+
+		Vec2 cardPos = Vec2(-208 + (i%5) * 100, -140 + (i/5) * 122); // 세로로 배치
+		Vec2 cardSize = Vec2(106, 166);
 
 		shared_ptr<UIPanel> panel = scrollView->AddPanel(cardPos, cardSize, nullptr);
 
-		//// 패널에 버튼도 추가 가능
-		//auto button = panel->AddButton(Vec2(0.f,0.f), Vec2(106, 166),
-		//	RESOURCES->Get<Material>(L"CharSlotNormal"), L"CharSlotNormal");
+		if (i == 0)
+		{
+			shared_ptr<Material> uniqueMaterial = RESOURCES->Get<Material>(L"CharRandomSlotNormal")->Clone();
+		
+			// 패널에 버튼도 추가 가능
+			auto button = panel->AddButton(Vec2(61, 79), Vec2(122, 158),
+				uniqueMaterial, L"CharRandomSlotNormal");
 
-		/*auto text = panel->AddText(
-			Vec2(0.f,0.f),
-			L"게임시작",
-			20.f,
-			Vec4(1.f),
-			1.f,
-			Vec4(0.f),
-			0.f,
-			L"GameTest"
-		);*/
+			auto text = panel->AddText(
+				Vec2(50.f, 120.f),
+				L"Random",
+				13.f,
+				Vec4(1.f),
+				1.f,
+				Vec4(0.f),
+				0.f,
+				L"GameTest",
+				TextAlignment::Left
+			);
 
-		// **각 패널마다 Material을 복제하여 사용**
-		shared_ptr<Material> uniqueMaterial = RESOURCES->Get<Material>(L"CharSlotNormal")->Clone();
+			shared_ptr<Material> uniqueMaterial2 = RESOURCES->Get<Material>(L"CharLobbyRandom")->Clone();
+			auto imageUI = panel->AddImageUI(Vec2(0.f, 0.f));
+			imageUI->AddImageLayer(1, Vec2(60, 78), Vec2(42, 64), uniqueMaterial2, 1);
+		}
+		else
+		{
+			// 각 패널마다 Material을 복제하여 사용
+			shared_ptr<Material> uniqueMaterial = RESOURCES->Get<Material>(L"CharSlotNormal")->Clone();
+			shared_ptr<Material> uniqueMaterial3 = RESOURCES->Get<Material>(L"CharSlotRollOver")->Clone();
 
-		auto imageUI = panel->AddImageUI(Vec2(0.f, 0.f));
+			// 패널에 버튼도 추가 가능
+			auto button = panel->AddButton(Vec2(61, 79), Vec2(122, 158),
+				uniqueMaterial, L"CharSlotNormal");
 
-		imageUI->AddImageLayer(1, Vec2(0.f, 0.f), Vec2(106, 166), uniqueMaterial, 1);
+			// 버튼 상태별 Material 설정
+			button->SetNormalMaterial(uniqueMaterial);
+			button->SetHoveredMaterial(uniqueMaterial3);
+			button->SetPressedMaterial(uniqueMaterial3);
 
-		//cout << "button pos : " << pos.x << " , " << pos.y << endl;
+			// Delegate에 함수 등록 (함수 호출이 아님!)
+			button->OnClick += []() {
+				std::cout << "Button clicked!" << std::endl;
+				};
 
-		//// 패널에 ImageUI 추가
-		//auto imageUI = panel->GetUIPanel()->AddImageUI(Vec2(0, 0), L"MainImageUI");
-		//// ImageUI에 이미지 레이어들 추가
-		//imageUI->AddImageLayer(0, Vec2(0, 200), Vec2(106, 166),
-		//	RESOURCES->Get<Material>(L"CharSlotNormal"), 1);
+			button->OnHoverEnter += []() {
+				std::cout << "Mouse entered button!" << std::endl;
+				};
 
-		/*auto characterPanel = scrollView->AddPanel(
-			cardPos,
-			cardSize,
-			nullptr,
-			L"CharacterCard_" + std::to_wstring(i)
-		);*/
+			button->OnHoverExit += []() {
+				std::cout << "Mouse exited button!" << std::endl;
+				};
 
-		/*auto imageObj = make_shared<GameObject>();
+			// OnStateChanged에 함수 등록 - ButtonState 매개변수를 받는 함수
+			button->OnStateChanged += [](ButtonState state) {
+				switch (state) {
+				case ButtonState::Normal:
+					std::cout << "Button state: Normal" << std::endl;
+					break;
+				case ButtonState::Hovered:
+					std::cout << "Button state: Hovered" << std::endl;
+					break;
+				case ButtonState::Pressed:
+					std::cout << "Button state: Pressed" << std::endl;
+					break;
+				case ButtonState::Disabled:
+					std::cout << "Button state: Disabled" << std::endl;
+					break;
+				}
+				};
 
-		auto imageComponent = make_shared<ImageUI>();
-
-		imageObj->AddComponent(imageComponent);
-
-		imageComponent->AddImageLayer(0, Vec2(0, 0), Vec2(106, 166),
-			RESOURCES->Get<Material>(L"CharSlotNormal"), 1);
-
-		imageComponent->AddImageLayer(1, Vec2(0, 0), Vec2(106, 166),
-			RESOURCES->Get<Material>(L"CharLobbyNicky"), 1);*/
-
-		//// 텍스트 GameObject 생성하여 AddUIElement로 추가
-		//auto textObj = make_shared<GameObject>();
-		//textObj->SetName(L"CharacterText_" + std::to_wstring(i));
-
-		//// Text 컴포넌트 추가 및 설정
-		//auto textComponent = make_shared<Text>();
-		//textObj->AddComponent(textComponent);
-
-		//Vec2 textPos = Vec2(-100, i * 120.0f); // 패널 내 상대 위치
-		//textComponent->Create(Vec2(0, 0), L"Character " + std::to_wstring(i + 1), 20.0f, Vec4(1, 1, 1, 1));
-
-		//// ScrollView에 텍스트 요소 추가 (중요: AddUIElement 사용)
+			auto text = panel->AddText(
+				Vec2(50.f, 120.f),
+				characterKoreanNames[characterIndex],
+				13.f,
+				Vec4(1.f),
+				1.f,
+				Vec4(0.f),
+				0.f,
+				L"GameTest",
+				TextAlignment::Left
+			);
+			// 각 패널마다 Material을 복제하여 사용
+			wstring charTag = L"CharLobby" + characterNames[characterIndex++];
+			shared_ptr<Material> uniqueMaterial2 = RESOURCES->Get<Material>(charTag)->Clone();
+			auto imageUI = panel->AddImageUI(Vec2(0.f, 0.f));
+			imageUI->AddImageLayer(1, Vec2(60, 78), Vec2(121, 157), uniqueMaterial2, 1);
+		}
 		
 	}
 
