@@ -627,7 +627,7 @@ void Shader::PushDecalData(const DecalBufferData& _desc)
 	if (m_DecalBuffer == nullptr) {
 		m_DecalBuffer = make_shared<ConstantBuffer<DecalBufferData>>();
 		m_DecalBuffer->Create();
-		m_OutlineEffectBuffer = GetConstantBuffer("OutlineBuffer");
+		m_DecalEffectBuffer = GetConstantBuffer("DecalBuffer");
 	}
 
 	m_DecalDesc = _desc;

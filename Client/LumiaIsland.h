@@ -28,6 +28,11 @@ private:
 	void CreateCharacterNicky();
 	void CreateCharacterBianca();
 
+
+private:
+	//테스트용. 
+	void CreateTestDecal();
+
 private:
 	shared_ptr<GameObject> m_CemeteryParent;
 	shared_ptr<Shader> m_defaultshader = nullptr;

@@ -274,8 +274,8 @@ void GameObject::OnCollision(shared_ptr<GameObject> _other)
 		GetRigidbody()->OnCollision(_other);
 	}
 #ifdef _DEBUG
-	std::wcout << this->GetName() << "啊 " << _other->GetName() << "客 面倒\n";
-	std::cout << "Collision\n";
+	//std::wcout << this->GetName() << "啊 " << _other->GetName() << "客 面倒\n";
+	//std::cout << "Collision\n";
 #endif
 }
 

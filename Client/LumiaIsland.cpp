@@ -8,6 +8,7 @@
 #include "CameraScript.h"
 
 #include "AnimationStateMachine.h"
+#include "SkillDecalIndicator.h"
 
 
 #include "Bianca.h"
@@ -58,6 +59,8 @@ void LumiaIsland::Start()
 	//CreateCharacterNicky();
 	CreateCemeteryItemBox();
 	CreateCharacterBianca();
+
+	CreateTestDecal();
 
 	// NavMesh 생성 추가
 	CreateNavMesh();
@@ -948,4 +951,24 @@ void LumiaIsland::CreateCharacterBianca()
 	bianca->GetTransform()->SetPosition(Vec3(15, 20, 5));
 	bianca->GetTransform()->SetScale(Vec3(1.f));
 	CURSCENE->Add(bianca);
+}
+
+void LumiaIsland::CreateTestDecal()
+{
+	auto testDecalObj = make_shared<GameObject>();
+	testDecalObj->AddComponent(make_shared<AABBBoxCollider>());
+	testDecalObj->SetName(L"TestDecal");
+
+	// 2. SkillDecalIndicator 컴포넌트만 추가
+	auto decalIndicator = make_shared<SkillDecalIndicator>();
+	testDecalObj->AddComponent(decalIndicator);
+	testDecalObj->GetTransform()->SetLocalPosition(Vec3(15, 20, 10));
+	// 3. 간단한 설정
+	decalIndicator->SetSkillDecal(SkillDecalType::CIRCLE, 15.0f);
+	decalIndicator->SetColor(Vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	decalIndicator->SetStartPosition(Vec3(15, 20, 10));
+	decalIndicator->ShowIndicator(true);
+
+	// 4. Scene에 추가
+	CURSCENE->Add(testDecalObj);
 }
