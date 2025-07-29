@@ -145,6 +145,10 @@ void RenderManager::RenderMeshRendererForward(vector<shared_ptr<GameObject>>& _g
 		if (gameObject->GetMeshRenderer() == nullptr)
 			continue;
 
+		auto material = gameObject->GetMeshRenderer()->GetMaterial();
+		if (material && material->IsDecalMaterial())
+			continue;
+
 		const InstanceID instanceID = gameObject->GetMeshRenderer()->GetInstanceID();
 
 		
@@ -291,8 +295,9 @@ void RenderManager::RenderMeshRendererDeferred(vector<shared_ptr<GameObject>>& _
 
 		// 투명 객체는 제외 (나중에 포워드로 처리)
 		if (auto material = gameObject->GetMeshRenderer()->GetMaterial()) {
-			if (material->IsTransparent())
+			if (material->IsTransparent() || material->IsDecalMaterial())
 				continue;
+			
 		}
 
 		const InstanceID instanceID = gameObject->GetMeshRenderer()->GetInstanceID();

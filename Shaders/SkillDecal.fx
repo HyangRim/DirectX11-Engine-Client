@@ -38,6 +38,7 @@ MeshOutput VS_Decal(VertexTextureNormalTangent input)
 // 더 간단한 버전
 float4 PS_Decal(MeshOutput input) : SV_Target
 {
+    return float4(0, 1, 0, 1);
     // 현재 데칼 위치를 데칼 로컬 공간으로 변환
     float3 decalPos = mul(float4(input.worldPosition, 1.0), InvDecalMatrix).xyz;
     
