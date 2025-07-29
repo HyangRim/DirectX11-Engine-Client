@@ -48,6 +48,8 @@ public:
     void SetRandomTex(shared_ptr<Texture> _randomTex) { m_randomMap = _randomTex; }
     void SetCubeMap(shared_ptr<Texture> _cubeMap) { m_cubeMap = _cubeMap; }
 
+
+
     void SetTransparent(bool _transparent) { m_isTransparent = _transparent; }
     bool IsTransparent() const { return m_isTransparent; }
 
@@ -60,6 +62,13 @@ public:
     void SetCastShadow(bool _castShadow) { m_castShadow = _castShadow; }
     bool GetCastShadow() { return m_castShadow; }
 
+    void SetAsDecalMaterial(bool _isDecal) { m_isDecalMaterial = _isDecal; }
+    bool IsDecalMaterial() const { return m_isDecalMaterial; }
+
+    void SetDecalData(const DecalBufferData& _data) { m_decalData = _data; }
+    void SetDecalTexture(shared_ptr<Texture> _texture) { m_decalTexture = _texture; }
+
+
     void Update();
 
     shared_ptr<Material> Clone();
@@ -69,21 +78,25 @@ public:
 private:
     friend class MeshRenderer;
     MaterialDesc m_desc;
+    DecalBufferData m_decalData;
+
 
     RenderQueue m_renderQueue = RenderQueue::Opaque;
     RenderingMode m_renderMode = RenderingMode::Deferred;
 
     bool m_castShadow = true;
     bool m_isTransparent = false;
+    bool m_isDecalMaterial = false;
+
 
     shared_ptr<Shader> m_shader;
-
 
     shared_ptr<Texture> m_diffuseMap;
     shared_ptr<Texture> m_normalMap;
     shared_ptr<Texture> m_specularMap;
     shared_ptr<Texture> m_randomMap;
     shared_ptr<Texture> m_cubeMap;
+    shared_ptr<Texture> m_decalTexture;
 
     ComPtr<ID3DX11EffectShaderResourceVariable> m_diffuseEffectBuffer;
     ComPtr<ID3DX11EffectShaderResourceVariable> m_normalEffectBuffer;

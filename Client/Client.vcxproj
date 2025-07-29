@@ -46,6 +46,7 @@
     <ClInclude Include="PlayerOutlineEffect.h" />
     <ClInclude Include="RawBufferDemo.h" />
     <ClInclude Include="SceneDemo.h" />
+    <ClInclude Include="SkillDecalIndicator.h" />
     <ClInclude Include="SnowBillboardDemo.h" />
     <ClInclude Include="StartScene.h" />
     <ClInclude Include="StructuredDemo.h" />
@@ -83,6 +84,7 @@
     <ClCompile Include="PlayerOutlineEffect.cpp" />
     <ClCompile Include="RawBufferDemo.cpp" />
     <ClCompile Include="SceneDemo.cpp" />
+    <ClCompile Include="SkillDecalIndicator.cpp" />
     <ClCompile Include="SnowBillboardDemo.cpp" />
     <ClCompile Include="StartScene.cpp" />
     <ClCompile Include="StructuredDemo.cpp" />
@@ -108,6 +110,7 @@
     <FxCompile Include="..\Shaders\ImageShader.fx" />
     <FxCompile Include="..\Shaders\OutlinePostProcess.fx" />
     <FxCompile Include="..\Shaders\ParticleSystem.fx" />
+    <FxCompile Include="..\Shaders\SkillDecal.fx" />
     <FxCompile Include="..\Shaders\Sky.fx" />
     <FxCompile Include="..\Shaders\TextShader.fx" />
   </ItemGroup>

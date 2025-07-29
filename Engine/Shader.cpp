@@ -622,6 +622,43 @@ void Shader::PushOutlineData(const OutlineDesc& _desc)
 	m_OutlineEffectBuffer->SetConstantBuffer(m_OutlineBuffer->GetComPtr().Get());
 }
 
+void Shader::PushDecalData(const DecalBufferData& _desc)
+{
+	if (m_DecalBuffer == nullptr) {
+		m_DecalBuffer = make_shared<ConstantBuffer<DecalBufferData>>();
+		m_DecalBuffer->Create();
+		m_OutlineEffectBuffer = GetConstantBuffer("OutlineBuffer");
+	}
+
+	m_DecalDesc = _desc;
+	m_DecalBuffer->CopyData(m_DecalDesc);
+	m_DecalEffectBuffer->SetConstantBuffer(m_DecalBuffer->GetComPtr().Get());
+}
+
+void Shader::SetDecalTexture(shared_ptr<Texture> _texture)
+{
+	m_decalTexture = _texture;
+
+	if (m_decalTexture == nullptr)
+		m_decalTextureEffect = GetSRV("DecalTexture");
+	
+	if (m_decalTexture && m_decalTextureEffect) {
+		m_decalTextureEffect->SetResource(m_decalTexture->GetComPtr().Get());
+	}
+}
+
+void Shader::SetDepthTexture(shared_ptr<Texture> _depthtexture)
+{
+	m_depthTexture = _depthtexture;
+
+	if (m_depthTexture == nullptr)
+		m_depthTextureEffect = GetSRV("DecalTexture");
+
+	if (m_depthTexture && m_depthTextureEffect) {
+		m_depthTextureEffect->SetResource(m_depthTexture->GetComPtr().Get());
+	}
+}
+
 bool Shader::IsFOWShader() const
 {
 	return m_file.find(L"FOW.fx") != wstring::npos;

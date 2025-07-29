@@ -140,3 +140,11 @@ struct OutlineDesc {
 	int objType;
 	int padding[3];
 };
+
+struct DecalBufferData {
+	Matrix decalMatrix;
+	Matrix invDecalMatrix;
+	Vec4 decalColor;
+	float decalAlpha;
+	Vec3 padding;
+};

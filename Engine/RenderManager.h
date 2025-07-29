@@ -51,7 +51,7 @@ private:
 	void RenderOutlinePostProcess();
 
 	void RenderTransparentObjects(vector<shared_ptr<GameObject>>& _gameObjects);
-
+	void RenderDecals(vector<shared_ptr<GameObject>>& _gameObjects);
 private:
 	void AddData(InstanceID _instanceID, InstancingData& _data);
 

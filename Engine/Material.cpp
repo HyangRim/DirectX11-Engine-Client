@@ -50,6 +50,18 @@ void Material::Update()
 
 	if (m_castShadow)
 		m_shadowMapEffectBuffer->SetResource(GRAPHICS->GetShadowMap()->GetComPtr().Get());
+
+	if (m_isDecalMaterial) {
+		m_shader->PushDecalData(m_decalData);
+
+		if (m_decalTexture)
+			m_shader->SetDecalTexture(m_decalTexture);
+
+		auto depthTexture = GRAPHICS->GetDepthTexture();
+		if (depthTexture)
+			m_shader->SetDepthTexture(depthTexture);
+	}
+
 }
 
 shared_ptr<Material> Material::Clone()

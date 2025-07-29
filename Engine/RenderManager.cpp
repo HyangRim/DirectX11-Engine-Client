@@ -93,6 +93,8 @@ void RenderManager::RenderDeferred(vector<shared_ptr<GameObject>>& _gameObjects,
 	// 3단계: 투명 객체 (포워드 방식)
 	RenderTransparentObjects(_gameObjects);
 
+	RenderDecals(_gameObjects);
+
 	// 4단계: 파티클 시스템 등
 	for (shared_ptr<GameObject>& gameObject : _gameObjects) {
 		shared_ptr<ParticleSystem> particle = gameObject->GetFixedComponent<ParticleSystem>(ComponentType::ParticleSystem);
@@ -538,4 +540,48 @@ void RenderManager::RenderTransparentObjects(vector<shared_ptr<GameObject>>& _ga
 
 	// 포워드 렌더링으로 투명 객체들 렌더링
 	RenderForward(transparentObjects, false);
+}
+
+void RenderManager::RenderDecals(vector<shared_ptr<GameObject>>& _gameObjects)
+{
+	map<InstanceID, vector<shared_ptr<GameObject>>> cache;
+
+	// 데칼 객체 분류 (텍스처별로 자동 그룹핑됨)
+	for (shared_ptr<GameObject>& gameObject : _gameObjects) {
+		if (gameObject->GetMeshRenderer() == nullptr) continue;
+
+		auto material = gameObject->GetMeshRenderer()->GetMaterial();
+		if (!material || !material->IsDecalMaterial()) continue;
+
+		// 텍스처가 다르면 다른 InstanceID가 됨
+		const InstanceID instanceID = gameObject->GetMeshRenderer()->GetInstanceID();
+		cache[instanceID].push_back(gameObject);
+	}
+
+
+	if (cache.empty())
+		return;
+
+	DC->OMSetDepthStencilState(GRAPHICS->GetDecalDepthStencilState().Get(), 0);
+	float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	DC->OMSetBlendState(GRAPHICS->GetDecalBlendState().Get(), blendFactor, 0xffffffff);
+
+	for (auto& pair : cache) {
+		const vector<shared_ptr<GameObject>>& vec = pair.second;
+		const InstanceID instanceID = pair.first;
+
+		for (int32 idx = 0; idx < vec.size(); ++idx) {
+			const shared_ptr<GameObject>& gameObject = vec[idx];
+			InstancingData data;
+			data.m_world = gameObject->GetTransform()->GetWorldMatrix();
+			AddData(instanceID, data);
+		}
+
+		shared_ptr<InstancingBuffer>& buffer = m_buffers[instanceID];
+		vec[0]->GetMeshRenderer()->RenderInstancing(buffer, m_isShadowTech);
+	}
+
+
+	DC->OMSetDepthStencilState(nullptr, 0);
+	DC->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 }

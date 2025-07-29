@@ -32,7 +32,7 @@ private:
 	void CreateDeviceAndSwapChain();
 	void CreateRenderTargetView();
 	void CreateDepthStencilView();
-	
+	void CreateRenderStates();
 public:
 	//디퍼드 렌더링 용.
 	void BeginGeometryPass();
@@ -55,10 +55,14 @@ public:
 	ComPtr<ID3D11DepthStencilView> GetDepthStencilView() { return m_depthStencilView; }
 	ComPtr<ID3D11RenderTargetView> GetRenderTargetView() { return m_renderTargetView; }
 	ComPtr<IDXGISwapChain> GetSwapChain() { return m_swapChain; }
+	shared_ptr<Texture> GetDepthTexture() const { return m_depthTexture; }
 
 	// 풀스크린 쿼드 접근 함수들 추가
 	ComPtr<ID3D11Buffer> GetFullScreenQuadVB() { return m_fullScreenQuadVB; }
 	ComPtr<ID3D11Buffer> GetFullScreenQuadIB() { return m_fullScreenQuadIB; }
+
+	ComPtr<ID3D11DepthStencilState> GetDecalDepthStencilState() { return m_decalDepthState; }
+	ComPtr<ID3D11BlendState> GetDecalBlendState() { return m_decalBlendState; }
 
 private:
 	HWND m_hwnd = {};
@@ -80,6 +84,14 @@ private:
 	ComPtr<ID3D11Texture2D> m_shadowDSTexture;
 	ComPtr<ID3D11DepthStencilView> m_shadowDSV;
 	shared_ptr<Texture> m_shadowMap;
+	shared_ptr<Texture> m_depthTexture;
+
+
+	//State들. 
+	ComPtr<ID3D11DepthStencilState> m_decalDepthState;
+	ComPtr<ID3D11BlendState> m_decalBlendState;
+	ComPtr<ID3D11DepthStencilState> m_defaultDepthState;
+	ComPtr<ID3D11BlendState> m_defaultBlendState;
 
 	// Misc
 	Viewport m_viewport;

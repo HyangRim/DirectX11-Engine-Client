@@ -85,7 +85,9 @@ public:
 	void PushFOWData(const FogOfWarData& _desc);
 	void PushMultiLightData(const MultiLightDesc& _desc);
 	void PushOutlineData(const OutlineDesc& _desc);
-
+	void PushDecalData(const DecalBufferData& _desc);
+	void SetDecalTexture(shared_ptr<Texture> _texture);
+	void SetDepthTexture(shared_ptr<Texture> _depthtexture);
 
 	vector<Technique>& GetTechniques() { return m_techniques; }
 	bool IsFOWShader() const;
@@ -154,6 +156,16 @@ private:
 	OutlineDesc m_OutlineDesc;
 	shared_ptr<ConstantBuffer<OutlineDesc>> m_OutlineBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> m_OutlineEffectBuffer;
+
+	//µ¥Ä® Àü¿ë. 
+	DecalBufferData m_DecalDesc;
+	shared_ptr<ConstantBuffer<DecalBufferData>> m_DecalBuffer;
+	ComPtr<ID3DX11EffectConstantBuffer> m_DecalEffectBuffer;
+
+	shared_ptr<Texture> m_decalTexture;
+	shared_ptr<Texture> m_depthTexture;
+	ComPtr<ID3DX11EffectShaderResourceVariable> m_decalTextureEffect;
+	ComPtr<ID3DX11EffectShaderResourceVariable> m_depthTextureEffect;
 };
 
 class ShaderManager

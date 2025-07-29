@@ -76,6 +76,9 @@
     <Filter Include="Scripts\Item\ITEMBOX">
       <UniqueIdentifier>{7b4e6b20-939d-4cbc-85e7-0cf34b3055be}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Player\Skill">
+      <UniqueIdentifier>{171ecbac-caa9-4e7c-97e7-5cbdb4203f48}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -173,6 +176,9 @@
     </ClCompile>
     <ClCompile Include="ItemBox.cpp">
       <Filter>Scripts\Item\ITEMBOX</Filter>
+    </ClCompile>
+    <ClCompile Include="SkillDecalIndicator.cpp">
+      <Filter>Scripts\Player\Skill</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -275,6 +281,9 @@
     <ClInclude Include="ItemBox.h">
       <Filter>Scripts\Item\ITEMBOX</Filter>
     </ClInclude>
+    <ClInclude Include="SkillDecalIndicator.h">
+      <Filter>Scripts\Player\Skill</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Shaders\00. Global.fx">
@@ -332,6 +341,9 @@
       <Filter>Shaders\Common</Filter>
     </FxCompile>
     <FxCompile Include="..\Shaders\OutlinePostProcess.fx">
+      <Filter>Shaders\Common</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\SkillDecal.fx">
       <Filter>Shaders\Common</Filter>
     </FxCompile>
   </ItemGroup>

@@ -46,6 +46,7 @@ void Graphics::Init(HWND hwnd)
 	CreateDeviceAndSwapChain();
 	CreateRenderTargetView();
 	CreateDepthStencilView();
+	CreateRenderStates();
 
 	CreateGBuffer();
 	CreateFullScreenQuad();
@@ -178,17 +179,19 @@ void Graphics::CreateDepthStencilView()
 		desc.Height = static_cast<uint32>(GAME->GetGameDesc().height);
 		desc.MipLevels = 1;
 		desc.ArraySize = 1;
-		desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		desc.Format = DXGI_FORMAT_R24G8_TYPELESS;
 		desc.SampleDesc.Count = 1;
 		desc.SampleDesc.Quality = 0;
 		desc.Usage = D3D11_USAGE_DEFAULT;
 		//depth stencil 용도로 세팅. 
-		desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		desc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 		desc.CPUAccessFlags = 0;
 		desc.MiscFlags = 0;
 
 		HRESULT hr = DEVICE->CreateTexture2D(&desc, nullptr, m_depthStencilTexture.GetAddressOf());
 		CHECK(hr);
+
+
 		desc.Width = SHADOWMAP_SIZE;
 		desc.Height = SHADOWMAP_SIZE;
 		desc.Format = DXGI_FORMAT_R24G8_TYPELESS;
@@ -213,6 +216,23 @@ void Graphics::CreateDepthStencilView()
 	}
 
 	{
+		//데칼용 셰이더 리소스 뷰.
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+		srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Texture2D.MostDetailedMip = 0;
+		srvDesc.Texture2D.MipLevels = 1;
+
+		ComPtr<ID3D11ShaderResourceView> depthSRV;
+		HRESULT hr = DEVICE->CreateShaderResourceView(m_depthStencilTexture.Get(), &srvDesc, depthSRV.GetAddressOf());
+		CHECK(hr);
+
+		// Texture 객체로 래핑해서 저장
+		m_depthTexture = make_shared<Texture>();
+		m_depthTexture->SetSRV(depthSRV);
+	}
+
+	{
 		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
 		srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
 		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
@@ -224,9 +244,66 @@ void Graphics::CreateDepthStencilView()
 
 		m_shadowMap = make_shared<Texture>();
 		m_shadowMap->SetSRV(srv);
+
+		
 	}
 
 }
+
+void Graphics::CreateRenderStates()
+{
+	D3D11_DEPTH_STENCIL_DESC depthDesc = {};
+	depthDesc.DepthEnable = TRUE;
+	depthDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	depthDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	depthDesc.StencilEnable = FALSE;
+
+
+	DEVICE->CreateDepthStencilState(&depthDesc, m_decalDepthState.GetAddressOf());
+
+	// 데칼용 블렌드 스테이트
+	D3D11_BLEND_DESC blendDesc = {};
+	blendDesc.RenderTarget[0].BlendEnable = TRUE;
+	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	DEVICE->CreateBlendState(&blendDesc, m_decalBlendState.GetAddressOf());
+
+	// 기본 스테이트들도 생성 (복원용)
+	D3D11_DEPTH_STENCIL_DESC defaultDepthDesc = {};
+	defaultDepthDesc.DepthEnable = TRUE;
+	defaultDepthDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;  // 기본값
+	defaultDepthDesc.DepthFunc = D3D11_COMPARISON_LESS;            // 기본값
+	defaultDepthDesc.StencilEnable = FALSE;
+	defaultDepthDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
+	defaultDepthDesc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
+
+	HRESULT hr = DEVICE->CreateDepthStencilState(&defaultDepthDesc, m_defaultDepthState.GetAddressOf());
+	CHECK(hr);
+
+	// 기본 블렌드 스테이트 (복원용) - 헬퍼 클래스 사용 안함
+	D3D11_BLEND_DESC defaultBlendDesc = {};
+	defaultBlendDesc.AlphaToCoverageEnable = FALSE;
+	defaultBlendDesc.IndependentBlendEnable = FALSE;
+	defaultBlendDesc.RenderTarget[0].BlendEnable = FALSE;          // 블렌딩 비활성화
+	defaultBlendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	defaultBlendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ZERO;
+	defaultBlendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	defaultBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	defaultBlendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	defaultBlendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	defaultBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	hr = DEVICE->CreateBlendState(&defaultBlendDesc, m_defaultBlendState.GetAddressOf());
+	CHECK(hr);
+}
+
+
 
 void Graphics::BeginGeometryPass()
 {
