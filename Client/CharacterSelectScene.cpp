@@ -158,9 +158,7 @@ void CharacterSelectScene::CreateBackGround()
 			Vec2(width, height),
 			RESOURCES->Get<Material>(L"CSSceneBackGround")
 		);
-	// Panel Z값 명시적 설정
-	m_backPanel->GetTransform()->SetPosition(Vec3(0, 0, 0.9f));  // 가장 뒤쪽
-
+	
 	// 패널에 ImageUI 추가
 	auto imageUI = m_backPanel->GetUIPanel()->AddImageUI(Vec2(0, 0), L"MainImageUI");
 	// ImageUI에 이미지 레이어들 추가
@@ -328,8 +326,6 @@ void CharacterSelectScene::CreateScrollableCharacterList()
 
 	for (int i = 0; i < 20; i++)
 	{
-
-
 		Vec2 cardPos = Vec2(-208 + (i%5) * 100, -140 + (i/5) * 122); // 세로로 배치
 		Vec2 cardSize = Vec2(106, 166);
 
@@ -374,11 +370,17 @@ void CharacterSelectScene::CreateScrollableCharacterList()
 			button->SetHoveredMaterial(uniqueMaterial3);
 			button->SetPressedMaterial(uniqueMaterial3);
 
-			// Delegate에 함수 등록 (함수 호출이 아님!)
-			/*button->OnClick += []() {
-				std::cout << "Button clicked!" << std::endl;
-				};
+			
 
+			// Delegate에 함수 등록 (함수 호출이 아님!)
+			button->OnClick += [this]() {
+				std::cout << "Button clicked!" << std::endl;
+				shared_ptr<Material> uniqueMaterial4 = RESOURCES->Get<Material>(L"CharLobbyNicky")->Clone();
+
+				auto imageUI = m_backPanel->GetUIPanel()->GetImageUI(L"MainImageUI");
+				imageUI->SetMaterial(0, uniqueMaterial4);
+			};
+			/*
 			button->OnHoverEnter += []() {
 				std::cout << "Mouse entered button!" << std::endl;
 				};

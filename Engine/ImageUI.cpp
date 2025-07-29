@@ -159,6 +159,23 @@ void ImageUI::SetLayerSize(int layer, Vec2 newSize)
     }
 }
 
+void ImageUI::SetMaterial(int layer, shared_ptr<Material> material)
+{
+    // 레이어가 존재하는지 확인
+    auto it = m_imageLayers.find(layer);
+    if (it != m_imageLayers.end()) {
+        it->second.material = material;
+
+        // GameObject의 MeshRenderer도 업데이트
+        if (it->second.gameObject && it->second.gameObject->GetMeshRenderer()) {
+            it->second.gameObject->GetMeshRenderer()->SetMaterial(material);
+        }
+    }
+    else {
+        std::wcout << L"Layer " << layer << L" not found in ImageUI!" << std::endl;
+    }
+}
+
 void ImageUI::CreateImageGameObject(ImageLayer& layer)
 {
     if (m_isDestroying) return;

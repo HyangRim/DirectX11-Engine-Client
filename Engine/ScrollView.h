@@ -127,7 +127,7 @@ private:
     // 뷰포트 컬링 설정
     bool m_enableViewportCulling = true;
 
-    // ScrollView.h에 추가
+    
 private:
     // 클리핑 관련
     bool m_enablePixelClipping = true;

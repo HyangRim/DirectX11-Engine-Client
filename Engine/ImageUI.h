@@ -37,6 +37,8 @@ public:
     // 레이어 크기 변경
     void SetLayerSize(int layer, Vec2 newSize);
 
+    void SetMaterial(int layer, shared_ptr<Material> material);
+
     // 모든 레이어 업데이트
     void UpdateLayers();
  
