@@ -17,6 +17,7 @@ Nicky::Nicky(shared_ptr<Shader> _defaultShader)
 
 Nicky::~Nicky()
 {
+
 }
 
 void Nicky::Start()

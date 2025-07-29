@@ -49,6 +49,7 @@ public:
 	void SetLocalPosition(const Vec2& localPos) { m_localPosition = localPos; }
 	const Vec2& GetLocalPosition() const { return m_localPosition; }
 	void UpdatePickingRect(const Vec2& screenPos);
+	void SetZPos(float zPos) { m_zPos = zPos; }
 
 private:
 	void UpdateState();
@@ -61,10 +62,11 @@ private:
 	std::function<void(void)> m_onClicked;
 	RECT m_rect;
 	uint32 m_pass;
-	const float m_zPos = 0.6f;
+	float m_zPos = 0.6f;
 
 	Vec2 m_localPosition;  // 부모(UIPanel) 기준 로컬 위치
 	Vec2 m_size;           // 버튼 크기
+	Vec2 m_materialSize;
 
 
 	// 상태 관리

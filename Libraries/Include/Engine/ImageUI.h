@@ -39,12 +39,15 @@ public:
 
     void SetMaterial(int layer, shared_ptr<Material> material);
 
+    void SetZPos(float zPos) { m_zPos = zPos; }
+
     // 모든 레이어 업데이트
     void UpdateLayers();
  
     // 레이어 정보 가져오기
     //const std::map<int, ImageLayer>& GetLayers() const { return m_imageLayers; }
     std::map<int, ImageLayer>& GetLayers() { return m_imageLayers; }
+    Vec2 GetLayerPosition(int layer);
 
     virtual void Update() override;
 
@@ -63,7 +66,7 @@ private:
     bool m_needsSort;
     bool m_isDestroying;  // 소멸 중인지 확인하는 플래그
 
-    const float m_zPos = 0.4f;
+    float m_zPos = 0.4f;
 private:
     Vec2 m_localPosition;  // 부모(UIPanel) 기준 로컬 위치
     Vec2 m_size;           // 버튼 크기

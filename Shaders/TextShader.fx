@@ -7,6 +7,11 @@
 // Structures //
 ////////////////
 
+// 개별 클리핑 변수 (Global.fx의 ClippingBuffer 대신)
+float4 ClippingRect2 : CLIPRECT = float4(0, 0, 1366, 768);
+bool EnableClipping2 : ENABLECLIP = false;
+
+
 struct VertexInput
 {
     float4 position : POSITION;
@@ -128,10 +133,10 @@ float4 PS_OutlineText_Clipped(PixelInput input) : SV_TARGET
     screenPos.y *= 768.0f; // 실제 화면 높이
     
     // 클리핑 영역 체크
-    if (EnableClipping)
+    if (EnableClipping2)
     {
-        if (screenPos.x < ClippingRect.x || screenPos.x > ClippingRect.z ||
-            screenPos.y < ClippingRect.y || screenPos.y > ClippingRect.w)
+        if (screenPos.x < ClippingRect2.x || screenPos.x > ClippingRect2.z ||
+            screenPos.y < ClippingRect2.y || screenPos.y > ClippingRect2.w)
         {
             discard; // 클리핑 영역 밖의 픽셀은 버림
         }

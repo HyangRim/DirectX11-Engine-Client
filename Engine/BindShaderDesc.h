@@ -148,3 +148,11 @@ struct DecalBufferData {
 	float decalAlpha;
 	Vec3 padding;
 };
+
+// ScrollView 클리핑 전용 버퍼
+struct ScrollViewClippingData
+{
+	Vec4 clippingRect;
+	float enableClipping;
+	Vec3 padding;
+};

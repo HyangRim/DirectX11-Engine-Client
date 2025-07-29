@@ -146,12 +146,15 @@ void Bianca::Birth()
 
 void Bianca::Death()
 {
+
 }
 
 void Bianca::MakeItem()
 {
+
 }
 
 void Bianca::MakeFood()
 {
+
 }

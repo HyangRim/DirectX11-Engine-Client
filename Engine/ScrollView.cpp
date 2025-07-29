@@ -13,8 +13,10 @@
 #include "Graphics.h"
 #include "ImageUI.h"
 
+
 ScrollView::ScrollView() : Super(ComponentType::ScrollView)
 {
+   
 }
 
 ScrollView::~ScrollView()
@@ -124,14 +126,6 @@ void ScrollView::Create(Vec2 screenPos, Vec2 viewSize, shared_ptr<Material> back
         go->GetMeshRenderer()->SetMaterial(m_backgroundMaterial);
         go->GetMeshRenderer()->SetPass(2);
     }
-
-    // 셰이더 변수 가져오기 (ImageShader 사용 시)
-    if (backgroundMaterial && backgroundMaterial->GetShader())
-    {
-        auto shader = backgroundMaterial->GetShader();
-        m_clippingRectEffect = shader->GetVector("ClippingRect");
-        m_enableClippingEffect = shader->GetScalar("EnableClipping");
-    }
 }
 
 void ScrollView::SetContentSize(Vec2 contentSize)
@@ -184,8 +178,8 @@ shared_ptr<UIPanel> ScrollView::AddPanel(Vec2 localPos, Vec2 size, shared_ptr<Ma
     // 패널 GameObject 생성
     auto panelObj = make_shared<GameObject>();
     panelObj->GetTransform()->SetPosition(Vec3(localPos.x, localPos.y, m_zPanelPos));
+    // 패널에 ScrollView ID 태그 추가 (옵션)
     panelObj->SetName(name);
-
     // UIPanel 컴포넌트 추가
     auto panelComponent = make_shared<UIPanel>();
     panelObj->AddComponent(panelComponent);
@@ -256,6 +250,47 @@ void ScrollView::RemoveUIElement(shared_ptr<GameObject> uiElement)
         CURSCENE->GetObjectManager()->MarkUIObjectForDestroy(uiElement);
     }
 }
+
+void ScrollView::RemoveAllElement()
+{
+    if (m_isDestroying) return;
+
+    // 모든 컨텐츠 요소들을 지연 삭제로 처리
+    for (auto it = m_contentElements.begin(); it != m_contentElements.end(); ++it)
+    {
+        if (auto element = it->lock())
+        {
+            // UIPanel인 경우 자식 요소들까지 계층적으로 삭제
+            if (auto uiPanel = element->GetUIPanel())
+            {
+                // UIPanel의 계층적 삭제 사용
+                if (CURSCENE && !CURSCENE->IsDestroying()) {
+                    CURSCENE->GetObjectManager()->MarkUIObjectForDestroyWithChildren(element);
+                }
+            }
+            else
+            {
+                // 일반 UI 요소 삭제
+                if (CURSCENE && !CURSCENE->IsDestroying()) {
+                    CURSCENE->GetObjectManager()->MarkUIObjectForDestroy(element);
+                }
+            }
+        }
+    }
+
+    // 컨테이너들 정리
+    m_contentElements.clear();
+    m_namedElements.clear();
+    m_originalPositions.clear();
+
+    // 스크롤 위치 초기화
+    m_scrollPosition = Vec2::Zero;
+
+#if _DEBUG
+    std::wcout << L"ScrollView: 모든 UI 요소가 삭제되었습니다." << std::endl;
+#endif
+}
+
 
 void ScrollView::HandleInput()
 {
@@ -339,7 +374,7 @@ void ScrollView::UpdateContentPosition()
                 float x = screenPos.x - width / 2.0f;
                 float y = height / 2.0f - screenPos.y;
 
-                element->GetTransform()->SetPosition(Vec3(x, y, m_zPanelPos));
+                element->GetTransform()->SetPosition(Vec3(x, y, element->GetTransform()->GetPosition().z));
             }
             ++it;
         }
@@ -406,6 +441,10 @@ bool ScrollView::HandleMouseWheel(int wheelDelta)
 
     if (m_scrollDirection == ScrollDirection::Vertical || m_scrollDirection == ScrollDirection::Both) {
         scrollDelta.y = scrollAmount;
+    }
+    else
+    {
+        scrollDelta.x = scrollAmount;
     }
 
     ScrollBy(scrollDelta);
@@ -575,20 +614,53 @@ void ScrollView::SetImageLayerVisibility(shared_ptr<GameObject> obj, bool visibl
     }  
 }
 
+
+
 void ScrollView::UpdateClippingShaderData()
 {
-    // 클리핑 영역을 스크린 좌표로 설정
-    Vec4 clippingRect;
-    clippingRect.x = m_position.x - m_viewSize.x / 2.0f; // left
-    clippingRect.y = m_position.y - m_viewSize.y / 2.0f; // top
-    clippingRect.z = m_position.x + m_viewSize.x / 2.0f; // right
-    clippingRect.w = m_position.y + m_viewSize.y / 2.0f; // bottom
+    //// 클리핑 영역을 스크린 좌표로 설정
+    //Vec4 clippingRect;
+    //clippingRect.x = m_position.x - m_viewSize.x / 2.0f; // left
+    //clippingRect.y = m_position.y - m_viewSize.y / 2.0f; // top
+    //clippingRect.z = m_position.x + m_viewSize.x / 2.0f; // right
+    //clippingRect.w = m_position.y + m_viewSize.y / 2.0f; // bottom
 
-    // 모든 컨텐츠 요소에 클리핑 데이터 적용
+    //// 모든 컨텐츠 요소에 클리핑 데이터 적용
+    //for (auto it = m_contentElements.begin(); it != m_contentElements.end(); ++it)
+    //{
+    //    if (auto element = it->lock())
+    //    {
+    //        SetupClippingForElement(element);
+    //    }
+    //}
+
+    //if (!m_enablePixelClipping) return;
+
+    //// **오직 이 ScrollView의 요소들에만 클리핑 적용**
+    //for (auto it = m_contentElements.begin(); it != m_contentElements.end(); ++it)
+    //{
+    //    if (auto element = it->lock())
+    //    {
+    //        SetupClippingForElement(element);
+    //    }
+    //}
+
+
+
+    if (!m_enablePixelClipping) return;
+
+    // 현재 클리핑 영역 계산
+    m_currentClippingRect.x = m_position.x - m_viewSize.x / 2.0f;
+    m_currentClippingRect.y = m_position.y - m_viewSize.y / 2.0f;
+    m_currentClippingRect.z = m_position.x + m_viewSize.x / 2.0f;
+    m_currentClippingRect.w = m_position.y + m_viewSize.y / 2.0f;
+
+    // 이 ScrollView에 속한 요소들에만 클리핑 적용
     for (auto it = m_contentElements.begin(); it != m_contentElements.end(); ++it)
     {
         if (auto element = it->lock())
         {
+            //ApplyScrollViewClipping(element, m_currentClippingRect);
             SetupClippingForElement(element);
         }
     }
@@ -613,25 +685,12 @@ void ScrollView::SetupClippingForElement(shared_ptr<GameObject> element)
             clippingRect.z = m_position.x + m_viewSize.x / 2.0f;
             clippingRect.w = m_position.y + m_viewSize.y / 2.0f;
 
-            // 셰이더에 클리핑 데이터 전달
-            auto clippingRectVar = shader->GetVector("ClippingRect");
-            auto enableClippingVar = shader->GetScalar("EnableClipping");
+            // 개별 상수 버퍼에 클리핑 데이터 설정
+            shader->PushScrollViewClippingData(clippingRect, m_enablePixelClipping);
 
-            if (clippingRectVar)
-            {
-                clippingRectVar->SetFloatVector(reinterpret_cast<float*>(&clippingRect));
-            }
-
-            if (enableClippingVar)
-            {
-                float enable = m_enablePixelClipping ? 1.0f : 0.0f;
-                enableClippingVar->SetFloat(enable);
-            }
-
+            // 클리핑 패스 사용
             if (element->GetText())
                 meshRenderer->SetPass(1);
-
-            // 클리핑 패스 사용 (Pass 4)
             else
                 meshRenderer->SetPass(4);
         }
@@ -663,3 +722,4 @@ void ScrollView::SetupClippingForElement(shared_ptr<GameObject> element)
         }
     }
 }
+

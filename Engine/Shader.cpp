@@ -635,6 +635,23 @@ void Shader::PushDecalData(const DecalBufferData& _desc)
 	m_DecalEffectBuffer->SetConstantBuffer(m_DecalBuffer->GetComPtr().Get());
 }
 
+// Shader.cpp¿¡ Ãß°¡
+void Shader::PushScrollViewClippingData(const Vec4& clippingRect, bool enableClipping)
+{
+	if (m_scrollViewClippingBuffer == nullptr) {
+		m_scrollViewClippingBuffer = make_shared<ConstantBuffer<ScrollViewClippingData>>();
+		m_scrollViewClippingBuffer->Create();
+		m_scrollViewClippingEffectBuffer = GetConstantBuffer("ScrollViewClippingBuffer");
+	}
+
+	m_scrollViewClippingDesc.clippingRect = clippingRect;
+	m_scrollViewClippingDesc.enableClipping = enableClipping ? 1.0f : 0.0f;
+	m_scrollViewClippingDesc.padding = Vec3(0, 0, 0);
+
+	m_scrollViewClippingBuffer->CopyData(m_scrollViewClippingDesc);
+	m_scrollViewClippingEffectBuffer->SetConstantBuffer(m_scrollViewClippingBuffer->GetComPtr().Get());
+}
+
 void Shader::SetDecalTexture(shared_ptr<Texture> _texture)
 {
 	m_decalTexture = _texture;

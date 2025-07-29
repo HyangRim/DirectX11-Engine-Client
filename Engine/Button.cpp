@@ -35,6 +35,8 @@ void Button::Update()
 
 bool Button::Picked(POINT _screenPos)
 {
+
+
     return ::PtInRect(&m_rect, _screenPos);
 }
 
@@ -71,6 +73,10 @@ void Button::Create(Vec2 _localPos, Vec2 _size, shared_ptr<class Material> _mate
     auto mesh = RESOURCES->Get<Mesh>(L"Quad");
     go->GetMeshRenderer()->SetMesh(mesh);
     go->GetMeshRenderer()->SetPass(_pass);
+
+
+
+    m_materialSize = _material->GetDiffuseMap()->GetSize();
 
     //Picking;
     m_rect.left = static_cast<LONG>(_localPos.x - _size.x / 2.f);
@@ -118,6 +124,7 @@ void Button::UpdatePosition(const Vec2& parentWorldPos)
     float x = newWorldPos.x - width / 2;
     float y = height / 2 - newWorldPos.y;
 
+    
     go->GetTransform()->SetPosition(Vec3(x, y, m_zPos));
 
     // Picking RECT도 업데이트
@@ -126,10 +133,10 @@ void Button::UpdatePosition(const Vec2& parentWorldPos)
 
 void Button::UpdatePickingRect(const Vec2& screenPos)
 {
-    m_rect.left = static_cast<LONG>(screenPos.x - m_size.x / 2.f);
-    m_rect.right = static_cast<LONG>(screenPos.x + m_size.x / 2.f);
-    m_rect.top = static_cast<LONG>(screenPos.y - m_size.y / 2.f);
-    m_rect.bottom = static_cast<LONG>(screenPos.y + m_size.y / 2.f);
+    m_rect.left = static_cast<LONG>(screenPos.x - m_materialSize.x / 2.f);
+    m_rect.right = static_cast<LONG>(screenPos.x + m_materialSize.x / 2.f);
+    m_rect.top = static_cast<LONG>(screenPos.y - m_materialSize.y / 2.f);
+    m_rect.bottom = static_cast<LONG>(screenPos.y + m_materialSize.y / 2.f);
 }
 
 

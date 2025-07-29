@@ -45,11 +45,15 @@ public:
     shared_ptr<UIPanel> AddPanel(Vec2 localPos, Vec2 size, shared_ptr<Material> material = nullptr, const wstring& name = L"Panel");
     void AddUIElement(shared_ptr<GameObject> uiElement, Vec2 localPos);
     void RemoveUIElement(shared_ptr<GameObject> uiElement);
-
+    void RemoveAllElement();
+   
     // Getter
     Vec2 GetScrollPosition() const { return m_scrollPosition; }
     Vec2 GetViewSize() const { return m_viewSize; }
     Vec2 GetContentSize() const { return m_contentSize; }
+    vector<weak_ptr<GameObject>>& GetElements() { return m_contentElements; }
+    Vec4 GetClippingRect() { return m_currentClippingRect; }
+
     bool IsScrolling() const { return m_isScrolling; }
 
     // 마우스 입력 처리 (InputManager 사용)
@@ -109,7 +113,6 @@ private:
     const float m_zPanelPos = 0.8f;
     const float m_zScrollViewPos = 0.7f;
 
-
 public:
     // 뷰포트 컬링 활성화/비활성화
     void SetViewportCulling(bool enable) { m_enableViewportCulling = enable; }
@@ -131,14 +134,24 @@ private:
 private:
     // 클리핑 관련
     bool m_enablePixelClipping = true;
-    ComPtr<ID3DX11EffectVectorVariable> m_clippingRectEffect;
-    ComPtr<ID3DX11EffectScalarVariable> m_enableClippingEffect;
+   
+public:
+    void PushScrollViewClippingData(const Vec4& clippingRect, bool enableClipping);
 
 public:
     void SetPixelClipping(bool enable) { m_enablePixelClipping = enable; }
     bool IsPixelClippingEnabled() const { return m_enablePixelClipping; }
 
-private:
+
     void UpdateClippingShaderData();
+private:
     void SetupClippingForElement(shared_ptr<GameObject> element);
+   
+ private:
+     // 클리핑 관련 - 각 ScrollView별 독립적 관리
+     Vec4 m_currentClippingRect = Vec4::Zero;
+  
+     // 이 ScrollView에 속한 요소들을 추적하기 위한 식별자
+     int m_scrollViewID = 0;
+     static int s_nextScrollViewID;
 };

@@ -5,6 +5,17 @@
 #include "00. Light.fx"
 #include "00. Render.fx"
 
+// 개별 클리핑 변수 (Global.fx의 ClippingBuffer 대신)
+float4 ClippingRect2 : CLIPRECT = float4(0, 0, 1366, 768);
+bool EnableClipping2 : ENABLECLIP = false;
+
+// ScrollView별 독립적인 상수 버퍼 정의 (슬롯 10 사용)
+cbuffer ScrollViewClippingBuffer : register(b10)
+{
+    float4 ScrollViewClippingRect; // x=left, y=top, z=right, w=bottom
+    bool ScrollViewEnableClipping;
+    float3 ScrollViewClippingPadding;
+};
 
 SamplerState ImageSampler
 {
@@ -41,25 +52,24 @@ VertexOutput2 VS(VertexInput2 input)
     return output;
 }
 
-// 클리핑이 적용된 픽셀 셰이더
+// 클리핑이 적용된 픽셀 셰이더 수정
 float4 PS_Clipped(VertexOutput2 input) : SV_TARGET
 {
     // 스크린 좌표로 변환
     float2 screenPos = input.screenPos.xy / input.screenPos.w;
-    screenPos = screenPos * 0.5f + 0.5f; // [-1,1] -> [0,1]
-    screenPos.y = 1.0f - screenPos.y; // Y축 뒤집기
+    screenPos = screenPos * 0.5f + 0.5f;
+    screenPos.y = 1.0f - screenPos.y;
     
-    // 뷰포트 크기로 스케일링
-    screenPos.x *= 1366.0f; // 실제 화면 너비로 조정
-    screenPos.y *= 768.0f; // 실제 화면 높이로 조정
+    screenPos.x *= 1366.0f;
+    screenPos.y *= 768.0f;
     
-    // 클리핑 영역 체크
-    if (EnableClipping)
+    // 개별 상수 버퍼의 클리핑 변수 사용
+    if (ScrollViewEnableClipping)
     {
-        if (screenPos.x < ClippingRect.x || screenPos.x > ClippingRect.z ||
-            screenPos.y < ClippingRect.y || screenPos.y > ClippingRect.w)
+        if (screenPos.x < ScrollViewClippingRect.x || screenPos.x > ScrollViewClippingRect.z ||
+            screenPos.y < ScrollViewClippingRect.y || screenPos.y > ScrollViewClippingRect.w)
         {
-            discard; // 클리핑 영역 밖의 픽셀은 버림
+            discard;
         }
     }
     

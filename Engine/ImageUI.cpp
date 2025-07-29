@@ -285,6 +285,17 @@ void ImageUI::UpdateLayers()
     }
 }
 
+Vec2 ImageUI::GetLayerPosition(int layer)
+{
+    auto it = m_imageLayers.find(layer);
+    if (it != m_imageLayers.end())
+    {
+        return it->second.position;
+    }
+    else
+        return (Vec2(-1, -1));
+}
+
 void ImageUI::Update()
 {
     if (!m_isDestroying && m_needsSort)

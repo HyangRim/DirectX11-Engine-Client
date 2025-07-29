@@ -85,7 +85,8 @@ public:
 	void PushFOWData(const FogOfWarData& _desc);
 	void PushMultiLightData(const MultiLightDesc& _desc);
 	void PushOutlineData(const OutlineDesc& _desc);
-	void PushDecalData(const DecalBufferData& _desc);
+	void PushDecalData(const DecalBufferData& _desc); 
+	void PushScrollViewClippingData(const Vec4& clippingRect, bool enableClipping);
 	void SetDecalTexture(shared_ptr<Texture> _texture);
 	void SetDepthTexture(shared_ptr<Texture> _depthtexture);
 
@@ -166,6 +167,11 @@ private:
 	shared_ptr<Texture> m_depthTexture;
 	ComPtr<ID3DX11EffectShaderResourceVariable> m_decalTextureEffect;
 	ComPtr<ID3DX11EffectShaderResourceVariable> m_depthTextureEffect;
+
+
+	ScrollViewClippingData m_scrollViewClippingDesc;
+	shared_ptr<ConstantBuffer<ScrollViewClippingData>> m_scrollViewClippingBuffer;
+	ComPtr<ID3DX11EffectConstantBuffer> m_scrollViewClippingEffectBuffer;
 };
 
 class ShaderManager

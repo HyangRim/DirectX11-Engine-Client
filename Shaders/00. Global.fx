@@ -24,13 +24,13 @@ cbuffer TransformBuffer
 {
     matrix W;
 };
-// Global.fx에 추가
-cbuffer ClippingBuffer
-{
-    float4 ClippingRect; // x=left, y=top, z=right, w=bottom (screen coordinates)
-    bool EnableClipping;
-    float3 ClippingPadding;
-};
+//// Global.fx에 추가
+//cbuffer ClippingBuffer
+//{
+//    float4 ClippingRect; // x=left, y=top, z=right, w=bottom (screen coordinates)
+//    bool EnableClipping;
+//    float3 ClippingPadding;
+//};
 
 ////////////////
 //Vertex Data //

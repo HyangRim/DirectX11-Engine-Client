@@ -18,13 +18,13 @@ public:
     virtual void OnCollisionEnter(shared_ptr<GameObject> _other) override;
     virtual void OnCollisionExit(shared_ptr<GameObject> _other) override;
 
-
 private:
     void InitNickyModel();
     void InitNickyAnimation();
     void InitNickyComponent();
     void InitNickySkill();
     void InitNickyStats();
+
 public:
     virtual void Birth() override;
     virtual void Death() override;

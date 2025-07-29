@@ -5,14 +5,17 @@
 BaseSkill::BaseSkill(shared_ptr<Player> _player)
 	: m_playerObject(_player)
 {
+
 }
 
 BaseSkill::~BaseSkill()
 {
+
 }
 
 void BaseSkill::PlaySkill()
 {
+
 }
 
 void BaseSkill::SkillEnd()

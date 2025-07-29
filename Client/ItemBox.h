@@ -6,7 +6,6 @@ class ItemBox :
 {
     using Super = GameObject;
 
-
 public:
     ItemBox();
     virtual ~ItemBox();
@@ -14,6 +13,8 @@ public:
     virtual void Start() override;
     virtual void Update() override;
     virtual void LateUpdate() override;
+
+
 public:
     shared_ptr<Item> InsertItem(int _index, shared_ptr<Item> _item);
     shared_ptr<Item> DeleteItem(int _index);
@@ -21,6 +22,7 @@ public:
     array<shared_ptr<Item>, 8>& GetBoxInventory() {
         return m_boxInventory;
     }
+
 private:
     array<shared_ptr<Item>, 8> m_boxInventory;
     shared_ptr<AABBBoxCollider> m_collider;
