@@ -60,10 +60,38 @@ void LumiaIsland::Start()
 	CreateCemeteryItemBox();
 	CreateCharacterBianca();
 
-	CreateTestDecal();
+	//CreateTestDecal();
 
 	// NavMesh 생성 추가
 	CreateNavMesh();
+
+	// Billboard
+	{
+		auto snowShader = make_shared<Shader>(L"29. SnowBillboard.fx");
+		auto obj = make_shared<GameObject>();
+		obj->SetType(OBJECTTYPE::MAP);
+		obj->GetTransform()->SetLocalPosition(Vec3(15, 20, 5));
+		obj->AddComponent(make_shared<SnowBillboard>(Vec3(15, 0, 5), Vec3(10, 10, 10), 100));
+		{
+			// Material
+			{
+				shared_ptr<Material> material = make_shared<Material>();
+				material->SetShader(snowShader);
+				//auto texture = RESOURCES->Load<Texture>(L"Veigar", L"..\\Resources\\Textures\\grass.png");
+				auto texture = RESOURCES->Load<Texture>(L"Veigar", L"..\\Resources\\Textures\\veigar.jpg");
+				material->SetDiffuseMap(texture);
+				MaterialDesc& desc = material->GetMaterialDesc();
+				desc.ambient = Vec4(1.f);
+				desc.diffuse = Vec4(1.f);
+				desc.specular = Vec4(1.f);
+				RESOURCES->Add(L"Veigar", material);
+
+				obj->GetSnowBillboard()->SetMaterial(material);
+			}
+		}
+
+		CURSCENE->Add(obj);
+	}
 
 	Super::Start();
 }
@@ -958,15 +986,16 @@ void LumiaIsland::CreateTestDecal()
 	auto testDecalObj = make_shared<GameObject>();
 	testDecalObj->AddComponent(make_shared<AABBBoxCollider>());
 	testDecalObj->SetName(L"TestDecal");
+	testDecalObj->SetType(OBJECTTYPE::MAP);
 
 	// 2. SkillDecalIndicator 컴포넌트만 추가
 	auto decalIndicator = make_shared<SkillDecalIndicator>();
 	testDecalObj->AddComponent(decalIndicator);
-	testDecalObj->GetTransform()->SetLocalPosition(Vec3(15, 20, 10));
+	testDecalObj->GetTransform()->SetLocalPosition(Vec3(15, 25, 10));
 	// 3. 간단한 설정
-	decalIndicator->SetSkillDecal(SkillDecalType::CIRCLE, 15.0f);
-	decalIndicator->SetColor(Vec4(0.0f, 1.0f, 0.0f, 1.0f));
-	decalIndicator->SetStartPosition(Vec3(15, 20, 10));
+	decalIndicator->SetSkillDecal(SkillDecalType::CIRCLE, 5.0f);
+	decalIndicator->SetColor(Vec4(1.0f, 1.0f, 1.0f, 0.6f));
+	decalIndicator->SetStartPosition(Vec3(15, 20, 5));
 	decalIndicator->ShowIndicator(true);
 
 	// 4. Scene에 추가

@@ -5,9 +5,10 @@
 #include "MathUtils.h"
 
 
-SnowBillboard::SnowBillboard(Vec3 _extent, int32 _drawCount /*= 100*/)
+SnowBillboard::SnowBillboard(Vec3 _start, Vec3 _extent, int32 _drawCount /*= 100*/)
 	:Super(ComponentType::SnowBillboard)
 {
+	m_desc.m_origin = _start;
 	m_desc.m_extent = _extent;
 	m_desc.m_drawDistance = _extent.z * 2.0f;
 	m_drawCount = _drawCount;
@@ -17,7 +18,9 @@ SnowBillboard::SnowBillboard(Vec3 _extent, int32 _drawCount /*= 100*/)
 
 	for (int32 i = 0; i < m_drawCount * 4; i += 4)
 	{
-		Vec2 scale = MathUtils::RandomVec2(0.1f, 0.5f);
+		Vec2 scale;
+		scale.x = MathUtils::Random(0.02f, 0.08f);
+		scale.y = MathUtils::Random(0.3f, 0.5f);
 
 		Vec3 position;
 		position.x = MathUtils::Random(-m_desc.m_extent.x, m_desc.m_extent.x);
@@ -86,7 +89,7 @@ void SnowBillboard::InnerRender(bool _isShadowTech)
 	Super::InnerRender(_isShadowTech);
 
 
-	m_desc.m_origin = CURSCENE->GetMainCamera()->GetTransform()->GetPosition();
+	//m_desc.m_origin = CURSCENE->GetMainCamera()->GetTransform()->GetPosition();
 	m_desc.m_time = m_elapsedTime;
 	m_elapsedTime += DT;
 

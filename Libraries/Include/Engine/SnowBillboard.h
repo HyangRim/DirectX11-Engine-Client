@@ -16,7 +16,7 @@ class SnowBillboard :
     using Super = Renderer;
 
 public:
-    SnowBillboard(Vec3 _extent, int32 _drawCount = 100);
+    SnowBillboard(Vec3 _start, Vec3 _extent, int32 _drawCount = 100);
     virtual ~SnowBillboard();
 
     void InnerRender(bool _isShadowTech) override;

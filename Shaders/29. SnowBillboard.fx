@@ -43,14 +43,19 @@ V_OUT VS(VertexInput input)
 {
     V_OUT output;
 
-    float3 displace = Velocity * Time * 100;
+    float3 displace = Velocity * Time * 1000;
 
     // input.position.y += displace;
+    float timeOffset = Time + input.random.y * 10.f;
+    
+    input.position.y -= timeOffset * 30.0f;
     
     //눈을 Control하는 공식. 
-    input.position.y = Origin.y + Extent.y - (input.position.y - displace) % Extent.y;
-    input.position.x += cos(Time - input.random.x) * Turbulence;
-    input.position.z += cos(Time - input.random.y) * Turbulence;
+    float totalHeight = Extent.y * 2.0f;
+    input.position.y = Origin.y + Extent.y - fmod(Origin.y + Extent.y - input.position.y, totalHeight);
+    //input.position.y = Origin.y + Extent.y - (input.position.y - displace.y) % (Extent.y * 2.f);
+    //input.position.x += cos(Time - input.random.x) * Turbulence;
+    //input.position.z += cos(Time - input.random.y) * Turbulence;
     //input.position.xyz = Origin + (Extent + (input.position.xyz + displace) % Extent) % Extent - (Extent * 0.5f);
 
     
@@ -73,13 +78,14 @@ V_OUT VS(VertexInput input)
 
     // Alpha Blending
     float4 view = mul(position, V);
-    output.alpha = saturate(1 - view.z / DrawDistance) * 0.8f;
+    output.alpha = saturate(1 - view.z / DrawDistance) * 0.4f;
 
     return output;
 }
 
 float4 PS(V_OUT input) : SV_Target
 {
+    return float4(1, 1, 0, 0.3f);
     float4 diffuse = DiffuseMap.Sample(LinearSampler, input.uv);
 
     diffuse.rgb = Color.rgb * input.alpha * 2.0f;

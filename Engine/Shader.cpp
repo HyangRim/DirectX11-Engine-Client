@@ -656,7 +656,7 @@ void Shader::SetDecalTexture(shared_ptr<Texture> _texture)
 {
 	m_decalTexture = _texture;
 
-	if (m_decalTexture == nullptr)
+	if (m_decalTextureEffect == nullptr)
 		m_decalTextureEffect = GetSRV("DecalTexture");
 	
 	if (m_decalTexture && m_decalTextureEffect) {
@@ -668,8 +668,8 @@ void Shader::SetDepthTexture(shared_ptr<Texture> _depthtexture)
 {
 	m_depthTexture = _depthtexture;
 
-	if (m_depthTexture == nullptr)
-		m_depthTextureEffect = GetSRV("DecalTexture");
+	if (m_depthTextureEffect == nullptr)
+		m_depthTextureEffect = GetSRV("DepthTexture");
 
 	if (m_depthTexture && m_depthTextureEffect) {
 		m_depthTextureEffect->SetResource(m_depthTexture->GetComPtr().Get());

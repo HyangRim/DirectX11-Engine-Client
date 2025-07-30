@@ -41,6 +41,6 @@ protected:
 	bool m_active = true;	//충돌체 활성화 여부. 
 
 	Vec3 m_offSetPos = { 0,0,0 };
-	Vec3 m_offsetScale = { 200, 200, 200 };
+	Vec3 m_offsetScale = { 1, 1, 1 };
 };
 
