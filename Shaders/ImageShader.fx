@@ -81,7 +81,7 @@ float4 PS_Clipped(VertexOutput2 input) : SV_TARGET
 float4 PS(VertexOutput2 input) : SV_TARGET
 {
     float4 color = DiffuseMap.Sample(ImageSampler, input.uv);
-    
+   
     //// 알파 테스트 (완전히 투명한 픽셀은 버림)
     //if (color.a < 0.01)
     //    discard;
@@ -93,7 +93,7 @@ float4 PS(VertexOutput2 input) : SV_TARGET
 float4 PS_Alpha(VertexOutput2 input) : SV_TARGET
 {
     float4 color = DiffuseMap.Sample(ImageSampler, input.uv);
-    
+   
     // // 알파 테스트 (완전히 투명한 픽셀은 버림)
     //if (color.a < 1)
     //    discard;
@@ -107,6 +107,20 @@ float4 PS_SolidColor(VertexOutput2 input) : SV_TARGET
     return Material.diffuse; // Material 상수 버퍼의 diffuse 색상 사용
 }
 
+// 알파 블렌딩을 위한 픽셀 셰이더
+float4 PS_ReplaceColor(VertexOutput2 input) : SV_TARGET
+{
+    float4 color = DiffuseMap.Sample(ImageSampler, input.uv);
+   
+    float4 outColor = Material.diffuse;
+    outColor.a = color.a;
+    
+    // // 알파 테스트 (완전히 투명한 픽셀은 버림)
+    //if (color.a < 1)
+    //    discard;
+    
+    return outColor;
+}
 
 // 테크닉
 technique11 T0
@@ -150,6 +164,15 @@ technique11 T0
         SetBlendState(AlphaBlend, float4(0, 0, 0, 0), 0xFF);
         SetVertexShader(CompileShader(vs_5_0, VS()));
         SetPixelShader(CompileShader(ps_5_0, PS_Clipped()));
+    }
+
+    //알파 블렌딩 + 단색으로 설정 패스
+    pass P5
+    {
+        SetDepthStencilState(UIDepthStencil, 0); // UI 전용 깊이 스텐실 상태
+        SetBlendState(AlphaBlend, float4(0, 0, 0, 0), 0xFF);
+        SetVertexShader(CompileShader(vs_5_0, VS()));
+        SetPixelShader(CompileShader(ps_5_0, PS_ReplaceColor()));
     }
 }
 

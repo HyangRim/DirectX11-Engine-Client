@@ -311,7 +311,7 @@ void CharacterSelectScene::LoadCharacterImages()
 		MaterialDesc& charLobbyDesc = charLobbyImage->GetMaterialDesc();
 		charLobbyDesc.ambient =		Vec4(1.f);
 		charLobbyDesc.diffuse =		Vec4(1.f);
-		charLobbyDesc.specular =	Vec4(1.0f);
+		charLobbyDesc.specular =	Vec4(1.f);
 		RESOURCES->Add(tag, charLobbyImage);
 	}
 }

@@ -81,7 +81,7 @@ void Scene::LateUpdate()
 
 void Scene::Render()
 {
-    const auto& cameras = m_objectManager->GetCameras();
+    /*const auto& cameras = m_objectManager->GetCameras();
     for (auto camera : cameras) {
 
         Camera* cam = camera->GetCamera().get();
@@ -91,7 +91,15 @@ void Scene::Render()
         else {
             RenderUICamera(cam);
         }
-    }
+    }*/
+
+    auto main_camera = m_objectManager->GetMainCamera();
+    Camera* cam = main_camera->GetCamera().get();
+    RenderGameCamera(cam);
+
+    auto ui_Camera = m_objectManager->GetUICamera();
+    cam = ui_Camera->GetCamera().get();
+    RenderUICamera(cam);
 }
 
 void Scene::RenderGameCamera(Camera* cam)

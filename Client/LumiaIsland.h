@@ -31,9 +31,28 @@ private:
 	void CreateCharacterBianca();
 
 
+	//=====================UI관련 함수=====================//
 	void LoadItemBoxImages();
 	void CreateItemBoxPanel();
 	void CheckPickedItemBox();
+
+	void LoadCharStatIcon();
+	void CreateCharStatPanel();
+
+	void LoadCharEquipmentIcon();
+	void CreateCharEquipmentPanel();
+
+	void LoadCharMainImages();
+	void CreateCharMainPanel();
+
+	void LoadCharInventoryImages();
+	void CreateCharInventoryPanel();
+
+	//=====================UI관련 함수=====================//
+
+
+
+	Vec4 ColorNormalize(Vec4 input);	//RGBA ( 0 ~ 255 ) 넣으면 -> ( 0 ~ 1 )
 
 private:
 	//테스트용. 
@@ -44,7 +63,14 @@ private:
 	shared_ptr<Shader> m_defaultshader = nullptr;
 	shared_ptr<Shader> m_testShader = nullptr;
 
+	//=====================UI관련 변수=====================//
 	shared_ptr<GameObject> m_itemBox = nullptr;
+
+	shared_ptr<GameObject> m_charStatPanel = nullptr;
+	shared_ptr<GameObject> m_charEquipPanel = nullptr;
+	shared_ptr<GameObject> m_charMainPanel = nullptr;
+	shared_ptr<GameObject> m_charInventoryPanel = nullptr;
+	//=====================UI관련 변수=====================//
 
 	// 테스트용
 	shared_ptr<GameObject> m_navMesh;

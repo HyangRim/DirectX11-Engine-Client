@@ -25,6 +25,17 @@
 #include "NavMesh.h"
 #include "NavMeshAgent.h"
 
+const vector<wstring> charStatIconNames = {
+	L"AttackPower",
+	L"SkillAmpRatio",
+	L"IncreaseBasicAttackDamageRatio",
+	L"Defense",
+	L"AttackSpeedRatio",
+	L"CooldownReduction",
+	L"CriticalStrikeChance",
+	L"MoveSpeedRatio"
+};
+
 void LumiaIsland::Start()
 {
 	m_defaultshader = make_shared<Shader>(L"FOW.fx");
@@ -51,7 +62,7 @@ void LumiaIsland::Start()
 		light->GetTransform()->SetRotation(lightDesc.direction);
 		light->GetTransform()->SetPosition(Vec3(0.f, 150.f, 0.f));
 		static_pointer_cast<Light>(light->GetFixedComponent(ComponentType::Light))->SetLightDesc(lightDesc);
-		CURSCENE->Add(light);
+		Add(light);
 	}
 	CreateCemeteryBase();
 	CreateCemeteryInterior();
@@ -90,11 +101,22 @@ void LumiaIsland::Start()
 			}
 		}
 
-		CURSCENE->Add(obj);
+		Add(obj);
 	}
 
 	LoadItemBoxImages();
+	LoadCharStatIcon();
+	LoadCharEquipmentIcon();
+	LoadCharMainImages();
+	LoadCharInventoryImages();
+	
+	
 	CreateItemBoxPanel();
+	CreateCharStatPanel();
+	CreateCharEquipmentPanel();
+	CreateCharMainPanel();
+	CreateCharInventoryPanel();
+
 	Super::Start();
 }
 
@@ -918,20 +940,6 @@ void LumiaIsland::CreateCemeteryItemBox()
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void LumiaIsland::CreateNavMesh()
 {
 	// Animation
@@ -1047,19 +1055,151 @@ void LumiaIsland::CheckPickedItemBox()
 		if (m_pickedObject->GetType() == OBJECTTYPE::ITEMBOX)
 		{
 			m_itemBox->GetMeshRenderer()->SetActive(true);
-			//cout << "아이템박스 클릭됨\n";
+			cout << "아이템박스 클릭됨\n";
 		}
 		else
 		{
 			m_itemBox->GetMeshRenderer()->SetActive(false);
-			//cout << "아이템박스 클릭해제됨\n";
+			cout << "아이템박스 클릭해제됨\n";
 		}
 	}
 	else
 	{
 		m_itemBox->GetMeshRenderer()->SetActive(false);
-		//cout << "선택된 객체가 없음\n";
+		cout << "선택된 객체가 없음\n";
 	}
+}
+
+void LumiaIsland::LoadCharStatIcon()
+{
+	shared_ptr<Shader> shader = make_shared<Shader>(L"ImageShader.fx");
+
+	// 모든 UI 머티리얼에 동일한 설정 적용
+	auto SetupUIMaterial = [&](shared_ptr<Material> material) {
+		material->SetShader(shader);
+		material->SetRenderQueue(RenderQueue::Transparent);
+		material->SetTransparent(true);  // 모든 UI에 추가
+		material->SetRenderingMode(RenderingMode::Forward);
+		};
+
+	wstring prefixTag = L"Ico_ChaStat_";
+	wstring prefixPath = L"..\\Resources\\Textures\\UI\\CharStatIcon\\";
+
+	vector<Vec4> statIconColor;
+	statIconColor.push_back(ColorNormalize(Vec4(218, 187, 102, 255)));
+	statIconColor.push_back(ColorNormalize(Vec4(211, 160, 221, 255)));
+	statIconColor.push_back(ColorNormalize(Vec4(209, 120, 66, 255)));
+	statIconColor.push_back(ColorNormalize(Vec4(124, 175, 203, 255)));
+	statIconColor.push_back(ColorNormalize(Vec4(171, 162, 118, 255)));
+	statIconColor.push_back(ColorNormalize(Vec4(200, 200, 200, 255)));
+	statIconColor.push_back(ColorNormalize(Vec4(236, 96, 113, 255)));
+	statIconColor.push_back(ColorNormalize(Vec4(200, 200, 200, 255)));
+
+	for (int i = 0; i < charStatIconNames.size(); i++)
+	{
+		shared_ptr<Material> charLobbyImage = make_shared<Material>();
+		SetupUIMaterial(charLobbyImage);
+
+		wstring tag = prefixTag + charStatIconNames[i];
+		wstring path = prefixPath + tag + L".png";
+		auto charLobbyTexture = RESOURCES->Load<Texture>(tag, path);
+
+		charLobbyImage->SetDiffuseMap(charLobbyTexture);
+		MaterialDesc& charLobbyDesc = charLobbyImage->GetMaterialDesc();
+		charLobbyDesc.ambient = Vec4(1.f);
+		charLobbyDesc.diffuse =	statIconColor[i];
+		charLobbyDesc.specular = Vec4(1.0f);
+		RESOURCES->Add(tag, charLobbyImage);
+	}
+}
+
+void LumiaIsland::CreateCharStatPanel()
+{
+	m_charStatPanel = make_shared<GameObject>();
+	m_charStatPanel->SetName(L"CharStatPanel");
+
+	auto panel = make_shared<UIPanel>();
+	m_charStatPanel->AddComponent(panel);
+
+	panel->Create(Vec2(274.f, 768 - 57), Vec2(155, 115), nullptr);
+	m_charStatPanel->SetLayerIndex(LAYER_UI);
+
+	auto imageUI = m_charStatPanel->GetUIPanel()->AddImageUI(Vec2(0, 0), L"ImageUI");
+
+	for (int i = 0; i < charStatIconNames.size(); i++)
+	{
+		wstring prefixTag = L"Ico_ChaStat_";
+		shared_ptr<Material> cloneMaterial_charStatIcon = RESOURCES->Get<Material>(prefixTag + charStatIconNames[i])->Clone();
+		imageUI->AddImageLayer(i, Vec2(16 + (i % 2) * 70, 13 + (i / 2) * 28), Vec2(17, 17), cloneMaterial_charStatIcon, 5);
+	}
+
+	AddUIObject(m_charStatPanel, true);
+	RegisterUIParent(m_charStatPanel);
+}
+
+void LumiaIsland::LoadCharEquipmentIcon()
+{
+
+}
+
+void LumiaIsland::CreateCharEquipmentPanel()
+{
+	m_charEquipPanel = make_shared<GameObject>();
+	m_charEquipPanel->SetName(L"CharEquipPanel");
+
+	auto panel = make_shared<UIPanel>();
+	m_charEquipPanel->AddComponent(panel);
+
+	panel->Create(Vec2(380.f, 768 - 57), Vec2(38, 115), nullptr);
+	m_charEquipPanel->SetLayerIndex(LAYER_UI);
+
+	AddUIObject(m_charEquipPanel, true);
+	RegisterUIParent(m_charEquipPanel);
+}
+
+void LumiaIsland::LoadCharMainImages()
+{
+
+}
+
+void LumiaIsland::CreateCharMainPanel()
+{
+	m_charMainPanel = make_shared<GameObject>();
+	m_charMainPanel->SetName(L"CharMainPanel");
+
+	auto panel = make_shared<UIPanel>();
+	m_charMainPanel->AddComponent(panel);
+
+	panel->Create(Vec2(615.f, 768 - 57), Vec2(414, 115), nullptr);
+	m_charMainPanel->SetLayerIndex(LAYER_UI);
+
+	AddUIObject(m_charMainPanel, true);
+	RegisterUIParent(m_charMainPanel);
+}
+
+void LumiaIsland::LoadCharInventoryImages()
+{
+
+}
+
+void LumiaIsland::CreateCharInventoryPanel()
+{
+	m_charInventoryPanel = make_shared<GameObject>();
+	m_charInventoryPanel->SetName(L"CharMainPanel");
+
+	auto panel = make_shared<UIPanel>();
+	m_charInventoryPanel->AddComponent(panel);
+
+	panel->Create(Vec2(960.f, 768 - 57), Vec2(263, 115), nullptr);
+	m_charInventoryPanel->SetLayerIndex(LAYER_UI);
+
+	AddUIObject(m_charInventoryPanel, true);
+	RegisterUIParent(m_charInventoryPanel);
+}
+
+Vec4 LumiaIsland::ColorNormalize(Vec4 input)
+{
+	return input / 255.f;
 }
 
 void LumiaIsland::CreateTestDecal()
