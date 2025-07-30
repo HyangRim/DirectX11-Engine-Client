@@ -14,10 +14,10 @@ void SkillDecalIndicator::Start()
 	Super::Start();
 
 	CreateDecalObject();
-	CreateDecalMaterial();
 	CreateDecalTextures();
+	CreateDecalMaterial();
 
-	ShowIndicator(false);
+	ShowIndicator(true);
 }
 
 void SkillDecalIndicator::Update()
@@ -108,7 +108,7 @@ void SkillDecalIndicator::CreateDecalObject()
 	auto meshRenderer = make_shared<MeshRenderer>();
 	GetGameObject()->AddComponent(meshRenderer);
 
-	m_decalMesh = RESOURCES->Get<Mesh>(L"Quad");
+	m_decalMesh = RESOURCES->Get<Mesh>(L"Cube");
 
 	meshRenderer->SetMesh(m_decalMesh);
 }
@@ -119,9 +119,9 @@ void SkillDecalIndicator::CreateDecalMaterial()
 
 	auto shader = make_shared<Shader>(L"SkillDecal.fx");
 	m_decalMaterial->SetShader(shader);
-
 	m_decalMaterial->SetAsDecalMaterial(true);
-
+	//m_decalMaterial->SetTransparent(true);
+	//m_decalMaterial->SetRenderQueue(RenderQueue::Transparent);
 	if (m_lineTexture) {
 		m_decalMaterial->SetDecalTexture(m_lineTexture);
 	}
@@ -135,10 +135,10 @@ void SkillDecalIndicator::CreateDecalTextures()
 {
 	// 스킬 데칼 텍스처들 로드
 	
-	//m_lineTexture = RESOURCES->Load<Texture>(L"DecalLine", L"..\\Resources\\Texture\\...");
-	//m_circleTexture = RESOURCES->Load<Texture>(L"DecalCircle", L"..\\Resources\\Texture\\...");
-	//m_coneTexture = RESOURCES->Load<Texture>(L"DecalCone", L"..\\Resources\\Texture\\...");
-	//m_rectangleTexture = RESOURCES->Load<Texture>(L"DecalRect", L"..\\Resources\\Texture\\...");*/
+	m_lineTexture = RESOURCES->Load<Texture>(L"DecalLine", L"..\\Resources\\Textures\\UI\\CharacterSelectScene\\CharacterImages\\Bianca\\CharLobby_Bianca_S000.png");
+	m_circleTexture = RESOURCES->Load<Texture>(L"DecalCircle", L"..\\Resources\\Textures\\UI\\CharacterSelectScene\\CharacterImages\\Bianca\\CharLobby_Bianca_S000.png");
+	m_coneTexture = RESOURCES->Load<Texture>(L"DecalCone", L"..\\Resources\\Textures\\UI\\CharacterSelectScene\\CharacterImages\\Bianca\\CharLobby_Bianca_S000.png");
+	m_rectangleTexture = RESOURCES->Load<Texture>(L"DecalRect", L"..\\Resources\\Textures\\UI\\CharacterSelectScene\\CharacterImages\\Bianca\\CharLobby_Bianca_S000.png");
 
 		// 텍스처가 없다면 기본 텍스처 사용
 	if (!m_lineTexture) {
@@ -168,7 +168,7 @@ void SkillDecalIndicator::UpdateLineDecal()
 
 	// 데칼 중심 위치 (선분의 중점)
 	m_centerPos = m_startPos + direction * (distance * 0.5f);
-	m_centerPos.y = 0.05f;  // 바닥에서 살짝 위로
+	m_centerPos.y += 0.05f;  // 바닥에서 살짝 위로
 
 	// 데칼 크기 설정
 	Vec3 decalSize(distance, 0.1f, m_width);
@@ -202,11 +202,10 @@ void SkillDecalIndicator::UpdateLineDecal()
 void SkillDecalIndicator::UpdateCircleDecal()
 {
 	m_centerPos = m_startPos;
-	m_centerPos.y = 0.05f;
+	m_centerPos.y += 0.05f;
 
 	Vec3 decalSize(m_range * 2.0f, 0.1f, m_range * 2.0f);
 	Vec3 rotation(0, 0, 0);
-
 	// 데칼 변환 행렬 계산
 	Matrix decalMatrix = CalculateDecalTransform(m_centerPos, decalSize, rotation);
 	Matrix invDecalMatrix = decalMatrix.Invert();
@@ -237,7 +236,7 @@ void SkillDecalIndicator::UpdateConeDecal()
 
 	// 부채꼴의 중심점
 	m_centerPos = m_startPos + direction * (m_range * 0.5f);
-	m_centerPos.y = 0.05f;
+	m_centerPos.y += 0.05f;
 
 	Vec3 decalSize(m_range, 0.1f, m_width);
 
@@ -279,7 +278,7 @@ void SkillDecalIndicator::UpdateRectangleDecal()
 
 	// 사각형 중심
 	m_centerPos = m_startPos + direction * (distance * 0.5f);
-	m_centerPos.y = 0.05f;
+	m_centerPos.y += 0.05f;
 
 	Vec3 decalSize(distance, 0.1f, m_width);
 
@@ -334,5 +333,6 @@ Matrix SkillDecalIndicator::CalculateDecalTransform(const Vec3& _center, const V
 	Matrix rotationMatrix = Matrix::CreateFromYawPitchRoll(_rotation.y, _rotation.x, _rotation.z);
 	Matrix translationMatrix = Matrix::CreateTranslation(_center);
 
+	//return translationMatrix * rotationMatrix * scaleMatrix;
 	return scaleMatrix * rotationMatrix * translationMatrix;
 }

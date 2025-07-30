@@ -93,7 +93,7 @@ void RenderManager::RenderDeferred(vector<shared_ptr<GameObject>>& _gameObjects,
 	// 3단계: 투명 객체 (포워드 방식)
 	RenderTransparentObjects(_gameObjects);
 
-	RenderDecals(_gameObjects);
+	//RenderDecals(_gameObjects);
 
 	// 4단계: 파티클 시스템 등
 	for (shared_ptr<GameObject>& gameObject : _gameObjects) {
@@ -145,9 +145,9 @@ void RenderManager::RenderMeshRendererForward(vector<shared_ptr<GameObject>>& _g
 		if (gameObject->GetMeshRenderer() == nullptr)
 			continue;
 
-		auto material = gameObject->GetMeshRenderer()->GetMaterial();
-		if (material && material->IsDecalMaterial())
-			continue;
+		//auto material = gameObject->GetMeshRenderer()->GetMaterial();
+		//if (material && material->IsDecalMaterial())
+		//	continue;
 
 		const InstanceID instanceID = gameObject->GetMeshRenderer()->GetInstanceID();
 
@@ -295,7 +295,7 @@ void RenderManager::RenderMeshRendererDeferred(vector<shared_ptr<GameObject>>& _
 
 		// 투명 객체는 제외 (나중에 포워드로 처리)
 		if (auto material = gameObject->GetMeshRenderer()->GetMaterial()) {
-			if (material->IsTransparent() || material->IsDecalMaterial())
+			if (material->IsTransparent())
 				continue;
 			
 		}
@@ -562,7 +562,6 @@ void RenderManager::RenderDecals(vector<shared_ptr<GameObject>>& _gameObjects)
 		const InstanceID instanceID = gameObject->GetMeshRenderer()->GetInstanceID();
 		cache[instanceID].push_back(gameObject);
 	}
-
 
 	if (cache.empty())
 		return;

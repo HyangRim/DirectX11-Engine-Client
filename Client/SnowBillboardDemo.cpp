@@ -56,7 +56,7 @@ void SnowBillboardDemo::Init()
 	{
 		auto obj = make_shared<GameObject>();
 		obj->GetTransform()->SetLocalPosition(Vec3(0.f));
-		obj->AddComponent(make_shared<SnowBillboard>(Vec3(200, 200, 200), 20000));
+		obj->AddComponent(make_shared<SnowBillboard>(Vec3(0, 0, 0), Vec3(200, 200, 200), 20000));
 		{
 			// Material
 			{

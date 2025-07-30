@@ -86,7 +86,7 @@ struct InstancedTweenDesc {
 struct SnowBillboardDesc {
 	Color m_color = Color(1, 1, 1, 1);
 
-	Vec3 m_velocity = Vec3(0, -5, 0);
+	Vec3 m_velocity = Vec3(0, -15, 0);
 	float m_drawDistance = 0;
 
 	Vec3 m_origin = Vec3(0, 0, 0);

@@ -52,9 +52,9 @@ private:
     Vec3 m_startPos = Vec3::Zero;
     Vec3 m_targetPos = Vec3::Zero;
     Vec3 m_centerPos = Vec3::Zero;
-    Vec4 m_color = Vec4(0.f, 0.f, 0.5f, 0.6f);
+    Vec4 m_color = Vec4(0.f, 0.f, 0.5f, 1.f);
 
-    bool m_isVisible = false;
+    bool m_isVisible = true;
     bool m_needsUpdate = true;
 
     shared_ptr<Material> m_decalMaterial;
