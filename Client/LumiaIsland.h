@@ -14,6 +14,8 @@ public:
 	virtual void Render() override;
 
 
+
+
 private:
 	void CreateMainCamera();
 	void CreateUICamera();
@@ -29,6 +31,10 @@ private:
 	void CreateCharacterBianca();
 
 
+	void LoadItemBoxImages();
+	void CreateItemBoxPanel();
+	void CheckPickedItemBox();
+
 private:
 	//테스트용. 
 	void CreateTestDecal();
@@ -37,6 +43,9 @@ private:
 	shared_ptr<GameObject> m_CemeteryParent;
 	shared_ptr<Shader> m_defaultshader = nullptr;
 	shared_ptr<Shader> m_testShader = nullptr;
+
+	shared_ptr<GameObject> m_itemBox = nullptr;
+
 	// 테스트용
 	shared_ptr<GameObject> m_navMesh;
 	shared_ptr<GameObject> nicky;

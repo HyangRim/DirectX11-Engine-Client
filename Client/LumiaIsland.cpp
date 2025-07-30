@@ -65,12 +65,17 @@ void LumiaIsland::Start()
 	// NavMesh 생성 추가
 	CreateNavMesh();
 
+	LoadItemBoxImages();
+	CreateItemBoxPanel();
 	Super::Start();
 }
 
 void LumiaIsland::Update()
 {
 	Super::Update();
+
+	
+	CheckPickedItemBox();
 }
 
 void LumiaIsland::FixedUpdate()
@@ -108,11 +113,12 @@ void LumiaIsland::CreateUICamera()
 	camera->GetTransform()->SetPosition(Vec3{ 0.f, 0.f, -5.f });
 	camera->AddComponent(make_shared<Camera>());
 	camera->GetCamera()->SetProjectionType(ProjectionType::Orthographic);
-	camera->GetCamera()->SetNear(1.0f);
+	camera->GetCamera()->SetNear(0.1f);
 	camera->GetCamera()->SetFar(100.0f);
 	camera->GetCamera()->SetCullingMaskAll();
-	camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
-	CURSCENE->Add(camera);
+	camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, false);
+	//CURSCENE->Add(camera);
+	Add(camera);
 }
 
 void LumiaIsland::CreateCemeteryBase()
@@ -951,6 +957,81 @@ void LumiaIsland::CreateCharacterBianca()
 	bianca->GetTransform()->SetPosition(Vec3(15, 20, 5));
 	bianca->GetTransform()->SetScale(Vec3(1.f));
 	CURSCENE->Add(bianca);
+}
+
+void LumiaIsland::LoadItemBoxImages()
+{
+	shared_ptr<Shader> shader = make_shared<Shader>(L"ImageShader.fx");
+
+	// 모든 UI 머티리얼에 동일한 설정 적용
+	auto SetupUIMaterial = [&](shared_ptr<Material> material) {
+		material->SetShader(shader);
+		material->SetRenderQueue(RenderQueue::Transparent);
+		material->SetTransparent(true);  // 모든 UI에 추가
+		material->SetRenderingMode(RenderingMode::Forward);
+		};
+
+	wstring prefixPath = L"..\\Resources\\Textures\\UI\\ItemBox_UI\\";
+
+	shared_ptr<Material> itemBoxPanel = make_shared<Material>();
+	SetupUIMaterial(itemBoxPanel);
+	auto itemBoxPanelTexture = RESOURCES->Load<Texture>(L"ItemBoxPanel", prefixPath + L"ItemBox_BackGround.png");
+	itemBoxPanel->SetDiffuseMap(itemBoxPanelTexture);
+	MaterialDesc& itemBoxPanelDesc = itemBoxPanel->GetMaterialDesc();
+	itemBoxPanelDesc.ambient = Vec4(1.f);
+	itemBoxPanelDesc.diffuse = Vec4(1.f);
+	itemBoxPanelDesc.specular = Vec4(1.0f);
+	RESOURCES->Add(L"ItemBoxPanel", itemBoxPanel);
+
+	shared_ptr<Material> itemSlotCommon = make_shared<Material>();
+	SetupUIMaterial(itemSlotCommon);
+	auto itemSlotCommonTexture = RESOURCES->Load<Texture>(L"ItemSlotCommon", prefixPath + L"Img_Item_Slot_Common.png");
+	itemSlotCommon->SetDiffuseMap(itemSlotCommonTexture);
+	MaterialDesc& itemSlotCommonDesc = itemSlotCommon->GetMaterialDesc();
+	itemSlotCommonDesc.ambient = Vec4(1.f);
+	itemSlotCommonDesc.diffuse = Vec4(1.f);
+	itemSlotCommonDesc.specular = Vec4(1.0f);
+	RESOURCES->Add(L"ItemSlotCommon", itemSlotCommon);
+}
+
+void LumiaIsland::CreateItemBoxPanel()
+{
+	m_itemBox = make_shared<GameObject>();
+	m_itemBox->SetName(L"ItemBoxPanel");
+
+	auto panel = make_shared<UIPanel>();
+	m_itemBox->AddComponent(panel);
+
+	shared_ptr<Material> itemPanelBackGround = RESOURCES->Get<Material>(L"ItemBoxPanel")->Clone();
+	panel->Create(Vec2(200.f, 200.f), Vec2(221, 117), itemPanelBackGround);
+	m_itemBox->SetLayerIndex(LAYER_UI);
+
+	m_itemBox->GetMeshRenderer()->SetActive(false);
+
+	AddUIObject(m_itemBox, true);
+	RegisterUIParent(m_itemBox);
+}
+
+void LumiaIsland::CheckPickedItemBox()
+{
+	if (m_pickedObject != nullptr)
+	{
+		if (m_pickedObject->GetType() == OBJECTTYPE::ITEMBOX)
+		{
+			m_itemBox->GetMeshRenderer()->SetActive(true);
+			//cout << "아이템박스 클릭됨\n";
+		}
+		else
+		{
+			m_itemBox->GetMeshRenderer()->SetActive(false);
+			//cout << "아이템박스 클릭해제됨\n";
+		}
+	}
+	else
+	{
+		m_itemBox->GetMeshRenderer()->SetActive(false);
+		//cout << "선택된 객체가 없음\n";
+	}
 }
 
 void LumiaIsland::CreateTestDecal()

@@ -64,12 +64,16 @@ public:
     QuadTree* GetQuadTree() { return m_objectManager->GetQuadTree(); }
     weak_ptr<GameObject> GetPickedObj() { return m_objectManager->GetPickedObj(); }
 
+
 private:
     //충돌 관련 HashTable
     //충돌체 간의 이전 프레임 충돌. 
     unordered_map<ULONG64, bool> m_mapColInfo;
 
     //그룹간의 충돌 체크? 일단 보류. 
+
+protected:
+    shared_ptr<GameObject> m_pickedObject;
 
 private:
     unique_ptr<SceneObjectManager> m_objectManager;

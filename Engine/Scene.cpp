@@ -14,7 +14,6 @@
 #include "UIPanel.h"
 #include "SceneObjectManager.h"
 
-
 Scene::Scene()
 {
     m_objectManager = make_unique<SceneObjectManager>();
@@ -51,8 +50,8 @@ void Scene::Update()
 
     m_objectManager->UpdateQuadTree();
 
-    m_objectManager->PickObjectOrUI();
-
+    if(INPUT->GetButtonDown(KEY_TYPE::LBUTTON) != false)
+        m_pickedObject = m_objectManager->PickObjectOrUI(); 
     //이 밑에다가 디버그용 
 #if _DEBUG
     GUI->ShowPickedObj();
