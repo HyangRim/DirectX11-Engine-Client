@@ -104,6 +104,7 @@ void LumiaIsland::Start()
 		Add(obj);
 	}
 
+	//====================UI====================//
 	LoadItemBoxImages();
 	LoadCharStatIcon();
 	LoadCharEquipmentIcon();
@@ -116,6 +117,7 @@ void LumiaIsland::Start()
 	CreateCharEquipmentPanel();
 	CreateCharMainPanel();
 	CreateCharInventoryPanel();
+	//====================UI====================//
 
 	Super::Start();
 }
