@@ -157,6 +157,7 @@ void Nicky::InitNickyComponent()
 
 void Nicky::InitNickySkill()
 {
+
 }
 
 void Nicky::InitNickyStats()

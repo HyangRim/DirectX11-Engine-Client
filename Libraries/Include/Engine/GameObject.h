@@ -25,6 +25,7 @@ class AnimationStateMachine;
 class NavMesh;
 class NavMeshAgent;
 class ScrollView;
+class PlayerStateMachine;
 
 enum class OBJECTTYPE {
 	DEFAULT,
@@ -70,6 +71,7 @@ public:
 	shared_ptr<NavMesh> GetNavMesh();
 	shared_ptr<NavMeshAgent> GetNavMeshAgent();
 	shared_ptr<ScrollView> GetScrollView();
+	shared_ptr<PlayerStateMachine> GetPlayerStateMachine();
 
 
 
