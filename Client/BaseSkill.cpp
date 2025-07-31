@@ -13,6 +13,10 @@ BaseSkill::~BaseSkill()
 
 }
 
+void BaseSkill::Update()
+{
+}
+
 void BaseSkill::PlaySkill()
 {
 

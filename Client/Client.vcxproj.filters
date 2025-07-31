@@ -183,6 +183,18 @@
     <ClCompile Include="SkillDecalIndicator.cpp">
       <Filter>Scripts\Player\Skill</Filter>
     </ClCompile>
+    <ClCompile Include="BiancaQSkill.cpp">
+      <Filter>Scripts\Player\Bianca</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaESkill.cpp">
+      <Filter>Scripts\Player\Bianca</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaRSkill.cpp">
+      <Filter>Scripts\Player\Bianca</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaWSkill.cpp">
+      <Filter>Scripts\Player\Bianca</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -286,6 +298,18 @@
     </ClInclude>
     <ClInclude Include="SkillDecalIndicator.h">
       <Filter>Scripts\Player\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaQSkill.h">
+      <Filter>Scripts\Player\Bianca</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaESkill.h">
+      <Filter>Scripts\Player\Bianca</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaRSkill.h">
+      <Filter>Scripts\Player\Bianca</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaWSkill.h">
+      <Filter>Scripts\Player\Bianca</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

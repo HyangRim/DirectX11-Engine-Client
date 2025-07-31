@@ -40,6 +40,12 @@ void Player::Update()
 		SetHP(m_status.hp + m_status.healing);
 		m_healingCoolTime = 0.f;
 	}
+
+	for (auto& skill : m_skills) {
+		if (skill != nullptr) {
+			skill->Update();
+		}
+	}
 }
 
 void Player::LateUpdate()

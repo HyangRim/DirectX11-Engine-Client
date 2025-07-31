@@ -8,6 +8,7 @@ public:
 	virtual ~BaseSkill();
 
 public:
+	virtual void Update();
 	virtual void PlaySkill();
 	void SkillEnd();
 

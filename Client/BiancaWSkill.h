@@ -1,0 +1,22 @@
+#pragma once
+#include "BaseSkill.h"
+class BiancaWSkill :
+    public BaseSkill
+{
+    using Super = BaseSkill;
+public:
+    BiancaWSkill(shared_ptr<Player> _player);
+    virtual ~BiancaWSkill();
+
+public:
+    virtual void PlaySkill() override;
+    virtual void Update() override;
+
+private:
+    bool m_isPlaying = false;
+    float m_duration = 3.f;
+    float m_elapsedTime = 0.f;
+    shared_ptr<GameObject> m_coffin;
+    shared_ptr<Shader> m_shader;
+};
+
