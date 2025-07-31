@@ -36,6 +36,11 @@ void ResourceManager::CreateDefaultMesh()
 		mesh->CreateSphere();
 		Add(L"Sphere", mesh);
 	}
+    {
+        shared_ptr<Mesh> mesh = make_shared<Mesh>();
+        mesh->CreateCone();
+        Add(L"Cone", mesh);
+    }
 }
 
 void ResourceManager::CreateRandomTexture()
@@ -94,7 +99,7 @@ void ResourceManager::CreateDefaultMaterial()
 {
 	// Material
 	{
-		shared_ptr<Shader> renderShader = make_shared<Shader>(L"23. RenderDemo.fx");
+		shared_ptr<Shader> renderShader = make_shared<Shader>(L"FOW.fx");
 		shared_ptr<Material> material = make_shared<Material>();
 		material->SetShader(renderShader);
 		auto texture = RESOURCES->Load<Texture>(L"default", L"..\\Resources\\Textures\\default.png");

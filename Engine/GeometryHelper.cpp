@@ -250,6 +250,66 @@ void GeometryHelper::CreateGrid(shared_ptr<Geometry<VertexTextureData>> geometry
 	geometry->SetIndices(idx);
 }
 
+void GeometryHelper::CreateCone(shared_ptr<Geometry<VertexTextureData>> geometry, uint32 sliceCount)
+{
+	float radius = 0.5f;  // 바닥면 반지름
+	float height = 1.0f;  // 원뿔 높이
+
+	vector<VertexTextureData> vtx;
+
+	// 바닥면 중심점
+	VertexTextureData centerVertex;
+	centerVertex.position = Vec3(0.0f, -height * 0.5f, 0.0f);
+	centerVertex.uv = Vec2(0.5f, 0.5f);
+	vtx.push_back(centerVertex);
+
+	// 바닥면 원형 vertices
+	float sliceAngle = XM_2PI / sliceCount;
+	for (uint32 i = 0; i <= sliceCount; ++i)
+	{
+		float theta = i * sliceAngle;
+		VertexTextureData v;
+		v.position.x = radius * cosf(theta);
+		v.position.y = -height * 0.5f;
+		v.position.z = radius * sinf(theta);
+
+		// UV 좌표 (원형으로 매핑)
+		v.uv.x = 0.5f + 0.5f * cosf(theta);
+		v.uv.y = 0.5f + 0.5f * sinf(theta);
+
+		vtx.push_back(v);
+	}
+
+	// 꼭지점
+	VertexTextureData tipVertex;
+	tipVertex.position = Vec3(0.0f, height * 0.5f, 0.0f);
+	tipVertex.uv = Vec2(0.5f, 0.0f);
+	vtx.push_back(tipVertex);
+
+	geometry->SetVertices(vtx);
+
+	vector<uint32> idx;
+
+	// 바닥면 삼각형들
+	for (uint32 i = 0; i < sliceCount; ++i)
+	{
+		idx.push_back(0);           // 중심점
+		idx.push_back(i + 1);       // 현재 점
+		idx.push_back(i + 2);       // 다음 점
+	}
+
+	// 측면 삼각형들
+	uint32 tipIndex = static_cast<uint32>(vtx.size()) - 1;
+	for (uint32 i = 0; i < sliceCount; ++i)
+	{
+		idx.push_back(tipIndex);    // 꼭지점
+		idx.push_back(i + 2);       // 다음 점
+		idx.push_back(i + 1);       // 현재 점
+	}
+
+	geometry->SetIndices(idx);
+}
+
 void GeometryHelper::CreateQuad(shared_ptr<Geometry<VertexTextureNormalData>> geometry)
 {
 	vector<VertexTextureNormalData> vtx;
@@ -488,6 +548,95 @@ void GeometryHelper::CreateSphere(shared_ptr<Geometry<VertexTextureNormalData>> 
 	geometry->SetIndices(idx);
 }
 
+
+void GeometryHelper::CreateCone(shared_ptr<Geometry<VertexTextureNormalData>> geometry, uint32 sliceCount)
+{
+	float radius = 0.5f;
+	float height = 1.0f;
+
+	vector<VertexTextureNormalData> vtx;
+
+	// 바닥면 중심점
+	VertexTextureNormalData centerVertex;
+	centerVertex.position = Vec3(0.0f, -height * 0.5f, 0.0f);
+	centerVertex.uv = Vec2(0.5f, 0.5f);
+	centerVertex.normal = Vec3(0.0f, -1.0f, 0.0f);  // 아래쪽 방향
+	vtx.push_back(centerVertex);
+
+	// 바닥면 원형 vertices
+	float sliceAngle = XM_2PI / sliceCount;
+	for (uint32 i = 0; i <= sliceCount; ++i)
+	{
+		float theta = i * sliceAngle;
+		VertexTextureNormalData v;
+		v.position.x = radius * cosf(theta);
+		v.position.y = -height * 0.5f;
+		v.position.z = radius * sinf(theta);
+
+		v.uv.x = 0.5f + 0.5f * cosf(theta);
+		v.uv.y = 0.5f + 0.5f * sinf(theta);
+		v.normal = Vec3(0.0f, -1.0f, 0.0f);  // 바닥면 법선
+
+		vtx.push_back(v);
+	}
+
+	// 측면을 위한 vertices (법선 계산을 위해 별도로 생성)
+	float sideNormalY = radius / sqrtf(radius * radius + height * height);
+	float sideNormalXZ = height / sqrtf(radius * radius + height * height);
+
+	for (uint32 i = 0; i <= sliceCount; ++i)
+	{
+		float theta = i * sliceAngle;
+		VertexTextureNormalData v;
+		v.position.x = radius * cosf(theta);
+		v.position.y = -height * 0.5f;
+		v.position.z = radius * sinf(theta);
+
+		// 측면 UV 좌표
+		v.uv.x = (float)i / (float)sliceCount;
+		v.uv.y = 1.0f;
+
+		// 측면 법선 벡터
+		v.normal.x = sideNormalXZ * cosf(theta);
+		v.normal.y = sideNormalY;
+		v.normal.z = sideNormalXZ * sinf(theta);
+		v.normal.Normalize();
+
+		vtx.push_back(v);
+	}
+
+	// 꼭지점
+	VertexTextureNormalData tipVertex;
+	tipVertex.position = Vec3(0.0f, height * 0.5f, 0.0f);
+	tipVertex.uv = Vec2(0.5f, 0.0f);
+	tipVertex.normal = Vec3(0.0f, 1.0f, 0.0f);  // 위쪽 방향
+	vtx.push_back(tipVertex);
+
+	geometry->SetVertices(vtx);
+
+	vector<uint32> idx;
+
+	// 바닥면 삼각형들
+	for (uint32 i = 0; i < sliceCount; ++i)
+	{
+		idx.push_back(0);           // 중심점
+		idx.push_back(i + 1);       // 현재 점
+		idx.push_back(i + 2);       // 다음 점
+	}
+
+	// 측면 삼각형들
+	uint32 tipIndex = static_cast<uint32>(vtx.size()) - 1;
+	uint32 sideStartIndex = sliceCount + 2;  // 측면 vertices 시작 인덱스
+
+	for (uint32 i = 0; i < sliceCount; ++i)
+	{
+		idx.push_back(tipIndex);                    // 꼭지점
+		idx.push_back(sideStartIndex + i + 1);      // 다음 점
+		idx.push_back(sideStartIndex + i);          // 현재 점
+	}
+
+	geometry->SetIndices(idx);
+}
 
 void GeometryHelper::CreateQuad(shared_ptr<Geometry<VertexTextureNormalTangentData>> geometry)
 {
@@ -734,6 +883,103 @@ void GeometryHelper::CreateSphere(shared_ptr<Geometry<VertexTextureNormalTangent
 		idx.push_back(bottomIndex);
 		idx.push_back(lastRingStartIndex + i);
 		idx.push_back(lastRingStartIndex + i + 1);
+	}
+
+	geometry->SetIndices(idx);
+}
+
+void GeometryHelper::CreateCone(shared_ptr<Geometry<VertexTextureNormalTangentData>> geometry, uint32 sliceCount)
+{
+	float radius = 0.5f;
+	float height = 1.0f;
+
+	vector<VertexTextureNormalTangentData> vtx;
+
+	// 바닥면 중심점
+	VertexTextureNormalTangentData centerVertex;
+	centerVertex.position = Vec3(0.0f, -height * 0.5f, 0.0f);
+	centerVertex.uv = Vec2(0.5f, 0.5f);
+	centerVertex.normal = Vec3(0.0f, -1.0f, 0.0f);
+	centerVertex.tangent = Vec3(1.0f, 0.0f, 0.0f);
+	vtx.push_back(centerVertex);
+
+	// 바닥면 원형 vertices
+	float sliceAngle = XM_2PI / sliceCount;
+	for (uint32 i = 0; i <= sliceCount; ++i)
+	{
+		float theta = i * sliceAngle;
+		VertexTextureNormalTangentData v;
+		v.position.x = radius * cosf(theta);
+		v.position.y = -height * 0.5f;
+		v.position.z = radius * sinf(theta);
+
+		v.uv.x = 0.5f + 0.5f * cosf(theta);
+		v.uv.y = 0.5f + 0.5f * sinf(theta);
+		v.normal = Vec3(0.0f, -1.0f, 0.0f);
+		v.tangent = Vec3(-sinf(theta), 0.0f, cosf(theta));  // 원형 접선 방향
+
+		vtx.push_back(v);
+	}
+
+	// 측면을 위한 vertices
+	float sideNormalY = radius / sqrtf(radius * radius + height * height);
+	float sideNormalXZ = height / sqrtf(radius * radius + height * height);
+
+	for (uint32 i = 0; i <= sliceCount; ++i)
+	{
+		float theta = i * sliceAngle;
+		VertexTextureNormalTangentData v;
+		v.position.x = radius * cosf(theta);
+		v.position.y = -height * 0.5f;
+		v.position.z = radius * sinf(theta);
+
+		v.uv.x = (float)i / (float)sliceCount;
+		v.uv.y = 1.0f;
+
+		// 측면 법선 벡터
+		v.normal.x = sideNormalXZ * cosf(theta);
+		v.normal.y = sideNormalY;
+		v.normal.z = sideNormalXZ * sinf(theta);
+		v.normal.Normalize();
+
+		// 측면 접선 벡터 (원뿔의 세로 방향)
+		Vec3 up = Vec3(0.0f, height, 0.0f);
+		Vec3 radial = Vec3(cosf(theta), 0.0f, sinf(theta));
+		v.tangent = up.Cross(radial);
+		v.tangent.Normalize();
+
+		vtx.push_back(v);
+	}
+
+	// 꼭지점
+	VertexTextureNormalTangentData tipVertex;
+	tipVertex.position = Vec3(0.0f, height * 0.5f, 0.0f);
+	tipVertex.uv = Vec2(0.5f, 0.0f);
+	tipVertex.normal = Vec3(0.0f, 1.0f, 0.0f);
+	tipVertex.tangent = Vec3(1.0f, 0.0f, 0.0f);
+	vtx.push_back(tipVertex);
+
+	geometry->SetVertices(vtx);
+
+	vector<uint32> idx;
+
+	// 바닥면 삼각형들
+	for (uint32 i = 0; i < sliceCount; ++i)
+	{
+		idx.push_back(0);
+		idx.push_back(i + 1);
+		idx.push_back(i + 2);
+	}
+
+	// 측면 삼각형들
+	uint32 tipIndex = static_cast<uint32>(vtx.size()) - 1;
+	uint32 sideStartIndex = sliceCount + 2;
+
+	for (uint32 i = 0; i < sliceCount; ++i)
+	{
+		idx.push_back(tipIndex);
+		idx.push_back(sideStartIndex + i + 1);
+		idx.push_back(sideStartIndex + i);
 	}
 
 	geometry->SetIndices(idx);

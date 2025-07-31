@@ -14,6 +14,7 @@ public:
 	void CreateCube();
 	void CreateGrid(int32 sizeX, int32 sizeZ);
 	void CreateSphere();
+	void CreateCone();
 
 	shared_ptr<VertexBuffer> GetVertexBuffer() { return m_vertexBuffer; }
 	shared_ptr<IndexBuffer> GetIndexBuffer() { return m_indexBuffer; }

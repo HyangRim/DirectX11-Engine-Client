@@ -83,6 +83,33 @@ void SnowBillboard::SetMaterial(shared_ptr<Material> _material)
 
 }
 
+void SnowBillboard::SetParticleScale(float _scale)
+{
+	for (auto& vertice : m_vertices) {
+		vertice.scale *= _scale;
+	}
+
+	if (m_vertexBuffer) {
+		m_vertexBuffer->Create(m_vertices, 0);
+	}
+}
+
+void SnowBillboard::SetParticleScale(Vec2 _scale)
+{
+	for (auto& vertice : m_vertices) {
+		vertice.scale = _scale;
+	}
+
+	if (m_vertexBuffer) {
+		m_vertexBuffer->Create(m_vertices, 0);
+	}
+}
+
+void SnowBillboard::SetColor(Vec4 _color)
+{
+	m_desc.m_color = _color;
+}
+
 void SnowBillboard::InnerRender(bool _isShadowTech)
 {
 	assert(!_isShadowTech);
@@ -92,7 +119,6 @@ void SnowBillboard::InnerRender(bool _isShadowTech)
 	//m_desc.m_origin = CURSCENE->GetMainCamera()->GetTransform()->GetPosition();
 	m_desc.m_time = m_elapsedTime;
 	m_elapsedTime += DT;
-
 
 	auto shader = m_material->GetShader();
 

@@ -299,7 +299,7 @@ void RenderManager::RenderMeshRendererDeferred(vector<shared_ptr<GameObject>>& _
 				continue;
 			
 		}
-
+		 
 		const InstanceID instanceID = gameObject->GetMeshRenderer()->GetInstanceID();
 		cache[instanceID].push_back(gameObject);
 	}

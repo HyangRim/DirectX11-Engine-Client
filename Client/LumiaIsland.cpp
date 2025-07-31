@@ -78,11 +78,11 @@ void LumiaIsland::Start()
 
 	// Billboard
 	{
-		auto snowShader = make_shared<Shader>(L"29. SnowBillboard.fx");
+		auto snowShader = make_shared<Shader>(L"GatherBillboard.fx");
 		auto obj = make_shared<GameObject>();
 		obj->SetType(OBJECTTYPE::MAP);
 		obj->GetTransform()->SetLocalPosition(Vec3(15, 20, 5));
-		obj->AddComponent(make_shared<SnowBillboard>(Vec3(15, 0, 5), Vec3(10, 10, 10), 100));
+		obj->AddComponent(make_shared<SnowBillboard>(Vec3(15, 0, 5), Vec3(3, 3, 3), 50));
 		{
 			// Material
 			{
@@ -98,11 +98,34 @@ void LumiaIsland::Start()
 				RESOURCES->Add(L"Veigar", material);
 
 				obj->GetSnowBillboard()->SetMaterial(material);
+				obj->GetSnowBillboard()->SetParticleScale(Vec2(0.3f, 0.3f));
 			}
 		}
 
 		Add(obj);
 	}
+
+
+	//{
+	//	auto obj = make_shared<GameObject>();
+	//	obj->SetName(L"CONE");
+	//	//obj->SetType(OBJECTTYPE::MAP);
+	//	obj->GetTransform()->SetLocalPosition(Vec3(15.f, 20.f, 25.f));
+	//	obj->GetTransform()->SetScale(Vec3(1.f));
+	//	obj->AddComponent(make_shared<MeshRenderer>());
+	//	{
+	//		obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"default"));
+	//	}
+	//	{
+	//		auto mesh = RESOURCES->Get<Mesh>(L"Cone");
+	//		obj->GetMeshRenderer()->SetMesh(mesh);
+	//		obj->GetMeshRenderer()->SetPass(0);
+	//	}
+	//	obj->AddComponent(make_shared<AABBBoxCollider>());
+	//	Add(obj);
+	//}
+
+
 
 	//====================UI====================//
 	LoadItemBoxImages();
@@ -1068,7 +1091,7 @@ void LumiaIsland::CheckPickedItemBox()
 	else
 	{
 		m_itemBox->GetMeshRenderer()->SetActive(false);
-		cout << "선택된 객체가 없음\n";
+		//cout << "선택된 객체가 없음\n";
 	}
 }
 

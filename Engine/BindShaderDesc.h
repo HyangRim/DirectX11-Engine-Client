@@ -94,6 +94,9 @@ struct SnowBillboardDesc {
 
 	Vec3 m_extent = Vec3(0, 0, 0);
 	float m_time = 0;
+
+	float spiralCoef = 1.2f;
+	Vec3 padding;
 };
 
 struct ParticleDesc {

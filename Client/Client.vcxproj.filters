@@ -79,6 +79,9 @@
     <Filter Include="Scripts\Player\Skill">
       <UniqueIdentifier>{171ecbac-caa9-4e7c-97e7-5cbdb4203f48}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Billboard">
+      <UniqueIdentifier>{d2c86a34-4742-4bb0-8ace-a112870a55a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -298,9 +301,6 @@
     <FxCompile Include="..\Shaders\28. BillboardDemo.fx">
       <Filter>Shaders\Week5</Filter>
     </FxCompile>
-    <FxCompile Include="..\Shaders\29. SnowBillboard.fx">
-      <Filter>Shaders\Week5</Filter>
-    </FxCompile>
     <FxCompile Include="..\Shaders\Sky.fx">
       <Filter>Shaders\Common</Filter>
     </FxCompile>
@@ -345,6 +345,12 @@
     </FxCompile>
     <FxCompile Include="..\Shaders\SkillDecal.fx">
       <Filter>Shaders\Common</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\SnowBillboard.fx">
+      <Filter>Shaders\Billboard</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\GatherBillboard.fx">
+      <Filter>Shaders\Billboard</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

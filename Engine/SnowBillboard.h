@@ -23,6 +23,11 @@ public:
     void SetPass(uint8 _pass) { m_pass = _pass; }
     void SetMaterial(shared_ptr<Material> _material) override;
 
+    void SetParticleScale(float _scale);
+    void SetParticleScale(Vec2 _scale);
+    void SetColor(Vec4 _color);
+    void SetSpiral(float _value) { m_desc.spiralCoef = _value; }
+
 private:
     vector<VertexSnow> m_vertices;
     vector<uint32> m_indices;

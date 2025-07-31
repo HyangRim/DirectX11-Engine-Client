@@ -106,6 +106,9 @@ void Camera::SortGameObjects()
     //그려줄 것 선별하기. 
     for (auto& object : gameObjects)
     {
+        if (object->GetName() == L"CONE") {
+            int aa = 4234;
+        }
         if (object->GetType() != OBJECTTYPE::MAP) {
             //레이어 컬링. 
             if (IsCulled(object->GetLayerIndex()))
