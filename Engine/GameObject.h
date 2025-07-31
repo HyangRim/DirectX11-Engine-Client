@@ -104,6 +104,9 @@ public:
 	void SetType(OBJECTTYPE _type) { m_objType = _type; }
 	OBJECTTYPE GetType() { return m_objType; }
 
+	void SetActive(bool _value) { m_active = _value; }
+	bool GetActive() { return m_active; }
+
 public:
 	void OnDestroy(); // 소멸 전 정리 메서드
 	void ClearReferences(); // 참조 해제 메서드
@@ -129,6 +132,8 @@ private:
 	bool m_alphaChanged = false;
 	OBJECTTYPE m_objType = OBJECTTYPE::DEFAULT;
 
+
+	bool m_active = true;
 	bool m_isDestroyed = false;
 
 };

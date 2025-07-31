@@ -73,6 +73,7 @@ public:
 public:
     //Helper Function.
     PlayerStatus& GetStatus() { return m_status; }
+    shared_ptr<Shader> GetShader() { return m_defaultShader; }
     
     void SetLevel(int _value) { m_status.level = _value; }
     void SetCurExpLimit(int _value) { m_status.curExpLimit = _value; }

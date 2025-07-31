@@ -23,7 +23,11 @@
     <ClInclude Include="BaseSkill.h" />
     <ClInclude Include="Bianca.h" />
     <ClInclude Include="BiancaCamera.h" />
+    <ClInclude Include="BiancaESkill.h" />
+    <ClInclude Include="BiancaQSkill.h" />
+    <ClInclude Include="BiancaRSkill.h" />
     <ClInclude Include="BiancaTest.h" />
+    <ClInclude Include="BiancaWSkill.h" />
     <ClInclude Include="BillboardDemo.h" />
     <ClInclude Include="ButtonDemo.h" />
     <ClInclude Include="CameraScript.h" />
@@ -59,7 +63,11 @@
     <ClCompile Include="BaseSkill.cpp" />
     <ClCompile Include="Bianca.cpp" />
     <ClCompile Include="BiancaCamera.cpp" />
+    <ClCompile Include="BiancaESkill.cpp" />
+    <ClCompile Include="BiancaQSkill.cpp" />
+    <ClCompile Include="BiancaRSkill.cpp" />
     <ClCompile Include="BiancaTest.cpp" />
+    <ClCompile Include="BiancaWSkill.cpp" />
     <ClCompile Include="BillboardDemo.cpp" />
     <ClCompile Include="ButtonDemo.cpp" />
     <ClCompile Include="CameraScript.cpp" />
