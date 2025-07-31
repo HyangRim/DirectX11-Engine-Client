@@ -9,7 +9,6 @@ PlayerOutlineEffect::~PlayerOutlineEffect()
 {
 }
 
-
 void PlayerOutlineEffect::Start()
 {
 	Super::Start();

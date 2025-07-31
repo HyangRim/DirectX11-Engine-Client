@@ -125,7 +125,7 @@ float4 PS_ReplaceColor(VertexOutput2 input) : SV_TARGET
 // 테크닉
 technique11 T0
 {
-    // 기본 패스 (알파 테스트)
+    // 기본 패스
     pass P0
     {
         SetVertexShader(CompileShader(vs_5_0, VS()));

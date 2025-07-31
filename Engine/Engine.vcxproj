@@ -213,6 +213,7 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     <ClInclude Include="NickyRunState.h" />
     <ClInclude Include="NickyWaitState.h" />
     <ClInclude Include="NickyWSkillState.h" />
+    <ClInclude Include="PlayerStateMachine.h" />
     <ClInclude Include="QuadTree.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="Light.h" />
@@ -332,6 +333,7 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     <ClCompile Include="NickyRunState.cpp" />
     <ClCompile Include="NickyWaitState.cpp" />
     <ClCompile Include="NickyWSkillState.cpp" />
+    <ClCompile Include="PlayerStateMachine.cpp" />
     <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="Light.cpp" />

@@ -277,6 +277,9 @@
     <ClCompile Include="ScrollView.cpp">
       <Filter>06. UI &amp; Effect\UI</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerStateMachine.cpp">
+      <Filter>04. Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Types.h">
@@ -569,6 +572,9 @@
     </ClInclude>
     <ClInclude Include="ScrollView.h">
       <Filter>06. UI &amp; Effect\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerStateMachine.h">
+      <Filter>04. Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -113,7 +113,6 @@ void Nicky::InitNickyAnimation()
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4, make_shared<NickyRSkillState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1, make_shared<NickyQSkillState>());
 
-
 	auto animator = GetModelAnimator();
 	// ÆòÅ¸ ½ÃÄö½º (BaseAttack_01 -> BaseAttack_02)
 	vector<wstring> baseAttackAnims = { L"BaseAttack_02", L"BaseAttack_01" };

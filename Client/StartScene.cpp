@@ -11,8 +11,6 @@
 
 void StartScene::Start()
 {	
-	
-
 	m_defaultshader = make_shared<Shader>(L"FOW.fx");
 	m_imageShader = make_shared<Shader>(L"ImageShader.fx");
 
@@ -20,26 +18,8 @@ void StartScene::Start()
 
 	CreateMainCamera();
 	CreateUICamera();
-	//Default Light
-	{
-		// Light
-		auto light = make_shared<GameObject>();
-		light->AddComponent(make_shared<Light>());
-
-		LightDesc lightDesc;
-		lightDesc.ambient = Vec4(0.4f);
-		lightDesc.diffuse = Vec4(1.f);
-		lightDesc.specular = Vec4(0.1f);
-		lightDesc.direction = Vec3(1.f, 1.f, 1.f);
-		//light->GetLight()->SetLightDesc(lightDesc);
-		light->GetTransform()->SetRotation(lightDesc.direction);
-		light->GetTransform()->SetPosition(Vec3(0.f, 150.f, 0.f));
-		static_pointer_cast<Light>(light->GetFixedComponent(ComponentType::Light))->SetLightDesc(lightDesc);
-		//CURSCENE->Add(light);
-		Add(light);
-	}
-	// 디퍼드 렌더링 비활성화
-	//RENDER->SetDeferredRendering(false);
+	CreateLight();
+	
 
 	//CreateTestPanel();
 	CreateLobbyBackGround();
@@ -96,6 +76,25 @@ void StartScene::CreateUICamera()
 	Add(camera);
 }
 
+void StartScene::CreateLight()
+{
+	// Light
+	auto light = make_shared<GameObject>();
+	light->AddComponent(make_shared<Light>());
+
+	LightDesc lightDesc;
+	lightDesc.ambient = Vec4(0.4f);
+	lightDesc.diffuse = Vec4(1.f);
+	lightDesc.specular = Vec4(0.1f);
+	lightDesc.direction = Vec3(1.f, 1.f, 1.f);
+	//light->GetLight()->SetLightDesc(lightDesc);
+	light->GetTransform()->SetRotation(lightDesc.direction);
+	light->GetTransform()->SetPosition(Vec3(0.f, 150.f, 0.f));
+	static_pointer_cast<Light>(light->GetFixedComponent(ComponentType::Light))->SetLightDesc(lightDesc);
+	//CURSCENE->Add(light);
+	Add(light);
+}
+
 void StartScene::CreateLobbyBackGround()
 {
 	float width = GRAPHICS->GetViewport().GetWidth();
@@ -114,7 +113,7 @@ void StartScene::CreateLobbyBackGround()
 			//nullptr
 		);
 	// Panel Z값 명시적 설정
-	m_backPanel->GetTransform()->SetPosition(Vec3(0, 0, 0.9f));  // 가장 뒤쪽
+	//m_backPanel->GetTransform()->SetPosition(Vec3(0, 0, 0.9f));  // 가장 뒤쪽
 	// 버튼 생성 - Normal과 Hover Material 준비
 	shared_ptr<Material> normalMaterial = RESOURCES->Get<Material>(L"NormalBtnRollOver")->Clone();
 	shared_ptr<Material> hoverMaterial = RESOURCES->Get<Material>(L"StartBtnRollOver")->Clone();

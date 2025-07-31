@@ -19,6 +19,8 @@ public:
 private:
 	void CreateMainCamera();
 	void CreateUICamera();
+	void CreateLight();
+
 	void CreateLobbyBackGround();
 
 

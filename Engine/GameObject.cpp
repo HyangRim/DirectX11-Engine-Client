@@ -26,6 +26,7 @@
 #include "NavMesh.h"
 #include "NavMeshAgent.h"
 #include "ScrollView.h"
+#include "PlayerStateMachine.h"
 
 GameObject::GameObject()
 {
@@ -248,6 +249,12 @@ shared_ptr<ScrollView> GameObject::GetScrollView()
 {
 	shared_ptr<Component> component = GetFixedComponent(ComponentType::ScrollView);
 	return static_pointer_cast<ScrollView>(component);
+}
+
+shared_ptr<PlayerStateMachine> GameObject::GetPlayerStateMachine()
+{
+	shared_ptr<Component> component = GetFixedComponent(ComponentType::PlayerStateMachine);
+	return static_pointer_cast<PlayerStateMachine>(component);
 }
 
 
