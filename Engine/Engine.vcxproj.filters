@@ -277,8 +277,26 @@
     <ClCompile Include="ScrollView.cpp">
       <Filter>06. UI &amp; Effect\UI</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerEState.cpp">
+      <Filter>04. Component\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerWaitState.cpp">
+      <Filter>04. Component\PlayerState</Filter>
+    </ClCompile>
     <ClCompile Include="PlayerStateMachine.cpp">
-      <Filter>04. Component</Filter>
+      <Filter>04. Component\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerRunState.cpp">
+      <Filter>04. Component\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerQState.cpp">
+      <Filter>04. Component\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerRState.cpp">
+      <Filter>04. Component\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerWState.cpp">
+      <Filter>04. Component\PlayerState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -573,8 +591,26 @@
     <ClInclude Include="ScrollView.h">
       <Filter>06. UI &amp; Effect\UI</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerEState.h">
+      <Filter>04. Component\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerWaitState.h">
+      <Filter>04. Component\PlayerState</Filter>
+    </ClInclude>
     <ClInclude Include="PlayerStateMachine.h">
-      <Filter>04. Component</Filter>
+      <Filter>04. Component\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerRunState.h">
+      <Filter>04. Component\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerQState.h">
+      <Filter>04. Component\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerRState.h">
+      <Filter>04. Component\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerWState.h">
+      <Filter>04. Component\PlayerState</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -691,6 +727,9 @@
     </Filter>
     <Filter Include="04. Component\NavMesh">
       <UniqueIdentifier>{bb0affca-4019-4ad1-b1d2-40f2224fff0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\PlayerState">
+      <UniqueIdentifier>{4349363b-7732-4eee-9734-5cf7aa53689d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

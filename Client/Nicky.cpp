@@ -9,6 +9,8 @@
 #include "NickyWSkillState.h"
 #include "FogOfWar.h"
 
+#include "PlayerStateMachine.h"
+
 Nicky::Nicky(shared_ptr<Shader> _defaultShader)
 {
 	m_defaultShader = _defaultShader;
@@ -148,10 +150,12 @@ void Nicky::InitNickyComponent()
 	m_collider->SetOffset(Vec3(0, 1, 0));
 	m_rigidbody = make_shared<Rigidbody>();
 	m_navAgent = make_shared<NavMeshAgent>();
+	m_playerStateMachine = make_shared<PlayerStateMachine>(GetAnimationStateMachine(), 8);
 
 	AddComponent(m_collider);
 	AddComponent(m_rigidbody);
 	AddComponent(m_navAgent);
+	AddComponent(m_playerStateMachine);
 	AddComponent(make_shared<FogOfWar>());
 }
 

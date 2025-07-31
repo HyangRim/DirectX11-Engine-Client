@@ -44,14 +44,14 @@ void NavMeshAgent::Update()
     if (m_state == NavMeshAgentState::Moving)
     {
         UpdateMovement();
-        UpdateAnimation();
+        //UpdateAnimation();
     }
 }
 
 void NavMeshAgent::SetDestination(const Vec3& destination)
 {
     if (!m_navMesh) return;
-    cout << "SetNavMeshAgent\n";
+    //cout << "SetNavMeshAgent\n";
     auto transform = GetTransform();
     if (!transform) return;
 

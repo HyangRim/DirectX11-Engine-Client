@@ -4,10 +4,12 @@
 enum class PlayerStateType
 {
     Wait,
-    Move,
-    Attack,
-    Die,
-
+    Run,
+    Skill_1,
+    Skill_2,
+    Skill_3,
+    Skill_4,
+    Die
 };
 
 // 상태 인터페이스 (State Pattern 기본틀)
@@ -33,7 +35,7 @@ class PlayerStateMachine :
     public Component
 {
 public:
-    PlayerStateMachine();
+    PlayerStateMachine(shared_ptr<AnimationStateMachine> animationStateMachine, int chargingInfo);
     ~PlayerStateMachine();
 
     // Component 주요 함수 오버라이드
@@ -46,14 +48,25 @@ public:
     void ChangeState(PlayerStateType newState);
     bool CanChangeState(PlayerStateType newState);
 
+    void ProcessInput();
+    void ProcessAnimationFSM();
+    Ray CreateRayFromMouse(POINT mousePos, shared_ptr<Camera> camera);
+
+    bool IsInState(PlayerStateType state) const;
 
     // 상태 등록 함수 (외부에서 상태 등록 가능)
     void RegisterState(PlayerStateType type, shared_ptr<PlayerState> state);
 
-    PlayerState GetCurrentState() const;
+    PlayerStateType GetCurrentState() const;
+
+    void HandleSpecialStateTransitions();
 
 private:
     unordered_map<PlayerStateType, shared_ptr<PlayerState>> m_states;
     shared_ptr<PlayerState> m_currentState;
+
+    shared_ptr<AnimationStateMachine> m_animationStateMachine;
+
+    int m_chargingInfo;
 };
 

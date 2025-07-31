@@ -53,10 +53,10 @@ void NickyQSkillState::Update(shared_ptr<ModelAnimator> animator)
     if (debugTimer >= 1.0f)  // 1초마다 출력
     {
         wstring currentAnim = animator->GetCurrentAnimationTag();
-        cout << "현재 재생 중인 애니메이션: " << string(currentAnim.begin(), currentAnim.end()) << endl;
+       /* cout << "현재 재생 중인 애니메이션: " << string(currentAnim.begin(), currentAnim.end()) << endl;
         cout << "시퀀스 모드: " << (animator->IsSequencePlaying() ? "ON" : "OFF") << endl;
         cout << "차징 상태: " << (int)m_chargeState << endl;
-        cout << "차징 활성: " << (m_isChargingActive ? "YES" : "NO") << endl;
+        cout << "차징 활성: " << (m_isChargingActive ? "YES" : "NO") << endl;*/
         debugTimer = 0.0f;
     }
 
@@ -356,7 +356,7 @@ void NickyQSkillState::Exit(shared_ptr<ModelAnimator> animator)
 bool NickyQSkillState::CanTransitionTo(AnimationStateType nextState)
 {
     // 스킬이 완료되었을 때만 Wait 상태로 전환 가능
-    return m_isComplete && nextState == AnimationStateType::Wait;
+    return (m_isComplete && nextState == AnimationStateType::Wait);
 }
 
 bool NickyQSkillState::IsCharging() const

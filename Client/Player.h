@@ -4,6 +4,8 @@
 class Item;
 class EquipItem;
 class BaseSkill;
+class PlayerStateMachine;
+
 struct ItemStatus;
 
 struct PlayerStatus {
@@ -126,8 +128,9 @@ protected:
     shared_ptr<Rigidbody> m_rigidbody;
     shared_ptr<SphereCollider> m_collider;
     shared_ptr<NavMeshAgent> m_navAgent;
+    shared_ptr<PlayerStateMachine> m_playerStateMachine;
     shared_ptr<Shader> m_defaultShader;
-
+    
 
     //그 이외에 UI들(체력, 경험치 등등) 
     //연동 위해서 필요함. (따로 UI클래스들 만들어야함)

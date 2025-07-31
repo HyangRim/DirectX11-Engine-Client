@@ -7,6 +7,7 @@
 #include "BiancaRSkillState.h"
 #include "FogOfWar.h"
 
+#include "PlayerStateMachine.h"
 
 Bianca::Bianca(shared_ptr<Shader> _defaultShader)
 {
@@ -103,7 +104,9 @@ void Bianca::InitBiancaComponent()
 	m_collider->SetOffset(Vec3(0, 1, 0));
 	m_rigidbody = make_shared<Rigidbody>();
 	m_navAgent = make_shared<NavMeshAgent>();
+	m_playerStateMachine = make_shared<PlayerStateMachine>(GetAnimationStateMachine(), 2);
 
+	AddComponent(m_playerStateMachine);
 	AddComponent(m_collider);
 	AddComponent(m_rigidbody);
 	AddComponent(m_navAgent);

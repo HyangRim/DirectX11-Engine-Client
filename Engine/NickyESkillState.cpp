@@ -26,7 +26,7 @@ void NickyESkillState::Enter(shared_ptr<ModelAnimator> animator)
     m_isAnimationStarted = true;
     m_isSkillComplete = false;
 
-    cout << "Skill3 상태 진입 - Skill3 애니메이션 재생 시작" << endl;
+    //cout << "Skill3 상태 진입 - Skill3 애니메이션 재생 시작" << endl;
 }
 
 void NickyESkillState::Update(shared_ptr<ModelAnimator> animator)
@@ -58,7 +58,7 @@ void NickyESkillState::Exit(shared_ptr<ModelAnimator> animator)
     if (!animator)
         return;
 
-    cout << "Skill3 상태 종료 - 대기 시간: " << m_skillTime << "초" << endl;
+    //cout << "Skill3 상태 종료 - 대기 시간: " << m_skillTime << "초" << endl;
 
     // 상태 종료 시 정리
     m_skillTime = 0.0f;
