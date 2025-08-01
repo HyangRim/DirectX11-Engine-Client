@@ -198,6 +198,9 @@
     <ClCompile Include="NickyESkill.cpp">
       <Filter>Scripts\Player\Nicky</Filter>
     </ClCompile>
+    <ClCompile Include="BiancaQProjectile.cpp">
+      <Filter>Scripts\Player\Bianca</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -316,6 +319,9 @@
     </ClInclude>
     <ClInclude Include="NickyESkill.h">
       <Filter>Scripts\Player\Nicky</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaQProjectile.h">
+      <Filter>Scripts\Player\Bianca</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

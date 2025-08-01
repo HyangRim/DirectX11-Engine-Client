@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseSkill.h"
+class BiancaQProjectile;
 class BiancaQSkill :
     public BaseSkill
 {
@@ -11,5 +12,9 @@ public:
 public:
     virtual void PlaySkill() override;
     virtual void Update() override;
+
+
+    float m_skillRange = 5.f;
+    shared_ptr<BiancaQProjectile> m_Projectile;
 };
 
