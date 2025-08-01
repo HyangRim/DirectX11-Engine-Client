@@ -58,6 +58,8 @@ private:
 	//테스트용. 
 	void CreateTestDecal();
 
+	void CreateTestMesh();
+
 private:
 	shared_ptr<GameObject> m_CemeteryParent;
 	shared_ptr<Shader> m_defaultshader = nullptr;

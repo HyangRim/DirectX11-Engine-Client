@@ -45,6 +45,7 @@
     <ClInclude Include="Main.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Nicky.h" />
+    <ClInclude Include="NickyERange.h" />
     <ClInclude Include="NickyESkill.h" />
     <ClInclude Include="OrthoGraphicDemo.h" />
     <ClInclude Include="ParticleDemo.h" />
@@ -87,6 +88,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Nicky.cpp" />
+    <ClCompile Include="NickyERange.cpp" />
     <ClCompile Include="NickyESkill.cpp" />
     <ClCompile Include="OrthoGraphicDemo.cpp" />
     <ClCompile Include="ParticleDemo.cpp" />

@@ -172,24 +172,32 @@ void PlayerStateMachine::ProcessInput()
         navMeshAgent->Stop(); // 이동 중지
         m_animationStateMachine->ChangeState(AnimationStateType::Skill_1);
         ChangeState(PlayerStateType::Skill_1);
+
+        OnSkillUsed(0);  // 0: Q 스킬 인덱스
     }
     if (INPUT->GetButtonDown(KEY_TYPE::W))
     {
         navMeshAgent->Stop();
         m_animationStateMachine->ChangeState(AnimationStateType::Skill_2);
         ChangeState(PlayerStateType::Skill_2);
+
+        OnSkillUsed(1);  // 1: W 스킬 인덱스
     }
     if (INPUT->GetButtonDown(KEY_TYPE::E))
     {
         navMeshAgent->Stop();
         m_animationStateMachine->ChangeState(AnimationStateType::Skill_3);
         ChangeState(PlayerStateType::Skill_3);
+
+        OnSkillUsed(2);  // 2: E 스킬 인덱스
     }
     if (INPUT->GetButtonDown(KEY_TYPE::R))
     {
         navMeshAgent->Stop();
         m_animationStateMachine->ChangeState(AnimationStateType::Skill_4);
         ChangeState(PlayerStateType::Skill_4);
+
+        OnSkillUsed(3);  // 3: R 스킬 인덱스 
     }
 }
 

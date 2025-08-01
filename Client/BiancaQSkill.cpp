@@ -29,6 +29,9 @@ BiancaQSkill::~BiancaQSkill()
 
 void BiancaQSkill::PlaySkill()
 {
+	cout << "Bianca Q Skill ½ÃÀÛ !!! \n";
+
+
 	POINT mousePos = INPUT->GetMousePos();
 	::ScreenToClient(GAME->GetGameDesc().hWnd, &mousePos);
 

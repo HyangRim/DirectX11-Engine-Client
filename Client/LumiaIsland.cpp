@@ -67,9 +67,9 @@ void LumiaIsland::Start()
 	CreateCemeteryBase();
 	CreateCemeteryInterior();
 	CreateCemeteryEnvironment();
-	//CreateCharacterNicky();
+	CreateCharacterNicky();
 	CreateCemeteryItemBox();
-	CreateCharacterBianca();
+	//CreateCharacterBianca();
 
 	//CreateTestDecal();
 
@@ -141,6 +141,8 @@ void LumiaIsland::Start()
 	CreateCharMainPanel();
 	CreateCharInventoryPanel();
 	//====================UI====================//
+
+	//CreateTestMesh();
 
 	Super::Start();
 }
@@ -1246,4 +1248,43 @@ void LumiaIsland::CreateTestDecal()
 
 	// 4. Scene¿¡ Ãß°¡
 	CURSCENE->Add(testDecalObj);
+}
+
+void LumiaIsland::CreateTestMesh()
+{
+	// Animation
+	shared_ptr<Model> m1 = make_shared<Model>();
+
+	m1->ReadModel(L"Nicky/NickyESkill_Mesh");
+	m1->ReadMaterial(L"Nicky/NickyESkill_Mesh");
+
+	shared_ptr<GameObject> test;
+
+	for (int32 i = 0; i < 1; i++)
+	{
+
+		test = make_shared<GameObject>();
+		test->SetName(to_wstring(i));
+
+		test->GetTransform()->SetPosition(Vec3(15, 30, 5));
+		test->GetTransform()->SetScale(Vec3(0.01f, 0.01f, 0.01f));
+		test->GetTransform()->SetLocalRotation(Vec3(90.f, 0.f, 0.f));
+
+		test->AddComponent(make_shared<SphereCollider>());
+		test->AddComponent(make_shared<Rigidbody>());
+		test->GetCollider()->SetOffset(Vec3(0.f, 1.f, 0.f));
+		test->GetRigidbody()->SetStatic(true);
+		test->SetType(OBJECTTYPE::MAP);
+
+		test->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+		{
+			test->GetModelRenderer()->SetModel(m1);
+			test->GetModelRenderer()->SetPass(1);
+		}
+
+		test->AddComponent(make_shared<NavMesh>());
+
+
+		CURSCENE->Add(test);
+	}
 }

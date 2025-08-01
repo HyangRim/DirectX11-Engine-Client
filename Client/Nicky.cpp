@@ -11,6 +11,8 @@
 
 #include "PlayerStateMachine.h"
 
+#include "NickyESkill.h"
+
 Nicky::Nicky(shared_ptr<Shader> _defaultShader)
 {
 	m_defaultShader = _defaultShader;
@@ -157,11 +159,22 @@ void Nicky::InitNickyComponent()
 	AddComponent(m_navAgent);
 	AddComponent(m_playerStateMachine);
 	AddComponent(make_shared<FogOfWar>());
+
+	//PlayerStateMachine 객체가 준비된 이후에 Delegate 등록
+	m_playerStateMachine->OnSkillUsed += [this](int skillIndex) {
+		if (skillIndex >= 0 && skillIndex < (int)m_skills.size() && m_skills[skillIndex])
+		{
+			m_skills[skillIndex]->PlaySkill();
+		}
+	};
 }
 
 void Nicky::InitNickySkill()
 {
-
+	//m_skills[0] = make_shared<BiancaQSkill>(static_pointer_cast<Player>(shared_from_this()));
+	//m_skills[1] = make_shared<BiancaWSkill>(static_pointer_cast<Player>(shared_from_this()));
+	m_skills[2] = make_shared<NickyESkill>(static_pointer_cast<Player>(shared_from_this()));
+	//m_skills[3] = make_shared<BiancaRSkill>(static_pointer_cast<Player>(shared_from_this()));
 }
 
 void Nicky::InitNickyStats()

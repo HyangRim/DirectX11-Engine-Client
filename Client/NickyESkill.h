@@ -2,6 +2,7 @@
 #include "BaseSkill.h"
 
 class Player;
+class NickyERange;
 
 class NickyESkill :
     public BaseSkill
@@ -18,5 +19,7 @@ public:
 
 private:
     shared_ptr<Shader> m_shader = nullptr;
+
+    shared_ptr<NickyERange> m_skillRange = nullptr;
 };
 

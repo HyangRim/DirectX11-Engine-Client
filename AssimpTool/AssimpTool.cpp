@@ -41,11 +41,11 @@ void AssimpTool::Start()
 		shared_ptr<Converter> converter = make_shared<Converter>();
 
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/ItemBox.fbx");
+		converter->ReadAssetFile(L"Nicky/NickyESkill_Mesh.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Cemetery/ItemBox");
-		converter->ExportModelData(L"Cemetery/ItemBox");
+		converter->ExportMaterialData(L"Nicky/NickyESkill_Mesh");
+		converter->ExportModelData(L"Nicky/NickyESkill_Mesh");
 
 		//CustomData -> Memory;
 		

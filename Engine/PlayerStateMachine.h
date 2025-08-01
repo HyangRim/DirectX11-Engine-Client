@@ -1,6 +1,8 @@
 #pragma once
 #include "Component.h"
 
+#include "Delegate.h"
+
 enum class PlayerStateType
 {
     Wait,
@@ -49,7 +51,7 @@ public:
     bool CanChangeState(PlayerStateType newState);
 
     void ProcessInput();
-    void ProcessAnimationFSM();
+    //void ProcessAnimationFSM();
     Ray CreateRayFromMouse(POINT mousePos, shared_ptr<Camera> camera);
 
     bool IsInState(PlayerStateType state) const;
@@ -68,5 +70,19 @@ private:
     shared_ptr<AnimationStateMachine> m_animationStateMachine;
 
     int m_chargingInfo;
+
+
+
+
+
+
+
+
+
+
+public:
+    using SkillUsedDelegate = Delegate::Delegate<int>;
+
+    SkillUsedDelegate OnSkillUsed;
 };
 

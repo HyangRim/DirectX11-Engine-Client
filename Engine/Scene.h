@@ -74,6 +74,7 @@ private:
 
 protected:
     shared_ptr<GameObject> m_pickedObject;
+    shared_ptr<GameObject> m_player;
 
 private:
     unique_ptr<SceneObjectManager> m_objectManager;
