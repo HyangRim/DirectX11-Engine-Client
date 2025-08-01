@@ -88,8 +88,4 @@ void BiancaWSkill::Update()
 	else {
 		m_skillcurCooldown -= DT;
 	}
-
-	if (m_skillcurCooldown > 0.f) {
-		cout << m_skillcurCooldown << "\n";
-	}
 }

@@ -13,6 +13,13 @@ BiancaQSkill::BiancaQSkill(shared_ptr<Player> _player)
 		m_Projectile = make_shared<BiancaQProjectile>();
 		m_Projectile->SetName(L"Bianca_Q_Projectile");
 		m_Projectile->SetActive(false);
+		m_Projectile->AddComponent(make_shared<MeshRenderer>());
+		{
+			auto mesh = RESOURCES->Get<Mesh>(L"Sphere");
+			m_Projectile->GetMeshRenderer()->SetMesh(mesh);
+			m_Projectile->GetMeshRenderer()->SetPass(0);
+			m_Projectile->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"default"));
+		}
 	}
 }
 
