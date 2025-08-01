@@ -13,16 +13,16 @@ void CameraScript::Update()
 
 	Vec3 pos = GetTransform()->GetPosition();
 
-	if (INPUT->GetButton(KEY_TYPE::W)) {
+	if (INPUT->GetButton(KEY_TYPE::T)) {
 		pos += GetTransform()->GetLook() * m_speed * dt;
 	}
-	else if (INPUT->GetButton(KEY_TYPE::S)) {
+	else if (INPUT->GetButton(KEY_TYPE::F)) {
 		pos -= GetTransform()->GetLook() * m_speed * dt;
 	}
-	else if (INPUT->GetButton(KEY_TYPE::A)) {
+	else if (INPUT->GetButton(KEY_TYPE::G)) {
 		pos -= GetTransform()->GetRight() * m_speed * dt;
 	}
-	else if (INPUT->GetButton(KEY_TYPE::D)) {
+	else if (INPUT->GetButton(KEY_TYPE::H)) {
 		pos += GetTransform()->GetRight() * m_speed * dt;
 	}
 	GetTransform()->SetPosition(pos);

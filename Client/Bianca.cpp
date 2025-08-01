@@ -8,6 +8,10 @@
 #include "FogOfWar.h"
 
 #include "PlayerStateMachine.h"
+#include "BiancaQSkill.h"
+#include "BiancaWSkill.h"
+#include "BiancaESkill.h"
+#include "BiancaRSkill.h"
 
 Bianca::Bianca(shared_ptr<Shader> _defaultShader)
 {
@@ -32,6 +36,7 @@ void Bianca::Start()
 
 void Bianca::Update()
 {
+	//if(INPUT->GetButtonDown(KEY_TYPE::))
 	Super::Update();
 }
 
@@ -115,6 +120,10 @@ void Bianca::InitBiancaComponent()
 
 void Bianca::InitBiancaSkill()
 {
+	m_skills[0] = make_shared<BiancaQSkill>(static_pointer_cast<Player>(shared_from_this()));
+	m_skills[1] = make_shared<BiancaWSkill>(static_pointer_cast<Player>(shared_from_this()));
+	m_skills[2] = make_shared<BiancaESkill>(static_pointer_cast<Player>(shared_from_this()));
+	m_skills[3] = make_shared<BiancaRSkill>(static_pointer_cast<Player>(shared_from_this()));
 }
 
 void Bianca::InitBiancaStats()
