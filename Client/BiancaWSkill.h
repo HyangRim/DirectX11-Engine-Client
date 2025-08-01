@@ -14,6 +14,7 @@ public:
 
 private:
     bool m_isPlaying = false;
+    float m_repeatKey = 0.f;
     float m_duration = 3.f;
     float m_elapsedTime = 0.f;
     shared_ptr<GameObject> m_coffin;

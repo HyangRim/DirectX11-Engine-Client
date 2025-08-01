@@ -43,7 +43,11 @@ BiancaWSkill::~BiancaWSkill()
 
 void BiancaWSkill::PlaySkill()
 {
+	cout << "Play BiancaW Skill!\n";
 	if (m_isPlaying) {
+		//너무 빠르게 다시 눌러 해제되는 것 방지. 
+		if (m_repeatKey < 0.25f)
+			return;
 		//이미 실행중일 경우 -> W스킬 끝내기. 
 		//스킬 종료. 
 		m_coffin->SetActive(false);
@@ -51,6 +55,7 @@ void BiancaWSkill::PlaySkill()
 
 		PlayerStatus status = m_playerObject->GetStatus();
 		m_playerObject->SetDefense(status.defense - 50);
+		m_repeatKey = 0.f;
 		SkillEnd();
 	}
 	else if(m_isPlaying == false && m_skillcurCooldown <= 0){
@@ -66,9 +71,23 @@ void BiancaWSkill::PlaySkill()
 
 void BiancaWSkill::Update()
 {
+	static float debugTimer = 0.f;
+
+	debugTimer += DT;
+	if (debugTimer > 1.f) {
+		if (m_coffin != nullptr) {
+			cout << "coffin 준비";
+		}
+		if (m_coffin->GetActive()) {
+			cout << " Vivible\n";
+		}
+		else
+			cout << " Disable\n";
+		debugTimer = 0.f;
+	}
 	if (m_isPlaying) {
 		m_elapsedTime += DT;
-
+		m_repeatKey += DT;
 		if (m_elapsedTime >= m_duration) {
 			PlaySkill();
 		}

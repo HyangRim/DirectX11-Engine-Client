@@ -16,10 +16,10 @@ void CameraScript::Update()
 	if (INPUT->GetButton(KEY_TYPE::T)) {
 		pos += GetTransform()->GetLook() * m_speed * dt;
 	}
-	else if (INPUT->GetButton(KEY_TYPE::F)) {
+	else if (INPUT->GetButton(KEY_TYPE::G)) {
 		pos -= GetTransform()->GetLook() * m_speed * dt;
 	}
-	else if (INPUT->GetButton(KEY_TYPE::G)) {
+	else if (INPUT->GetButton(KEY_TYPE::F)) {
 		pos -= GetTransform()->GetRight() * m_speed * dt;
 	}
 	else if (INPUT->GetButton(KEY_TYPE::H)) {
