@@ -19,5 +19,10 @@ private:
     float m_elapsedTime = 0.f;
     shared_ptr<GameObject> m_coffin;
     shared_ptr<Shader> m_shader;
+
+
+private:
+    const wstring m_soundStart = L"Bianca/Bianca_Skill02_Active.wav";
+    const wstring m_soundEnd = L"Bianca/Bianca_Skill02_End.wav";
 };
 

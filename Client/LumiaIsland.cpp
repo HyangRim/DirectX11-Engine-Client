@@ -1015,7 +1015,7 @@ void LumiaIsland::CreateCharacterNicky()
 void LumiaIsland::CreateCharacterBianca()
 {
 	shared_ptr<Bianca> bianca = make_shared<Bianca>(m_defaultshader);
-	bianca->GetTransform()->SetPosition(Vec3(15, 20, 5));
+	bianca->GetTransform()->SetPosition(Vec3(15, 20, 25));
 	bianca->GetTransform()->SetScale(Vec3(1.f));
 	CURSCENE->Add(bianca);
 }
@@ -1080,12 +1080,12 @@ void LumiaIsland::CheckPickedItemBox()
 		if (m_pickedObject->GetType() == OBJECTTYPE::ITEMBOX)
 		{
 			m_itemBox->GetMeshRenderer()->SetActive(true);
-			cout << "아이템박스 클릭됨\n";
+			//cout << "아이템박스 클릭됨\n";
 		}
 		else
 		{
 			m_itemBox->GetMeshRenderer()->SetActive(false);
-			cout << "아이템박스 클릭해제됨\n";
+			//cout << "아이템박스 클릭해제됨\n";
 		}
 	}
 	else

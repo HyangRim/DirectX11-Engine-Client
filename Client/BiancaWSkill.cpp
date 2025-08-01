@@ -18,9 +18,9 @@ BiancaWSkill::BiancaWSkill(shared_ptr<Player> _player)
 
 		auto obj = make_shared<GameObject>();
 		obj->SetName(L"Bianca_Coffin");
-		obj->GetTransform()->SetParent(_player->GetTransform());
+		//obj->GetTransform()->SetParent(_player->GetTransform());
 		obj->GetTransform()->SetLocalPosition(Vec3(0, 0, 0));
-		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+		obj->GetTransform()->SetLocalScale(Vec3(1.f));
 		obj->SetActive(false);
 		obj->AddComponent(make_shared<ModelRenderer>(m_shader));
 		{
@@ -28,7 +28,7 @@ BiancaWSkill::BiancaWSkill(shared_ptr<Player> _player)
 			obj->GetModelRenderer()->SetPass(1);
 		}
 		m_coffin = obj;
-		CURSCENE->Add(obj);
+		CURSCENE->Add(m_coffin);
 	}
 	
 
@@ -43,7 +43,6 @@ BiancaWSkill::~BiancaWSkill()
 
 void BiancaWSkill::PlaySkill()
 {
-	cout << "Play BiancaW Skill!\n";
 	if (m_isPlaying) {
 		//너무 빠르게 다시 눌러 해제되는 것 방지. 
 		if (m_repeatKey < 0.25f)
@@ -56,6 +55,10 @@ void BiancaWSkill::PlaySkill()
 		PlayerStatus status = m_playerObject->GetStatus();
 		m_playerObject->SetDefense(status.defense - 50);
 		m_repeatKey = 0.f;
+		m_elapsedTime = 0.f;
+
+		//사운드 출력
+		SOUND->PlaySound(m_soundEnd, 1, 0.5f);
 		SkillEnd();
 	}
 	else if(m_isPlaying == false && m_skillcurCooldown <= 0){
@@ -66,25 +69,15 @@ void BiancaWSkill::PlaySkill()
 
 		PlayerStatus status = m_playerObject->GetStatus();
 		m_playerObject->SetDefense(status.defense + 50);
+		SOUND->PlaySound(m_soundStart, 1, 0.5f);
 	}
 }
 
 void BiancaWSkill::Update()
 {
-	static float debugTimer = 0.f;
+	if (m_coffin)
+		m_coffin->GetTransform()->SetPosition(m_playerObject->GetTransform()->GetPosition());
 
-	debugTimer += DT;
-	if (debugTimer > 1.f) {
-		if (m_coffin != nullptr) {
-			cout << "coffin 준비";
-		}
-		if (m_coffin->GetActive()) {
-			cout << " Vivible\n";
-		}
-		else
-			cout << " Disable\n";
-		debugTimer = 0.f;
-	}
 	if (m_isPlaying) {
 		m_elapsedTime += DT;
 		m_repeatKey += DT;
@@ -94,5 +87,9 @@ void BiancaWSkill::Update()
 	}
 	else {
 		m_skillcurCooldown -= DT;
+	}
+
+	if (m_skillcurCooldown > 0.f) {
+		cout << m_skillcurCooldown << "\n";
 	}
 }

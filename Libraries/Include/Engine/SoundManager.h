@@ -10,8 +10,8 @@ public:
 	HRESULT Init();
 
 public:
-	void PlaySound(wstring _keyname, const int _eID, const float _volume);
-	void PlayBGM(wstring _keyname, const float _volume);
+	void PlaySound(const wstring& _keyname, const int _eID, const float _volume);
+	void PlayBGM(const wstring& _keyname, const float _volume);
 
 	void StopSound(const int _eID);
 	void StopAll();
