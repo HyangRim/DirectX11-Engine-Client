@@ -18,9 +18,9 @@ BiancaWSkill::BiancaWSkill(shared_ptr<Player> _player)
 
 		auto obj = make_shared<GameObject>();
 		obj->SetName(L"Bianca_Coffin");
-		obj->GetTransform()->SetParent(_player->GetTransform());
+		//obj->GetTransform()->SetParent(_player->GetTransform());
 		obj->GetTransform()->SetLocalPosition(Vec3(0, 0, 0));
-		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+		obj->GetTransform()->SetLocalScale(Vec3(1.f));
 		obj->SetActive(false);
 		obj->AddComponent(make_shared<ModelRenderer>(m_shader));
 		{
@@ -28,7 +28,7 @@ BiancaWSkill::BiancaWSkill(shared_ptr<Player> _player)
 			obj->GetModelRenderer()->SetPass(1);
 		}
 		m_coffin = obj;
-		CURSCENE->Add(obj);
+		CURSCENE->Add(m_coffin);
 	}
 	
 
@@ -44,6 +44,9 @@ BiancaWSkill::~BiancaWSkill()
 void BiancaWSkill::PlaySkill()
 {
 	if (m_isPlaying) {
+		//너무 빠르게 다시 눌러 해제되는 것 방지. 
+		if (m_repeatKey < 0.25f)
+			return;
 		//이미 실행중일 경우 -> W스킬 끝내기. 
 		//스킬 종료. 
 		m_coffin->SetActive(false);
@@ -51,6 +54,11 @@ void BiancaWSkill::PlaySkill()
 
 		PlayerStatus status = m_playerObject->GetStatus();
 		m_playerObject->SetDefense(status.defense - 50);
+		m_repeatKey = 0.f;
+		m_elapsedTime = 0.f;
+
+		//사운드 출력
+		SOUND->PlaySound(m_soundEnd, 1, 0.5f);
 		SkillEnd();
 	}
 	else if(m_isPlaying == false && m_skillcurCooldown <= 0){
@@ -61,14 +69,18 @@ void BiancaWSkill::PlaySkill()
 
 		PlayerStatus status = m_playerObject->GetStatus();
 		m_playerObject->SetDefense(status.defense + 50);
+		SOUND->PlaySound(m_soundStart, 1, 0.5f);
 	}
 }
 
 void BiancaWSkill::Update()
 {
+	if (m_coffin)
+		m_coffin->GetTransform()->SetPosition(m_playerObject->GetTransform()->GetPosition());
+
 	if (m_isPlaying) {
 		m_elapsedTime += DT;
-
+		m_repeatKey += DT;
 		if (m_elapsedTime >= m_duration) {
 			PlaySkill();
 		}

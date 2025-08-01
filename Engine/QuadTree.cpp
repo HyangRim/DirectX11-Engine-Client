@@ -47,7 +47,7 @@ void QuadTree::Clear()
 
 void QuadTree::Insert(shared_ptr<GameObject> _object)
 {
-	if (!_object || !_object->GetCollider()) return;
+	if (!_object || !_object->GetCollider() || !_object->GetActive()) return;
 
 	//중복 검사. 
 	if (m_insertedObjects.find(_object) != m_insertedObjects.end())

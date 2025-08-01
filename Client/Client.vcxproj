@@ -24,6 +24,8 @@
     <ClInclude Include="Bianca.h" />
     <ClInclude Include="BiancaCamera.h" />
     <ClInclude Include="BiancaESkill.h" />
+    <ClInclude Include="BiancaQCone.h" />
+    <ClInclude Include="BiancaQProjectile.h" />
     <ClInclude Include="BiancaQSkill.h" />
     <ClInclude Include="BiancaRSkill.h" />
     <ClInclude Include="BiancaTest.h" />
@@ -65,6 +67,8 @@
     <ClCompile Include="Bianca.cpp" />
     <ClCompile Include="BiancaCamera.cpp" />
     <ClCompile Include="BiancaESkill.cpp" />
+    <ClCompile Include="BiancaQCone.cpp" />
+    <ClCompile Include="BiancaQProjectile.cpp" />
     <ClCompile Include="BiancaQSkill.cpp" />
     <ClCompile Include="BiancaRSkill.cpp" />
     <ClCompile Include="BiancaTest.cpp" />

@@ -488,6 +488,9 @@ void SceneObjectManager::UpdateQuadTree()
 
     //객체 위치 변화 감지를 위한 해시맵
     static unordered_map<shared_ptr<GameObject>, Vec3> lastObjectPositions;
+    
+    //객체의 Active감지를 위한 해시맵.
+    static unordered_map<shared_ptr<GameObject>, bool> lastObjectActives;
 
     Vec3 currentCameraPos = GetMainCamera()->GetTransform()->GetPosition();
     Vec3 currentCameraRot = GetMainCamera()->GetTransform()->GetLocalRotation();
@@ -499,8 +502,23 @@ void SceneObjectManager::UpdateQuadTree()
 
     //어떤 오브젝트라도 위치가 변경되었으면, UpdateQuadTree.
     bool objectMoved = false;
+    bool objectChangeActive = false;
     for (auto& object : m_gameObjects) {
         if (!object->GetCollider()) continue;
+        bool curActive = object->GetActive();
+        auto activeIter = lastObjectActives.find(object);
+
+        if (activeIter != lastObjectActives.end()) {
+            if (activeIter->second != object->GetActive()) {
+                objectChangeActive = true;
+                break;
+            }
+        }
+        else {
+            objectChangeActive = true;
+            break;
+        }
+
 
         Vec3 curPos = object->GetTransform()->GetPosition();
         auto it = lastObjectPositions.find(object);
@@ -514,21 +532,24 @@ void SceneObjectManager::UpdateQuadTree()
         else {
             //새로운 객체 발견 시.
             objectMoved = true;
+            break;
         }
     }
 
 
-    if (objectMoved || positionDelta > 0.1f || rotationDelta > 0.01f || currentObjectCount != lastObjectCount)
+    if (objectChangeActive || objectMoved || positionDelta > 0.1f || rotationDelta > 0.01f || currentObjectCount != lastObjectCount)
     {
         m_quadTreeDirty = true;
         lastCameraPos = currentCameraPos;
         lastCameraRot = currentCameraRot;
         lastObjectCount = currentObjectCount;
         objectMoved = false;
+        objectChangeActive = false;
 
         for (auto& object : m_gameObjects) {
             if (object->GetCollider()) {
                 lastObjectPositions[object] = object->GetTransform()->GetPosition();
+                lastObjectActives[object] = object->GetActive();
             }
         }
     }
@@ -544,7 +565,7 @@ void SceneObjectManager::UpdateQuadTree()
         int insertedCount = 0;
         for (auto& object : m_gameObjects)
         {
-            if (object->GetCollider())
+            if (object->GetCollider() && object->GetActive())
             {
                 // 가시성 검사
                 if (m_quadTree->IsObjectVisible(object, camera))

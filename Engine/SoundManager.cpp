@@ -23,7 +23,7 @@ HRESULT SoundManager::Init()
 	return S_OK;
 }
 
-void SoundManager::PlaySound(wstring _keyname, const int _eID, const float _volume)
+void SoundManager::PlaySound(const wstring& _keyname, const int _eID, const float _volume)
 {
 	auto iter = m_mapSound.find(_keyname);
 
@@ -36,7 +36,7 @@ void SoundManager::PlaySound(wstring _keyname, const int _eID, const float _volu
 	m_System->update();
 }
 
-void SoundManager::PlayBGM(wstring _keyname, const float _volume)
+void SoundManager::PlayBGM(const wstring& _keyname, const float _volume)
 {
 	auto iter = m_mapSound.find(_keyname);
 

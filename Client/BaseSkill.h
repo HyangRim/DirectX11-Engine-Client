@@ -28,6 +28,8 @@ public:
 	shared_ptr<Texture> GetSkillImage() { return m_skillImage; }
 
 	float GetCurCooldown() { return m_skillcurCooldown; }
+	
+	XMVECTOR ScreenToWorld(POINT _screenPos);
 
 protected:
 	bool m_isPassive = false;
