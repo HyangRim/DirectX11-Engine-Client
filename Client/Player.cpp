@@ -10,11 +10,6 @@ Player::Player()
 
 Player::~Player()
 {
-	for (auto skill : m_skills) {
-		if (skill != nullptr)
-			skill.reset();
-	}
-
 	for (auto equipment : m_curEquipment) {
 		if (equipment != nullptr)
 			equipment.reset();
@@ -165,6 +160,11 @@ void Player::LevelUp()
 	m_status.defense += m_growStatus.defense;
 	m_status.healing += m_growStatus.healing;
 	m_status.healing_Stamina += m_growStatus.healing_Stamina;
+}
+
+void Player::Damaged(float _damage)
+{
+	//데미지 공식 적어놓기. 
 }
 
 void Player::ApplyEquipStatus(ItemStatus& _Equipstatus)

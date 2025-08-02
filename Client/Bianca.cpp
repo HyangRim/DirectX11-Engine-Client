@@ -141,10 +141,10 @@ void Bianca::InitBiancaComponent()
 
 void Bianca::InitBiancaSkill()
 {
-	m_skills[0] = make_shared<BiancaQSkill>(static_pointer_cast<Player>(shared_from_this()));
-	m_skills[1] = make_shared<BiancaWSkill>(static_pointer_cast<Player>(shared_from_this()));
-	m_skills[2] = make_shared<BiancaESkill>(static_pointer_cast<Player>(shared_from_this()));
-	m_skills[3] = make_shared<BiancaRSkill>(static_pointer_cast<Player>(shared_from_this()));
+	m_skills[0] = make_unique<BiancaQSkill>(static_pointer_cast<Player>(shared_from_this()));
+	m_skills[1] = make_unique<BiancaWSkill>(static_pointer_cast<Player>(shared_from_this()));
+	m_skills[2] = make_unique<BiancaESkill>(static_pointer_cast<Player>(shared_from_this()));
+	m_skills[3] = make_unique<BiancaRSkill>(static_pointer_cast<Player>(shared_from_this()));
 }
 
 void Bianca::InitBiancaStats()
@@ -160,6 +160,7 @@ void Bianca::InitBiancaStats()
 	SetHealingStamina(3.6);
 	SetHitSpeed(0.4);
 	SetMoveSpeed(3.4);
+	GetNavMeshAgent()->SetSpeed(3.4f);
 
 
 	//성장치 세팅. 

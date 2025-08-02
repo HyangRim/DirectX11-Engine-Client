@@ -1,6 +1,7 @@
 #pragma once
 #include "BaseSkill.h"
 class BiancaQProjectile;
+class BiancaQCone;
 class BiancaQSkill :
     public BaseSkill
 {
@@ -15,6 +16,7 @@ public:
 
 
     float m_skillRange = 5.f;
-    shared_ptr<BiancaQProjectile> m_Projectile;
+    unique_ptr<BiancaQProjectile> m_Projectile;
+    unique_ptr<BiancaQCone> m_Cone;
 };
 

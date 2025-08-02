@@ -6,6 +6,7 @@
 #include "NavMesh.h"
 #include "AnimationStateMachine.h"
 
+
 NavMeshAgent::NavMeshAgent() : Super(ComponentType::NavMeshAgent)
 {
 }

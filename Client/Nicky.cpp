@@ -171,10 +171,10 @@ void Nicky::InitNickyComponent()
 
 void Nicky::InitNickySkill()
 {
-	//m_skills[0] = make_shared<BiancaQSkill>(static_pointer_cast<Player>(shared_from_this()));
-	//m_skills[1] = make_shared<BiancaWSkill>(static_pointer_cast<Player>(shared_from_this()));
-	m_skills[2] = make_shared<NickyESkill>(static_pointer_cast<Player>(shared_from_this()));
-	//m_skills[3] = make_shared<BiancaRSkill>(static_pointer_cast<Player>(shared_from_this()));
+	//m_skills[0] = make_unique<BiancaQSkill>(static_pointer_cast<Player>(shared_from_this()));
+	//m_skills[1] = make_unique<BiancaWSkill>(static_pointer_cast<Player>(shared_from_this()));
+	m_skills[2] = make_unique<NickyESkill>(static_pointer_cast<Player>(shared_from_this()));
+	//m_skills[3] = make_unique<BiancaRSkill>(static_pointer_cast<Player>(shared_from_this()));
 }
 
 void Nicky::InitNickyStats()
@@ -190,6 +190,7 @@ void Nicky::InitNickyStats()
 	SetHealingStamina(4.9);
 	SetHitSpeed(0.5);
 	SetMoveSpeed(3.5);
+	GetNavMeshAgent()->SetSpeed(3.5f);
 
 
 	//성장치 세팅. 

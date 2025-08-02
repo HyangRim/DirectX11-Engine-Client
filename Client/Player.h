@@ -76,6 +76,8 @@ public:
     //Helper Function.
     PlayerStatus& GetStatus() { return m_status; }
     shared_ptr<Shader> GetShader() { return m_defaultShader; }
+
+    void Damaged(float _damage);
     
     void SetLevel(int _value) { m_status.level = _value; }
     void SetCurExpLimit(int _value) { m_status.curExpLimit = _value; }
@@ -115,7 +117,7 @@ protected:
     PlayerGrowStatus m_growStatus;
 
     //Q,W,E,R 스킬.
-    array<shared_ptr<BaseSkill>, 4> m_skills;
+    array<unique_ptr<BaseSkill>, 4> m_skills;
 
     //무기, 상의, 머리, 팔, 다리 순서. 
     array<shared_ptr<EquipItem>, 5> m_curEquipment;

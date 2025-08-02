@@ -61,3 +61,8 @@ string Utils::ToString(Vec3& _value)
 {
 	return to_string(_value.x) + ", " + to_string(_value.y) + ", " + to_string(_value.z);
 }
+
+float Utils::FLerp(float _start, float _end, float _t)
+{
+	return (1 - _t) * _start + _t * _end;
+}
