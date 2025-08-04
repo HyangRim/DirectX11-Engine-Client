@@ -120,7 +120,7 @@ void Bianca::InitBiancaComponent()
 	m_collider->SetOffset(Vec3(0, 1, 0));
 	m_rigidbody = make_shared<Rigidbody>();
 	m_navAgent = make_shared<NavMeshAgent>();
-	m_playerStateMachine = make_shared<PlayerStateMachine>(GetAnimationStateMachine(), 2);
+	m_playerStateMachine = make_shared<PlayerStateMachine>(GetAnimationStateMachine(), 2, 3);
 
 	AddComponent(m_playerStateMachine);
 	AddComponent(m_collider);

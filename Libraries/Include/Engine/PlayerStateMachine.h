@@ -37,7 +37,7 @@ class PlayerStateMachine :
     public Component
 {
 public:
-    PlayerStateMachine(shared_ptr<AnimationStateMachine> animationStateMachine, int chargingInfo);
+    PlayerStateMachine(shared_ptr<AnimationStateMachine> animationStateMachine, int chargingInfo, int isMovableOnSkill);
     ~PlayerStateMachine();
 
     // Component 주요 함수 오버라이드
@@ -70,7 +70,7 @@ private:
     shared_ptr<AnimationStateMachine> m_animationStateMachine;
 
     int m_chargingInfo;
-
+    int m_isMovableOnSkill; //스킬 시전 중 우클릭으로 움직일 수 없는 스킬 Q,W,E,R -> 8, 4, 2, 1
 
 
 
