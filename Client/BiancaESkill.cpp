@@ -100,7 +100,7 @@ void BiancaESkill::Update()
 		m_circle->DamageFlag(true);
 		m_moveFlag = true;
 		SOUND->StopSound(17);
-		SOUND->PlaySound(L"Bianca/Bianca_Skill03_Attack", 17, 0.5f);
+		SOUND->PlaySound(L"Bianca/Bianca_Skill03_Attack.wav", 17, 0.5f);
 	}
 	
 	if (m_moveFlag) {
@@ -122,7 +122,7 @@ void BiancaESkill::Update()
 			auto objects = m_circle->GetCollisionObjects();
 
 			//여기서 데미지 주기. 
-			//SOUND->PlaySound(L"Bianca/Bianca_Skill03_Hit", 17, 0.5f);
+			//SOUND->PlaySound(L"Bianca/Bianca_Skill03_Hit.wav", 17, 0.5f);
 			//////아직 구현 X
 
 			m_circle->DamageFlag(false);
