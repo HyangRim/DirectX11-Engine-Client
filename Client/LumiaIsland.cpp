@@ -70,7 +70,7 @@ void LumiaIsland::Start()
 	//CreateCharacterNicky();
 	CreateCemeteryItemBox();
 	CreateCharacterBianca();
-	CreateTestDummy();
+	//CreateTestDummy();
 	//CreateTestDecal();
 
 	// NavMesh 생성 추가

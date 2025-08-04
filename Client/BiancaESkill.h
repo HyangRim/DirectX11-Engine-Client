@@ -1,5 +1,7 @@
 #pragma once
 #include "BaseSkill.h"
+
+class BiancaESkillCircle;
 class BiancaESkill :
     public BaseSkill
 {
@@ -11,5 +13,24 @@ public:
 public:
     virtual void PlaySkill() override;
     virtual void Update() override;
+
+private:
+    bool m_pushSkill = false;
+    bool m_moveFlag = false;
+
+    float m_circleSizeDuration = 1.f;
+    float m_circleSizeElapedTime = 0.f;
+    float m_circleKeepElapedTime = 0.f;
+    float m_maxRange = 5.5f;
+    float m_speed = 15.f;
+
+    float m_moveDuration = 0.f;
+    float m_moveElapsedTime = 0.f;
+    Vec3 m_startPos, m_targetPos;
+
+private:
+    shared_ptr<SphereCollider> m_collider;
+    shared_ptr<BiancaESkillCircle> m_circle;
+    shared_ptr<Shader> m_shader;
 };
 

@@ -16,5 +16,6 @@ public:
 
 
 	static float FLerp(float _start, float _end, float _t);
+	static Vec3 Lerp(Vec3& _start, Vec3& _end, float _t);
 };
 

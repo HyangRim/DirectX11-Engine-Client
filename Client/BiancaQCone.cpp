@@ -44,7 +44,7 @@ void BiancaQCone::Update()
 
 		float t = m_upElapsedTime / m_upDuration;
 		float yLerp = Utils::FLerp(m_startY, m_endY, t);
-		cout << "Pos Lerp" << m_upElapsedTime<<"\n";
+		//cout << "Pos Lerp" << m_upElapsedTime<<"\n";
 
 		Vec3 curPos = GetTransform()->GetPosition();
 		curPos.y = yLerp;

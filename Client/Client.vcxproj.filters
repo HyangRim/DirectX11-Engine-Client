@@ -88,6 +88,9 @@
     <Filter Include="Scripts\Player\Nicky\NickyE">
       <UniqueIdentifier>{b2c599c0-0d37-4bdc-8267-883a22789b03}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Player\Bianca\BiancaE">
+      <UniqueIdentifier>{35bedf2a-c2a5-43d5-984e-c2862abe3c04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -189,9 +192,6 @@
     <ClCompile Include="SkillDecalIndicator.cpp">
       <Filter>Scripts\Player\Skill</Filter>
     </ClCompile>
-    <ClCompile Include="BiancaESkill.cpp">
-      <Filter>Scripts\Player\Bianca</Filter>
-    </ClCompile>
     <ClCompile Include="BiancaRSkill.cpp">
       <Filter>Scripts\Player\Bianca</Filter>
     </ClCompile>
@@ -212,6 +212,12 @@
     </ClCompile>
     <ClCompile Include="NickyERange.cpp">
       <Filter>Scripts\Player\Nicky\NickyE</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaESkill.cpp">
+      <Filter>Scripts\Player\Bianca\BiancaE</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaESkillCircle.cpp">
+      <Filter>Scripts\Player\Bianca\BiancaE</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -317,9 +323,6 @@
     <ClInclude Include="SkillDecalIndicator.h">
       <Filter>Scripts\Player\Skill</Filter>
     </ClInclude>
-    <ClInclude Include="BiancaESkill.h">
-      <Filter>Scripts\Player\Bianca</Filter>
-    </ClInclude>
     <ClInclude Include="BiancaRSkill.h">
       <Filter>Scripts\Player\Bianca</Filter>
     </ClInclude>
@@ -340,6 +343,12 @@
     </ClInclude>
     <ClInclude Include="NickyERange.h">
       <Filter>Scripts\Player\Nicky\NickyE</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaESkill.h">
+      <Filter>Scripts\Player\Bianca\BiancaE</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaESkillCircle.h">
+      <Filter>Scripts\Player\Bianca\BiancaE</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

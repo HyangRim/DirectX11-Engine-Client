@@ -66,3 +66,12 @@ float Utils::FLerp(float _start, float _end, float _t)
 {
 	return (1 - _t) * _start + _t * _end;
 }
+
+Vec3 Utils::Lerp(Vec3& _start, Vec3& _end, float _t)
+{
+	Vec3 result;
+	result.x = FLerp(_start.x, _end.x, _t);
+	result.y = FLerp(_start.y, _end.y, _t);
+	result.z = FLerp(_start.z, _end.z, _t);
+	return result;
+}

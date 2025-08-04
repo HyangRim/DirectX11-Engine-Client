@@ -74,6 +74,13 @@ void BiancaQSkill::PlaySkill()
 
 	float distance = Vec3::Distance(startPos, targetPos);
 	float flightTime = distance / m_Projectile->GetSpeed();
+	// 회전 계산 및 적용
+	float targetYaw = atan2(XMVectorGetX(direction), XMVectorGetZ(direction)) + 3.141592f; //3.141592 더해야 방향 제대로 됨
+
+	//cout << "TargetYaw : " << targetYaw * 57.2958f << "\n";
+	Vec3 currentRotation = m_playerObject->GetTransform()->GetLocalRotation();
+	Vec3 newRotation = Vec3(currentRotation.x, targetYaw * 180.0f / 3.14159f, currentRotation.z);
+	m_playerObject->GetTransform()->SetLocalRotation(newRotation);
 
 	//cout << targetPos.x << " " << targetPos.y << " " << targetPos.z << "\n";
 	//투사체 생성. 날리기.
@@ -99,4 +106,9 @@ void BiancaQSkill::Update()
 		m_Cone->GetTransform()->SetPosition(ProjectilePos);
 		m_Cone->SetActive(true);
 	}
+}
+
+void BiancaQSkill::UpdateAnimation()
+{
+
 }
