@@ -70,7 +70,7 @@ void LumiaIsland::Start()
 	//CreateCharacterNicky();
 	CreateCemeteryItemBox();
 	CreateCharacterBianca();
-
+	CreateTestDummy();
 	//CreateTestDecal();
 
 	// NavMesh 생성 추가
@@ -982,7 +982,7 @@ void LumiaIsland::CreateNavMesh()
 		m_navMesh = make_shared<GameObject>();
 		m_navMesh->SetName(to_wstring(i));
 
-		m_navMesh->GetTransform()->SetPosition(Vec3(-76.7, 20, -57));
+		m_navMesh->GetTransform()->SetPosition(Vec3(-76.7, 18, -57));
 		m_navMesh->GetTransform()->SetScale(Vec3(2.f));
 		m_navMesh->GetTransform()->SetLocalRotation(Vec3(270.f, 90.f, 90.f));
 
@@ -1008,7 +1008,7 @@ void LumiaIsland::CreateNavMesh()
 void LumiaIsland::CreateCharacterNicky()
 {
 	shared_ptr<Nicky> nicky = make_shared<Nicky>(m_defaultshader);
-	nicky->GetTransform()->SetPosition(Vec3(15, 20, 5));
+	nicky->GetTransform()->SetPosition(Vec3(15, 18, 5));
 	nicky->GetTransform()->SetScale(Vec3(1.f));
 	CURSCENE->Add(nicky);
 }
@@ -1017,7 +1017,7 @@ void LumiaIsland::CreateCharacterNicky()
 void LumiaIsland::CreateCharacterBianca()
 {
 	shared_ptr<Bianca> bianca = make_shared<Bianca>(m_defaultshader);
-	bianca->GetTransform()->SetPosition(Vec3(15, 20, 25));
+	bianca->GetTransform()->SetPosition(Vec3(15, 18, 5));
 	bianca->GetTransform()->SetScale(Vec3(1.f));
 	CURSCENE->Add(bianca);
 }
@@ -1286,5 +1286,27 @@ void LumiaIsland::CreateTestMesh()
 
 
 		CURSCENE->Add(test);
+	}
+}
+
+void LumiaIsland::CreateTestDummy()
+{
+	{
+		shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Nicky", L"Nicky/Nicky");
+		m2->ReadMaterial(L"Nicky/Nicky");
+		auto obj = make_shared<GameObject>();
+		obj->SetName(L"TestDummy");
+		obj->GetTransform()->SetLocalPosition(Vec3(10, 18, 15));
+		obj->AddComponent(make_shared<AABBBoxCollider>());
+		obj->GetCollider()->SetOffsetScale(Vec3(1, 1, 1));
+		obj->GetTransform()->SetLocalScale(Vec3(1.f));
+		obj->SetType(OBJECTTYPE::PLAYER);
+
+		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+		{
+			obj->GetModelRenderer()->SetModel(m2);
+			obj->GetModelRenderer()->SetPass(1);
+		}
+		CURSCENE->Add(obj);
 	}
 }

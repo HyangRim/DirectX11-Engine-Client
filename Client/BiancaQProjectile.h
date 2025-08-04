@@ -2,8 +2,9 @@
 #include "GameObject.h"
 class BiancaQProjectile : public GameObject
 {
+    using Super = GameObject;
 public:
-	BiancaQProjectile();
+	BiancaQProjectile(shared_ptr<GameObject> _owner);
 	virtual ~BiancaQProjectile();
 	
 public:
@@ -16,15 +17,23 @@ public:
     virtual void OnCollisionExit(shared_ptr<GameObject> _other) override;
 
 public:
-    void SetMoveTarget(Vec3& _startPos, Vec3& _endPos);
-    bool GetArrive() { return m_arrive; }
+    void SetMoveTarget(Vec3& _startPos, Vec3& _endPos, float _timer);
+    bool GetArrive() const { return m_arrive; }
     void SetArrive(bool _arrive) { m_arrive = _arrive; }
+
+    float GetSpeed() const { return m_speed; }
 
 private:
     bool m_moving = false;
     bool m_arrive = false;
-    float m_speed = 10.f;
+
+    float m_speed = 20.f;
+    float m_elapsedTime = 0.f;
+    float m_duration = 0.f;
+
     Vec3 m_startPos, m_endPos;
     Vec3 m_direction;
+
+    shared_ptr<GameObject> m_Owner;
 };
 

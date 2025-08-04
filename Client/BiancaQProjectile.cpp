@@ -3,7 +3,8 @@
 #include "Player.h"
 #include "Monster.h"
 
-BiancaQProjectile::BiancaQProjectile()
+BiancaQProjectile::BiancaQProjectile(shared_ptr<GameObject> _owner)
+	:m_Owner(_owner)
 {
 }
 
@@ -17,20 +18,23 @@ void BiancaQProjectile::Start()
 
 void BiancaQProjectile::Update()
 {
+	Super::Update();
 	if (!m_moving || !GetActive()) return;
-
 	//BiancaQSkill에서 SetMoveTarget로 설정해주면 바로 움직임. 
+	m_elapsedTime += DT;
 	Vec3 curPos = GetTransform()->GetPosition();
 
-	if (Vec3::Distance(curPos, m_endPos) <= 0.01f) {
-		//도착하면 꺼지고 Cone생성. (생성은 BiancaQSkill에서)
-		SOUND->PlaySound(L"Bianca_Skill01_Active.wav", 1, 0.5f);
+	if (m_elapsedTime >= m_duration) {
+		SOUND->PlaySound(L"Bianca/Bianca_Skill01_Active.wav", 1, 0.5f);
 		m_arrive = true;
 		SetActive(false);
 		m_moving = false;
+		m_elapsedTime = 0.f;
 	}
 	// 위치 업데이트
 	Vec3 newPos = curPos + m_direction * m_speed * DT;
+
+	//cout << newPos.x << " " << newPos.y << " " << newPos.z << "\n";
 	GetTransform()->SetPosition(newPos);
 }
 
@@ -40,14 +44,11 @@ void BiancaQProjectile::OnCollision(shared_ptr<GameObject> _other)
 
 void BiancaQProjectile::OnCollisionEnter(shared_ptr<GameObject> _other)
 {
-	auto player = dynamic_pointer_cast<Player>(_other);
-	auto monster = dynamic_pointer_cast<Monster>(_other);
-
-	if (player != nullptr) {
-		SOUND->PlaySound(L"Bianca_Skill01_Hit02.wav", 1, 0.5f);
+	if (_other->GetType() == OBJECTTYPE::PLAYER) {
+		SOUND->PlaySound(L"Bianca/Bianca_Skill01_Hit02.wav", 1, 0.5f);
 	}
-	if (monster != nullptr) {
-		SOUND->PlaySound(L"Bianca_Skill01_Hit01.wav", 1, 0.5f);
+	if (_other->GetType() == OBJECTTYPE::MONSTER) {
+		SOUND->PlaySound(L"Bianca/Bianca_Skill01_Hit01.wav", 1, 0.5f);
 	}
 }
 
@@ -55,11 +56,15 @@ void BiancaQProjectile::OnCollisionExit(shared_ptr<GameObject> _other)
 {
 }
 
-void BiancaQProjectile::SetMoveTarget(Vec3& _startPos, Vec3& _endPos)
+void BiancaQProjectile::SetMoveTarget(Vec3& _startPos, Vec3& _endPos, float _timer)
 {
 	m_startPos = _startPos;
 	m_endPos = _endPos;
 	m_direction = m_endPos - m_startPos;
+	m_duration = _timer;
+	GetTransform()->SetPosition(m_startPos);
 	m_direction.Normalize();
+
 	m_moving = true;
+	SetActive(true);
 }

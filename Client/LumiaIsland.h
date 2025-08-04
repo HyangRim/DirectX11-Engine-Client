@@ -59,6 +59,7 @@ private:
 	void CreateTestDecal();
 
 	void CreateTestMesh();
+	void CreateTestDummy();
 
 private:
 	shared_ptr<GameObject> m_CemeteryParent;

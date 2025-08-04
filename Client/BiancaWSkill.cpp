@@ -33,7 +33,7 @@ BiancaWSkill::BiancaWSkill(shared_ptr<Player> _player)
 	
 
 	{
-		m_skillImage = RESOURCES->GetOrAddTexture(L"BiancaW", L"..\\Resources\\Textures\\UI\\SkillIcon_1042300.png");
+		m_skillImage = RESOURCES->GetOrAddTexture(L"BiancaW", L"..\\Resources\\Textures\\UI\\SkillIcon\\SkillIcon_1042300.png");
 	}
 }
 

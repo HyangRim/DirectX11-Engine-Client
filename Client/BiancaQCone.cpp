@@ -3,7 +3,8 @@
 #include "Player.h"
 #include "Monster.h"
 
-BiancaQCone::BiancaQCone()
+BiancaQCone::BiancaQCone(shared_ptr<GameObject> _owner)
+	: m_Owner(_owner)
 {
 }
 
@@ -17,19 +18,24 @@ void BiancaQCone::Start()
 
 void BiancaQCone::Update()
 {
-	if (!GetActive()) return;
+	Super::Update();
+	if (!GetActive()) {
+		m_upElapsedTime = 0.f;
+		return;
+	}
 
 	//m_lifeTime동안만 살아남을 수 있음. 
 	m_timer += DT;
-	if (m_timer > m_lifeTime) {
-		SetActive(false);
+	if (m_timer >= m_lifeTime) {
+		//SetActive(false);
 		m_isBind = false;
+		debugFlag = false;
 		m_upElapsedTime = 0.f;
 		m_targetMonster.reset();
 		m_targetPlayer.reset();
 	}
 
-	if (m_targetPlayer != nullptr || m_targetMonster != nullptr) {
+	if (m_targetPlayer != nullptr || m_targetMonster != nullptr || m_isBind) {
 		//CONE 솟아오르기. 
 		if (m_upDuration <= m_upElapsedTime)
 			return;
@@ -38,6 +44,7 @@ void BiancaQCone::Update()
 
 		float t = m_upElapsedTime / m_upDuration;
 		float yLerp = Utils::FLerp(m_startY, m_endY, t);
+		cout << "Pos Lerp" << m_upElapsedTime<<"\n";
 
 		Vec3 curPos = GetTransform()->GetPosition();
 		curPos.y = yLerp;
@@ -47,19 +54,27 @@ void BiancaQCone::Update()
 
 void BiancaQCone::OnCollisionEnter(shared_ptr<GameObject> _other)
 {
+	Super::OnCollisionEnter(_other);
+	auto _otherToPlayer = dynamic_pointer_cast<Player>(_other);
+	if (_otherToPlayer == m_Owner)
+		return;
+
 	m_targetPlayer = dynamic_pointer_cast<Player>(_other);
 	m_targetMonster = dynamic_pointer_cast<Monster>(_other);
+	if (_other->GetType() == OBJECTTYPE::PLAYER || _other->GetType() == OBJECTTYPE::MONSTER) {
+		debugFlag = true;
+	}
 
-	if (m_targetPlayer != nullptr || m_targetMonster != nullptr) {
+	if (m_targetPlayer != nullptr || m_targetMonster != nullptr || debugFlag) {
 		m_isBind = true;
 		m_startY = GetTransform()->GetPosition().y;
-		m_endY = m_startY + 5.f;
-
+		m_endY = m_startY + 3.f;
+		m_upElapsedTime = 0.f;
 		//그 대상을 CASTING(BIND) 상태로 바꿈.
 
 
 		//데미지 줌. 
 
-		SOUND->PlaySound(L"Bianca_Skill01_End.wav", 1, 0.5f);
+		SOUND->PlaySound(L"Bianca/Bianca_Skill01_End.wav", 1, 0.5f);
 	}
 }
