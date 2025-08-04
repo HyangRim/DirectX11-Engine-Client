@@ -37,7 +37,7 @@ class PlayerStateMachine :
     public Component
 {
 public:
-    PlayerStateMachine(shared_ptr<AnimationStateMachine> animationStateMachine, int chargingInfo, int isMovableOnSkill);
+    PlayerStateMachine(shared_ptr<AnimationStateMachine> animationStateMachine, int chargingInfo, int isMovableOnSkill, int isNeedTarget);
     ~PlayerStateMachine();
 
     // Component 주요 함수 오버라이드
@@ -71,18 +71,24 @@ private:
 
     int m_chargingInfo;
     int m_isMovableOnSkill; //스킬 시전 중 우클릭으로 움직일 수 없는 스킬 Q,W,E,R -> 8, 4, 2, 1
+    int m_isNeedTarget; //타겟이 필요한 스킬 목록 Q,W,E,R -> 8, 4, 2, 1
 
 
 
 
 
-
-
+private:
+    bool CheckTargetForSkill(KEY_TYPE skillKey);
+    shared_ptr<GameObject> GetPickedTargetAtMouse();
 
 
 public:
-    using SkillUsedDelegate = Delegate::Delegate<int>;
+    /*using SkillUsedDelegate = Delegate::Delegate<int>;
 
+    SkillUsedDelegate OnSkillUsed;*/
+
+    // 델리게이트에 타겟 정보 추가
+    using SkillUsedDelegate = Delegate::Delegate<int, shared_ptr<GameObject>>;
     SkillUsedDelegate OnSkillUsed;
 };
 

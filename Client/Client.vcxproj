@@ -49,6 +49,7 @@
     <ClInclude Include="NickyERange.h" />
     <ClInclude Include="NickyESkill.h" />
     <ClInclude Include="NickyQSkill.h" />
+    <ClInclude Include="NickyRSkill.h" />
     <ClInclude Include="OrthoGraphicDemo.h" />
     <ClInclude Include="ParticleDemo.h" />
     <ClInclude Include="pch.h" />
@@ -94,6 +95,7 @@
     <ClCompile Include="NickyERange.cpp" />
     <ClCompile Include="NickyESkill.cpp" />
     <ClCompile Include="NickyQSkill.cpp" />
+    <ClCompile Include="NickyRSkill.cpp" />
     <ClCompile Include="OrthoGraphicDemo.cpp" />
     <ClCompile Include="ParticleDemo.cpp" />
     <ClCompile Include="pch.cpp">

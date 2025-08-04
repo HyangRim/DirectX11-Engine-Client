@@ -70,7 +70,7 @@ void LumiaIsland::Start()
 	CreateCharacterNicky();
 	CreateCemeteryItemBox();
 	//CreateCharacterBianca();
-	//CreateTestDummy();
+	CreateTestDummy();
 	//CreateTestDecal();
 
 	// NavMesh 생성 추가
@@ -1292,8 +1292,13 @@ void LumiaIsland::CreateTestMesh()
 void LumiaIsland::CreateTestDummy()
 {
 	{
-		shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Nicky", L"Nicky/Nicky");
-		m2->ReadMaterial(L"Nicky/Nicky");
+		shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Bianca", L"Bianca2/Bianca");
+		m2->ReadMaterial(L"Bianca2/Bianca");
+
+		/*shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Nicky", L"Nicky/Nicky");
+		m2->ReadMaterial(L"Nicky/Nicky");*/
+
+
 		auto obj = make_shared<GameObject>();
 		obj->SetName(L"TestDummy");
 		obj->GetTransform()->SetLocalPosition(Vec3(10, 18, 15));

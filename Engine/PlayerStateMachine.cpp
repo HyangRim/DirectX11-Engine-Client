@@ -17,12 +17,15 @@
 #include "PlayerEState.h"
 #include "PlayerRState.h"
 
-PlayerStateMachine::PlayerStateMachine(shared_ptr<AnimationStateMachine> animationStateMachine, int chargingInfo, int isMovableOnSkill)
+#include "BaseCollider.h"
+
+PlayerStateMachine::PlayerStateMachine(shared_ptr<AnimationStateMachine> animationStateMachine, int chargingInfo, int isMovableOnSkill, int isNeedTarget)
     : Component(ComponentType::PlayerStateMachine) 
     , m_currentState(nullptr)
     , m_animationStateMachine(animationStateMachine)
     , m_chargingInfo(chargingInfo)
     , m_isMovableOnSkill(isMovableOnSkill)
+    , m_isNeedTarget(isNeedTarget)
 {
     
 }
@@ -226,7 +229,7 @@ void PlayerStateMachine::ProcessInput()
         m_animationStateMachine->ChangeState(AnimationStateType::Skill_1);
         ChangeState(PlayerStateType::Skill_1);
 
-        OnSkillUsed(0);  // 0: Q 스킬 인덱스
+        OnSkillUsed(0,nullptr);  // 0: Q 스킬 인덱스
     }
     if (INPUT->GetButtonDown(KEY_TYPE::W))
     {
@@ -234,7 +237,7 @@ void PlayerStateMachine::ProcessInput()
         m_animationStateMachine->ChangeState(AnimationStateType::Skill_2);
         ChangeState(PlayerStateType::Skill_2);
 
-        OnSkillUsed(1);  // 1: W 스킬 인덱스
+        OnSkillUsed(1, nullptr);  // 1: W 스킬 인덱스
     }
     if (INPUT->GetButtonDown(KEY_TYPE::E))
     {
@@ -242,15 +245,42 @@ void PlayerStateMachine::ProcessInput()
         m_animationStateMachine->ChangeState(AnimationStateType::Skill_3);
         ChangeState(PlayerStateType::Skill_3);
 
-        OnSkillUsed(2);  // 2: E 스킬 인덱스
+        OnSkillUsed(2, nullptr);  // 2: E 스킬 인덱스
     }
     if (INPUT->GetButtonDown(KEY_TYPE::R))
     {
-        navMeshAgent->Stop();
-        m_animationStateMachine->ChangeState(AnimationStateType::Skill_4);
-        ChangeState(PlayerStateType::Skill_4);
+        //navMeshAgent->Stop();
+        //m_animationStateMachine->ChangeState(AnimationStateType::Skill_4);
+        //ChangeState(PlayerStateType::Skill_4);
 
-        OnSkillUsed(3);  // 3: R 스킬 인덱스 
+        //OnSkillUsed(3);  // 3: R 스킬 인덱스 
+
+
+        if (m_isNeedTarget & (1 << 0))
+        {
+            // R 스킬은 타겟이 필요함
+            if (CheckTargetForSkill(KEY_TYPE::R))
+            {
+                auto target = GetPickedTargetAtMouse();
+                navMeshAgent->Stop();
+                OnSkillUsed(3, target);  // R은 타겟 정보 전달
+                m_animationStateMachine->ChangeState(AnimationStateType::Skill_4);
+                ChangeState(PlayerStateType::Skill_4);
+
+            }
+            else
+            {
+                cout << "R 스킬: 유효한 타겟이 없습니다." << endl;
+            }
+        }
+        else
+        {
+            navMeshAgent->Stop();
+            m_animationStateMachine->ChangeState(AnimationStateType::Skill_4);
+            ChangeState(PlayerStateType::Skill_4);
+
+            OnSkillUsed(3, nullptr);  // 3: R 스킬 인덱스 
+        }
     }
 }
 
@@ -347,4 +377,105 @@ void PlayerStateMachine::HandleSpecialStateTransitions()
 
     // 다른 스킬들도 동일하게 처리 가능
     // if (GetCurrentState() == AnimationStateType::Skill_1) { ... }
+}
+
+
+// 새로 추가할 함수들 - 쿼드트리 피킹 시스템 활용
+bool PlayerStateMachine::CheckTargetForSkill(KEY_TYPE skillKey)
+{
+    if (skillKey != KEY_TYPE::R) return true; // R이 아닌 스킬은 항상 허용
+
+    POINT mousePos = INPUT->GetMousePos();
+    if (mousePos.x < 0 || mousePos.y < 0) return false;
+
+    auto camera = CURSCENE->GetMainCamera();
+    if (!camera) return false;
+
+    shared_ptr<Camera> cam = camera->GetCamera();
+    if (!cam) return false;
+
+    // SceneObjectManager의 쿼드트리 피킹 시스템 사용
+    Ray ray = CURSCENE->GetObjectManager()->CreateRayFromScreen(Vec2(mousePos.x, mousePos.y), cam);
+
+    // 쿼드트리에서 후보 객체들 가져오기
+    auto quadTree = CURSCENE->GetQuadTree();
+    if (!quadTree) return false;
+
+    vector<shared_ptr<GameObject>> candidates = quadTree->Query(ray, cam);
+
+    // 유효한 타겟이 있는지 확인
+    for (auto& obj : candidates)
+    {
+        if (!obj->GetCollider()) continue;
+        if (!obj->GetActive()) continue;
+
+        // 자기 자신은 제외
+        if (obj.get() == GetGameObject().get()) continue;
+
+        // 화면 좌표 유효성 검사 (음수 좌표 제외)
+        RECT objBounds = quadTree->GetObjectScreenBounds(obj, cam);
+        int screenCenterX = (objBounds.left + objBounds.right) / 2;
+        int screenCenterY = (objBounds.top + objBounds.bottom) / 2;
+
+        if (screenCenterX < 0 || screenCenterY < 0) continue;
+
+        // Ray 교차 검사
+        float distance = 0.f;
+        if (obj->GetCollider()->Intersects(ray, distance))
+        {
+            return true; // 피킹 가능한 대상 발견
+        }
+    }
+
+    return false; // 피킹 가능한 대상 없음
+}
+
+shared_ptr<GameObject> PlayerStateMachine::GetPickedTargetAtMouse()
+{
+    POINT mousePos = INPUT->GetMousePos();
+    auto camera = CURSCENE->GetMainCamera();
+    if (!camera) return nullptr;
+
+    shared_ptr<Camera> cam = camera->GetCamera();
+    if (!cam) return nullptr;
+
+    // SceneObjectManager의 쿼드트리 피킹 시스템 사용
+    Ray ray = CURSCENE->GetObjectManager()->CreateRayFromScreen(Vec2(mousePos.x, mousePos.y), cam);
+
+    auto quadTree = CURSCENE->GetQuadTree();
+    if (!quadTree) return nullptr;
+
+    vector<shared_ptr<GameObject>> candidates = quadTree->Query(ray, cam);
+
+    float minDistance = FLT_MAX;
+    shared_ptr<GameObject> closestTarget = nullptr;
+
+    for (auto& obj : candidates)
+    {
+        if (!obj->GetCollider()) continue;
+        if (!obj->GetActive()) continue;
+
+        // 자기 자신은 제외
+        if (obj.get() == GetGameObject().get()) continue;
+
+        // 화면 좌표 유효성 검사 (음수 좌표 제외)
+        RECT objBounds = quadTree->GetObjectScreenBounds(obj, cam);
+        int screenCenterX = (objBounds.left + objBounds.right) / 2;
+        int screenCenterY = (objBounds.top + objBounds.bottom) / 2;
+
+        if (screenCenterX < 0 || screenCenterY < 0) continue;
+
+        // Ray 교차 검사
+        float distance = 0.f;
+        if (obj->GetCollider()->Intersects(ray, distance))
+        {
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                closestTarget = obj;
+            }
+        }
+    }
+
+    return closestTarget;
 }

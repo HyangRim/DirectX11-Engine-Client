@@ -13,6 +13,7 @@
 
 #include "NickyQSkill.h"
 #include "NickyESkill.h"
+#include "NickyRSkill.h"
 
 Nicky::Nicky(shared_ptr<Shader> _defaultShader)
 {
@@ -154,21 +155,33 @@ void Nicky::InitNickyComponent()
 	m_collider->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	m_rigidbody = make_shared<Rigidbody>();
 	m_navAgent = make_shared<NavMeshAgent>();
-	m_playerStateMachine = make_shared<PlayerStateMachine>(GetAnimationStateMachine(), 8, 15);
+	m_playerStateMachine = make_shared<PlayerStateMachine>(GetAnimationStateMachine(), 8, 15, 1);
 
 	AddComponent(m_collider);
 	AddComponent(m_rigidbody);
 	AddComponent(m_navAgent);
 	AddComponent(m_playerStateMachine);
-	AddComponent(make_shared<FogOfWar>());
+	//AddComponent(make_shared<FogOfWar>());
 
-	//PlayerStateMachine 객체가 준비된 이후에 Delegate 등록
-	m_playerStateMachine->OnSkillUsed += [this](int skillIndex) {
+	////PlayerStateMachine 객체가 준비된 이후에 Delegate 등록
+	//m_playerStateMachine->OnSkillUsed += [this](int skillIndex) {
+	//	if (skillIndex >= 0 && skillIndex < (int)m_skills.size() && m_skills[skillIndex])
+	//	{
+	//		m_skills[skillIndex]->PlaySkill();
+	//	}
+	//};
+	m_playerStateMachine->OnSkillUsed += [this](int skillIndex, shared_ptr<GameObject> target) {
 		if (skillIndex >= 0 && skillIndex < (int)m_skills.size() && m_skills[skillIndex])
 		{
+			// R 스킬(인덱스 3)인 경우 타겟 설정
+			if (skillIndex == 3 && target)
+			{
+				// NickyRSkill에 타겟 설정
+				static_cast<NickyRSkill*>(m_skills[skillIndex].get())->SetTarget(target);
+			}
 			m_skills[skillIndex]->PlaySkill();
 		}
-	};
+		};
 }
 
 void Nicky::InitNickySkill()
@@ -176,7 +189,7 @@ void Nicky::InitNickySkill()
 	m_skills[0] = make_unique<NickyQSkill>(static_pointer_cast<Player>(shared_from_this()));
 	//m_skills[1] = make_unique<BiancaWSkill>(static_pointer_cast<Player>(shared_from_this()));
 	m_skills[2] = make_unique<NickyESkill>(static_pointer_cast<Player>(shared_from_this()));
-	//m_skills[3] = make_unique<BiancaRSkill>(static_pointer_cast<Player>(shared_from_this()));
+	m_skills[3] = make_unique<NickyRSkill>(static_pointer_cast<Player>(shared_from_this()));
 }
 
 void Nicky::InitNickyStats()

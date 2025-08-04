@@ -94,6 +94,9 @@
     <Filter Include="Scripts\Player\Nicky\NickyQ">
       <UniqueIdentifier>{b25d2951-85c0-4eae-95b8-310f49f0582f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Player\Nicky\NickyR">
+      <UniqueIdentifier>{fb6acd0c-2b2a-4bb6-8123-e5031b363ece}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -224,6 +227,9 @@
     </ClCompile>
     <ClCompile Include="NickyQSkill.cpp">
       <Filter>Scripts\Player\Nicky\NickyQ</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyRSkill.cpp">
+      <Filter>Scripts\Player\Nicky\NickyR</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -358,6 +364,9 @@
     </ClInclude>
     <ClInclude Include="NickyQSkill.h">
       <Filter>Scripts\Player\Nicky\NickyQ</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyRSkill.h">
+      <Filter>Scripts\Player\Nicky\NickyR</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

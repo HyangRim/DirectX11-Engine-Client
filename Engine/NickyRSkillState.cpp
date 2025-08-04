@@ -25,6 +25,8 @@ void NickyRSkillState::Enter(shared_ptr<ModelAnimator> animator)
     m_skillTime = 0.0f;
     m_isAnimationStarted = true;
     m_isSkillComplete = false;
+    m_cachedAnimator = animator;
+
 
     cout << "Skill4 상태 진입 - Skill4 애니메이션 재생 시작" << endl;
 }
@@ -36,6 +38,14 @@ void NickyRSkillState::Update(shared_ptr<ModelAnimator> animator)
 
     // 대기 시간 업데이트
     m_skillTime += DT;
+
+    // 현재 애니메이션 확인
+    wstring currentAnim = m_cachedAnimator->GetCurrentAnimationTag();
+
+    // Rush 애니메이션이 재생 중일 때만 true
+    m_isRushAnimationActive = (currentAnim == L"Skill_01_Rush");
+    
+   
 
     if (m_isSkillComplete)
     {

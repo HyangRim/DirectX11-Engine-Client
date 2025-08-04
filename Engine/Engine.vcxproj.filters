@@ -298,6 +298,9 @@
     <ClCompile Include="PlayerWState.cpp">
       <Filter>04. Component\PlayerState</Filter>
     </ClCompile>
+    <ClCompile Include="BiancaWSkillState.cpp">
+      <Filter>04. Component\Animation\Bianca\Skill\Skill_W</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Types.h">
@@ -612,6 +615,9 @@
     <ClInclude Include="PlayerWState.h">
       <Filter>04. Component\PlayerState</Filter>
     </ClInclude>
+    <ClInclude Include="BiancaWSkillState.h">
+      <Filter>04. Component\Animation\Bianca\Skill\Skill_W</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Engine">
@@ -730,6 +736,9 @@
     </Filter>
     <Filter Include="04. Component\PlayerState">
       <UniqueIdentifier>{4349363b-7732-4eee-9734-5cf7aa53689d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\Animation\Bianca\Skill\Skill_W">
+      <UniqueIdentifier>{2fe9144f-19c5-4540-bcba-abff9e3cc75f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

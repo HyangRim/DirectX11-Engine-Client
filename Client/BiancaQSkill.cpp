@@ -20,6 +20,7 @@ BiancaQSkill::BiancaQSkill(shared_ptr<Player> _player)
 		m_Projectile->SetActive(false);
 		m_Projectile->AddComponent(make_shared<MeshRenderer>());
 		m_Projectile->AddComponent(make_shared<SphereCollider>());
+		
 		{
 			auto mesh = RESOURCES->Get<Mesh>(L"Sphere");
 			m_Projectile->GetMeshRenderer()->SetMesh(mesh);

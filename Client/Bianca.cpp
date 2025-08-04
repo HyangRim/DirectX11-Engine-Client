@@ -2,8 +2,9 @@
 #include "Bianca.h"
 #include "BiancaWaitState.h"
 #include "BiancaRunState.h"
-#include "BiancaESkillState.h"
 #include "BiancaQSkillState.h"
+#include "BiancaWSkillState.h"
+#include "BiancaESkillState.h"
 #include "BiancaRSkillState.h"
 #include "FogOfWar.h"
 
@@ -85,6 +86,7 @@ void Bianca::InitBiancaAnimation()
 	m_model->ReadAnimation(L"Wait", L"Bianca2/Bianca_wait");
 	m_model->ReadAnimation(L"Run", L"Bianca2/Bianca_run");
 	m_model->ReadAnimation(L"Skill_1", L"Bianca2/Bianca_skill1");
+	m_model->ReadAnimation(L"Skill_2", L"Bianca2/Bianca_skill2");
 	m_model->ReadAnimation(L"Skill_3_1", L"Bianca2/Bianca_skill3-1");
 	m_model->ReadAnimation(L"Skill_3_2", L"Bianca2/Bianca_skill3-2");
 	m_model->ReadAnimation(L"Skill_3_3", L"Bianca2/Bianca_skill3-3");
@@ -102,12 +104,20 @@ void Bianca::InitBiancaAnimation()
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait, make_shared<BiancaWaitState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Run, make_shared<BiancaRunState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1, make_shared<BiancaQSkillState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_2, make_shared<BiancaWSkillState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_3, make_shared<BiancaESkillState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4, make_shared<BiancaRSkillState>());
 
 	auto animator = GetModelAnimator();
+
+	// Q 스킬 시퀀스
 	vector<wstring> skill1Anims = { L"Skill_1" };
 	animator->CreateSequence(L"Skill_1_Sequence", skill1Anims, false);
+	// W 스킬 시퀀스
+	vector<wstring> skill2Anims = { L"Skill_2" };
+	animator->CreateSequence(L"Skill_2_Sequence", skill2Anims, false);
+
+	// E 스킬은 동적으로 스퀀스 생성됨
 
 	// R 스킬 시퀀스 (Skill_04_Ready -> Skill_04_Start -> Skill_04_Attack)
 	vector<wstring> skill4Anims = { L"Skill_4_1", L"Skill_4_2" };
@@ -121,7 +131,7 @@ void Bianca::InitBiancaComponent()
 	m_collider->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	m_rigidbody = make_shared<Rigidbody>();
 	m_navAgent = make_shared<NavMeshAgent>();
-	m_playerStateMachine = make_shared<PlayerStateMachine>(GetAnimationStateMachine(), 2, 14);
+	m_playerStateMachine = make_shared<PlayerStateMachine>(GetAnimationStateMachine(), 2, 14, 0);
 
 	AddComponent(m_playerStateMachine);
 	AddComponent(m_collider);
@@ -132,7 +142,7 @@ void Bianca::InitBiancaComponent()
 
 
 	//PlayerStateMachine 객체가 준비된 이후에 Delegate 등록
-	m_playerStateMachine->OnSkillUsed += [this](int skillIndex) {
+	m_playerStateMachine->OnSkillUsed += [this](int skillIndex, shared_ptr<GameObject> target) {
 		if (skillIndex >= 0 && skillIndex < (int)m_skills.size() && m_skills[skillIndex])
 		{
 			m_skills[skillIndex]->PlaySkill();

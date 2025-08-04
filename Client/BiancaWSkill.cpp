@@ -2,9 +2,12 @@
 #include "Player.h"
 #include "BiancaWSkill.h"
 
+#include "ModelAnimator.h"
+
 BiancaWSkill::BiancaWSkill(shared_ptr<Player> _player)
 	: Super(_player)
 {
+	
 	//Bianca Coffin Object
 	m_shader = _player->GetShader();
 	m_skillCooldown = 10.f;

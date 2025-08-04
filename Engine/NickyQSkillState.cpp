@@ -146,6 +146,7 @@ void NickyQSkillState::UpdateCharging()
         return;
 
     m_chargeTime += DT;
+    //cout << "사용된 DT : " << DT << endl;
 
     // 시작 애니메이션 재생 중인지 확인
     if (m_isStartAnimationPlaying)
