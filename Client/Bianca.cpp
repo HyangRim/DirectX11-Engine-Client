@@ -37,7 +37,7 @@ void Bianca::Start()
 void Bianca::Update()
 {
 	if (INPUT->GetButtonDown(KEY_TYPE::Q)) {
-
+		m_skills[0]->PlaySkill();
 	}
 	else if (INPUT->GetButtonDown(KEY_TYPE::W)) {
 		m_skills[1]->PlaySkill();

@@ -963,11 +963,11 @@ void QuadTree::CheckCollisionsInNode(const unique_ptr<QuadTreeNode>& _node, unor
 	//노드 안에서, 한 노드에 최대 12개 MAX = 12 * 12 / 2 = 72
 	auto& objects = _node->objects;
 	for (size_t i = 0; i < objects.size(); ++i) {
-		if (!objects[i]->GetCollider() || !objects[i]->GetCollider()->GetActive())
+		if (!objects[i]->GetCollider())
 			continue;
 
 		for (size_t j = i + 1; j < objects.size(); ++j) {
-			if (!objects[j]->GetCollider() || !objects[j]->GetCollider()->GetActive())
+			if (!objects[j]->GetCollider())
 				continue;
 
 			ProcessCollisionPair(objects[i]->GetCollider(),
@@ -1001,10 +1001,10 @@ void QuadTree::CheckCrossNodeCollisions(const unique_ptr<QuadTreeNode>& _node1, 
 
 	// 두 노드의 모든 객체 조합 검사
 	for (auto& obj1 : _node1->objects) {
-		if (!obj1->GetCollider() || !obj1->GetCollider()->GetActive()) continue;
+		if (!obj1->GetCollider()) continue;
 
 		for (auto& obj2 : _node2->objects) {
-			if (!obj2->GetCollider() || !obj2->GetCollider()->GetActive()) continue;
+			if (!obj2->GetCollider()) continue;
 			if (obj1 == obj2) continue;
 
 			ProcessCollisionPair(obj1->GetCollider(), obj2->GetCollider(),
@@ -1019,7 +1019,7 @@ void QuadTree::CheckBoundaryCollisions(const unique_ptr<QuadTreeNode>& _node, un
 
 	// 경계를 넘나드는 큰 객체들을 찾아서 자식 노드들과 교차 검사
 	for (auto& obj : _node->objects) {
-		if (!obj->GetCollider() || !obj->GetCollider()->GetActive()) continue;
+		if (!obj->GetCollider()) continue;
 
 		// 이 객체와 모든 자식 노드의 객체들 검사
 		for (int i = 0; i < 4; ++i) {
@@ -1039,7 +1039,7 @@ void QuadTree::CheckObjectWithNode(shared_ptr<GameObject> _object, const unique_
 
 	// 노드의 모든 객체와 충돌 검사
 	for (auto& nodeObj : _node->objects) {
-		if (!nodeObj->GetCollider() || !nodeObj->GetCollider()->GetActive()) continue;
+		if (!nodeObj->GetCollider()) continue;
 		if (nodeObj == _object) continue; // 자기 자신 제외
 
 		ProcessCollisionPair(_object->GetCollider(), nodeObj->GetCollider(),

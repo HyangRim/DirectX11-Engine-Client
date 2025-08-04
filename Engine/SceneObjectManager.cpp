@@ -565,7 +565,7 @@ void SceneObjectManager::UpdateQuadTree()
         int insertedCount = 0;
         for (auto& object : m_gameObjects)
         {
-            if (object->GetCollider() && object->GetActive())
+            if (object->GetCollider())
             {
                 // 가시성 검사
                 if (m_quadTree->IsObjectVisible(object, camera))

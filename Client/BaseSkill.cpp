@@ -30,22 +30,31 @@ void BaseSkill::SkillEnd()
 
 XMVECTOR BaseSkill::ScreenToWorld(POINT _screenPos)
 {
-    float x = (2.0f * _screenPos.x) / GRAPHICS->GetViewport().GetWidth() - 1.0f;
-    float y = 1.0f - (2.0f * _screenPos.y) / GRAPHICS->GetViewport().GetWidth();
+	// 올바른 NDC (Normalized Device Coordinates) 변환
+	float x = (2.0f * _screenPos.x) / GRAPHICS->GetViewport().GetWidth() - 1.0f;
+	float y = 1.0f - (2.0f * _screenPos.y) / GRAPHICS->GetViewport().GetHeight(); // Height 사용
 
-    XMVECTOR rayOrigin = XMVectorSet(x, y, 0.0f, 1.0f);
-    XMVECTOR rayEnd = XMVectorSet(x, y, 1.0f, 1.0f);
+	// Near와 Far 평면의 점을 NDC에서 정의
+	XMVECTOR rayOrigin = XMVectorSet(x, y, 0.0f, 1.0f);  // Near plane
+	XMVECTOR rayEnd = XMVectorSet(x, y, 1.0f, 1.0f);     // Far plane
 
-    XMMATRIX invViewProj = XMMatrixInverse(nullptr,
-        CURSCENE->GetMainCamera()->GetCamera()->GetViewMatrix() * CURSCENE->GetMainCamera()->GetCamera()->GetProjectionMatrix());
+	// ViewProjection 역행렬 계산
+	XMMATRIX viewMatrix = CURSCENE->GetMainCamera()->GetCamera()->GetViewMatrix();
+	XMMATRIX projMatrix = CURSCENE->GetMainCamera()->GetCamera()->GetProjectionMatrix();
+	XMMATRIX invViewProj = XMMatrixInverse(nullptr, viewMatrix * projMatrix);
 
-    rayOrigin = XMVector3TransformCoord(rayOrigin, invViewProj);
-    rayEnd = XMVector3TransformCoord(rayEnd, invViewProj);
+	// NDC에서 월드 좌표로 변환
+	rayOrigin = XMVector3TransformCoord(rayOrigin, invViewProj);
+	rayEnd = XMVector3TransformCoord(rayEnd, invViewProj);
 
-    // 플레이어와 같은 높이 평면에 투영
-    XMVECTOR rayDir = XMVector3Normalize(rayEnd - rayOrigin);
-    float playerY = m_playerObject->GetTransform()->GetPosition().y;
-    float t = (playerY - rayOrigin.m128_f32[1]) / rayDir.m128_f32[1];
+	// 레이 방향 계산
+	XMVECTOR rayDir = XMVector3Normalize(rayEnd - rayOrigin);
 
-    return rayOrigin + rayDir * t;
+	// 플레이어와 같은 높이 평면에 투영
+	float playerY = m_playerObject->GetTransform()->GetPosition().y;
+	float t = (playerY - XMVectorGetY(rayOrigin)) / XMVectorGetY(rayDir);
+
+	// 최종 월드 좌표 계산
+	XMVECTOR worldPos = rayOrigin + rayDir * t;
+	return worldPos;
 }
