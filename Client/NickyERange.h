@@ -4,6 +4,7 @@
 class NickyERange
 	: public GameObject
 {
+	using Super = GameObject;
 public:
 	NickyERange();
 	~NickyERange();

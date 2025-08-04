@@ -33,7 +33,7 @@ void SphereCollider::Update()
 
 	m_boundingSphere.Radius = m_radius * max(max(scale.x, scale.y), scale.z);
 
-	m_DebugObject->GetTransform()->SetScale(GetGameObject()->GetTransform()->GetScale() * 2.f);
+	m_DebugObject->GetTransform()->SetScale(GetGameObject()->GetTransform()->GetScale() * 2.f * m_offsetScale);
 	m_DebugObject->GetTransform()->SetRotation(GetGameObject()->GetTransform()->GetRotation());
 	m_DebugObject->GetTransform()->SetPosition(GetGameObject()->GetTransform()->GetPosition() + m_offSetPos);
 }

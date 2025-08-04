@@ -19,7 +19,9 @@ public:
 
 private:
     shared_ptr<Shader> m_shader = nullptr;
-
     shared_ptr<NickyERange> m_skillRange = nullptr;
+
+    bool m_bskillStart = false;
+    float m_duration = 0.f;
 };
 

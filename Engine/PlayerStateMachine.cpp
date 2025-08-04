@@ -111,13 +111,13 @@ void PlayerStateMachine::ProcessInput()
             bool IsCharging = static_pointer_cast<PlayerQState>(m_currentState)->m_isCharging;
             if (!IsCharging) 
             {
-                cout << "Q 스킬 중 이동 금지\n";
+                //cout << "Q 스킬 중 이동 금지\n";
                 return;
             }
         }
         else
         {
-            cout << "Q 스킬 중 이동 금지\n";
+            //cout << "Q 스킬 중 이동 금지\n";
 
             return;
         }
@@ -125,7 +125,7 @@ void PlayerStateMachine::ProcessInput()
     }
     if ((GetCurrentState() == PlayerStateType::Skill_2) && ((1 << 2) & m_isMovableOnSkill))
     {
-        cout << "W 스킬 중 이동 금지\n";
+        //cout << "W 스킬 중 이동 금지\n";
         return;
     }
     if ((GetCurrentState() == PlayerStateType::Skill_3) && ((1 << 1) & m_isMovableOnSkill))
@@ -135,20 +135,20 @@ void PlayerStateMachine::ProcessInput()
             bool IsCharging = static_pointer_cast<PlayerEState>(m_currentState)->m_isCharging;
             if (!IsCharging)
             {
-                cout << "E 스킬 중 이동 금지\n";
+                //cout << "E 스킬 중 이동 금지\n";
                 return;
             }
         }
         else
         {
-            cout << "E 스킬 중 이동 금지\n";
+            //cout << "E 스킬 중 이동 금지\n";
 
             return;
         }
     }
     if ((GetCurrentState() == PlayerStateType::Skill_4) && ((1 << 0) & m_isMovableOnSkill))
     {
-        cout << "R 스킬 중 이동 금지\n";
+        //cout << "R 스킬 중 이동 금지\n";
         return;
     }
 
