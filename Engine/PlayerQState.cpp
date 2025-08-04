@@ -82,9 +82,9 @@ void PlayerQState::UpdateCharging()
 {
     m_chargeTime += DT;
 
-    if (INPUT->GetButtonUp(KEY_TYPE::B))
+    if (INPUT->GetButtonUp(KEY_TYPE::Q))
     {
-        cout << "Â÷Â¡ ½Ã°£ : " << m_chargeTime << endl;
+        cout << "Â÷Â¡ ½Ã°£ PSM: " << m_chargeTime << endl;
         m_isReleasing = true;
         m_isCharging = false;
     }

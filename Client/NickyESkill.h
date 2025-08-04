@@ -17,6 +17,10 @@ public:
     virtual void PlaySkill() override;
     virtual void Update() override;
 
+    void PlayAttackSound();
+    void UpdateColliderPosition();
+    void CalculateSkillDirection();
+
 private:
     shared_ptr<Shader> m_shader = nullptr;
     shared_ptr<NickyERange> m_skillRange = nullptr;

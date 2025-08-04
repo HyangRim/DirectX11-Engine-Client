@@ -220,7 +220,7 @@ void PlayerStateMachine::ProcessInput()
    
 
     // 스킬 입력 시 이동 중지
-    if (INPUT->GetButtonDown(KEY_TYPE::B))
+    if (INPUT->GetButtonDown(KEY_TYPE::Q))
     {
         navMeshAgent->Stop(); // 이동 중지
         m_animationStateMachine->ChangeState(AnimationStateType::Skill_1);

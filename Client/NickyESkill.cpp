@@ -62,10 +62,27 @@ void NickyESkill::PlaySkill()
 	m_skillRange->SetActive(true);
 	m_bskillStart = true;
 
+	CalculateSkillDirection();
+
 	//SOUND->PlaySound(L"Nicky/Nicky_Skill03.wav", 1, 0.5f);
 }
 
 void NickyESkill::Update()
+{
+	PlayAttackSound();
+
+	UpdateColliderPosition();
+
+	PlayerStateType curState = m_playerObject->GetPlayerStateMachine()->GetCurrentState();
+	if (curState != PlayerStateType::Skill_3)
+	{
+		m_skillRange->SetActive(false);
+		m_duration = 0.f;
+		m_bskillStart = false;
+	}
+}
+
+void NickyESkill::PlayAttackSound()
 {
 	if (m_bskillStart)
 	{
@@ -73,17 +90,20 @@ void NickyESkill::Update()
 		//cout << "Duration : " << m_duration << endl;
 		if (m_duration >= 0.45f)
 		{
-			//SOUND->PlaySound(L"Nicky/Nicky_Skill03.wav", 1, 0.5f);
+			SOUND->PlaySound(L"Nicky/Nicky_Skill03.wav", 1, 0.5f);
 			m_duration = 0.f;
 		}
 	}
+}
 
+void NickyESkill::UpdateColliderPosition()
+{
 	Vec3 playerPos = m_playerObject->GetTransform()->GetPosition();
 	Vec3 playerRot = m_playerObject->GetTransform()->GetRotation();
 
 	m_skillRange->GetTransform()->SetPosition(playerPos);
-	
-	 // Collider 오프셋을 플레이어 회전에 따라 계산
+
+	// Collider 오프셋을 플레이어 회전에 따라 계산
 	if (m_skillRange->GetCollider())
 	{
 		// 플레이어 회전 행렬 생성
@@ -98,12 +118,24 @@ void NickyESkill::Update()
 		// Collider의 오프셋 업데이트
 		m_skillRange->GetCollider()->SetOffset(rotatedOffset);
 	}
+}
 
-	PlayerStateType curState = m_playerObject->GetPlayerStateMachine()->GetCurrentState();
-	if (curState != PlayerStateType::Skill_3)
-	{
-		m_skillRange->SetActive(false);
-		m_duration = 0.f;
-		m_bskillStart = false;
-	}
+void NickyESkill::CalculateSkillDirection()
+{
+	POINT mousePos = INPUT->GetMousePos();
+	//::ScreenToClient(GAME->GetGameDesc().hWnd, &mousePos);
+
+	XMVECTOR mouseWorldPos = ScreenToWorld(mousePos);
+
+	XMVECTOR playerPos = m_playerObject->GetTransform()->GetPosition();
+	XMVECTOR direction = XMVector3Normalize(mouseWorldPos - playerPos);
+	
+	// 회전 계산 및 적용
+	float targetYaw = atan2(XMVectorGetX(direction), XMVectorGetZ(direction)) + 3.141592f; //3.141592 더해야 방향 제대로 됨
+
+	//cout << "TargetYaw : " << targetYaw * 57.2958f << "\n";
+	Vec3 currentRotation = m_playerObject->GetTransform()->GetLocalRotation();
+	Vec3 newRotation = Vec3(currentRotation.x, targetYaw * 180.0f / 3.14159f, currentRotation.z);
+
+	m_playerObject->GetTransform()->SetLocalRotation(newRotation);
 }

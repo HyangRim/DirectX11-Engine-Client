@@ -83,7 +83,7 @@ void NickyQSkillState::Update(shared_ptr<ModelAnimator> animator)
 void NickyQSkillState::HandleSkillInput()
 {
     // Q 키 해제 감지
-    if (INPUT->GetButtonUp(KEY_TYPE::B) && m_isChargingActive)
+    if (INPUT->GetButtonUp(KEY_TYPE::Q) && m_isChargingActive)
     {
         ReleaseSkill();
     }
@@ -184,6 +184,9 @@ void NickyQSkillState::UpdateReleasing()
 
     // 현재 애니메이션 확인
     wstring currentAnim = m_cachedAnimator->GetCurrentAnimationTag();
+
+    // Rush 애니메이션이 재생 중일 때만 true
+    m_isFirstAnimationActive = (currentAnim == L"Skill_01_Rush");
 
     if (currentAnim == L"Skill_01_End")
     {

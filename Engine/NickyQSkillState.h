@@ -62,4 +62,10 @@ private:
     float m_startAnimationTime = 0.0f;
 
     shared_ptr<ModelAnimator> m_cachedAnimator;
+
+private:
+    bool m_isFirstAnimationActive = false;
+public:
+    bool IsFirstAnimationActive() const { return m_isFirstAnimationActive; }
+
 };
