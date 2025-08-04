@@ -17,11 +17,12 @@
 #include "PlayerEState.h"
 #include "PlayerRState.h"
 
-PlayerStateMachine::PlayerStateMachine(shared_ptr<AnimationStateMachine> animationStateMachine, int chargingInfo)
-    : Component(ComponentType::PlayerStateMachine) // or 적절한 타입 지정
+PlayerStateMachine::PlayerStateMachine(shared_ptr<AnimationStateMachine> animationStateMachine, int chargingInfo, int isMovableOnSkill)
+    : Component(ComponentType::PlayerStateMachine) 
     , m_currentState(nullptr)
     , m_animationStateMachine(animationStateMachine)
     , m_chargingInfo(chargingInfo)
+    , m_isMovableOnSkill(isMovableOnSkill)
 {
     
 }
@@ -102,6 +103,58 @@ bool PlayerStateMachine::CanChangeState(PlayerStateType newState)
 
 void PlayerStateMachine::ProcessInput()
 {
+
+    if ((GetCurrentState() == PlayerStateType::Skill_1) && ((1 << 3) & m_isMovableOnSkill))
+    {
+        if ((1 << 3) & m_chargingInfo)
+        {
+            bool IsCharging = static_pointer_cast<PlayerQState>(m_currentState)->m_isCharging;
+            if (!IsCharging) 
+            {
+                cout << "Q 스킬 중 이동 금지\n";
+                return;
+            }
+        }
+        else
+        {
+            cout << "Q 스킬 중 이동 금지\n";
+
+            return;
+        }
+ 
+    }
+    if ((GetCurrentState() == PlayerStateType::Skill_2) && ((1 << 2) & m_isMovableOnSkill))
+    {
+        cout << "W 스킬 중 이동 금지\n";
+        return;
+    }
+    if ((GetCurrentState() == PlayerStateType::Skill_3) && ((1 << 1) & m_isMovableOnSkill))
+    {
+        if ((1 << 1) & m_chargingInfo)
+        {
+            bool IsCharging = static_pointer_cast<PlayerEState>(m_currentState)->m_isCharging;
+            if (!IsCharging)
+            {
+                cout << "E 스킬 중 이동 금지\n";
+                return;
+            }
+        }
+        else
+        {
+            cout << "E 스킬 중 이동 금지\n";
+
+            return;
+        }
+    }
+    if ((GetCurrentState() == PlayerStateType::Skill_4) && ((1 << 0) & m_isMovableOnSkill))
+    {
+        cout << "R 스킬 중 이동 금지\n";
+        return;
+    }
+
+
+
+
     // NavMeshAgent 가져오기 - 올바른 ComponentType 사용
     auto gameObject = GetGameObject();
     auto navMeshAgent = gameObject->GetFixedComponent<NavMeshAgent>(ComponentType::NavMeshAgent);
@@ -253,7 +306,6 @@ PlayerStateType PlayerStateMachine::GetCurrentState() const
 // 새로운 메서드 추가
 void PlayerStateMachine::HandleSpecialStateTransitions()
 {
-
     // Q 스킬 완료 후 Wait 상태로 전환
     if (GetCurrentState() == PlayerStateType::Skill_1)
     {
@@ -284,7 +336,7 @@ void PlayerStateMachine::HandleSpecialStateTransitions()
             ChangeState(PlayerStateType::Wait);
         }
     }
-    // W 스킬 완료 후 Wait 상태로 전환
+    // R 스킬 완료 후 Wait 상태로 전환
     else if (GetCurrentState() == PlayerStateType::Skill_4)
     {
         if (m_currentState->CanTransitionTo(PlayerStateType::Wait))

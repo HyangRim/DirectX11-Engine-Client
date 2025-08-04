@@ -20,5 +20,7 @@ private:
     bool m_isSkillComplete = false;  // 추가: 스킬 완료 플래그
 
     shared_ptr<ModelAnimator> m_modelAnimator;
+
+    friend class PlayerStateMachine;
 };
 

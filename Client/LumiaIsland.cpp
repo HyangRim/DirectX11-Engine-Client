@@ -67,10 +67,10 @@ void LumiaIsland::Start()
 	CreateCemeteryBase();
 	CreateCemeteryInterior();
 	CreateCemeteryEnvironment();
-	//CreateCharacterNicky();
+	CreateCharacterNicky();
 	CreateCemeteryItemBox();
-	CreateCharacterBianca();
-	CreateTestDummy();
+	//CreateCharacterBianca();
+	//CreateTestDummy();
 	//CreateTestDecal();
 
 	// NavMesh 생성 추가

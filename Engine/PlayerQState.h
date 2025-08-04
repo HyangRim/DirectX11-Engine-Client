@@ -32,5 +32,7 @@ private:
     float m_durationTime = 0.f;
 
     shared_ptr<ModelAnimator> m_modelAnimator;
+
+    friend class PlayerStateMachine;
 };
 
