@@ -65,12 +65,15 @@ void Scene::FixedUpdate()
 
 void Scene::LateUpdate()
 {
+
+    //QuadTree방식. 
+    CheckCollisionWithQuadTree();
+
+
     m_objectManager->LateUpdate();
 
     // start = std::chrono::high_resolution_clock::now();
 
-    //QuadTree방식. 
-    CheckCollisionWithQuadTree();
     //auto end = std::chrono::high_resolution_clock::now();
     //auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
     //cout << "BruteForce 걸리는 시간 :" << duration.count() << "us\n";

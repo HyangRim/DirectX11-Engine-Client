@@ -13,6 +13,9 @@ public:
 public:
     virtual void PlaySkill() override;
     virtual void Update() override;
+   
+private:
+    void UpdateAnimation();
 
 
     float m_skillRange = 10.f;

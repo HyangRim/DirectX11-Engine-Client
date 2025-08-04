@@ -73,8 +73,6 @@ public:
 	shared_ptr<ScrollView> GetScrollView();
 	shared_ptr<PlayerStateMachine> GetPlayerStateMachine();
 
-
-
 	void AddComponent(shared_ptr<Component> _component);
 
 	void SetLayerIndex(uint8 _layer) { m_layerIndex = _layer; }
@@ -111,8 +109,6 @@ public:
 	void OnDestroy(); // 소멸 전 정리 메서드
 	void ClearReferences(); // 참조 해제 메서드
 
-
-
 protected:
 	wstring m_Name;
 
@@ -124,8 +120,6 @@ protected:
 
 	uint8 m_layerIndex = 0;
 
-
-	
 private:
 	//FOW관련 코드. 
 	float m_alpha = 1.0f;
