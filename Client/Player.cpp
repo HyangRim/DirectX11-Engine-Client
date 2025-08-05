@@ -10,12 +10,12 @@ Player::Player()
 
 Player::~Player()
 {
-	for (auto equipment : m_curEquipment) {
+	for (auto& equipment : m_curEquipment) {
 		if (equipment != nullptr)
 			equipment.reset();
 	}
 
-	for (auto item : m_inventory) {
+	for (auto& item : m_inventory) {
 		if (item != nullptr)
 			item.reset();
 	}
@@ -181,7 +181,7 @@ void Player::ApplyEquipStatus(ItemStatus& _Equipstatus)
 	m_status.healing += _Equipstatus.healing;
 	m_status.healing_Stamina += _Equipstatus.healing_Stamina;
 
-	m_status.hp = m_status.max_HP * hpRatio;
+	m_status.hp = static_cast<int>(m_status.max_HP * hpRatio);
 	m_status.stamina = m_status.max_Stamina * staminaRatio;
 }
 

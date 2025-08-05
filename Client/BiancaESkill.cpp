@@ -26,12 +26,13 @@ BiancaESkill::BiancaESkill(shared_ptr<Player> _player)
 		m_circle->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"default"));
 		m_circle->GetMeshRenderer()->SetMesh(RESOURCES->Get<Mesh>(L"Sphere"));
 		m_circle->GetMeshRenderer()->GetMaterial()->SetCastShadow(false);
+		m_circle->AddComponent(make_shared<SnowBillboard>(Vec3(0, 0, 0), Vec3(3, 1, 3), 50));
 		m_circle->GetTransform()->SetLocalScale(Vec3(1.f, 0.03f, 1.f));
 
 		m_collider = make_shared<SphereCollider>();
 		m_circle->AddComponent(m_collider);
 		m_collider->SetOffsetScale(Vec3(1.f, 30.f, 1.f));
-		m_circle->SetActive(true);
+		m_circle->SetActive(false);
 		m_circle->GetTransform()->SetParent(m_playerObject->GetTransform());
 		m_circle->GetTransform()->SetLocalPosition(Vec3(0.f, 0.03f, 0.f));
 		CURSCENE->Add(m_circle);
@@ -56,21 +57,22 @@ void BiancaESkill::Update()
 		return;
 
 	if (INPUT->GetButtonDown(KEY_TYPE::E)) {
-		//17 eID사용. 
+		//17 eID사용.
+		m_circle->SetActive(true);
 		SOUND->PlaySound(L"Bianca/Bianca_Skill03_Charge.wav", 17, 0.5f);
 	}
 
 	if (INPUT->GetButton(KEY_TYPE::E)) {
-		m_circle->SetActive(true);
 		m_circleSizeElapedTime = m_circleKeepElapedTime += DT;
 
 		float circleSize = 1.f + (m_circleSizeElapedTime / m_circleSizeDuration) * 2.f;
 		if (circleSize >= 3.f) circleSize = 3.f;
-		Vec3 scale = Vec3(1.f * circleSize, 0.05f, 1.f * circleSize);
+		Vec3 scale = Vec3(circleSize, 0.05f, circleSize);
 
 		//cout << "startPos : " << scale.x << " " << scale.y << " " << scale.z << "\n";
 		
 		m_circle->GetTransform()->SetScale(scale);
+
 	}
 	else if(INPUT->GetButtonUp(KEY_TYPE::E) || m_circleKeepElapedTime > 4.f){
 		//E키 떼었을 때. 

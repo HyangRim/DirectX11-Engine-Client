@@ -15,9 +15,7 @@ public:
 
 
     BoundingBox& GetBoundingBox() { return m_boundingBox; }
-
 private:
     BoundingBox m_boundingBox;
-    shared_ptr<GameObject> m_DebugObject;
 };
 

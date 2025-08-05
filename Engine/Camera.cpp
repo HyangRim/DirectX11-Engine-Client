@@ -8,6 +8,7 @@
 #include "QuadTree.h"
 #include "GameObject.h"
 #include "IFogOfWar.h"
+#include "BaseCollider.h"
 #include "MonoBehaviour.h"
 
 
@@ -125,6 +126,18 @@ void Camera::SortGameObjects()
                     continue;
                 }
             }
+
+            //Collider중에 안 보일 것 걸러내기.
+            if (object->GetMeshRenderer() != nullptr) {
+                //Collider는 무조건 MeshRenderer
+                if (!object->GetColliderActive())
+                    continue;
+            }
+
+            /*if (object->GetCollider()) {
+                if (object->GetCollider()->GetVisible() == false)
+                    continue;
+            }*/
         }
 
 

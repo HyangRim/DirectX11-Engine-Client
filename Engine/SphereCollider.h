@@ -16,11 +16,11 @@ public:
     void SetRadius(float _radius) { m_radius = _radius; }
     float GetRadius() { return m_radius; }
 
+
     BoundingSphere& GetBoundSphere() { return m_boundingSphere; }
 
 private:
     float m_radius = 1.f;
     BoundingSphere m_boundingSphere;
-    shared_ptr<GameObject> m_DebugObject;
 };
 

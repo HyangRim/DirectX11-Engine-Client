@@ -77,7 +77,7 @@ public:
 
 	void SetLayerIndex(uint8 _layer) { m_layerIndex = _layer; }
 	
-	uint8 GetLayerIndex() { return m_layerIndex; }
+	uint8 GetLayerIndex() const { return m_layerIndex; }
 
 	template<typename T>
 	shared_ptr<T> GetFixedComponent(ComponentType _type) {
@@ -105,6 +105,9 @@ public:
 	void SetActive(bool _value) { m_active = _value; }
 	bool GetActive() { return m_active; }
 
+	void SetColliderActive(bool _value) { m_colliderVisible = _value; }
+	bool GetColliderActive() { return m_colliderVisible; }
+
 public:
 	void OnDestroy(); // 소멸 전 정리 메서드
 	void ClearReferences(); // 참조 해제 메서드
@@ -128,6 +131,9 @@ private:
 
 
 	bool m_active = true;
+	//콜라이터 객체만 사용해야함. 
+	bool m_colliderVisible = true;
+
 	bool m_isDestroyed = false;
 
 };
