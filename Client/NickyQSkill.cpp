@@ -2,6 +2,7 @@
 #include "NickyQSkill.h"
 
 #include "Player.h"
+#include "NickyQSkillState.h"
 #include "NavMeshAgent.h"
 
 NickyQSkill::NickyQSkill(shared_ptr<Player> _player)
@@ -96,11 +97,15 @@ void NickyQSkill::CalculateSkillDirection()
 // 첫 번째 애니메이션이 재생 중인지 확인하는 함수 추가
 bool NickyQSkill::IsFirstAnimationPlaying()
 {
-	auto animator = m_playerObject->GetModelAnimator();
-	if (!animator) return false;
+	shared_ptr<AnimationState> curAnimState = m_playerObject->GetAnimationStateMachine()->GetCurrentState2(AnimationStateType::Skill_1);
 
-	wstring currentAnim = animator->GetCurrentAnimationTag();
+	return static_pointer_cast<NickyQSkillState>(curAnimState)->IsFirstAnimationActive();
 
-	// 시퀀스가 재생 중이고, 현재 애니메이션이 Rush인 경우만 true
-	return animator->IsSequencePlaying() && currentAnim == L"Skill_01_Rush";
+	//auto animator = m_playerObject->GetModelAnimator();
+	//if (!animator) return false;
+
+	//wstring currentAnim = animator->GetCurrentAnimationTag();
+
+	//// 시퀀스가 재생 중이고, 현재 애니메이션이 Rush인 경우만 true
+	//return animator->IsSequencePlaying() && currentAnim == L"Skill_01_Rush";
 }

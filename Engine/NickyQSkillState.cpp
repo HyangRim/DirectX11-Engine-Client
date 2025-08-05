@@ -114,7 +114,7 @@ void NickyQSkillState::HandleMovementInput()
     {
         m_isMoving = currentlyMoving;
 
-        cout << "차징 중 이동 상태 변화: " << (currentlyMoving ? "이동" : "정지") << endl;
+        //cout << "차징 중 이동 상태 변화: " << (currentlyMoving ? "이동" : "정지") << endl;
 
         if (currentlyMoving)
         {
@@ -217,7 +217,7 @@ void NickyQSkillState::SetInitialMovementState(bool wasMoving)
         }
     }
 
-    cout << "초기 이동 상태 설정: " << (m_isMoving ? "이동" : "정지") << endl;
+   // cout << "초기 이동 상태 설정: " << (m_isMoving ? "이동" : "정지") << endl;
 
     if (m_isMoving)
     {
@@ -272,7 +272,7 @@ void NickyQSkillState::TransitionToChargeState(QSkillChargeState newState)
     QSkillChargeState oldState = m_chargeState;
     m_chargeState = newState;
 
-    cout << "차징 상태 전환: " << (int)oldState << " -> " << (int)newState << endl;
+    //cout << "차징 상태 전환: " << (int)oldState << " -> " << (int)newState << endl;
 
     PlayAppropriateAnimation();
 }
@@ -290,39 +290,39 @@ void NickyQSkillState::PlayAppropriateAnimation()
         animationTag = L"Skill_01_Charge_Start_Wait";
         m_isStartAnimationPlaying = true;
         m_startAnimationTime = 0.0f;
-        cout << "차징 시작 (Wait)" << endl;
+        //cout << "차징 시작 (Wait)" << endl;
         break;
 
     case QSkillChargeState::ChargingFromRun:
         animationTag = L"Skill_01_Charge_Start_Run";
         m_isStartAnimationPlaying = true;
         m_startAnimationTime = 0.0f;
-        cout << "차징 시작 (Run)" << endl;
+        //cout << "차징 시작 (Run)" << endl;
         break;
 
     case QSkillChargeState::ChargingWaitLoop:
         animationTag = L"Skill_01_Charge_Loop_Wait";
-        cout << "차징 루프 (Wait)" << endl;
+        //cout << "차징 루프 (Wait)" << endl;
         break;
 
     case QSkillChargeState::ChargingRunLoop:
         animationTag = L"Skill_01_Charge_Loop_Run";
-        cout << "차징 루프 (Run)" << endl;
+        //cout << "차징 루프 (Run)" << endl;
         break;
 
     default:
-        cout << "알 수 없는 차징 상태: " << (int)m_chargeState << endl;
+        //cout << "알 수 없는 차징 상태: " << (int)m_chargeState << endl;
         return;
     }
 
-    cout << "애니메이션 재생 시도: " << string(animationTag.begin(), animationTag.end()) << endl;
+    //cout << "애니메이션 재생 시도: " << string(animationTag.begin(), animationTag.end()) << endl;
 
     // 강제로 즉시 애니메이션 재생 (블렌딩 없이)
     m_cachedAnimator->SetAnimationByTag(animationTag, true);
 
     // 애니메이션 재생 후 확인
     wstring currentAnim = m_cachedAnimator->GetCurrentAnimationTag();
-    cout << "실제 재생된 애니메이션: " << string(currentAnim.begin(), currentAnim.end()) << endl;
+    //cout << "실제 재생된 애니메이션: " << string(currentAnim.begin(), currentAnim.end()) << endl;
 }
 
 bool NickyQSkillState::IsStartAnimationComplete()
