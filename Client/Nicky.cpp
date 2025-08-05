@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "ISkillExecutor.h"
+
 #include "Nicky.h"
 #include "NickyESkillState.h"
 #include "NickyQSkillState.h"
@@ -14,6 +16,8 @@
 #include "NickyQSkill.h"
 #include "NickyESkill.h"
 #include "NickyRSkill.h"
+
+#include "PlayerInterface.h"
 
 Nicky::Nicky(shared_ptr<Shader> _defaultShader)
 {
@@ -157,6 +161,11 @@ void Nicky::InitNickyComponent()
 	m_navAgent = make_shared<NavMeshAgent>();
 	m_playerStateMachine = make_shared<PlayerStateMachine>(GetAnimationStateMachine(), 8, 15, 1);
 
+	auto self = static_pointer_cast<Player>(shared_from_this());
+	m_playerInterface = make_shared<PlayerInterface>(self);
+
+	m_playerStateMachine->SetPlayerInterface(m_playerInterface);
+
 	AddComponent(m_collider);
 	AddComponent(m_rigidbody);
 	AddComponent(m_navAgent);
@@ -181,7 +190,8 @@ void Nicky::InitNickyComponent()
 			}
 			m_skills[skillIndex]->PlaySkill();
 		}
-		};
+	};
+
 }
 
 void Nicky::InitNickySkill()

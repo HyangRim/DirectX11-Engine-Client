@@ -14,6 +14,8 @@
 #include "BiancaESkill.h"
 #include "BiancaRSkill.h"
 
+#include "PlayerInterface.h"
+
 Bianca::Bianca(shared_ptr<Shader> _defaultShader)
 {
 	m_defaultShader = _defaultShader;
@@ -134,13 +136,16 @@ void Bianca::InitBiancaComponent()
 	m_navAgent = make_shared<NavMeshAgent>();
 	m_playerStateMachine = make_shared<PlayerStateMachine>(GetAnimationStateMachine(), 2, 14, 0);
 
+	auto self = static_pointer_cast<Player>(shared_from_this());
+	m_playerInterface = make_shared<PlayerInterface>(self);
+
+	m_playerStateMachine->SetPlayerInterface(m_playerInterface);
+
 	AddComponent(m_playerStateMachine);
 	AddComponent(m_collider);
 	AddComponent(m_rigidbody);
 	AddComponent(m_navAgent);
 	//AddComponent(make_shared<FogOfWar>());
-
-
 
 	//PlayerStateMachine 객체가 준비된 이후에 Delegate 등록
 	m_playerStateMachine->OnSkillUsed += [this](int skillIndex, shared_ptr<GameObject> target) {

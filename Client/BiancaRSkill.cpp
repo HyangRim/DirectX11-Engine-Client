@@ -5,9 +5,8 @@
 #include "Player.h"
 
 BiancaRSkill::BiancaRSkill(shared_ptr<Player> _player)
-	: Super(_player)
+	: Super(_player, 3)
 {
-
 	{
 		m_skillCooldown = 6.f;
 		m_skillName = L"진조의 군림";
@@ -15,7 +14,6 @@ BiancaRSkill::BiancaRSkill(shared_ptr<Player> _player)
 		m_skillLevel = 1;
 		m_skillImage = RESOURCES->GetOrAddTexture(L"BiancaR", L"..\\Resources\\Textures\\UI\\SkillIcon\\SkillIcon_1042500.png");
 	}
-
 
 	//먼저 바깥 쪽에 생기는 Circle.
 	{

@@ -234,6 +234,9 @@
     <ClCompile Include="NickyRSkill.cpp">
       <Filter>Scripts\Player\Nicky\NickyR</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerInterface.cpp">
+      <Filter>Scripts\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -370,6 +373,9 @@
     </ClInclude>
     <ClInclude Include="NickyRSkill.h">
       <Filter>Scripts\Player\Nicky\NickyR</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerInterface.h">
+      <Filter>Scripts\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

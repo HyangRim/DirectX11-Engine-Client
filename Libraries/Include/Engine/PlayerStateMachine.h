@@ -13,6 +13,7 @@ enum class PlayerStateType
     Skill_4,
     Die
 };
+class IPlayer;
 
 // 상태 인터페이스 (State Pattern 기본틀)
 class PlayerState
@@ -63,6 +64,8 @@ public:
 
     void HandleSpecialStateTransitions();
 
+    void SetPlayerInterface(shared_ptr<IPlayer> pIayerInterface) { m_playerInterface = pIayerInterface; }
+
 private:
     unordered_map<PlayerStateType, shared_ptr<PlayerState>> m_states;
     shared_ptr<PlayerState> m_currentState;
@@ -74,13 +77,15 @@ private:
     int m_isNeedTarget; //타겟이 필요한 스킬 목록 Q,W,E,R -> 8, 4, 2, 1
 
 
-
+private:
+    shared_ptr<IPlayer> m_playerInterface;
 
 
 private:
     bool CheckTargetForSkill(KEY_TYPE skillKey);
     shared_ptr<GameObject> GetPickedTargetAtMouse();
 
+    bool IsSkillOnCooldown(int skillIndex);
 
 public:
     /*using SkillUsedDelegate = Delegate::Delegate<int>;
@@ -89,6 +94,8 @@ public:
 
     // 델리게이트에 타겟 정보 추가
     using SkillUsedDelegate = Delegate::Delegate<int, shared_ptr<GameObject>>;
+    using SkillCooldownCheckDelegate = Delegate::Delegate<int, bool&>; // (skillIndex, OUT isOnCooldown)
     SkillUsedDelegate OnSkillUsed;
+    SkillCooldownCheckDelegate OnSkillCooldownCheck;
 };
 

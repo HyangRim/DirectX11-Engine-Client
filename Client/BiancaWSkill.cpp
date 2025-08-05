@@ -5,7 +5,7 @@
 #include "ModelAnimator.h"
 
 BiancaWSkill::BiancaWSkill(shared_ptr<Player> _player)
-	: Super(_player)
+	: Super(_player, 1)
 {
 	
 	//Bianca Coffin Object

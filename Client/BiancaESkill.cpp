@@ -3,9 +3,10 @@
 #include "BiancaESkillCircle.h"
 #include "Player.h"
 #include "Utils.h"
+#include "NavMeshAgent.h"
 
 BiancaESkill::BiancaESkill(shared_ptr<Player> _player)
-	: Super(_player)
+	: Super(_player, 2)
 {
 	{
 		m_skillImage = RESOURCES->GetOrAddTexture(L"BiancaE", L"..\\Resources\\Textures\\UI\\SkillIcon\\SkillIcon_1042400.png");
@@ -92,6 +93,7 @@ void BiancaESkill::Update()
 	if (INPUT->GetButtonDown(KEY_TYPE::E)) {
 		//17 eID사용.
 		m_circle->SetActive(true);
+		
 		SOUND->PlaySound(L"Bianca/Bianca_Skill03_Charge.wav", 17, 0.5f);
 	}
 
@@ -107,7 +109,9 @@ void BiancaESkill::Update()
 		m_circle->GetTransform()->SetLocalScale(scale);
 
 	}
-	else if(INPUT->GetButtonUp(KEY_TYPE::E) || m_circleKeepElapedTime > 4.f){
+	else if(INPUT->GetButtonUp(KEY_TYPE::E) || m_circleKeepElapedTime > 4.f)
+	{
+		//m_playerObject->GetNavMeshAgent()->Stop();
 		//E키 떼었을 때. 
 		//얼마나 나갈지 세팅.
 		float range =  m_maxRange * min(1.f, m_circleKeepElapedTime / m_circleSizeDuration);

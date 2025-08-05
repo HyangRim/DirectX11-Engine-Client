@@ -19,6 +19,8 @@
 
 #include "BaseCollider.h"
 
+#include "IPlayer.h"
+
 PlayerStateMachine::PlayerStateMachine(shared_ptr<AnimationStateMachine> animationStateMachine, int chargingInfo, int isMovableOnSkill, int isNeedTarget)
     : Component(ComponentType::PlayerStateMachine) 
     , m_currentState(nullptr)
@@ -225,6 +227,13 @@ void PlayerStateMachine::ProcessInput()
     // 스킬 입력 시 이동 중지
     if (INPUT->GetButtonDown(KEY_TYPE::Q))
     {
+        float curCoolDown = m_playerInterface->GetCurSkillCooldown(0);
+        float maxCoolDown = m_playerInterface->GetMaxSkillCooldown(0);
+
+        cout << "최대 쿨타임 : " << maxCoolDown << ", 현재 쿨타임 : " << curCoolDown << endl;
+        
+        if (curCoolDown > 0.f) return;
+
         navMeshAgent->Stop(); // 이동 중지
         m_animationStateMachine->ChangeState(AnimationStateType::Skill_1);
         ChangeState(PlayerStateType::Skill_1);
@@ -233,6 +242,13 @@ void PlayerStateMachine::ProcessInput()
     }
     if (INPUT->GetButtonDown(KEY_TYPE::W))
     {
+        float curCoolDown = m_playerInterface->GetCurSkillCooldown(1);
+        float maxCoolDown = m_playerInterface->GetMaxSkillCooldown(1);
+
+        cout << "최대 쿨타임 : " << maxCoolDown << ", 현재 쿨타임 : " << curCoolDown << endl;
+
+        if (curCoolDown > 0.f) return;
+
         navMeshAgent->Stop();
         m_animationStateMachine->ChangeState(AnimationStateType::Skill_2);
         ChangeState(PlayerStateType::Skill_2);
@@ -241,6 +257,13 @@ void PlayerStateMachine::ProcessInput()
     }
     if (INPUT->GetButtonDown(KEY_TYPE::E))
     {
+        float curCoolDown = m_playerInterface->GetCurSkillCooldown(2);
+        float maxCoolDown = m_playerInterface->GetMaxSkillCooldown(2);
+
+        cout << "최대 쿨타임 : " << maxCoolDown << ", 현재 쿨타임 : " << curCoolDown << endl;
+
+        if (curCoolDown > 0.f) return;
+
         navMeshAgent->Stop();
         m_animationStateMachine->ChangeState(AnimationStateType::Skill_3);
         ChangeState(PlayerStateType::Skill_3);
@@ -249,12 +272,12 @@ void PlayerStateMachine::ProcessInput()
     }
     if (INPUT->GetButtonDown(KEY_TYPE::R))
     {
-        //navMeshAgent->Stop();
-        //m_animationStateMachine->ChangeState(AnimationStateType::Skill_4);
-        //ChangeState(PlayerStateType::Skill_4);
+        float curCoolDown = m_playerInterface->GetCurSkillCooldown(3);
+        float maxCoolDown = m_playerInterface->GetMaxSkillCooldown(3);
 
-        //OnSkillUsed(3);  // 3: R 스킬 인덱스 
+        cout << "최대 쿨타임 : " << maxCoolDown << ", 현재 쿨타임 : " << curCoolDown << endl;
 
+        if (curCoolDown > 0.f) return;
 
         if (m_isNeedTarget & (1 << 0))
         {
@@ -478,4 +501,11 @@ shared_ptr<GameObject> PlayerStateMachine::GetPickedTargetAtMouse()
     }
 
     return closestTarget;
+}
+
+bool PlayerStateMachine::IsSkillOnCooldown(int skillIndex)
+{
+    bool isOnCooldown = false;
+    OnSkillCooldownCheck(skillIndex, isOnCooldown);
+    return isOnCooldown;
 }

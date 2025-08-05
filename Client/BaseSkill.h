@@ -1,16 +1,63 @@
 #pragma once
 
+#include "ISkill.h"
+
 class Player;
-class BaseSkill
+class BaseSkill : public ISkill
 {
 public:
-	BaseSkill(shared_ptr<Player> _player);
+	BaseSkill(shared_ptr<Player> _player, int skillIndex);
 	virtual ~BaseSkill();
 
+    // ISkillExecutor 구현
+    virtual bool CanExecuteSkill() const override {
+        return m_skillcurCooldown <= 0.0f;
+    }
+
+    virtual void ExecuteSkill() override {
+        PlaySkill();
+    }
+
+    virtual float GetCurrentCooldown() const override {
+        return m_skillcurCooldown;
+    }
+
+    virtual float GetMaxCooldown() const override {
+        return m_skillCooldown;
+    }
+
+    virtual bool IsOnCooldown() const override {
+        return m_skillcurCooldown > 0.0f;
+    }
+
+    virtual void StartCooldown() override {
+        SkillEnd();
+    }
+
+    virtual void UpdateCooldown(float deltaTime) override {
+        if (m_skillcurCooldown > 0.0f) {
+            m_skillcurCooldown -= deltaTime;
+            if (m_skillcurCooldown < 0.0f) {
+                m_skillcurCooldown = 0.0f;
+            }
+        }
+    }
+
+    virtual int GetSkillIndex() const override {
+        return m_skillIndex;
+    }
+
+    virtual const wstring& GetSkillName() const override {
+        return m_skillName;
+    }
+   
+
+
 public:
-	virtual void Update();
-	virtual void PlaySkill();
+	virtual void Update() override;
+	virtual void PlaySkill() override;
 	void SkillEnd();
+    void UpdateSkillCoolDown();
 
 public:
 	void SetSkillName(wstring& _name) { m_skillName = _name; }
@@ -41,6 +88,7 @@ protected:
 	float m_skillCooldown;
 	//현재 스킬 쿨다운, 
 	float m_skillcurCooldown;
+    int m_skillIndex;
 
 	vector<wstring> m_skillAnimsName;
 	shared_ptr<Texture> m_skillImage;

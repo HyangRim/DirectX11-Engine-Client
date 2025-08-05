@@ -6,9 +6,9 @@
 #include "NickyRSkillState.h"
 
 NickyRSkill::NickyRSkill(shared_ptr<Player> _player)
-	: Super(_player)
+	: Super(_player, 3)
 {
-
+	m_skillCooldown = 10.f;
 }
 
 NickyRSkill::~NickyRSkill()
@@ -35,28 +35,7 @@ void NickyRSkill::PlaySkill()
 
 void NickyRSkill::Update()
 {
-	//if (m_moveFlag)
-	//{
-	//	if (m_moveElapsedTime <= m_moveDuration && IsRushAnimationPlaying())
-	//	{
-	//		//cout << "움직여\n";
-	//		m_moveElapsedTime += DT;
-	//		float movet = m_moveElapsedTime / m_moveDuration;
-	//		cout << "진행률 : " << movet * 100 << endl;
-	//		Vec3 curPos = Utils::Lerp(m_startPos, m_targetPos, movet);
-	//		m_playerObject->GetTransform()->SetPosition(curPos);
-	//	}
-	//	else
-	//	{
-	//		//m_moveFlag = false;
-	//		//m_moveDuration = 0.f;
-	//		//m_moveElapsedTime = 0.f;
-	//		m_startPos = m_playerObject->GetTransform()->GetPosition();
-
-	//		// 타겟 초기화
-	//		//m_target = nullptr;
-	//	}
-	//}
+	UpdateSkillCoolDown();
 
 	if (m_moveFlag)
 	{
@@ -80,6 +59,7 @@ void NickyRSkill::Update()
 				m_moveFlag = false; // 이동 완료
 				cout << "R 스킬 이동 완료!" << endl;
 				SOUND->PlaySound(L"Nicky/Nicky_skill04_Attack.wav", 3, 0.5f);
+				SkillEnd();
 			}
 
 			cout << "진행률 : " << moveT * 100 << "%" << endl;

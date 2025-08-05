@@ -6,9 +6,9 @@
 #include "NavMeshAgent.h"
 
 NickyQSkill::NickyQSkill(shared_ptr<Player> _player)
-	: Super(_player)
+	: Super(_player, 0)
 {
-
+	m_skillCooldown = 5.f;
 }
 
 NickyQSkill::~NickyQSkill()
@@ -22,51 +22,64 @@ void NickyQSkill::PlaySkill()
 	wstring soundString = L"Nicky/Nicky_PlaySkill1_" + to_wstring(soundIdx) + L".wav";
 
 	SOUND->PlaySound(soundString, 1, 0.5f);
+
+	m_skillFlag = true;
 }
 
 void NickyQSkill::Update()
 {
-	if (INPUT->GetButtonDown(KEY_TYPE::Q))
-	{
-		SOUND->PlaySound(L"Nicky/Nicky_skill01_Charge.wav", 2, 0.5f);
-		
-		m_bskillStart = true;
-		m_duration = 0.f;
-	}
+	UpdateSkillCoolDown();
 
-	if (m_bskillStart)
+	if (m_skillFlag)
 	{
-		m_duration += DT;
-	}
-
-	if (INPUT->GetButtonUp(KEY_TYPE::Q))
-	{
-		SOUND->StopSound(2);
-		SOUND->PlaySound(L"Nicky/Nicky_skill01_Shoot.wav", 3, 0.5f);
-		m_playerObject->GetNavMeshAgent()->Stop();
-		CalculateSkillDirection();
-		m_duration = 0.f;
-	}
-
-	if (m_moveFlag)
-	{
-		if (m_moveElapsedTime <= m_moveDuration && IsFirstAnimationPlaying())
+		if (INPUT->GetButtonDown(KEY_TYPE::Q))
 		{
-			m_moveElapsedTime += DT;
-			float movet = m_moveElapsedTime / m_moveDuration;
-			Vec3 curPos = Utils::Lerp(m_startPos, m_targetPos, movet);
-			m_playerObject->GetTransform()->SetPosition(curPos);
+			SOUND->PlaySound(L"Nicky/Nicky_skill01_Charge.wav", 2, 0.5f);
+
+			m_bskillStart = true;
+			m_duration = 0.f;
 		}
-		else
+
+		if (m_bskillStart)
 		{
-			// 첫 번째 애니메이션이 끝나면 이동 중지
-			m_moveFlag = false;
-			m_moveDuration = 0.f;
-			m_moveElapsedTime = 0.f;
-			m_startPos = m_playerObject->GetTransform()->GetPosition();
+			m_duration += DT;
+		}
+
+		if (INPUT->GetButtonUp(KEY_TYPE::Q))
+		{
+			SOUND->StopSound(2);
+			SOUND->PlaySound(L"Nicky/Nicky_skill01_Shoot.wav", 3, 0.5f);
+			m_playerObject->GetNavMeshAgent()->Stop();
+			CalculateSkillDirection();
+			m_duration = 0.f;
+		}
+
+		if (m_moveFlag)
+		{
+			if (m_moveElapsedTime <= m_moveDuration && IsFirstAnimationPlaying())
+			{
+				m_moveElapsedTime += DT;
+				float movet = m_moveElapsedTime / m_moveDuration;
+				Vec3 curPos = Utils::Lerp(m_startPos, m_targetPos, movet);
+				m_playerObject->GetTransform()->SetPosition(curPos);
+			}
+			else
+			{
+				// 첫 번째 애니메이션이 끝나면 이동 중지
+				m_moveFlag = false;
+				m_moveDuration = 0.f;
+				m_moveElapsedTime = 0.f;
+				m_startPos = m_playerObject->GetTransform()->GetPosition();
+
+				m_skillFlag = false;
+				SkillEnd();
+			}
 		}
 	}
+	else
+	{
 
+	}
 }
 
 

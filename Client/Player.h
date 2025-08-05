@@ -1,10 +1,12 @@
 #pragma once
 #include "GameObject.h"
+#include "ISkill.h"
 
 class Item;
 class EquipItem;
 class BaseSkill;
 class PlayerStateMachine;
+class PlayerInterface;
 
 struct ItemStatus;
 
@@ -56,7 +58,7 @@ public:
     virtual void Update() override;
     virtual void LateUpdate() override;
     virtual void FixedUpdate() override;
-
+    
     //Collision 관련
     virtual void OnCollision(shared_ptr<GameObject> _other) = 0;
     virtual void OnCollisionEnter(shared_ptr<GameObject> _other) = 0;
@@ -117,7 +119,8 @@ protected:
     PlayerGrowStatus m_growStatus;
 
     //Q,W,E,R 스킬.
-    array<unique_ptr<BaseSkill>, 4> m_skills;
+    //array<shared_ptr<ISkillExecutor>, 4> m_skillExecutors;
+    array<unique_ptr<ISkill>, 4> m_skills;
 
     //무기, 상의, 머리, 팔, 다리 순서. 
     array<shared_ptr<EquipItem>, 5> m_curEquipment;
@@ -133,6 +136,8 @@ protected:
     shared_ptr<PlayerStateMachine> m_playerStateMachine;
     shared_ptr<Shader> m_defaultShader;
     
+    //PlayerInterface
+    shared_ptr<PlayerInterface> m_playerInterface;
 
     //그 이외에 UI들(체력, 경험치 등등) 
     //연동 위해서 필요함. (따로 UI클래스들 만들어야함)
@@ -140,5 +145,17 @@ protected:
 
 private:
     float m_healingCoolTime = 0.f;
+
+
+
+public:
+    ISkill* GetSkill(int index) const
+    {
+        if (index >= 0 && index < 4 && m_skills[index])
+            return m_skills[index].get();
+        return nullptr;
+    }
+
+    friend class PlayerInterface;
 };
 

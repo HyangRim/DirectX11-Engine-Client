@@ -1010,6 +1010,9 @@ void LumiaIsland::CreateCharacterNicky()
 	shared_ptr<Nicky> nicky = make_shared<Nicky>(m_defaultshader);
 	nicky->GetTransform()->SetPosition(Vec3(15, 18, 5));
 	nicky->GetTransform()->SetScale(Vec3(1.f));
+
+
+
 	CURSCENE->Add(nicky);
 }
 

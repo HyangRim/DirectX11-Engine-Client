@@ -31,5 +31,7 @@ private:
     float m_moveElapsedTime = 0.f;
 
     int soundCount = 2;
+
+    bool m_skillFlag = false;
 };
 

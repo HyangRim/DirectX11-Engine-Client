@@ -2,8 +2,9 @@
 #include "BaseSkill.h"
 #include "Player.h"
 
-BaseSkill::BaseSkill(shared_ptr<Player> _player)
+BaseSkill::BaseSkill(shared_ptr<Player> _player, int skillIndex)
 	: m_playerObject(_player)
+	, m_skillIndex(skillIndex)
 {
 
 }
@@ -26,6 +27,13 @@ void BaseSkill::PlaySkill()
 void BaseSkill::SkillEnd()
 {
 	m_skillcurCooldown = m_skillCooldown * (1 - m_playerObject->GetStatus().cooldownReduction);
+}
+
+void BaseSkill::UpdateSkillCoolDown()
+{
+	m_skillcurCooldown -= DT;
+	if (m_skillcurCooldown < 0.f)
+		m_skillcurCooldown = 0.f;
 }
 
 XMVECTOR BaseSkill::ScreenToWorld(POINT _screenPos)

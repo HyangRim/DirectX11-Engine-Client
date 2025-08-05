@@ -301,6 +301,12 @@
     <ClCompile Include="BiancaWSkillState.cpp">
       <Filter>04. Component\Animation\Bianca\Skill\Skill_W</Filter>
     </ClCompile>
+    <ClCompile Include="ISkill.cpp">
+      <Filter>00. Engine\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="IPlayer.cpp">
+      <Filter>00. Engine\Interface</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Types.h">
@@ -617,6 +623,12 @@
     </ClInclude>
     <ClInclude Include="BiancaWSkillState.h">
       <Filter>04. Component\Animation\Bianca\Skill\Skill_W</Filter>
+    </ClInclude>
+    <ClInclude Include="ISkill.h">
+      <Filter>00. Engine\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="IPlayer.h">
+      <Filter>00. Engine\Interface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
