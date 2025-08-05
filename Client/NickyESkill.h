@@ -27,5 +27,7 @@ private:
 
     bool m_bskillStart = false;
     float m_duration = 0.f;
+
+    int soundCount = 2;
 };
 

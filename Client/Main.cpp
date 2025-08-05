@@ -47,6 +47,7 @@ void D3DMemoryLickCheck()
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
+	srand(time(NULL));
 	
 	GameDesc desc;
 	desc.appName = L"GameCoding";

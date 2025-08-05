@@ -24,7 +24,11 @@ void NickyRSkill::PlaySkill()
 		return;
 	}
 
-	
+	int soundIdx = rand() % soundCount + 1;
+	wstring soundString = L"Nicky/Nicky_PlaySkill4_" + to_wstring(soundIdx) + L".wav";
+
+	SOUND->PlaySound(soundString, 1, 0.5f);
+	SOUND->PlaySound(L"Nicky/Nicky_skill04_Ready.wav", 4, 0.5f);
 	// 타겟 위치로 스킬 방향 계산
 	CalculateSkillDirection();
 }
@@ -59,8 +63,15 @@ void NickyRSkill::Update()
 		// Rush 애니메이션이 재생 중일 때만 이동
 		if (IsRushAnimationPlaying())
 		{
+			m_rushSoundDuration += DT;
 			m_moveElapsedTime += DT;
 			float moveT = m_moveElapsedTime / m_moveDuration;
+
+			if (m_rushSoundDuration > 0.1f)
+			{
+				SOUND->PlaySound(L"Nicky/Nicky_skill04_Rush.wav", 2, 0.5f);
+				m_rushSoundDuration = 0.f;
+			}
 
 			// 이동 완료 체크
 			if (moveT >= 1.0f)
@@ -68,6 +79,7 @@ void NickyRSkill::Update()
 				moveT = 1.0f;
 				m_moveFlag = false; // 이동 완료
 				cout << "R 스킬 이동 완료!" << endl;
+				SOUND->PlaySound(L"Nicky/Nicky_skill04_Attack.wav", 3, 0.5f);
 			}
 
 			cout << "진행률 : " << moveT * 100 << "%" << endl;

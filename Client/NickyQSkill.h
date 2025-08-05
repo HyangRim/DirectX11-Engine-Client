@@ -29,5 +29,7 @@ private:
 
     float m_moveDuration = 0.f;
     float m_moveElapsedTime = 0.f;
+
+    int soundCount = 2;
 };
 
