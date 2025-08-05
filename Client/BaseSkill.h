@@ -28,7 +28,7 @@ public:
 	shared_ptr<Texture> GetSkillImage() { return m_skillImage; }
 
 	float GetCurCooldown() { return m_skillcurCooldown; }
-	
+	float GetCooldown() { return m_skillCooldown; }
 	XMVECTOR ScreenToWorld(POINT _screenPos);
 
 protected:

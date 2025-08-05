@@ -97,6 +97,9 @@
     <Filter Include="Scripts\Player\Nicky\NickyR">
       <UniqueIdentifier>{fb6acd0c-2b2a-4bb6-8123-e5031b363ece}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Bianca">
+      <UniqueIdentifier>{79f1bb8a-cdbf-45ef-9394-32db4159a356}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -432,6 +435,9 @@
     </FxCompile>
     <FxCompile Include="..\Shaders\GatherBillboard.fx">
       <Filter>Shaders\Billboard</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\BiancaEShader.fx">
+      <Filter>Shaders\Bianca</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

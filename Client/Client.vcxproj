@@ -126,6 +126,7 @@
     <FxCompile Include="..\Shaders\26. TextureBufferDemo.fx" />
     <FxCompile Include="..\Shaders\27. StructuredDemo.fx" />
     <FxCompile Include="..\Shaders\28. BillboardDemo.fx" />
+    <FxCompile Include="..\Shaders\BiancaEShader.fx" />
     <FxCompile Include="..\Shaders\GatherBillboard.fx" />
     <FxCompile Include="..\Shaders\SnowBillboard.fx" />
     <FxCompile Include="..\Shaders\DebugTexture.fx" />

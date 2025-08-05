@@ -21,12 +21,23 @@ BiancaESkill::BiancaESkill(shared_ptr<Player> _player)
 	//Coffin 모델 생성. 
 	{
 		m_circle = make_shared<BiancaESkillCircle>();
-		m_circle->AddComponent(make_shared<MeshRenderer>());
+		auto FXShader = make_shared<Shader>(L"BiancaEShader.fx");
+		m_circle->AddComponent(make_shared<SnowBillboard>(Vec3(0, 0, 0), Vec3(1.f, 0.05, 1.f), 20));
 
-		m_circle->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"default"));
-		m_circle->GetMeshRenderer()->SetMesh(RESOURCES->Get<Mesh>(L"Sphere"));
-		m_circle->GetMeshRenderer()->GetMaterial()->SetCastShadow(false);
-		m_circle->AddComponent(make_shared<SnowBillboard>(Vec3(0, 0, 0), Vec3(3, 1, 3), 50));
+		{
+			shared_ptr<Material> material = make_shared<Material>();
+			material->SetShader(FXShader);
+			auto texture = RESOURCES->Load<Texture>(L"Bianca_ETexture", L"..\\Resources\\Textures\\veigar.jpg");
+			material->SetDiffuseMap(texture);
+			MaterialDesc& desc = material->GetMaterialDesc();
+			desc.ambient = Vec4(1.f);
+			desc.diffuse = Vec4(1.f);
+			desc.specular = Vec4(1.f);
+			RESOURCES->Add(L"Bianca_EMaterial", material);
+			m_circle->GetSnowBillboard()->SetMaterial(material);
+			m_circle->GetSnowBillboard()->SetParticleScale(Vec2(0.2f, 0.7f));
+		}
+
 		m_circle->GetTransform()->SetLocalScale(Vec3(1.f, 0.03f, 1.f));
 
 		m_collider = make_shared<SphereCollider>();
@@ -35,6 +46,7 @@ BiancaESkill::BiancaESkill(shared_ptr<Player> _player)
 		m_circle->SetActive(false);
 		m_circle->GetTransform()->SetParent(m_playerObject->GetTransform());
 		m_circle->GetTransform()->SetLocalPosition(Vec3(0.f, 0.03f, 0.f));
+		m_circle->GetCollider()->SetVisible(false);
 		CURSCENE->Add(m_circle);
 	}
 
@@ -53,6 +65,27 @@ void BiancaESkill::PlaySkill()
 void BiancaESkill::Update()
 {
 	m_skillcurCooldown -= DT;
+
+	//원이 작아지는 연출은 스킬 쿨에 상관없음. 
+	if (m_endFlag) {
+		if (m_eSkillEndElapsedTime < 0.3f) {
+			m_eSkillEndElapsedTime += DT;
+
+			float scaleT = Utils::FLerp(3.f, 2.3f, m_eSkillEndElapsedTime / 0.3f);
+			Vec3 scale = Vec3(scaleT, 0.02f, scaleT);
+
+			//cout << "startPos : " << scale.x << " " << scale.y << " " << scale.z << "\n";
+			m_circle->GetTransform()->SetLocalScale(scale);
+
+		}
+		else {
+			m_endFlag = false;
+			m_eSkillEndElapsedTime = 0.f;
+			m_circle->SetActive(false);
+		}
+	}
+
+	//쿨타임 게산. 
 	if (m_skillcurCooldown > 0.f)
 		return;
 
@@ -67,11 +100,11 @@ void BiancaESkill::Update()
 
 		float circleSize = 1.f + (m_circleSizeElapedTime / m_circleSizeDuration) * 2.f;
 		if (circleSize >= 3.f) circleSize = 3.f;
-		Vec3 scale = Vec3(circleSize, 0.05f, circleSize);
+		Vec3 scale = Vec3(circleSize, 0.02f, circleSize);
 
 		//cout << "startPos : " << scale.x << " " << scale.y << " " << scale.z << "\n";
 		
-		m_circle->GetTransform()->SetScale(scale);
+		m_circle->GetTransform()->SetLocalScale(scale);
 
 	}
 	else if(INPUT->GetButtonUp(KEY_TYPE::E) || m_circleKeepElapedTime > 4.f){
@@ -129,7 +162,10 @@ void BiancaESkill::Update()
 
 			m_circle->DamageFlag(false);
 			SkillEnd();
-			m_circle->SetActive(false);
+			//m_circle->SetActive(false);
+			m_endFlag = true;
+			m_eSkillEndElapsedTime = 0.f;
 		}
 	}
+	 
 }
