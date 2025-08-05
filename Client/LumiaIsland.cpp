@@ -67,9 +67,9 @@ void LumiaIsland::Start()
 	CreateCemeteryBase();
 	CreateCemeteryInterior();
 	CreateCemeteryEnvironment();
-	//CreateCharacterNicky();
+	CreateCharacterNicky();
 	CreateCemeteryItemBox();
-	CreateCharacterBianca();
+	//CreateCharacterBianca();
 	CreateTestDummy();
 	//CreateTestDecal();
 
@@ -1292,11 +1292,11 @@ void LumiaIsland::CreateTestMesh()
 void LumiaIsland::CreateTestDummy()
 {
 	{
-		shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Bianca", L"Bianca2/Bianca");
-		m2->ReadMaterial(L"Bianca2/Bianca");
+		/*shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Bianca", L"Bianca2/Bianca");
+		m2->ReadMaterial(L"Bianca2/Bianca");*/
 
-		/*shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Nicky", L"Nicky/Nicky");
-		m2->ReadMaterial(L"Nicky/Nicky");*/
+		shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Nicky", L"Nicky/Nicky");
+		m2->ReadMaterial(L"Nicky/Nicky");
 
 
 		auto obj = make_shared<GameObject>();

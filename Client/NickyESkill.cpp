@@ -64,7 +64,11 @@ void NickyESkill::PlaySkill()
 
 	CalculateSkillDirection();
 
-	//SOUND->PlaySound(L"Nicky/Nicky_Skill03.wav", 1, 0.5f);
+
+	int soundIdx = rand() % soundCount + 1;
+	wstring soundString = L"Nicky/Nicky_PlaySkill3_" + to_wstring(soundIdx) + L".wav";
+
+	SOUND->PlaySound(soundString, 1, 0.5f);
 }
 
 void NickyESkill::Update()
@@ -90,7 +94,7 @@ void NickyESkill::PlayAttackSound()
 		//cout << "Duration : " << m_duration << endl;
 		if (m_duration >= 0.45f)
 		{
-			SOUND->PlaySound(L"Nicky/Nicky_Skill03.wav", 1, 0.5f);
+			SOUND->PlaySound(L"Nicky/Nicky_Skill03.wav", 2, 0.5f);
 			m_duration = 0.f;
 		}
 	}

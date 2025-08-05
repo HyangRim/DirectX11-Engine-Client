@@ -18,13 +18,18 @@ NickyQSkill::~NickyQSkill()
 
 void NickyQSkill::PlaySkill()
 {
+	int soundIdx = rand() % soundCount + 1;
+	wstring soundString = L"Nicky/Nicky_PlaySkill1_" + to_wstring(soundIdx) + L".wav";
 
+	SOUND->PlaySound(soundString, 1, 0.5f);
 }
 
 void NickyQSkill::Update()
 {
 	if (INPUT->GetButtonDown(KEY_TYPE::Q))
 	{
+		SOUND->PlaySound(L"Nicky/Nicky_skill01_Charge.wav", 2, 0.5f);
+		
 		m_bskillStart = true;
 		m_duration = 0.f;
 	}
@@ -36,6 +41,8 @@ void NickyQSkill::Update()
 
 	if (INPUT->GetButtonUp(KEY_TYPE::Q))
 	{
+		SOUND->StopSound(2);
+		SOUND->PlaySound(L"Nicky/Nicky_skill01_Shoot.wav", 3, 0.5f);
 		m_playerObject->GetNavMeshAgent()->Stop();
 		CalculateSkillDirection();
 		m_duration = 0.f;
