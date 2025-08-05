@@ -27,6 +27,7 @@ SphereCollider::~SphereCollider()
 
 void SphereCollider::Update()
 {
+	m_DebugObject->SetActive(GetGameObject()->GetActive());
 	m_boundingSphere.Center = GetGameObject()->GetTransform()->GetPosition() + m_offSetPos;
 
 	Vec3 scale = GetGameObject()->GetTransform()->GetScale();

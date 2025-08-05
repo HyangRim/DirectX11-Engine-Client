@@ -82,6 +82,11 @@ float4 PS_FOW_DEBUG(MeshOutput input) : SV_TARGET
     return float4(1, 0, 0, 1); // 간단한 형태
 }
 
+float4 PS_FOW_Transparency(MeshOutput input) : SV_TARGET
+{
+    return float4(0, 0, 0, 0.5);
+}
+
 // NavMesh 전용 픽셀 셰이더 추가
 float4 PS_NavMesh_Debug(MeshOutput input) : SV_TARGET
 {
@@ -143,6 +148,7 @@ float4 PS_DebugSRV(VertexQuadOutput IN) : SV_Target
     }
     return a;
 }
+
 ////////////////
 // Techniques //
 ////////////////
@@ -158,7 +164,7 @@ technique11 T0
     PASS_VP(P1, VS_Model, PS_GBuffer)
     PASS_VP(P2, VS_Animation, PS_GBuffer)
     PASS_RS_VP(P3, FillModeWireFrame, VS_Mesh, PS_FOW_DEBUG)
-
+    PASS_VP(P4, VS_Mesh, PS_FOW_Transparency)
 // NavMesh 디버그 렌더링 추가
     PASS_BS_VP(P6, AlphaBlend, VS_Mesh, PS_NavMesh_Debug)
     PASS_RS_VP(P7, FillModeWireFrame, VS_Mesh, PS_NavMesh_Wireframe)
@@ -185,4 +191,5 @@ technique11 GBufferTech
     PASS_VP(P1, VS_Model, PS_GBuffer)
     PASS_VP(P2, VS_Animation, PS_GBuffer)
     PASS_RS_VP(P3, FillModeWireFrame, VS_Mesh, PS_FOW_DEBUG)
+    PASS_VP(P4, VS_Mesh, PS_FOW_Transparency)
 }

@@ -195,7 +195,7 @@ void Scene::CheckCollision()
     //2. Collider만들 때, obj를 받는다. 
     vector<shared_ptr<BaseCollider>> colliders;
     const auto& objects = m_objectManager->GetObjects();
-    for (auto object : objects) {
+    for (auto& object : objects) {
         if (object->GetCollider() == nullptr)
             continue;
 

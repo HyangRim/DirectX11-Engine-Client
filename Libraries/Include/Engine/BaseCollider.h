@@ -34,13 +34,17 @@ public:
 	void SetOffsetScale(Vec3 _offsetScale) { m_offsetScale = _offsetScale; }
 	Vec3 GetOffsetScale() { return m_offsetScale; }
 
+	void SetVisible(bool _value) { m_DebugObject->SetColliderActive(_value); }
+
 protected:
 	ColliderType m_colliderType;
 
 	uint32 m_id;			//충돌체 고유한 ID값. 
 	bool m_active = true;	//충돌체 활성화 여부. 
+	bool m_visible = true;
 
 	Vec3 m_offSetPos = { 0,0,0 };
 	Vec3 m_offsetScale = { 200, 200, 200 };
+	shared_ptr<GameObject> m_DebugObject;
 };
 

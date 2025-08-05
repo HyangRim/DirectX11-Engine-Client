@@ -27,7 +27,7 @@ AABBBoxCollider::~AABBBoxCollider()
 
 void AABBBoxCollider::Update()
 {
-	
+	m_DebugObject->SetActive(GetGameObject()->GetActive());
 
 	m_boundingBox.Center = GetTransform()->GetPosition() + m_offSetPos;
 	m_boundingBox.Extents = GetTransform()->GetScale() * 0.5f * m_offsetScale;
@@ -57,3 +57,4 @@ bool AABBBoxCollider::Intersects(shared_ptr<BaseCollider>& _other)
 
 	return false;
 }
+
