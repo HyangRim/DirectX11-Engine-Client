@@ -43,7 +43,7 @@ public:
     shared_ptr<Button> GetButton(const wstring& name);
     shared_ptr<Text> GetText(const wstring& name);
     shared_ptr<ImageUI> GetImageUI(const wstring& name);
-
+    
 
     // Getter ÇÔ¼öµé
     const Vec2& GetPosition() const { return m_position; }

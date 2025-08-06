@@ -151,8 +151,6 @@ void RenderManager::RenderMeshRendererForward(vector<shared_ptr<GameObject>>& _g
 
 		const InstanceID instanceID = gameObject->GetMeshRenderer()->GetInstanceID();
 
-		
-
 		// 기존 그룹 찾기
 		auto it = std::find_if(cache.begin(), cache.end(),
 			[instanceID](const auto& pair) { return pair.first == instanceID; });

@@ -106,6 +106,9 @@
     <Filter Include="Scripts\Monster\Wolf\AI">
       <UniqueIdentifier>{6c446041-bb23-469a-965d-515acfe419da}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Player\Nicky\NickyW">
+      <UniqueIdentifier>{36bad6ad-db4a-4648-b3a7-d2dc5cbd27ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -275,6 +278,9 @@
     </ClCompile>
     <ClCompile Include="WolfIdleAI.cpp">
       <Filter>Scripts\Monster\Wolf\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyWSkill.cpp">
+      <Filter>Scripts\Player\Nicky\NickyW</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -448,6 +454,9 @@
     </ClInclude>
     <ClInclude Include="WolfIdleAI.h">
       <Filter>Scripts\Monster\Wolf\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyWSkill.h">
+      <Filter>Scripts\Player\Nicky\NickyW</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

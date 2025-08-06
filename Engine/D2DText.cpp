@@ -266,3 +266,22 @@ void D2DText::UpdatePosition(const Vec2& parentWorldPos)
 
     go->GetTransform()->SetPosition(Vec3(x, y, m_zPos));
 }
+void D2DText::SetVisible(bool visible)
+{
+    m_visible = visible;
+
+    auto go = GetGameObject();
+    if (go) {
+        go->SetActive(visible);
+    }
+}
+
+// D2DText.cpp에서
+InstanceID D2DText::GetInstanceID()
+{
+    // 텍스트 내용이나 GameObject 포인터를 추가하여 고유성 보장
+    return make_pair(
+        (uint64)m_mesh.get(),
+        (uint64)GetGameObject().get()  // GameObject 포인터로 고유성 확보
+    );
+}

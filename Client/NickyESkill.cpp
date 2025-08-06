@@ -48,6 +48,7 @@ NickyESkill::NickyESkill(shared_ptr<Player> _player)
 		m_skillRange->GetTransform()->SetParent(m_playerObject->GetTransform());
 		CURSCENE->Add(m_skillRange);
 	}
+	m_skillImage = RESOURCES->GetOrAddTexture(L"NickyQ", L"..\\Resources\\Textures\\UI\\SkillIcon\\SkillIcon_1033400.png");
 }
 
 NickyESkill::~NickyESkill()

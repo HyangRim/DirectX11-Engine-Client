@@ -29,6 +29,9 @@ public:
     void SetAlpha(float alpha);
     void SetAlignment(TextAlignment alignment);
 
+    void SetVisible(bool visible);
+    bool IsVisible() const { return m_visible; }
+
     // 외곽선 관련 함수들
     void SetOutlineColor(const Vec4& color);
     void SetOutlineWidth(float width);
@@ -60,6 +63,8 @@ public:
     void SetUpdateInterval(float interval) { m_updateInterval = interval; }
     void SetTextDelayed(const wstring& text); // 지연 업데이트
 
+    InstanceID GetInstanceID();
+
 private:
     void CreateTextTexture();
     void UpdateMaterial();
@@ -78,6 +83,8 @@ private:
     TextAlignment m_alignment = TextAlignment::Left;
 
     bool m_needUpdate = true;
+
+    bool m_visible = true;
 
     // 업데이트 제한
     float m_updateInterval = 0.1f;

@@ -14,6 +14,7 @@
 #include "PlayerStateMachine.h"
 
 #include "NickyQSkill.h"
+#include "NickyWSkill.h"
 #include "NickyESkill.h"
 #include "NickyRSkill.h"
 
@@ -197,7 +198,7 @@ void Nicky::InitNickyComponent()
 void Nicky::InitNickySkill()
 {
 	m_skills[0] = make_unique<NickyQSkill>(static_pointer_cast<Player>(shared_from_this()));
-	//m_skills[1] = make_unique<BiancaWSkill>(static_pointer_cast<Player>(shared_from_this()));
+	m_skills[1] = make_unique<NickyWSkill>(static_pointer_cast<Player>(shared_from_this()));
 	m_skills[2] = make_unique<NickyESkill>(static_pointer_cast<Player>(shared_from_this()));
 	m_skills[3] = make_unique<NickyRSkill>(static_pointer_cast<Player>(shared_from_this()));
 }

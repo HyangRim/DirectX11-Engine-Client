@@ -9,6 +9,7 @@ NickyQSkill::NickyQSkill(shared_ptr<Player> _player)
 	: Super(_player, 0)
 {
 	m_skillCooldown = 5.f;
+	m_skillImage = RESOURCES->GetOrAddTexture(L"NickyQ", L"..\\Resources\\Textures\\UI\\SkillIcon\\SkillIcon_1033200.png");
 }
 
 NickyQSkill::~NickyQSkill()

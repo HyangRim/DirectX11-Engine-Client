@@ -50,6 +50,7 @@
     <ClInclude Include="NickyESkill.h" />
     <ClInclude Include="NickyQSkill.h" />
     <ClInclude Include="NickyRSkill.h" />
+    <ClInclude Include="NickyWSkill.h" />
     <ClInclude Include="OrthoGraphicDemo.h" />
     <ClInclude Include="ParticleDemo.h" />
     <ClInclude Include="pch.h" />
@@ -108,6 +109,7 @@
     <ClCompile Include="NickyESkill.cpp" />
     <ClCompile Include="NickyQSkill.cpp" />
     <ClCompile Include="NickyRSkill.cpp" />
+    <ClCompile Include="NickyWSkill.cpp" />
     <ClCompile Include="OrthoGraphicDemo.cpp" />
     <ClCompile Include="ParticleDemo.cpp" />
     <ClCompile Include="pch.cpp">

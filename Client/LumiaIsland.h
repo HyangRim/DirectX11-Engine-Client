@@ -2,6 +2,8 @@
 #include "Engine/Scene.h"
 #include "IExecute.h"
 class GameObject;
+class Player;
+
 class LumiaIsland :
     public Scene
 {
@@ -48,6 +50,7 @@ private:
 	void LoadCharInventoryImages();
 	void CreateCharInventoryPanel();
 
+	void UpdateSkillCoolDown();
 	//=====================UI관련 함수=====================//
 
 
@@ -77,8 +80,9 @@ private:
 
 	// 테스트용
 	shared_ptr<GameObject> m_navMesh;
-	shared_ptr<GameObject> nicky;
-	shared_ptr<GameObject> bianca;
+	
+	shared_ptr<Player> m_player;
+
 
 	int selectedCharacterIdx = 0; //0 : 비앙카 , 1 : 니키
 

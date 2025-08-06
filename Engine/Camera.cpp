@@ -210,6 +210,11 @@ void Camera::SortUIObjects()
         });
 
     for (auto& object : sortedUIObjects) {
+        if (object->GetActive() == false)
+        {
+            continue;
+        }
+
         if (IsCulled(object->GetLayerIndex()))
             continue;
 

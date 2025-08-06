@@ -25,6 +25,9 @@
 #include "NavMesh.h"
 #include "NavMeshAgent.h"
 
+#include "D2DText.h"
+#include "ISkill.h"
+
 const vector<wstring> charStatIconNames = {
 	L"AttackPower",
 	L"SkillAmpRatio",
@@ -35,6 +38,23 @@ const vector<wstring> charStatIconNames = {
 	L"CriticalStrikeChance",
 	L"MoveSpeedRatio"
 };
+
+const vector<wstring> nickySkillIcons = {
+	L"SkillIcon_1033100",
+	L"SkillIcon_1033200",
+	L"SkillIcon_1033300",
+	L"SkillIcon_1033400",
+	L"SkillIcon_1033500"
+};
+
+const vector<wstring> biancaSkillIcons = {
+	L"SkillIcon_1042100",
+	L"SkillIcon_1042200",
+	L"SkillIcon_1042300",
+	L"SkillIcon_1042400",
+	L"SkillIcon_1042500"
+};
+
 
 void LumiaIsland::Start()
 {
@@ -67,9 +87,9 @@ void LumiaIsland::Start()
 	CreateCemeteryBase();
 	CreateCemeteryInterior();
 	CreateCemeteryEnvironment();
-	CreateCharacterNicky();
+	//CreateCharacterNicky();
 	CreateCemeteryItemBox();
-	//CreateCharacterBianca();
+	CreateCharacterBianca();
 	CreateTestDummy();
 	//CreateTestDecal();
 
@@ -153,10 +173,8 @@ void LumiaIsland::Update()
 
 	
 	CheckPickedItemBox();
-	m_duration += DT;
-	// 나중에 텍스트 업데이트
-	m_test->SetTextDelayed(to_wstring(m_duration));  // 지연 업데이트
-
+	
+	UpdateSkillCoolDown();
 }
 
 void LumiaIsland::FixedUpdate()
@@ -1017,6 +1035,7 @@ void LumiaIsland::CreateCharacterNicky()
 
 	selectedCharacterIdx = 1;
 
+	m_player = nicky;
 
 	CURSCENE->Add(nicky);
 }
@@ -1029,6 +1048,9 @@ void LumiaIsland::CreateCharacterBianca()
 	bianca->GetTransform()->SetScale(Vec3(1.f));
 
 	selectedCharacterIdx = 0;
+
+	m_player = bianca;
+
 
 	CURSCENE->Add(bianca);
 }
@@ -1118,7 +1140,7 @@ void LumiaIsland::LoadCharStatIcon()
 		material->SetRenderQueue(RenderQueue::Transparent);
 		material->SetTransparent(true);  // 모든 UI에 추가
 		material->SetRenderingMode(RenderingMode::Forward);
-		};
+	};
 
 	wstring prefixTag = L"Ico_ChaStat_";
 	wstring prefixPath = L"..\\Resources\\Textures\\UI\\CharStatIcon\\";
@@ -1197,7 +1219,54 @@ void LumiaIsland::CreateCharEquipmentPanel()
 
 void LumiaIsland::LoadCharMainImages()
 {
+	shared_ptr<Shader> shader = make_shared<Shader>(L"ImageShader.fx");
 
+	// 모든 UI 머티리얼에 동일한 설정 적용
+	auto SetupUIMaterial = [&](shared_ptr<Material> material) {
+		material->SetShader(shader);
+		material->SetRenderQueue(RenderQueue::Transparent);
+		material->SetTransparent(true);  // 모든 UI에 추가
+		material->SetRenderingMode(RenderingMode::Forward);
+	};
+
+	wstring prefixPath = L"..\\Resources\\Textures\\UI\\SkillIcon\\";
+	vector<wstring> skillTag = { L"P", L"Q", L"W", L"E", L"R"};
+	//니키 스킬 아이콘
+	for (int i = 0; i < nickySkillIcons.size(); i++)
+	{
+		shared_ptr<Material> charSkillIcon = make_shared<Material>();
+		SetupUIMaterial(charSkillIcon);
+
+		wstring tag = L"Nicky" + skillTag[i];
+		wstring path = prefixPath + nickySkillIcons[i] + L".png";
+		auto charSkillIconTexture = RESOURCES->Load<Texture>(tag, path);
+
+		charSkillIcon->SetDiffuseMap(charSkillIconTexture);
+		MaterialDesc& charSkillIconDesc = charSkillIcon->GetMaterialDesc();
+		charSkillIconDesc.ambient = Vec4(1.f);
+		charSkillIconDesc.diffuse = Vec4(1.f);
+		charSkillIconDesc.specular = Vec4(1.f);
+		RESOURCES->Add(tag, charSkillIcon);
+	}
+
+
+	//비앙카 스킬 아이콘
+	for (int i = 0; i < biancaSkillIcons.size(); i++)
+	{
+		shared_ptr<Material> charSkillIcon = make_shared<Material>();
+		SetupUIMaterial(charSkillIcon);
+
+		wstring tag = L"Bianca" + skillTag[i];
+		wstring path = prefixPath + biancaSkillIcons[i] + L".png";
+		auto charSkillIconTexture = RESOURCES->Load<Texture>(tag, path);
+
+		charSkillIcon->SetDiffuseMap(charSkillIconTexture);
+		MaterialDesc& charSkillIconDesc = charSkillIcon->GetMaterialDesc();
+		charSkillIconDesc.ambient = Vec4(1.f);
+		charSkillIconDesc.diffuse = Vec4(1.f);
+		charSkillIconDesc.specular = Vec4(1.f);
+		RESOURCES->Add(tag, charSkillIcon);
+	}
 }
 
 void LumiaIsland::CreateCharMainPanel()
@@ -1212,23 +1281,43 @@ void LumiaIsland::CreateCharMainPanel()
 	m_charMainPanel->SetLayerIndex(LAYER_UI);
 
 
+	wstring characterTag = L"";
+	if (selectedCharacterIdx == 0) characterTag = L"Bianca";
+	else if (selectedCharacterIdx == 1) characterTag = L"Nicky";
 
+	auto imageUI = m_charMainPanel->GetUIPanel()->AddImageUI(Vec2(0, 0), L"ImageUI");
 
-
-	//// 쿨타임 텍스트로 사용 (지연 업데이트)
-	//m_test = panel->AddD2DText(Vec2(0, 0), L"5.0", 24.0f,
-	//	Vec4(1, 1, 0, 1), 1.0f, Vec4(0, 0, 0, 1), 1.0f,
-	//	L"CooldownText");
-
-	// D2DText 추가 (고품질 텍스트)
-	m_test = panel->AddD2DText(Vec2(100, 20), L"D2D 텍스트", 18.0f,
-		Vec4(1, 0.8f, 0, 1), 1.0f, Vec4(1, 1, 1, 0), 2.0f,
-		L"D2DText", TextAlignment::Center);
-
-
-	m_test->SetUpdateInterval(0.1);  // 0.1초마다 업데이트
-
+	vector<wstring> skillTag = { L"Q", L"W", L"E", L"R" };
+	for (int i = 0; i < 4; i++)
+	{
+		shared_ptr<Material> cloneMaterial_skillIcon = RESOURCES->Get<Material>(characterTag + skillTag[i])->Clone();
+		imageUI->AddImageLayer(i, Vec2(128 + 43 * i, 25), Vec2(35, 38), cloneMaterial_skillIcon, 1);
+	}
 	
+	//Q
+	auto textQ = panel->AddD2DText(Vec2(128, 25), L"5", 20.0f,
+		Vec4(1, 0, 0, 1), 1.0f, Vec4(0, 0, 0, 0), 1.0f,
+		L"QSkillCoolDown", TextAlignment::Center);
+	textQ->SetUpdateInterval(1.f);
+
+	//W
+	auto textW = panel->AddD2DText(Vec2(128 + 43 * 1, 25), L"4", 20.0f,
+		Vec4(1, 0, 0, 1), 1.0f, Vec4(0, 0, 0, 0), 1.0f,
+		L"WSkillCoolDown", TextAlignment::Center);
+	textW->SetUpdateInterval(1.f);
+
+	//E
+	auto textE = panel->AddD2DText(Vec2(128 + 43 * 2, 25), L"3", 20.0f,
+		Vec4(1, 0, 0, 1), 1.0f, Vec4(0, 0, 0, 0), 1.0f,
+		L"ESkillCoolDown", TextAlignment::Center);
+	textE->SetUpdateInterval(1.f);
+
+	//R
+	auto textR = panel->AddD2DText(Vec2(128 + 43 * 3, 25), L"2", 20.0f,
+		Vec4(1, 0, 0, 1), 1.0f, Vec4(0, 0, 0, 0), 1.0f,
+		L"RSkillCoolDown", TextAlignment::Center);
+	textR->SetUpdateInterval(1.f);
+
 
 	AddUIObject(m_charMainPanel, true);
 	RegisterUIParent(m_charMainPanel);
@@ -1343,5 +1432,26 @@ void LumiaIsland::CreateTestDummy()
 			obj->GetModelRenderer()->SetPass(1);
 		}
 		CURSCENE->Add(obj);
+	}
+}
+
+
+void LumiaIsland::UpdateSkillCoolDown()
+{
+	vector<shared_ptr<D2DText>> skillCoolDownTextUI;
+	vector<wstring> skillNames = { L"QSkillCoolDown", L"WSkillCoolDown", L"ESkillCoolDown", L"RSkillCoolDown" };
+
+	for (const auto& skillName : skillNames) {
+		skillCoolDownTextUI.push_back(m_charMainPanel->GetUIPanel()->GetD2DText(skillName));
+	}
+
+	for (int i = 0; i < 4; i++) {
+		ISkill* skill = m_player->GetSkill(i);
+		int skillCurCoolDown = (int)(skill->GetCurrentCooldown());
+
+		if (skillCoolDownTextUI[i]) {
+			skillCoolDownTextUI[i]->SetText(to_wstring(skillCurCoolDown));
+			//skillCoolDownTextUI[i]->SetVisible(skillCurCoolDown > 0); // 0이면 숨김, 아니면 표시
+		}
 	}
 }

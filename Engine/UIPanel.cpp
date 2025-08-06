@@ -523,7 +523,8 @@ shared_ptr<D2DText> UIPanel::GetD2DText(const wstring& name)
     if (it != m_namedElements.end()) {
         if (auto child = it->second.lock()) {
             // D2DText는 Text 컴포넌트 슬롯을 사용하므로 동일하게 처리
-            return dynamic_pointer_cast<D2DText>(child->GetFixedComponent(ComponentType::Text));
+           // return dynamic_pointer_cast<D2DText>(child->GetFixedComponent(ComponentType::D2DText));
+            return child->GetD2DText();
         }
     }
     return nullptr;
