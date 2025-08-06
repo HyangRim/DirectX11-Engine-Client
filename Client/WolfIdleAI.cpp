@@ -14,6 +14,9 @@ WolfIdleAI::~WolfIdleAI()
 void WolfIdleAI::Enter()
 {
 	m_Owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::Wait);
+	m_Owner->SetMonsterState(MonsterState::IDLE);
+
+	wcout << L"Enter Idle AI\n";
 }
 
 void WolfIdleAI::Update()

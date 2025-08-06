@@ -147,9 +147,15 @@ void AssimpTool::Start()
 
 	}*/
 	{
-		//shared_ptr<Converter> converter = make_shared<Converter>();
-		//converter->ReadAssetFile(L"Bianca/Bianca_atk.fbx");
-		//converter->ExportAnimationData(L"Bianca2/Bianca_atk");
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		converter->ReadAssetFile(L"wolf/wolf_appearwait_anim.fbx");
+		converter->ExportAnimationData(L"wolf/wolf_appearwait_anim");
+
+	}
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		converter->ReadAssetFile(L"wolf/wolf_appear_anim.fbx");
+		converter->ExportAnimationData(L"wolf/wolf_appear_anim");
 
 	}
 

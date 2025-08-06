@@ -12,5 +12,10 @@ public:
     virtual void Enter() override;
     virtual void Update() override;
     virtual void Exit() override;
+
+
+private:
+    float m_DeathAnimElapsedTime = 0.f;
+    float m_DeathAnimDuration = 1.3f;
 };
 

@@ -17,7 +17,7 @@ void WolfWaitState::Enter(shared_ptr<ModelAnimator> _animator)
     m_idleTime = 0.0f;
     m_isAnimationStarted = true;
 
-    cout << "Wait 상태 진입 - Wait 애니메이션 재생 시작" << endl;
+    cout << "늑대 Wait 상태 진입 - Wait 애니메이션 재생 시작" << endl;
 }
 
 void WolfWaitState::Update(shared_ptr<ModelAnimator> _animator)
@@ -60,10 +60,10 @@ bool WolfWaitState::CanTransitionTo(AnimationStateType _nextState)
     case AnimationStateType::Move:
     case AnimationStateType::BaseAttack:
     case AnimationStateType::Run:
-        return true;
-    case AnimationStateType::Wait:
     case AnimationStateType::Dying:
     case AnimationStateType::Dead:
+        return true;
+    case AnimationStateType::Wait:
         return false;  // 자기 자신으로는 전환 불가
     default:
         return false;

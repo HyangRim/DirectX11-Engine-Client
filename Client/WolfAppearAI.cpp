@@ -15,6 +15,9 @@ void WolfAppearAI::Enter()
 {
 	//늑대 Appear는 처음 자동 실행. AnimationStateType::Appear
 	m_Owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::Appear);
+	m_Owner->SetMonsterState(MonsterState::APPEAR);
+
+	wcout << L"Enter Appear AI\n";
 }
 
 void WolfAppearAI::Update()
