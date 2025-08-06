@@ -14,7 +14,9 @@ enum class AnimationStateType
     Charging,
     Releasing,
     Cooldown,
-    Dead
+    Dead,
+    Dying, //죽은 상태 무한 반복. 
+    Appear
 };
 
 class ModelAnimator;

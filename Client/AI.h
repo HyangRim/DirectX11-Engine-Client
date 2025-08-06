@@ -7,7 +7,9 @@ public:
 	AI(shared_ptr<Monster> _Owner);
 	virtual ~AI();
 public:
+	virtual void Enter() = 0;
 	virtual void Update() = 0;
+	virtual void Exit() = 0;
 
 private:
 	friend class Monster;

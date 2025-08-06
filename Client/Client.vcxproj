@@ -65,6 +65,17 @@
     <ClInclude Include="TextureBufferDemo.h" />
     <ClInclude Include="UITestDemo.h" />
     <ClInclude Include="ViewportDemo.h" />
+    <ClInclude Include="Wolf.h" />
+    <ClInclude Include="WolfAppearAI.h" />
+    <ClInclude Include="WolfAppearState.h" />
+    <ClInclude Include="WolfAttack1State.h" />
+    <ClInclude Include="WolfAttackAI.h" />
+    <ClInclude Include="WolfDeathAI.h" />
+    <ClInclude Include="WolfDeathState.h" />
+    <ClInclude Include="WolfDyingState.h" />
+    <ClInclude Include="WolfIdleAI.h" />
+    <ClInclude Include="WolfRunState.h" />
+    <ClInclude Include="WolfWaitState.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AI.cpp" />
@@ -115,6 +126,17 @@
     <ClCompile Include="TextureBufferDemo.cpp" />
     <ClCompile Include="UITestDemo.cpp" />
     <ClCompile Include="ViewportDemo.cpp" />
+    <ClCompile Include="Wolf.cpp" />
+    <ClCompile Include="WolfAppearAI.cpp" />
+    <ClCompile Include="WolfAppearState.cpp" />
+    <ClCompile Include="WolfAttack1State.cpp" />
+    <ClCompile Include="WolfAttackAI.cpp" />
+    <ClCompile Include="WolfDeathAI.cpp" />
+    <ClCompile Include="WolfDeathState.cpp" />
+    <ClCompile Include="WolfDyingState.cpp" />
+    <ClCompile Include="WolfIdleAI.cpp" />
+    <ClCompile Include="WolfRunState.cpp" />
+    <ClCompile Include="WolfWaitState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Shaders\00. DeferredLighting.fx" />

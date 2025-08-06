@@ -100,6 +100,12 @@
     <Filter Include="Shaders\Bianca">
       <UniqueIdentifier>{79f1bb8a-cdbf-45ef-9394-32db4159a356}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Monster\Wolf">
+      <UniqueIdentifier>{e7a85326-3874-4ad7-bad0-b990cb9e67e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Monster\Wolf\AI">
+      <UniqueIdentifier>{6c446041-bb23-469a-965d-515acfe419da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -236,6 +242,39 @@
     </ClCompile>
     <ClCompile Include="PlayerInterface.cpp">
       <Filter>Scripts\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Wolf.cpp">
+      <Filter>Scripts\Monster\Wolf</Filter>
+    </ClCompile>
+    <ClCompile Include="WolfAppearState.cpp">
+      <Filter>Scripts\Monster\Wolf</Filter>
+    </ClCompile>
+    <ClCompile Include="WolfAttack1State.cpp">
+      <Filter>Scripts\Monster\Wolf</Filter>
+    </ClCompile>
+    <ClCompile Include="WolfDeathState.cpp">
+      <Filter>Scripts\Monster\Wolf</Filter>
+    </ClCompile>
+    <ClCompile Include="WolfDyingState.cpp">
+      <Filter>Scripts\Monster\Wolf</Filter>
+    </ClCompile>
+    <ClCompile Include="WolfRunState.cpp">
+      <Filter>Scripts\Monster\Wolf</Filter>
+    </ClCompile>
+    <ClCompile Include="WolfWaitState.cpp">
+      <Filter>Scripts\Monster\Wolf</Filter>
+    </ClCompile>
+    <ClCompile Include="WolfAppearAI.cpp">
+      <Filter>Scripts\Monster\Wolf\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="WolfAttackAI.cpp">
+      <Filter>Scripts\Monster\Wolf\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="WolfDeathAI.cpp">
+      <Filter>Scripts\Monster\Wolf\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="WolfIdleAI.cpp">
+      <Filter>Scripts\Monster\Wolf\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -376,6 +415,39 @@
     </ClInclude>
     <ClInclude Include="PlayerInterface.h">
       <Filter>Scripts\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Wolf.h">
+      <Filter>Scripts\Monster\Wolf</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfAppearState.h">
+      <Filter>Scripts\Monster\Wolf</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfAttack1State.h">
+      <Filter>Scripts\Monster\Wolf</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfDeathState.h">
+      <Filter>Scripts\Monster\Wolf</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfDyingState.h">
+      <Filter>Scripts\Monster\Wolf</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfRunState.h">
+      <Filter>Scripts\Monster\Wolf</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfWaitState.h">
+      <Filter>Scripts\Monster\Wolf</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfAppearAI.h">
+      <Filter>Scripts\Monster\Wolf\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfAttackAI.h">
+      <Filter>Scripts\Monster\Wolf\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfDeathAI.h">
+      <Filter>Scripts\Monster\Wolf\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfIdleAI.h">
+      <Filter>Scripts\Monster\Wolf\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
