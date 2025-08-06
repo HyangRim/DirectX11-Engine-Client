@@ -5,11 +5,46 @@
 #include "NickyQSkillState.h"
 #include "NavMeshAgent.h"
 
+#include "ModelAnimator.h"
+
 NickyQSkill::NickyQSkill(shared_ptr<Player> _player)
 	: Super(_player, 0)
 {
 	m_skillCooldown = 5.f;
 	m_skillImage = RESOURCES->GetOrAddTexture(L"NickyQ", L"..\\Resources\\Textures\\UI\\SkillIcon\\SkillIcon_1033200.png");
+
+
+	{
+		auto snowShader = make_shared<Shader>(L"GatherBillboard.fx");
+		auto obj = make_shared<GameObject>();
+		obj->SetName(L"Nicky_Charging");
+
+	
+
+		
+		obj->AddComponent(make_shared<SnowBillboard>(Vec3(0, 0, 0), Vec3(1, 1, 1), 50));
+		{
+			// Material
+			{
+				shared_ptr<Material> material = make_shared<Material>();
+				material->SetShader(snowShader);
+				//auto texture = RESOURCES->Load<Texture>(L"Veigar", L"..\\Resources\\Textures\\grass.png");
+				auto texture = RESOURCES->Load<Texture>(L"Veigar", L"..\\Resources\\Textures\\veigar.jpg");
+				material->SetDiffuseMap(texture);
+				MaterialDesc& desc = material->GetMaterialDesc();
+				desc.ambient = Vec4(1.f);
+				desc.diffuse = Vec4(1.f, 0.f, 0.f, 1.f);
+				desc.specular = Vec4(1.f);
+				RESOURCES->Add(L"Veigar", material);
+
+				obj->GetSnowBillboard()->SetMaterial(material);
+				obj->GetSnowBillboard()->SetParticleScale(Vec2(0.6f, 0.4f));
+			}
+		}
+		obj->SetActive(false);
+		m_chargingEffect = obj;
+		CURSCENE->Add(obj);
+	}
 }
 
 NickyQSkill::~NickyQSkill()
@@ -25,11 +60,19 @@ void NickyQSkill::PlaySkill()
 	SOUND->PlaySound(soundString, 1, 0.5f);
 
 	m_skillFlag = true;
+
 }
 
 void NickyQSkill::Update()
 {
 	UpdateSkillCoolDown();
+
+	Vec3 forearmPos = m_playerObject->GetModelAnimator()->GetAnimatedBonePosition(L"Bip001 R Forearm");
+
+	// 월드 좌표계로 변환
+	Vec3 worldPos = Vec3::Transform(forearmPos, m_playerObject->GetTransform()->GetWorldMatrix());
+
+	m_chargingEffect->GetTransform()->SetPosition(worldPos);
 
 	if (m_skillFlag)
 	{
@@ -37,6 +80,7 @@ void NickyQSkill::Update()
 		{
 			SOUND->PlaySound(L"Nicky/Nicky_skill01_Charge.wav", 2, 0.5f);
 
+			m_chargingEffect->SetActive(true);
 			m_bskillStart = true;
 			m_duration = 0.f;
 		}
@@ -48,6 +92,7 @@ void NickyQSkill::Update()
 
 		if (INPUT->GetButtonUp(KEY_TYPE::Q))
 		{
+			m_chargingEffect->SetActive(false);
 			SOUND->StopSound(2);
 			SOUND->PlaySound(L"Nicky/Nicky_skill01_Shoot.wav", 3, 0.5f);
 			m_playerObject->GetNavMeshAgent()->Stop();
@@ -57,6 +102,7 @@ void NickyQSkill::Update()
 
 		if (m_moveFlag)
 		{
+			//cout << "스킬에서의 이동시간 : " << m_moveDuration << endl;
 			if (m_moveElapsedTime <= m_moveDuration && IsFirstAnimationPlaying())
 			{
 				m_moveElapsedTime += DT;
@@ -86,7 +132,10 @@ void NickyQSkill::Update()
 
 void NickyQSkill::CalculateSkillDirection()
 {
-	float range = 10.f;
+	// 차징 시간에 따른 거리 계산 (0~5초 차징을 0~1로 정규화)
+	float chargeRatio = min(m_duration / 5.0f, 1.0f);
+	float range = m_baseRange + (m_maxChargeRange - m_baseRange) * chargeRatio;
+
 
 	POINT mousePos = INPUT->GetMousePos();
 	//::ScreenToClient(GAME->GetGameDesc().hWnd, &mousePos);

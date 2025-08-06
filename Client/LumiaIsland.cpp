@@ -100,7 +100,7 @@ void LumiaIsland::Start()
 
 
 	//Monster Ãß°¡.
-	CreateMonsterWolf(Vec3(15, 18, 9));
+	//CreateMonsterWolf(Vec3(15, 18, 9));
 
 	//====================UI====================//
 	LoadItemBoxImages();
@@ -985,9 +985,10 @@ void LumiaIsland::CreateNavMesh()
 void LumiaIsland::CreateCharacterNicky()
 {
 	shared_ptr<Nicky> nicky = make_shared<Nicky>(m_defaultshader);
+	nicky->SetName(L"Nicky");
 	nicky->GetTransform()->SetPosition(Vec3(15, 18, 5));
 	nicky->GetTransform()->SetScale(Vec3(1.f));
-
+	
 	selectedCharacterIdx = 1;
 
 	m_player = nicky;

@@ -265,7 +265,33 @@ void RenderManager::RenderAnimRendererForward(vector<shared_ptr<GameObject>>& _g
 				AddData(instanceID, data);
 
 				//INSTANCING TWEEN
-				gameObject->GetModelAnimator()->UpdateTweenData();
+				
+
+				/*그림자 렌더링은 :
+
+				깊이 정보만 필요(실제 애니메이션 프레임 변화는 중요하지 않음)
+
+				메인 렌더링과 동일한 트랜스폼 사용하면 충분
+
+				성능 최적화를 위해 불필요한 계산 생략이 바람직
+
+				2. 실제 게임 엔진에서 사용하는 표준 패턴
+				대부분의 상용 게임 엔진들도 이런 방식을 사용합니다 :
+
+				Unity: 그림자 패스에서는 애니메이션 업데이트를 생략하거나 간소화
+
+				Unreal Engine : 그림자 렌더링 시 LOD(Level of Detail) 적용으로 계산량 감소
+
+				CryEngine : 그림자 맵 생성 시 불필요한 컴포넌트 업데이트 생략*/
+
+				//라고 GPT가 그럼
+
+				// 그림자 패스가 아닐 때만 애니메이션 업데이트
+				if (!m_isShadowTech) {
+					gameObject->GetModelAnimator()->UpdateTweenData();
+				}
+
+
 				tweenDesc->tweens[idx] = gameObject->GetModelAnimator()->GetTweenDesc();
 				
 			}

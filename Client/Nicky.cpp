@@ -18,6 +18,8 @@
 #include "NickyESkill.h"
 #include "NickyRSkill.h"
 
+#include "ModelMesh.h"
+
 #include "PlayerInterface.h"
 
 Nicky::Nicky(shared_ptr<Shader> _defaultShader)
@@ -44,6 +46,14 @@ void Nicky::Start()
 void Nicky::Update()
 {
 	Super::Update();
+
+
+	//Vec3 forearmPos = GetModelAnimator()->GetAnimatedBonePosition(L"Bip001 R Forearm");
+
+	//// 월드 좌표계로 변환
+	//Vec3 worldPos = Vec3::Transform(forearmPos, GetTransform()->GetWorldMatrix());
+
+	//cout << "worldPos : " << worldPos.x << " , " << worldPos.y << " , " << worldPos.z << endl;
 }
 
 void Nicky::LateUpdate()
@@ -171,7 +181,7 @@ void Nicky::InitNickyComponent()
 	AddComponent(m_rigidbody);
 	AddComponent(m_navAgent);
 	AddComponent(m_playerStateMachine);
-	//AddComponent(make_shared<FogOfWar>());
+	AddComponent(make_shared<FogOfWar>());
 
 	////PlayerStateMachine 객체가 준비된 이후에 Delegate 등록
 	//m_playerStateMachine->OnSkillUsed += [this](int skillIndex) {

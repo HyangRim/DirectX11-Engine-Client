@@ -27,6 +27,7 @@ void ModelAnimator::Update()
 }
 
 void ModelAnimator::UpdateTweenData()
+
 {
     // 시퀀스 업데이트 (시퀀스 모드일 때만)
     if (m_isSequenceMode)
@@ -295,7 +296,7 @@ void ModelAnimator::UpdateSequence()
 
     float currentAnimDuration = GetCurrentSequenceDuration();
     m_currentSequence->currentTime += DT;
-
+    cout << "이건가 : " << m_currentSequence->currentTime << endl;
     if (m_currentSequence->currentTime >= currentAnimDuration)
     {
         TransitionToNextInSequence();
@@ -305,7 +306,7 @@ void ModelAnimator::UpdateSequence()
 float ModelAnimator::GetCurrentSequenceDuration()
 {
     float currentAnimDuration = m_currentSequence->GetCurrentAnimationDuration();
-
+   
     if (currentAnimDuration < 0.0f)
     {
         const wstring& currentAnimTag = m_currentSequence->animationTags[m_currentSequence->currentIndex];
@@ -667,3 +668,50 @@ float ModelAnimator::GetTimePerFrame(const wstring& animTag, float speed)
     return 1.0f / GetCorrectedFrameRate(animTag, speed);
 }
 
+
+
+
+// ModelAnimator.cpp에 구현
+Vec3 ModelAnimator::GetAnimatedBonePosition(const wstring& boneName)
+{
+    Matrix transform = GetAnimatedBoneTransform(boneName);
+    return Vec3(transform._41, transform._42, transform._43);
+}
+
+Matrix ModelAnimator::GetAnimatedBoneTransform(const wstring& boneName)
+{
+    shared_ptr<ModelBone> bone = m_model->GetBoneByName(boneName);
+    if (!bone)
+        return Matrix::Identity;
+
+    // 현재 애니메이션 태그
+    wstring currentTag = GetCurrentAnimationTag();
+
+    // 현재 프레임과 다음 프레임
+    uint32 currentFrame = m_tweenDesc.m_curr.m_currFrame;
+    uint32 nextFrame = m_tweenDesc.m_curr.m_nextFrame;
+    float ratio = m_tweenDesc.m_curr.m_ratio;
+
+    // 이미 계산된 변환 데이터에서 가져오기
+    auto it = m_animTransform.find(currentTag);
+    if (it == m_animTransform.end())
+        return Matrix::Identity;
+
+    const auto& transforms = it->second.transforms;
+
+    // 프레임 보간
+    Matrix currentTransform = transforms[currentFrame][bone->m_index];
+    Matrix nextTransform = transforms[nextFrame][bone->m_index];
+
+    // 단순 선형 보간 (위치만)
+    Vec3 currentPos(currentTransform._41, currentTransform._42, currentTransform._43);
+    Vec3 nextPos(nextTransform._41, nextTransform._42, nextTransform._43);
+    Vec3 interpolatedPos = Vec3::Lerp(currentPos, nextPos, ratio);
+
+    Matrix result = currentTransform;
+    result._41 = interpolatedPos.x;
+    result._42 = interpolatedPos.y;
+    result._43 = interpolatedPos.z;
+
+    return result;
+}

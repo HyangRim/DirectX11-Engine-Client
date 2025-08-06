@@ -156,7 +156,7 @@ void Model::ReadModel(const wstring& _filename)
         {
             shared_ptr<ModelBone> bone = make_shared<ModelBone>();
             bone->m_index = file->Read<int32>();
-            bone->m_name = Utils::ToWString(file->Read<string>());
+            bone->m_name = Utils::ToWString(file->Read<string>());   
             bone->m_parentIndex = file->Read<int32>();
             bone->m_transform = file->Read<Matrix>();
             //수정사항. 

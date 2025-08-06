@@ -349,6 +349,7 @@ void NickyQSkillState::Exit(shared_ptr<ModelAnimator> animator)
     m_chargeTime = 0.0f;
     m_skillTime = 0.0f;
     m_isReleasing = false;
+
     m_isComplete = false;
     m_isChargingActive = false;
     m_isStartAnimationPlaying = false;

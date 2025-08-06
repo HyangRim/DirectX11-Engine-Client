@@ -29,7 +29,6 @@ void PlayerQState::Enter()
     m_isReleasing = false;
     m_isCharging = true;
 
-
     cout << "PlayerQStateÁøÀÔ\n";
 }
 
@@ -95,7 +94,9 @@ void PlayerQState::ReleaseSkill()
     m_durationTime += DT;
 
     if (m_durationTime >= m_chargeTime)
+    {
         m_isSkillComplete = true;
+    }
 }
 
 void PlayerQState::UpdateNormalSkill()

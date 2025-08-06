@@ -59,12 +59,12 @@ void NickyRSkill::Update()
 			{
 				moveT = 1.0f;
 				m_moveFlag = false; // 이동 완료
-				cout << "R 스킬 이동 완료!" << endl;
+				//cout << "R 스킬 이동 완료!" << endl;
 				SOUND->PlaySound(L"Nicky/Nicky_skill04_Attack.wav", 3, 0.5f);
 				SkillEnd();
 			}
 
-			cout << "진행률 : " << moveT * 100 << "%" << endl;
+			//cout << "진행률 : " << moveT * 100 << "%" << endl;
 			Vec3 curPos = Utils::Lerp(m_startPos, m_targetPos, moveT);
 			m_playerObject->GetTransform()->SetPosition(curPos);
 		}
@@ -72,7 +72,6 @@ void NickyRSkill::Update()
 		{
 			// Rush 애니메이션이 끝났는데 이동 중이면 중지
 			m_moveFlag = false;
-			cout << "Rush 애니메이션 종료로 인한 이동 중지" << endl;
 		}
 	}
 
@@ -103,7 +102,7 @@ void NickyRSkill::CalculateSkillDirection()
 	float distance = Vec3::Distance(m_startPos, m_targetPos);
 	m_moveDuration = distance / m_speed;
 	
-	SetRushDuration(m_moveDuration * 2);
+	SetRushDuration(m_moveDuration);
 
 	m_moveElapsedTime = 0.f;
 	m_moveFlag = true;
@@ -114,10 +113,6 @@ void NickyRSkill::CalculateSkillDirection()
 	Vec3 newRotation = Vec3(currentRotation.x, targetYaw * 180.0f / 3.14159f, currentRotation.z);
 
 	m_playerObject->GetTransform()->SetLocalRotation(newRotation);
-
-	cout << "R 스킬 방향 계산 완료 - 이동거리: " << distance << endl;
-
-	cout << "m_moveElapsedTime : " << m_moveElapsedTime << ", m_moveDuration : " << m_moveDuration << endl;
 }
 
 // 첫 번째 애니메이션이 재생 중인지 확인하는 함수 추가
@@ -126,14 +121,6 @@ bool NickyRSkill::IsRushAnimationPlaying()
 	shared_ptr<AnimationState> curAnimState = m_playerObject->GetAnimationStateMachine()->GetCurrentState2(AnimationStateType::Skill_4);
 
 	return static_pointer_cast<NickyRSkillState>(curAnimState)->IsRushAnimationActive();
-
-	//auto animator = m_playerObject->GetModelAnimator();
-	//if (!animator) return false;
-
-	//wstring currentAnim = animator->GetCurrentAnimationTag();
-
-	//// 시퀀스가 재생 중이고, 현재 애니메이션이 Rush인 경우만 true
-	//return animator->IsSequencePlaying() && currentAnim == L"Skill_01_Rush";
 }
 
 void NickyRSkill::SetRushDuration(float duration)

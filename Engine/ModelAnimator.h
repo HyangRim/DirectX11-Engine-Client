@@ -161,4 +161,12 @@ private:
     unordered_map<wstring, AnimationSequence> m_sequences;
     AnimationSequence* m_currentSequence = nullptr;
     bool m_isSequenceMode = false;
+
+private:
+    bool m_hasUpdatedThisFrame = false;  // 이번 프레임에 업데이트했는지 확인
+    uint32 m_lastUpdateFrame = 0;        // 마지막 업데이트 프레임 번호
+
+public:
+    Vec3 GetAnimatedBonePosition(const wstring& boneName);
+    Matrix GetAnimatedBoneTransform(const wstring& boneName);
 };
