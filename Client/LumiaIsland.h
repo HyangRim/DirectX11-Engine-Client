@@ -79,6 +79,9 @@ private:
 	shared_ptr<GameObject> m_navMesh;
 	shared_ptr<GameObject> nicky;
 	shared_ptr<GameObject> bianca;
+
+	float m_duration = 0.f;
+	shared_ptr<D2DText> m_test;
 };
 
 

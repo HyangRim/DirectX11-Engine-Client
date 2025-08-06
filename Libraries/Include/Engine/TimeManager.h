@@ -12,7 +12,6 @@ public:
 	uint32 GetFps() { return m_fps; }
 	float GetDeltaTime() { return m_deltaTime; }
 	float GetGameTime() { return m_gameTime; }
-
 private:
 	uint64	m_frequency = 0;
 	uint64	m_prevCount = 0;

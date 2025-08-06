@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "Text.h"
+#include "D2DText.h"
 
 class Material;
 class Mesh;
@@ -92,4 +93,15 @@ private:
 private:
     bool m_isDestroying = false;  // 소멸 중 플래그 추가
 
+
+
+
+
+public:
+    shared_ptr<D2DText> AddD2DText(Vec2 localPos, const wstring& text, float fontSize = 16.0f,
+        Vec4 color = Vec4(1, 1, 1, 1), float alpha = 1.0f,
+        Vec4 outlineColor = Vec4(0, 0, 0, 1), float outlineWidth = 1.0f,
+        const wstring& name = L"D2DText",
+        TextAlignment alignment = TextAlignment::Left);
+    shared_ptr<D2DText> GetD2DText(const wstring& name);  // D2DText getter 추가
 };

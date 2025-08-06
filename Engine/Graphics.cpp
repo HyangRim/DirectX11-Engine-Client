@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Graphics.h"
 
+#include "D2DTextRenderer.h"
+
 #define SHADOWMAP_SIZE 4096
 
 Graphics::~Graphics()
@@ -36,7 +38,7 @@ Graphics::~Graphics()
 	if (m_device != nullptr)
 		m_device.Reset();
 
-
+	D2DTextRenderer::DestroyInstance();
 }
 
 void Graphics::Init(HWND hwnd)
@@ -50,6 +52,9 @@ void Graphics::Init(HWND hwnd)
 
 	CreateGBuffer();
 	CreateFullScreenQuad();
+
+	// D2D 초기화 (마지막에 추가)
+	D2DTextRenderer::GetInstance(); // 싱글톤 초기화
 
 	SetViewport(GAME->GetGameDesc().width, GAME->GetGameDesc().height);
 }

@@ -454,6 +454,9 @@ void UIPanel::UpdateChildPositions()
             {
                 ImageUI->UpdatePosition(panelLeftTop);
             }
+            else if (auto d2dText = dynamic_pointer_cast<D2DText>(child->GetFixedComponent(ComponentType::Text))) {
+                d2dText->UpdatePosition(panelLeftTop);
+            }
 
             ++it;
         }
@@ -473,3 +476,55 @@ Vec2 UIPanel::LocalToWorldPosition(const Vec2& localPos)
     return worldPos;
 }
 
+
+shared_ptr<D2DText> UIPanel::AddD2DText(Vec2 localPos, const wstring& text, float fontSize,
+    Vec4 color, float alpha, Vec4 outlineColor, float outlineWidth, const wstring& name,
+    TextAlignment alignment)
+{
+    // D2DText GameObject 생성
+    auto d2dTextObj = make_shared<GameObject>();
+    d2dTextObj->SetName(name);
+
+    // D2DText 컴포넌트 추가
+    auto d2dTextComponent = make_shared<D2DText>();
+    d2dTextObj->AddComponent(d2dTextComponent);
+
+    // 월드 좌표로 변환하여 텍스트 생성
+    Vec2 worldPos = LocalToWorldPosition(localPos);
+
+    d2dTextComponent->Create(worldPos, text, fontSize, color, alpha, outlineColor, outlineWidth, alignment);
+
+    // 로컬 위치 저장
+    d2dTextComponent->SetLocalPosition(localPos);
+
+    // Z 위치를 패널보다 앞쪽으로 설정
+    d2dTextObj->GetTransform()->SetPosition(Vec3(
+        d2dTextObj->GetTransform()->GetPosition().x,
+        d2dTextObj->GetTransform()->GetPosition().y,
+        Z_TEXT  // 버튼보다도 앞쪽 (기존 Text와 같은 깊이)
+    ));
+
+    d2dTextObj->SetLayerIndex(LAYER_UI);
+
+    // 자식 요소로 등록 (weak_ptr 사용)
+    m_childElements.push_back(d2dTextObj);
+    m_namedElements[name] = d2dTextObj;
+
+    // **UI 객체로 씬에 추가 (자식으로 등록)**
+    CURSCENE->AddUIObject(d2dTextObj, false);  // false = 자식
+    CURSCENE->RegisterUIChild(d2dTextObj);
+
+    return d2dTextComponent;
+}
+
+shared_ptr<D2DText> UIPanel::GetD2DText(const wstring& name)
+{
+    auto it = m_namedElements.find(name);
+    if (it != m_namedElements.end()) {
+        if (auto child = it->second.lock()) {
+            // D2DText는 Text 컴포넌트 슬롯을 사용하므로 동일하게 처리
+            return dynamic_pointer_cast<D2DText>(child->GetFixedComponent(ComponentType::Text));
+        }
+    }
+    return nullptr;
+}

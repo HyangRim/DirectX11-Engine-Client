@@ -20,6 +20,7 @@ enum class ComponentType : uint8 {
 	ParticleSystem,
 	Rigidbody,
 	Text,
+	D2DText,
 	UIPanel,
 	TextButton,
 	Image,
