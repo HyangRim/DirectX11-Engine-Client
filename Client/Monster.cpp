@@ -55,12 +55,10 @@ void Monster::ChangeState(wstring&& _key)
 	m_curAI->Enter();
 }
 
-void Monster::Damaged(int _damage)
+void Monster::Damaged(int _damage, shared_ptr<Player> _player)
 {
 	if (m_monsterStatus.hp <= 0)
 		return;
 
-	//데미지 받는 조합식. 
-
-	SetMonsterState(MonsterState::ATTACK);
 }
+

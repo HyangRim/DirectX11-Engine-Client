@@ -11,9 +11,8 @@ public:
 	virtual void Update() = 0;
 	virtual void Exit() = 0;
 
-private:
+protected:
 	friend class Monster;
-
 	shared_ptr<Monster> m_Owner;
 };
 
