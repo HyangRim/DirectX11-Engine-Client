@@ -2,9 +2,9 @@
 <Materials>
     <Material>
         <Name>DefaultMaterial</Name>
-        <DiffuseFile></DiffuseFile>
-        <SpecularFile></SpecularFile>
-        <NormalFile></NormalFile>
+        <DiffuseFile>FX_BI_Nicky_Range_01_S005.png</DiffuseFile>
+        <SpecularFile>FX_BI_Nicky_Range_01_S005.png</SpecularFile>
+        <NormalFile>FX_BI_Nicky_Range_01_S005.png</NormalFile>
         <Ambient R="0" G="0" B="0" A="1"/>
         <Diffuse R="0.80000001" G="0.80000001" B="0.80000001" A="1"/>
         <Specular R="0" G="0" B="0" A="1"/>
