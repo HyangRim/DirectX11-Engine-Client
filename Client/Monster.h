@@ -6,6 +6,7 @@ class Item;
 class AI;
 
 enum class MonsterState {
+    APPEAR,
     IDLE,
     RUN,
     ATTACK,
@@ -50,6 +51,8 @@ public:
     void SetMonsterState(MonsterState _state) { m_monsterState = _state; }
     MonsterState GetMonsterState() { return m_monsterState; }
 
+    shared_ptr<Player> GetTarget() { return m_targetPlayer; }
+
     void SetLevel(int _value) { m_monsterStatus.level = _value; }
     void SetMaxHP(int32 _value) { m_monsterStatus.maxHp = _value; }
     void SetHP(int32 _value) { m_monsterStatus.hp = _value; }
@@ -58,11 +61,11 @@ public:
     void SetHitSpeed(float _value) { m_monsterStatus.hitSpeed = _value; }
     void SetMoveSpeed(float _value) { m_monsterStatus.moveSpeed = _value; }
 
-   
     void ChangeState(shared_ptr<AI> _nextAI);
     void ChangeState(wstring&& _key);
 
-    void Damaged(int _damage);
+    virtual void Damaged(int _damage, shared_ptr<Player> _player);
+
 protected:
     //아이템 보유 가능. 죽을 시 열어볼 수 있음. 
     array<shared_ptr<Item>, 8> m_inventory;

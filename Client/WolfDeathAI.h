@@ -3,13 +3,14 @@
 class WolfDeathAI :
     public AI
 {
+    using Super = AI;
 public:
-	WolfDeathAI();
+	WolfDeathAI(shared_ptr<Monster> _Owner);
 	virtual ~WolfDeathAI();
 
 public:
-	virtual void Enter() = 0;
-	virtual void Update() = 0;
-	virtual void Exit() = 0;
+    virtual void Enter() override;
+    virtual void Update() override;
+    virtual void Exit() override;
 };
 

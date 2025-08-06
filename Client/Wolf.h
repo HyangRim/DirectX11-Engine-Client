@@ -20,6 +20,9 @@ public:
     virtual void OnCollisionExit(shared_ptr<GameObject> _other) = 0;
 
 private:
+    void UpdateState();
+
+private:
     void InitWolfModel();
     void InitWolfAnimation();
     void InitWolfComponent();

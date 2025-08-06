@@ -16,6 +16,7 @@
 
 Wolf::Wolf()
 {
+	m_monsterState = MonsterState::APPEAR;
 }
 
 Wolf::~Wolf()
@@ -30,6 +31,8 @@ void Wolf::Start()
 void Wolf::Update()
 {
 	Super::Update();
+
+	UpdateState();
 }
 
 void Wolf::LateUpdate()
@@ -42,6 +45,22 @@ void Wolf::FixedUpdate()
 	Super::FixedUpdate();
 }
 
+
+void Wolf::UpdateState()
+{
+	if (m_monsterState == MonsterState::IDLE) {
+
+	}
+	else if (m_monsterState == MonsterState::RUN) {
+
+	}
+	else if (m_monsterState == MonsterState::ATTACK) {
+
+	}
+	else if (m_monsterState == MonsterState::DIE) {
+
+	}
+}
 
 void Wolf::InitWolfModel()
 {
@@ -108,10 +127,12 @@ void Wolf::InitWolfComponent()
 
 void Wolf::InitWolfAI()
 {
-	/*auto appearAI = make_shared<WolfAppearAI>();
-	auto attackAI = make_shared<WolfAttackAI>();
-	auto deathAI = make_shared<WolfDeathAI>();
-	auto idleAI = make_shared<WolfIdleAI>();
+	auto sharedThis = dynamic_pointer_cast<Monster>(shared_from_this());
+
+	auto appearAI = make_shared<WolfAppearAI>(sharedThis);
+	auto attackAI = make_shared<WolfAttackAI>(sharedThis);
+	auto deathAI = make_shared<WolfDeathAI>(sharedThis);
+	auto idleAI = make_shared<WolfIdleAI>(sharedThis);
 
 	m_AIMap[L"Appear"] = appearAI;
 	m_AIMap[L"Attack"] = attackAI;
@@ -119,7 +140,7 @@ void Wolf::InitWolfAI()
 	m_AIMap[L"Idle"] = idleAI;
 
 	m_curAI = appearAI;
-	m_curAI->Enter();*/
+	m_curAI->Enter();
 }
 
 void Wolf::InitWolfStats()

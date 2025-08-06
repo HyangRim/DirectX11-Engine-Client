@@ -3,13 +3,18 @@
 class WolfAppearAI :
     public AI
 {
+    using Super = AI;
 public:
-    WolfAppearAI();
+    WolfAppearAI(shared_ptr<Monster> _Owner);
     virtual ~WolfAppearAI();
 
 public:
-    virtual void Enter() = 0;
-    virtual void Update() = 0;
-    virtual void Exit() = 0;
+    virtual void Enter() override;
+    virtual void Update() override;
+    virtual void Exit() override;
+
+private:
+    float m_AppearAnimElapsedTime = 0.f;
+    float m_AppearAnimDuration = 1.5f;
 };
 
