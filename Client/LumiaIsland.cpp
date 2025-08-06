@@ -970,6 +970,7 @@ void LumiaIsland::CreateCharacterNicky()
 	nicky->GetTransform()->SetPosition(Vec3(15, 18, 5));
 	nicky->GetTransform()->SetScale(Vec3(1.f));
 
+	selectedCharacterIdx = 1;
 
 
 	CURSCENE->Add(nicky);
@@ -981,6 +982,9 @@ void LumiaIsland::CreateCharacterBianca()
 	shared_ptr<Bianca> bianca = make_shared<Bianca>(m_defaultshader);
 	bianca->GetTransform()->SetPosition(Vec3(15, 18, 5));
 	bianca->GetTransform()->SetScale(Vec3(1.f));
+
+	selectedCharacterIdx = 0;
+
 	CURSCENE->Add(bianca);
 }
 
@@ -1174,6 +1178,8 @@ void LumiaIsland::CreateCharMainPanel()
 
 
 
+
+
 	//// 쿨타임 텍스트로 사용 (지연 업데이트)
 	//m_test = panel->AddD2DText(Vec2(0, 0), L"5.0", 24.0f,
 	//	Vec4(1, 1, 0, 1), 1.0f, Vec4(0, 0, 0, 1), 1.0f,
@@ -1185,7 +1191,7 @@ void LumiaIsland::CreateCharMainPanel()
 		L"D2DText", TextAlignment::Center);
 
 
-	m_test->SetUpdateInterval(0.001);  // 0.1초마다 업데이트
+	m_test->SetUpdateInterval(0.1);  // 0.1초마다 업데이트
 
 	
 

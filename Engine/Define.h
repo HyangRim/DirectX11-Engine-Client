@@ -28,6 +28,7 @@ public:										\
 #define GUI			GET_SINGLE(ImGuiManager)
 #define SCENE		GET_SINGLE(SceneManager)
 #define SOUND		GET_SINGLE(SoundManager)
+#define D2DTEXTR	GET_SINGLE(D2DTextRenderer)
 
 #define CURSCENE	SCENE->GetCurScene()
 #define CUR_SCENE	SCENE->GetCurScene()

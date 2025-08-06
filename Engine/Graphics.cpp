@@ -38,7 +38,7 @@ Graphics::~Graphics()
 	if (m_device != nullptr)
 		m_device.Reset();
 
-	D2DTextRenderer::DestroyInstance();
+	//D2DTextRenderer::DestroyInstance();
 }
 
 void Graphics::Init(HWND hwnd)
@@ -54,7 +54,8 @@ void Graphics::Init(HWND hwnd)
 	CreateFullScreenQuad();
 
 	// D2D ÃÊ±âÈ­ (¸¶Áö¸·¿¡ Ãß°¡)
-	D2DTextRenderer::GetInstance(); // ½Ì±ÛÅæ ÃÊ±âÈ­
+	//D2DTextRenderer::GetInstance(); // ½Ì±ÛÅæ ÃÊ±âÈ­
+
 
 	SetViewport(GAME->GetGameDesc().width, GAME->GetGameDesc().height);
 }
