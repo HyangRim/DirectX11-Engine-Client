@@ -18,6 +18,7 @@
 #include "Renderer.h"
 #include "Rigidbody.h"
 #include "Text.h"
+#include "D2DText.h"
 #include "UIPanel.h"
 #include "ImageUI.h"
 #include "AABBBoxCollider.h"
@@ -213,6 +214,12 @@ shared_ptr<Text> GameObject::GetText()
 {
 	shared_ptr<Component> component = GetFixedComponent(ComponentType::Text);
 	return static_pointer_cast<Text>(component);
+}
+
+shared_ptr<D2DText> GameObject::GetD2DText()
+{
+	shared_ptr<Component> component = GetFixedComponent(ComponentType::D2DText);
+	return static_pointer_cast<D2DText>(component);
 }
 
 shared_ptr<UIPanel> GameObject::GetUIPanel()

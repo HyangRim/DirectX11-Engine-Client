@@ -19,6 +19,7 @@ class ParticleSystem;
 class Renderer;
 class Rigidbody;
 class Text;
+class D2DText;
 class UIPanel;
 class ImageUI;
 class AnimationStateMachine;
@@ -65,6 +66,7 @@ public:
 	shared_ptr<ParticleSystem> GetParticleSystem();
 	shared_ptr<Rigidbody> GetRigidbody();
 	shared_ptr<Text> GetText();
+	shared_ptr<D2DText> GetD2DText();
 	shared_ptr<UIPanel> GetUIPanel();
 	shared_ptr<ImageUI> GetImageUI();
 	shared_ptr<AnimationStateMachine> GetAnimationStateMachine();
@@ -72,6 +74,7 @@ public:
 	shared_ptr<NavMeshAgent> GetNavMeshAgent();
 	shared_ptr<ScrollView> GetScrollView();
 	shared_ptr<PlayerStateMachine> GetPlayerStateMachine();
+
 
 	void AddComponent(shared_ptr<Component> _component);
 

@@ -67,9 +67,9 @@ void LumiaIsland::Start()
 	CreateCemeteryBase();
 	CreateCemeteryInterior();
 	CreateCemeteryEnvironment();
-	//CreateCharacterNicky();
+	CreateCharacterNicky();
 	CreateCemeteryItemBox();
-	CreateCharacterBianca();
+	//CreateCharacterBianca();
 	CreateTestDummy();
 	//CreateTestDecal();
 
@@ -153,6 +153,10 @@ void LumiaIsland::Update()
 
 	
 	CheckPickedItemBox();
+	m_duration += DT;
+	// 나중에 텍스트 업데이트
+	m_test->SetTextDelayed(to_wstring(m_duration));  // 지연 업데이트
+
 }
 
 void LumiaIsland::FixedUpdate()
@@ -1202,6 +1206,23 @@ void LumiaIsland::CreateCharMainPanel()
 
 	panel->Create(Vec2(615.f, 768 - 57), Vec2(414, 115), nullptr);
 	m_charMainPanel->SetLayerIndex(LAYER_UI);
+
+
+
+	//// 쿨타임 텍스트로 사용 (지연 업데이트)
+	//m_test = panel->AddD2DText(Vec2(0, 0), L"5.0", 24.0f,
+	//	Vec4(1, 1, 0, 1), 1.0f, Vec4(0, 0, 0, 1), 1.0f,
+	//	L"CooldownText");
+
+	// D2DText 추가 (고품질 텍스트)
+	m_test = panel->AddD2DText(Vec2(100, 20), L"D2D 텍스트", 18.0f,
+		Vec4(1, 0.8f, 0, 1), 1.0f, Vec4(1, 1, 1, 0), 2.0f,
+		L"D2DText", TextAlignment::Center);
+
+
+	m_test->SetUpdateInterval(0.001);  // 0.1초마다 업데이트
+
+	
 
 	AddUIObject(m_charMainPanel, true);
 	RegisterUIParent(m_charMainPanel);

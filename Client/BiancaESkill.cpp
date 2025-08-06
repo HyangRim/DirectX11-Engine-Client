@@ -130,6 +130,8 @@ void BiancaESkill::Update()
 
 		float distance = Vec3::Distance(m_startPos, m_targetPos);
 		m_moveDuration = distance / m_speed;
+
+		
 		m_moveElapsedTime = 0.f;
 		// 회전 계산 및 적용
 		float targetYaw = atan2(XMVectorGetX(direction), XMVectorGetZ(direction)) + 3.141592f; //3.141592 더해야 방향 제대로 됨
