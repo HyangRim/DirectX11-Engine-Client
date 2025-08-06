@@ -108,7 +108,7 @@ void Wolf::InitWolfComponent()
 
 void Wolf::InitWolfAI()
 {
-	auto appearAI = make_shared<WolfAppearAI>();
+	/*auto appearAI = make_shared<WolfAppearAI>();
 	auto attackAI = make_shared<WolfAttackAI>();
 	auto deathAI = make_shared<WolfDeathAI>();
 	auto idleAI = make_shared<WolfIdleAI>();
@@ -119,7 +119,7 @@ void Wolf::InitWolfAI()
 	m_AIMap[L"Idle"] = idleAI;
 
 	m_curAI = appearAI;
-	m_curAI->Enter();
+	m_curAI->Enter();*/
 }
 
 void Wolf::InitWolfStats()

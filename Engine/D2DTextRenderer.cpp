@@ -2,28 +2,28 @@
 #include "D2DTextRenderer.h"
 #include "Texture.h"
 
-D2DTextRenderer* D2DTextRenderer::s_instance = nullptr;
+//D2DTextRenderer* D2DTextRenderer::s_instance = nullptr;
 map<wstring, weak_ptr<Texture>> D2DTextRenderer::s_textureCache;
 
-D2DTextRenderer* D2DTextRenderer::GetInstance()
-{
-    if (!s_instance) {
-        s_instance = new D2DTextRenderer();
-        s_instance->Initialize();
-    }
-    return s_instance;
-}
+//D2DTextRenderer* D2DTextRenderer::GetInstance()
+//{
+//    if (!s_instance) {
+//        s_instance = new D2DTextRenderer();
+//        s_instance->Initialize();
+//    }
+//    return s_instance;
+//}
 
-void D2DTextRenderer::DestroyInstance()
-{
-    if (s_instance) {
-        s_instance->Shutdown();
-        delete s_instance;
-        s_instance = nullptr;
-    }
-}
+//void D2DTextRenderer::DestroyInstance()
+//{
+//    if (s_instance) {
+//        s_instance->Shutdown();
+//        delete s_instance;
+//        s_instance = nullptr;
+//    }
+//}
 
-bool D2DTextRenderer::Initialize()
+bool D2DTextRenderer::Init()
 {
     HRESULT hr = S_OK;
 

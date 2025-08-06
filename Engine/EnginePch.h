@@ -93,6 +93,7 @@ using namespace Microsoft::WRL;
 #include "ImGuiManager.h"
 #include "RenderManager.h"
 #include "SceneManager.h"
+#include "D2DTextRenderer.h"
 
 
 // Engine

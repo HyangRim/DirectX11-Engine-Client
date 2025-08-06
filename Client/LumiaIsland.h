@@ -80,6 +80,8 @@ private:
 	shared_ptr<GameObject> nicky;
 	shared_ptr<GameObject> bianca;
 
+	int selectedCharacterIdx = 0; //0 : 비앙카 , 1 : 니키
+
 	float m_duration = 0.f;
 	shared_ptr<D2DText> m_test;
 };

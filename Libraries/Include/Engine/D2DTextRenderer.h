@@ -11,8 +11,10 @@
 
 class D2DTextRenderer
 {
+    DECLARE_SINGLE(D2DTextRenderer);
+
 private:
-    static D2DTextRenderer* s_instance;
+    //static D2DTextRenderer* s_instance;
 
     ComPtr<ID2D1Factory> m_d2dFactory;
     ComPtr<IDWriteFactory> m_writeFactory;
@@ -26,10 +28,10 @@ private:
     static const int MAX_CACHE_SIZE = 100;
 
 public:
-    static D2DTextRenderer* GetInstance();
-    static void DestroyInstance();
+    //static D2DTextRenderer* GetInstance();
+    //static void DestroyInstance();
 
-    bool Initialize();
+    bool Init();
     void Shutdown();
 
     // 텍스처 생성 (캐싱 지원)

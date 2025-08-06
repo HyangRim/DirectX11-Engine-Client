@@ -29,6 +29,7 @@ WPARAM Game::Run(GameDesc& desc)
 	RESOURCES->Init();
 	SOUND->Init();
 	RENDER->Init();
+	D2DTEXTR->Init();
 	
 	////_desc.app->Init();
 	//  // 초기 씬 설정
