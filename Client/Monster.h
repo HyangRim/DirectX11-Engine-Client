@@ -1,9 +1,17 @@
 #pragma once
 #include "GameObject.h"
 
-
+class Player;
 class Item;
 class AI;
+
+enum class MonsterState {
+    IDLE,
+    RUN,
+    ATTACK,
+    SKILL,
+    DIE
+};
 
 struct MonsterStatus {
     int level = 1;
@@ -39,6 +47,9 @@ public:
 public:
     MonsterStatus& GetMonsterStatus() { return m_monsterStatus; }
 
+    void SetMonsterState(MonsterState _state) { m_monsterState = _state; }
+    MonsterState GetMonsterState() { return m_monsterState; }
+
     void SetLevel(int _value) { m_monsterStatus.level = _value; }
     void SetMaxHP(int32 _value) { m_monsterStatus.maxHp = _value; }
     void SetHP(int32 _value) { m_monsterStatus.hp = _value; }
@@ -47,8 +58,28 @@ public:
     void SetHitSpeed(float _value) { m_monsterStatus.hitSpeed = _value; }
     void SetMoveSpeed(float _value) { m_monsterStatus.moveSpeed = _value; }
 
-private:
+   
+    void ChangeState(shared_ptr<AI> _nextAI);
+    void ChangeState(wstring&& _key);
+
+    void Damaged(int _damage);
+protected:
+    //아이템 보유 가능. 죽을 시 열어볼 수 있음. 
+    array<shared_ptr<Item>, 8> m_inventory;
+
+    //모델, 애니메이터
+    shared_ptr<Model> m_model;
+    shared_ptr<Rigidbody> m_rigidbody;
+    shared_ptr<SphereCollider> m_collider;
+    shared_ptr<NavMeshAgent> m_navAgent;
+    shared_ptr<Shader> m_defaultShader;
+
     MonsterStatus m_monsterStatus;
-    shared_ptr<AI> m_ai;
+    MonsterState m_monsterState;
+
+    shared_ptr<Player> m_targetPlayer;
+
+    shared_ptr<AI> m_curAI;
+    unordered_map<wstring, shared_ptr<AI>> m_AIMap;
 };
 

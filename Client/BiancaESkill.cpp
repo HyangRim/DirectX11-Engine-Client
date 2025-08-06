@@ -167,6 +167,7 @@ void BiancaESkill::Update()
 			//////아직 구현 X
 
 			m_circle->DamageFlag(false);
+			m_playerObject->GetNavMeshAgent()->Stop();
 			SkillEnd();
 			//m_circle->SetActive(false);
 			m_endFlag = true;
