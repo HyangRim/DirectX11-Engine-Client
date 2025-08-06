@@ -5,7 +5,7 @@ class Wolf :
 {
     using Super = Monster;
 public:
-    Wolf();
+    Wolf(shared_ptr<Shader> _shader);
     virtual ~Wolf();
 
 public:
@@ -15,9 +15,9 @@ public:
     virtual void FixedUpdate() override;
 
     //Collision ฐüทร
-    virtual void OnCollision(shared_ptr<GameObject> _other) = 0;
-    virtual void OnCollisionEnter(shared_ptr<GameObject> _other) = 0;
-    virtual void OnCollisionExit(shared_ptr<GameObject> _other) = 0;
+    virtual void OnCollision(shared_ptr<GameObject> _other) override;
+    virtual void OnCollisionEnter(shared_ptr<GameObject> _other) override;
+    virtual void OnCollisionExit(shared_ptr<GameObject> _other) override;
 
 private:
     void UpdateState();

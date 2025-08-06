@@ -22,6 +22,8 @@
 #include "NickyWaitState.h"
 #include "NickyWSkillState.h"
 
+#include "Wolf.h"
+
 #include "NavMesh.h"
 #include "NavMeshAgent.h"
 
@@ -96,56 +98,9 @@ void LumiaIsland::Start()
 	// NavMesh 생성 추가
 	CreateNavMesh();
 
-	// Billboard
-	{
-		auto snowShader = make_shared<Shader>(L"GatherBillboard.fx");
-		auto obj = make_shared<GameObject>();
-		obj->SetType(OBJECTTYPE::MAP);
-		obj->GetTransform()->SetLocalPosition(Vec3(15, 20, 5));
-		obj->AddComponent(make_shared<SnowBillboard>(Vec3(15, 0, 5), Vec3(3, 3, 3), 50));
-		{
-			// Material
-			{
-				shared_ptr<Material> material = make_shared<Material>();
-				material->SetShader(snowShader);
-				//auto texture = RESOURCES->Load<Texture>(L"Veigar", L"..\\Resources\\Textures\\grass.png");
-				auto texture = RESOURCES->Load<Texture>(L"Veigar", L"..\\Resources\\Textures\\veigar.jpg");
-				material->SetDiffuseMap(texture);
-				MaterialDesc& desc = material->GetMaterialDesc();
-				desc.ambient = Vec4(1.f);
-				desc.diffuse = Vec4(1.f);
-				desc.specular = Vec4(1.f);
-				RESOURCES->Add(L"Veigar", material);
 
-				obj->GetSnowBillboard()->SetMaterial(material);
-				obj->GetSnowBillboard()->SetParticleScale(Vec2(0.3f, 0.3f));
-			}
-		}
-
-		Add(obj);
-	}
-
-
-	//{
-	//	auto obj = make_shared<GameObject>();
-	//	obj->SetName(L"CONE");
-	//	//obj->SetType(OBJECTTYPE::MAP);
-	//	obj->GetTransform()->SetLocalPosition(Vec3(15.f, 20.f, 25.f));
-	//	obj->GetTransform()->SetScale(Vec3(1.f));
-	//	obj->AddComponent(make_shared<MeshRenderer>());
-	//	{
-	//		obj->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"default"));
-	//	}
-	//	{
-	//		auto mesh = RESOURCES->Get<Mesh>(L"Cone");
-	//		obj->GetMeshRenderer()->SetMesh(mesh);
-	//		obj->GetMeshRenderer()->SetPass(0);
-	//	}
-	//	obj->AddComponent(make_shared<AABBBoxCollider>());
-	//	Add(obj);
-	//}
-
-
+	//Monster 추가.
+	CreateMonsterWolf(Vec3(15, 18, 9));
 
 	//====================UI====================//
 	LoadItemBoxImages();
@@ -1053,6 +1008,16 @@ void LumiaIsland::CreateCharacterBianca()
 
 
 	CURSCENE->Add(bianca);
+}
+
+void LumiaIsland::CreateMonsterWolf(Vec3 _pos)
+{
+	shared_ptr<Wolf> wolf = make_shared<Wolf>(m_defaultshader);
+
+	wolf->GetTransform()->SetPosition(_pos);
+	wolf->GetTransform()->SetScale(Vec3(1.f));
+	CURSCENE->Add(wolf);
+
 }
 
 void LumiaIsland::LoadItemBoxImages()

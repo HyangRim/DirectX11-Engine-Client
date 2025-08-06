@@ -3,7 +3,8 @@
 #include "AI.h"
 #include "Item.h"
 
-Monster::Monster()
+Monster::Monster(shared_ptr<Shader> _shader)
+	: m_defaultShader(_shader)
 {
 	SetType(OBJECTTYPE::MONSTER);
 }
@@ -16,6 +17,7 @@ Monster::~Monster()
 
 void Monster::Start()
 {
+	Super::Start();
 }
 
 void Monster::Update()
@@ -23,14 +25,17 @@ void Monster::Update()
 	if (m_curAI != nullptr) {
 		m_curAI->Update();
 	}
+	Super::Update();
 }
 
 void Monster::LateUpdate()
 {
+	Super::LateUpdate();
 }
 
 void Monster::FixedUpdate()
 {
+	Super::FixedUpdate();
 }
 
 void Monster::ChangeState(shared_ptr<AI> _nextAI)

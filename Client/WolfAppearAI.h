@@ -16,5 +16,6 @@ public:
 private:
     float m_AppearAnimElapsedTime = 0.f;
     float m_AppearAnimDuration = 1.5f;
+
 };
 

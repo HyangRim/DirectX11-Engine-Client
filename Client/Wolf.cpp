@@ -14,8 +14,10 @@
 #include "WolfDeathAI.h"
 #include "WolfIdleAI.h"
 
-Wolf::Wolf()
+Wolf::Wolf(shared_ptr<Shader> _shader)
+	: Super(_shader)
 {
+	SetName(L"Wolf");
 	m_monsterState = MonsterState::APPEAR;
 }
 
@@ -25,14 +27,32 @@ Wolf::~Wolf()
 
 void Wolf::Start()
 {
+	InitWolfModel();
+	InitWolfAnimation();
+	InitWolfComponent();
+	InitWolfAI();
+	InitWolfStats();
+	UpdateState();
+
 	Super::Start();
 }
 
 void Wolf::Update()
 {
-	Super::Update();
 
-	UpdateState();
+	if (INPUT->GetButtonDown(KEY_TYPE::KEY_5)) {
+		ChangeState(L"Appear");
+	}
+	else if (INPUT->GetButtonDown(KEY_TYPE::KEY_6)) {
+		ChangeState(L"Idle");
+	}
+	else if (INPUT->GetButtonDown(KEY_TYPE::KEY_7)) {
+		ChangeState(L"Attack");
+	}
+	else if (INPUT->GetButtonDown(KEY_TYPE::KEY_8)) {
+		ChangeState(L"Death");
+	}
+	Super::Update();
 }
 
 void Wolf::LateUpdate()
@@ -43,6 +63,18 @@ void Wolf::LateUpdate()
 void Wolf::FixedUpdate()
 {
 	Super::FixedUpdate();
+}
+
+void Wolf::OnCollision(shared_ptr<GameObject> _other)
+{
+}
+
+void Wolf::OnCollisionEnter(shared_ptr<GameObject> _other)
+{
+}
+
+void Wolf::OnCollisionExit(shared_ptr<GameObject> _other)
+{
 }
 
 
@@ -78,8 +110,8 @@ void Wolf::InitWolfAnimation()
 	m_model->ReadAnimation(L"Death", L"wolf/wolf_death_anim");
 	m_model->ReadAnimation(L"Dying", L"wolf/wolf_dying_anim");
 	m_model->ReadAnimation(L"Run", L"wolf/wolf_run_anim");
-	m_model->ReadAnimation(L"Wait", L"wolf/wolf_skill_anim");
-	m_model->ReadAnimation(L"Skill", L"wolf/wolf_wait_anim");
+	m_model->ReadAnimation(L"Skill", L"wolf/wolf_skill_anim");
+	m_model->ReadAnimation(L"Wait", L"wolf/wolf_wait_anim");
 
 	AddComponent(make_shared<ModelAnimator>(m_defaultShader));
 	{

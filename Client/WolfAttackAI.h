@@ -16,6 +16,11 @@ public:
 
 private:
     float m_RecogRange = 15.f;
+    Vec3 m_enterPos;
+
+    bool returnEnterPos = false;
+    float attackElapsedTime = 0.f;
+
     shared_ptr<Player> m_target;
 };
 

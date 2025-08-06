@@ -62,7 +62,7 @@ bool WolfAttack1State::CanTransitionTo(AnimationStateType _nextState)
     case AnimationStateType::Wait:
         return true;
     case AnimationStateType::BaseAttack:
-        return false;  // 자기 자신으로는 전환 불가
+        return true;  // 자기 자신으로도 이건 전환 가능. 
     default:
         return false;
     }

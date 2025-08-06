@@ -31,7 +31,7 @@ class Monster :
 {
     using Super = GameObject;
 public:
-    Monster();
+    Monster(shared_ptr<Shader> _shader);
     virtual ~Monster();
 
 public:
