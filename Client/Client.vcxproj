@@ -20,6 +20,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AI.h" />
+    <ClInclude Include="Alpha.h" />
+    <ClInclude Include="AlphaAppearAI.h" />
+    <ClInclude Include="AlphaAppearState.h" />
+    <ClInclude Include="AlphaAttack1State.h" />
+    <ClInclude Include="AlphaAttack2State.h" />
+    <ClInclude Include="AlphaAttackAI.h" />
+    <ClInclude Include="AlphaDeathAI.h" />
+    <ClInclude Include="AlphaDeathState.h" />
+    <ClInclude Include="AlphaDyingState.h" />
+    <ClInclude Include="AlphaIdleAI.h" />
+    <ClInclude Include="AlphaSkill1State.h" />
+    <ClInclude Include="AlphaWaitState.h" />
+    <ClInclude Include="AlphaWalkState.h" />
     <ClInclude Include="BaseSkill.h" />
     <ClInclude Include="Bianca.h" />
     <ClInclude Include="BiancaCamera.h" />
@@ -80,6 +93,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AI.cpp" />
+    <ClCompile Include="Alpha.cpp" />
+    <ClCompile Include="AlphaAppearAI.cpp" />
+    <ClCompile Include="AlphaAppearState.cpp" />
+    <ClCompile Include="AlphaAttack1State.cpp" />
+    <ClCompile Include="AlphaAttack2State.cpp" />
+    <ClCompile Include="AlphaAttackAI.cpp" />
+    <ClCompile Include="AlphaDeathAI.cpp" />
+    <ClCompile Include="AlphaDeathState.cpp" />
+    <ClCompile Include="AlphaDyingState.cpp" />
+    <ClCompile Include="AlphaIdleAI.cpp" />
+    <ClCompile Include="AlphaSkill1State.cpp" />
+    <ClCompile Include="AlphaWaitState.cpp" />
+    <ClCompile Include="AlphaWalkState.cpp" />
     <ClCompile Include="BaseSkill.cpp" />
     <ClCompile Include="Bianca.cpp" />
     <ClCompile Include="BiancaCamera.cpp" />

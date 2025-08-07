@@ -109,6 +109,12 @@
     <Filter Include="Scripts\Player\Nicky\NickyW">
       <UniqueIdentifier>{36bad6ad-db4a-4648-b3a7-d2dc5cbd27ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Monster\Alpha">
+      <UniqueIdentifier>{b540f4e1-6f77-4c1d-b8e4-a3f2ee2937d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Monster\Alpha\AI">
+      <UniqueIdentifier>{8f6ef837-8aa4-411e-8794-ee0c31d568e5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -185,9 +191,6 @@
     </ClCompile>
     <ClCompile Include="EquipItem.cpp">
       <Filter>Scripts\Item\Equipment</Filter>
-    </ClCompile>
-    <ClCompile Include="Monster.cpp">
-      <Filter>Scripts\Monster</Filter>
     </ClCompile>
     <ClCompile Include="AI.cpp">
       <Filter>Scripts\Monster\AI</Filter>
@@ -282,6 +285,48 @@
     <ClCompile Include="NickyWSkill.cpp">
       <Filter>Scripts\Player\Nicky\NickyW</Filter>
     </ClCompile>
+    <ClCompile Include="Monster.cpp">
+      <Filter>Scripts\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Alpha.cpp">
+      <Filter>Scripts\Monster\Alpha</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaAppearState.cpp">
+      <Filter>Scripts\Monster\Alpha</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaAttack1State.cpp">
+      <Filter>Scripts\Monster\Alpha</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaAttack2State.cpp">
+      <Filter>Scripts\Monster\Alpha</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaDeathState.cpp">
+      <Filter>Scripts\Monster\Alpha</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaDyingState.cpp">
+      <Filter>Scripts\Monster\Alpha</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaSkill1State.cpp">
+      <Filter>Scripts\Monster\Alpha</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaWaitState.cpp">
+      <Filter>Scripts\Monster\Alpha</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaWalkState.cpp">
+      <Filter>Scripts\Monster\Alpha</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaAppearAI.cpp">
+      <Filter>Scripts\Monster\Alpha\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaAttackAI.cpp">
+      <Filter>Scripts\Monster\Alpha\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaDeathAI.cpp">
+      <Filter>Scripts\Monster\Alpha\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaIdleAI.cpp">
+      <Filter>Scripts\Monster\Alpha\AI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -361,9 +406,6 @@
     </ClInclude>
     <ClInclude Include="EquipItem.h">
       <Filter>Scripts\Item\Equipment</Filter>
-    </ClInclude>
-    <ClInclude Include="Monster.h">
-      <Filter>Scripts\Monster</Filter>
     </ClInclude>
     <ClInclude Include="AI.h">
       <Filter>Scripts\Monster\AI</Filter>
@@ -457,6 +499,48 @@
     </ClInclude>
     <ClInclude Include="NickyWSkill.h">
       <Filter>Scripts\Player\Nicky\NickyW</Filter>
+    </ClInclude>
+    <ClInclude Include="Monster.h">
+      <Filter>Scripts\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Alpha.h">
+      <Filter>Scripts\Monster\Alpha</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaAppearState.h">
+      <Filter>Scripts\Monster\Alpha</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaAttack1State.h">
+      <Filter>Scripts\Monster\Alpha</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaAttack2State.h">
+      <Filter>Scripts\Monster\Alpha</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaDeathState.h">
+      <Filter>Scripts\Monster\Alpha</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaDyingState.h">
+      <Filter>Scripts\Monster\Alpha</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaSkill1State.h">
+      <Filter>Scripts\Monster\Alpha</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaWaitState.h">
+      <Filter>Scripts\Monster\Alpha</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaWalkState.h">
+      <Filter>Scripts\Monster\Alpha</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaAppearAI.h">
+      <Filter>Scripts\Monster\Alpha\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaAttackAI.h">
+      <Filter>Scripts\Monster\Alpha\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaDeathAI.h">
+      <Filter>Scripts\Monster\Alpha\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaIdleAI.h">
+      <Filter>Scripts\Monster\Alpha\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

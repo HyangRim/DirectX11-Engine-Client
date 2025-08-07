@@ -33,6 +33,7 @@ private:
 	void CreateCharacterBianca();
 
 	void CreateMonsterWolf(Vec3 _pos);
+	void CreateMonsterAlpha(Vec3 _pos);
 
 
 	//=====================UI관련 함수=====================//

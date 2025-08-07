@@ -23,6 +23,7 @@
 #include "NickyWSkillState.h"
 
 #include "Wolf.h"
+#include "Alpha.h"
 
 #include "NavMesh.h"
 #include "NavMeshAgent.h"
@@ -101,6 +102,7 @@ void LumiaIsland::Start()
 
 	//Monster Ãß°¡.
 	//CreateMonsterWolf(Vec3(15, 18, 9));
+	CreateMonsterAlpha(Vec3(15, 18, 16));
 
 	//====================UI====================//
 	LoadItemBoxImages();
@@ -1019,6 +1021,15 @@ void LumiaIsland::CreateMonsterWolf(Vec3 _pos)
 	wolf->GetTransform()->SetScale(Vec3(1.f));
 	CURSCENE->Add(wolf);
 
+}
+
+void LumiaIsland::CreateMonsterAlpha(Vec3 _pos)
+{
+	shared_ptr<Alpha> alpha = make_shared<Alpha>(m_defaultshader);
+
+	alpha->GetTransform()->SetPosition(_pos);
+	alpha->GetTransform()->SetScale(Vec3(1.f));
+	CURSCENE->Add(alpha);
 }
 
 void LumiaIsland::LoadItemBoxImages()
