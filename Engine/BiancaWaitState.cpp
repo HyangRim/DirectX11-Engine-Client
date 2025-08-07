@@ -14,7 +14,7 @@ void BiancaWaitState::Enter(shared_ptr<ModelAnimator> animator)
 
     // Wait 애니메이션 재생
     animator->SetAnimationByTag(L"Wait", false);
-
+    animator->SetAnimationSpeed(2.f);
     m_idleTime = 0.0f;
     m_isAnimationStarted = true;
 
@@ -47,7 +47,7 @@ void BiancaWaitState::Exit(shared_ptr<ModelAnimator> animator)
         return;
 
     cout << "Wait 상태 종료 - 대기 시간: " << m_idleTime << "초" << endl;
-
+    animator->SetAnimationSpeed(1.f);
     // 상태 종료 시 정리
     m_idleTime = 0.0f;
     m_isAnimationStarted = false;

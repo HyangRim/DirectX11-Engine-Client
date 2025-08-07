@@ -16,7 +16,7 @@ void BiancaESkillState::Enter(shared_ptr<ModelAnimator> animator)
 {
     if (!animator)
         return;
-
+    animator->SetAnimationSpeed(m_playSpeed);
     m_cachedAnimator = animator;
 
     // 기존 시퀀스나 애니메이션 중단
@@ -224,7 +224,7 @@ void BiancaESkillState::ReleaseSkill()
     {
         // 차징 시간에 따른 Skill_3_2 재생 시간 조절
         vector<wstring> releaseSequence = { L"Skill_3_2", L"Skill_3_3" };
-        vector<float> releaseDurations = { min(m_chargeTime, 5.0f), 17.f / 25.f }; // Skill_3_2는 차징 시간, Skill_3_3은 기본 시간
+        vector<float> releaseDurations = { min(m_chargeTime, 5.0f), (17.f / 25.f) / m_playSpeed }; // Skill_3_2는 차징 시간, Skill_3_3은 기본 시간
 
         // 동적 시퀀스 생성
         m_cachedAnimator->CreateSequence(L"Bianca_E_Release_Sequence", releaseSequence, releaseDurations, false);
@@ -301,6 +301,8 @@ void BiancaESkillState::Exit(shared_ptr<ModelAnimator> animator)
     m_isComplete = false;
     m_skillState = BiancaESkillChargeState::ChargingWait;
     m_cachedAnimator.reset();
+
+    animator->SetAnimationSpeed(1.f);
 }
 
 bool BiancaESkillState::CanTransitionTo(AnimationStateType nextState)

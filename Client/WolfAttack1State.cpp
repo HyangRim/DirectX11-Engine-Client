@@ -10,7 +10,7 @@ void WolfAttack1State::Enter(shared_ptr<ModelAnimator> _animator)
 {
     if (!_animator)
         return;
-
+    _animator->SetAnimationSpeed(m_playSpeed);
     // Wait 애니메이션 재생
     _animator->SetAnimationByTag(L"Atk1", false);
 
@@ -50,6 +50,8 @@ void WolfAttack1State::Exit(shared_ptr<ModelAnimator> _animator)
     // 상태 종료 시 정리
     m_attackTime = 0.0f;
     m_isAnimationStarted = false;
+
+    _animator->SetAnimationSpeed(1.f);
 }
 
 bool WolfAttack1State::CanTransitionTo(AnimationStateType _nextState)

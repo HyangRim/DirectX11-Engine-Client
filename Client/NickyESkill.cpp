@@ -11,7 +11,7 @@ NickyESkill::NickyESkill(shared_ptr<Player> _player)
 	: Super(_player, 2)
 {
 	m_shader = _player->GetShader();
-	m_skillCooldown = 7.f;
+	m_skillCooldown = 3.f;
 	m_skillName = L"강력한 펀치";
 	m_skillDesc = L"니키가 강력한 펀치로 전방의 적에게 스킬 피해를 입히고 2초 동안 이동 속도를 35% 감소시킵니다.";
 	m_skillLevel = 1;

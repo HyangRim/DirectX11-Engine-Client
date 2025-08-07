@@ -90,9 +90,9 @@ void LumiaIsland::Start()
 	CreateCemeteryBase();
 	CreateCemeteryInterior();
 	CreateCemeteryEnvironment();
-	//CreateCharacterNicky();
+	CreateCharacterNicky();
 	CreateCemeteryItemBox();
-	CreateCharacterBianca();
+	//CreateCharacterBianca();
 	CreateTestDummy();
 	//CreateTestDecal();
 
@@ -101,8 +101,8 @@ void LumiaIsland::Start()
 
 
 	//Monster Ãß°¡.
-	//CreateMonsterWolf(Vec3(15, 18, 16));
-	CreateMonsterAlpha(Vec3(15, 18, 16));
+	CreateMonsterWolf(Vec3(15, 18, 16));
+	//CreateMonsterAlpha(Vec3(15, 18, 16));
 
 	//====================UI====================//
 	LoadItemBoxImages();

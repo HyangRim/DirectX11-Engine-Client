@@ -18,9 +18,6 @@ NickyQSkill::NickyQSkill(shared_ptr<Player> _player)
 		auto snowShader = make_shared<Shader>(L"GatherBillboard.fx");
 		auto obj = make_shared<GameObject>();
 		obj->SetName(L"Nicky_Charging");
-
-	
-
 		
 		obj->AddComponent(make_shared<SnowBillboard>(Vec3(0, 0, 0), Vec3(1, 1, 1), 50));
 		{
@@ -80,7 +77,7 @@ void NickyQSkill::Update()
 		{
 			SOUND->PlaySound(L"Nicky/Nicky_skill01_Charge.wav", 2, 0.5f);
 
-			m_chargingEffect->SetActive(true);
+			//m_chargingEffect->SetActive(true);
 			m_bskillStart = true;
 			m_duration = 0.f;
 		}

@@ -16,6 +16,6 @@ public:
 
 private:
     float m_DeathAnimElapsedTime = 0.f;
-    float m_DeathAnimDuration = 1.3f;
+    float m_DeathAnimDuration = 1.3f / 2.f;
 };
 

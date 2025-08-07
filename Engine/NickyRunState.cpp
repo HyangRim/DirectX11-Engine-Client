@@ -11,14 +11,18 @@ void NickyRunState::Enter(shared_ptr<ModelAnimator> animator)
 {
     if (!animator)
         return;
+    //animator->SetTweenSpeed(2.0f);
 
+    
     // Run 애니메이션 재생
     animator->SetAnimationByTag(L"Run", false);  // 부드러운 전환
+    //animator->SetNextAnimationByTag(L"Run", 0.5f);  // 기본 1.0f에서 0.5f로
+    animator->SetAnimationSpeed(2.f);
 
     m_moveTime = 0.0f;
     m_isAnimationStarted = true;
 
-    cout << "Move 상태 진입 - Run 애니메이션 재생 시작" << endl;
+    cout << "Run 상태 진입 - Run 애니메이션 재생 시작" << endl;
 }
 
 void NickyRunState::Update(shared_ptr<ModelAnimator> animator)
@@ -43,8 +47,8 @@ void NickyRunState::Exit(shared_ptr<ModelAnimator> animator)
 {
     if (!animator)
         return;
-
-    cout << "Move 상태 종료 - 이동 시간: " << m_moveTime << "초" << endl;
+    animator->SetAnimationSpeed(1.f);
+    cout << "Run 상태 종료 - 이동 시간: " << m_moveTime << "초" << endl;
 
     m_moveTime = 0.0f;
     m_isAnimationStarted = false;

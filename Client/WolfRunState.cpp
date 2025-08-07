@@ -10,7 +10,7 @@ void WolfRunState::Enter(shared_ptr<ModelAnimator> _animator)
 {
     if (!_animator)
         return;
-
+    _animator->SetAnimationSpeed(m_playSpeed);
     // Run 애니메이션 재생
     _animator->SetAnimationByTag(L"Run", false);  // 부드러운 전환
 
@@ -47,6 +47,7 @@ void WolfRunState::Exit(shared_ptr<ModelAnimator> _animator)
 
     m_moveTime = 0.0f;
     m_isAnimationStarted = false;
+    _animator->SetAnimationSpeed(1.f);
 }
 
 bool WolfRunState::CanTransitionTo(AnimationStateType _nextState)

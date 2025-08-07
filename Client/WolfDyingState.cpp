@@ -11,13 +11,18 @@ void WolfDyingState::Enter(shared_ptr<ModelAnimator> _animator)
     if (!_animator)
         return;
 
+    _animator->SetAnimationSpeed(m_playSpeed);
+    m_expectedDuration = _animator->GetAnimationDuration(L"Dying") / m_playSpeed;
+    _animator->SetAnimationSpeed(m_playSpeed);
+
     // Wait 애니메이션 재생
-    _animator->SetAnimationByTag(L"Dying", true);
+    //_animator->SetAnimationByTag(L"Dying", true);
+    _animator->PlaySequence(L"Wolf_dying_Sequence");
 
     m_dyingTime = 0.0f;
     m_isAnimationStarted = true;
-
-    cout << "Wait 상태 진입 - Wait 애니메이션 재생 시작" << endl;
+    m_isDyingComplete = false;
+    cout << "Dying 상태 진입 - Dying 애니메이션 재생 시작" << endl;
 }
 
 void WolfDyingState::Update(shared_ptr<ModelAnimator> _animator)
@@ -38,6 +43,15 @@ void WolfDyingState::Update(shared_ptr<ModelAnimator> _animator)
             // 필요시 추가 로직 구현
         }
     }
+
+    // 시간 기반으로 완료 체크
+    if (!m_isDyingComplete && m_dyingTime >= m_expectedDuration)
+    {
+        m_isDyingComplete = true;
+        // 안전하게 시퀀스 정지
+        //_animator->StopSequence();
+        wcout << L"Wolf : 죽는 모션 완료!" << endl;
+    }
 }
 
 void WolfDyingState::Exit(shared_ptr<ModelAnimator> _animator)
@@ -50,6 +64,7 @@ void WolfDyingState::Exit(shared_ptr<ModelAnimator> _animator)
     // 상태 종료 시 정리
     m_dyingTime = 0.0f;
     m_isAnimationStarted = false;
+    _animator->SetAnimationSpeed(1.f);
 }
 
 bool WolfDyingState::CanTransitionTo(AnimationStateType _nextState)

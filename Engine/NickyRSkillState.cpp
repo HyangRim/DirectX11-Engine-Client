@@ -13,6 +13,16 @@ void NickyRSkillState::Enter(shared_ptr<ModelAnimator> animator)
     if (!animator)
         return;
 
+    animator->SetAnimationSpeed(m_playSpeed);
+    //재생속도에 따라 애니메이션 속도들 재설정
+    m_sequenceDurations = animator->GetSequenceAnimationDurations(L"Skill_4_Sequence");
+    for (size_t i = 0; i < m_sequenceDurations.size(); i++)
+    {
+        if (i == 2) continue;
+        m_sequenceDurations[i] /= m_playSpeed;
+    }
+    animator->SetSequenceAnimationDurations(L"Skill_4_Sequence", m_sequenceDurations);
+
     // 스킬 시퀀스 재생
     animator->PlaySequence(L"Skill_4_Sequence");
 
@@ -46,7 +56,6 @@ void NickyRSkillState::Update(shared_ptr<ModelAnimator> animator)
     m_isRushAnimationActive = (currentAnim == L"Skill_01_Rush");
     
    
-
     if (m_isSkillComplete)
     {
         // 스킬이 완료되면 자동으로 Wait 상태로 전환 요청
@@ -69,11 +78,21 @@ void NickyRSkillState::Exit(shared_ptr<ModelAnimator> animator)
         return;
 
     cout << "Skill4 상태 종료 - 대기 시간: " << m_skillTime << "초" << endl;
+  
 
     // 상태 종료 시 정리
     m_skillTime = 0.0f;
     m_isAnimationStarted = false;
     m_isSkillComplete = false;
+
+    //재생속도에 따라 애니메이션 속도들 원상복구  
+    animator->SetAnimationSpeed(1.f);
+    for (size_t i = 0; i < m_sequenceDurations.size(); i++)
+    {
+        if (i == 2) continue;
+        m_sequenceDurations[i] *= m_playSpeed;
+    }
+
     m_cachedAnimator.reset();
 }
 

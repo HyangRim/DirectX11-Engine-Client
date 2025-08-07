@@ -16,5 +16,8 @@ private:
     float m_animTime = 0.0f;  // 대기 상태 지속 시간
     bool m_isAnimationStarted = false;
     bool m_isAppearComplete = false;  // 추가: 스킬 완료 플래그
+
+    vector<float> m_sequenceDurations;
+    float m_playSpeed = 2.f;
 };
 

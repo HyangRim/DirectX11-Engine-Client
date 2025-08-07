@@ -101,6 +101,9 @@ public:
     float GetCorrectedFrameRate(const wstring& animTag, float speed = 1.0f);
     float GetTimePerFrame(const wstring& animTag, float speed = 1.0f);
     void SetSequenceAnimationDuration(const wstring& sequenceName, uint32 animIndex, float duration);
+    float GetSequenceAnimationDuration(const wstring& sequenceName);
+    vector<float> GetSequenceAnimationDurations(const wstring& sequenceName);
+
     void SetSequenceAnimationDurations(const wstring& sequenceName, const vector<float>& durations);
 
 private:
@@ -169,4 +172,11 @@ private:
 public:
     Vec3 GetAnimatedBonePosition(const wstring& boneName);
     Matrix GetAnimatedBoneTransform(const wstring& boneName);
+
+private:
+    float m_tweenSpeedMultiplier = 2.0f;
+
+public:
+    void SetTweenSpeed(float speedMultiplier) { m_tweenSpeedMultiplier = speedMultiplier; }
+    float GetTweenSpeed() const { return m_tweenSpeedMultiplier; }
 };

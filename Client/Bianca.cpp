@@ -123,7 +123,10 @@ void Bianca::InitBiancaAnimation()
 
 	// R ½ºÅ³ ½ÃÄö½º (Skill_04_Ready -> Skill_04_Start -> Skill_04_Attack)
 	vector<wstring> skill4Anims = { L"Skill_4_1", L"Skill_4_2" };
-	animator->CreateSequence(L"Skill_4_Sequence", skill4Anims, false);
+	vector<float> skill4Durations;
+	skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_4_1"));
+	skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_4_2"));
+	animator->CreateSequence(L"Skill_4_Sequence", skill4Anims, skill4Durations, false);
 }
 
 void Bianca::InitBiancaComponent()

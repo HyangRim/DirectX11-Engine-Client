@@ -13,6 +13,15 @@ void BiancaRSkillState::Enter(shared_ptr<ModelAnimator> animator)
     if (!animator)
         return;
 
+    animator->SetAnimationSpeed(m_playSpeed);
+    //재생속도에 따라 애니메이션 속도들 재설정
+    m_sequenceDurations = animator->GetSequenceAnimationDurations(L"Skill_4_Sequence");
+    for (size_t i = 0; i < m_sequenceDurations.size(); i++)
+    {
+        m_sequenceDurations[i] /= m_playSpeed;
+    }
+    animator->SetSequenceAnimationDurations(L"Skill_4_Sequence", m_sequenceDurations);
+
     // 스킬 시퀀스 재생
     animator->PlaySequence(L"Skill_4_Sequence");
 
@@ -25,6 +34,7 @@ void BiancaRSkillState::Enter(shared_ptr<ModelAnimator> animator)
     m_skillTime = 0.0f;
     m_isAnimationStarted = true;
     m_isSkillComplete = false;
+    m_cachedAnimator = animator;
 
     cout << "Skill4 상태 진입 - Skill4 애니메이션 재생 시작" << endl;
 }
@@ -60,11 +70,20 @@ void BiancaRSkillState::Exit(shared_ptr<ModelAnimator> animator)
 
     cout << "Skill4 상태 종료 - 대기 시간: " << m_skillTime << "초" << endl;
 
+
     // 상태 종료 시 정리
     m_skillTime = 0.0f;
     m_isAnimationStarted = false;
     m_isSkillComplete = false;
     m_cachedAnimator.reset();
+
+
+    //재생속도에 따라 애니메이션 속도들 원상복구  
+    animator->SetAnimationSpeed(1.f);
+    for (size_t i = 0; i < m_sequenceDurations.size(); i++)
+    {
+        m_sequenceDurations[i] *= m_playSpeed;
+    }
 }
 
 bool BiancaRSkillState::CanTransitionTo(AnimationStateType nextState)

@@ -24,5 +24,18 @@ private:
 public:
     bool IsRushAnimationActive() const { return m_isRushAnimationActive; }
 
+private:
+    vector<wstring> m_skillAnimations = {
+        L"Skill_04_Ready",
+        L"Skill_04_Start",
+        L"Skill_01_Rush",
+        L"Skill_04_Attack"
+    };
+    uint32 m_currentAnimIndex = 0;
+    float m_currentAnimTime = 0.0f;
+    float m_currentAnimDuration = 0.0f;
+
+    vector<float> m_sequenceDurations;
+    float m_playSpeed = 2.f;
 };
 

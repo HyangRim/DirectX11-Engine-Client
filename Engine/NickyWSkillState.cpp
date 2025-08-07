@@ -13,6 +13,8 @@ void NickyWSkillState::Enter(shared_ptr<ModelAnimator> animator)
     if (!animator)
         return;
 
+
+    animator->SetAnimationSpeed(2.f);
     // 스킬 시퀀스 재생
     animator->PlaySequence(L"Skill_2_Sequence");
 
@@ -57,7 +59,7 @@ void NickyWSkillState::Exit(shared_ptr<ModelAnimator> animator)
 {
     if (!animator)
         return;
-
+    animator->SetAnimationSpeed(1.f);
     cout << "Skill2 상태 종료 - 대기 시간: " << m_skillTime << "초" << endl;
 
     // 상태 종료 시 정리

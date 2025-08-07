@@ -11,10 +11,13 @@ void NickyWaitState::Enter(shared_ptr<ModelAnimator> animator)
 {
     if (!animator)
         return;
+    // 블렌딩 속도 2배로 설정
+    //animator->SetTweenSpeed(2.0f);
+    animator->SetAnimationSpeed(2.f);
 
     // Wait 애니메이션 재생
     animator->SetAnimationByTag(L"Wait", false);
-
+    
     m_idleTime = 0.0f;
     m_isAnimationStarted = true;
 
@@ -47,7 +50,7 @@ void NickyWaitState::Exit(shared_ptr<ModelAnimator> animator)
         return;
 
     cout << "Wait 상태 종료 - 대기 시간: " << m_idleTime << "초" << endl;
-
+    animator->SetAnimationSpeed(1.f);
     // 상태 종료 시 정리
     m_idleTime = 0.0f;
     m_isAnimationStarted = false;

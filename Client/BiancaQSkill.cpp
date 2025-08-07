@@ -59,7 +59,6 @@ void BiancaQSkill::PlaySkill()
 	if (m_skillcurCooldown >= 0.f) return;
 	//cout << "Bianca Q Skill 시작 !!! \n";
 
-
 	POINT mousePos = INPUT->GetMousePos();
 	//::ScreenToClient(GAME->GetGameDesc().hWnd, &mousePos);
 
@@ -87,10 +86,9 @@ void BiancaQSkill::PlaySkill()
 	//투사체 생성. 날리기.
 	m_Projectile->SetMoveTarget(startPos, targetPos, flightTime);
 
-
 	SOUND->PlaySound(L"Bianca/Bianca_Skill01.wav", 1, 0.5f);
 
-	SkillEnd();
+	//SkillEnd();
 }
 
 void BiancaQSkill::Update()

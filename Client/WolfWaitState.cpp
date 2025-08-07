@@ -10,7 +10,7 @@ void WolfWaitState::Enter(shared_ptr<ModelAnimator> _animator)
 {
     if (!_animator)
         return;
-
+    _animator->SetAnimationSpeed(m_playSpeed);
     // Wait 애니메이션 재생
     _animator->SetAnimationByTag(L"Wait", false);
 
@@ -50,6 +50,7 @@ void WolfWaitState::Exit(shared_ptr<ModelAnimator> _animator)
     // 상태 종료 시 정리
     m_idleTime = 0.0f;
     m_isAnimationStarted = false;
+    _animator->SetAnimationSpeed(1.f);
 }
 
 bool WolfWaitState::CanTransitionTo(AnimationStateType _nextState)

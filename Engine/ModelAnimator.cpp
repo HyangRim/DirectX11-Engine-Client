@@ -76,8 +76,20 @@ void ModelAnimator::UpdateCurrentAnimation()
 
 void ModelAnimator::UpdateNextAnimation()
 {
+    //TweenDesc& desc = m_tweenDesc;
+    //desc.m_tweenSumTime += DT;
+    //desc.m_tweenRatio = desc.m_tweenSumTime / desc.m_tweenDuration;
+
+    //if (desc.m_tweenRatio >= 1.0f)
+    //{
+    //    // 블렌딩 완료
+    //    desc.m_curr = desc.m_next;
+    //    desc.ClearNextAnim();
+    //    return;
+    //}
     TweenDesc& desc = m_tweenDesc;
-    desc.m_tweenSumTime += DT;
+    // 블렌딩 속도 배수 적용
+    desc.m_tweenSumTime += DT * m_tweenSpeedMultiplier;
     desc.m_tweenRatio = desc.m_tweenSumTime / desc.m_tweenDuration;
 
     if (desc.m_tweenRatio >= 1.0f)
@@ -296,7 +308,7 @@ void ModelAnimator::UpdateSequence()
 
     float currentAnimDuration = GetCurrentSequenceDuration();
     m_currentSequence->currentTime += DT;
-    cout << "이건가 : " << m_currentSequence->currentTime << endl;
+    //cout << "이건가 : " << m_currentSequence->currentTime << endl;
     if (m_currentSequence->currentTime >= currentAnimDuration)
     {
         TransitionToNextInSequence();
@@ -643,6 +655,32 @@ void ModelAnimator::SetSequenceAnimationDuration(const wstring& sequenceName, ui
     }
 
     sequence.animationDurations[animIndex] = duration;
+}
+
+float ModelAnimator::GetSequenceAnimationDuration(const wstring& sequenceName)
+{
+    auto it = m_sequences.find(sequenceName);
+    if (it == m_sequences.end())
+        return -1.f;
+
+    AnimationSequence& sequence = it->second;
+
+    float sum = 0.f;
+    for (size_t i = 0; i < sequence.animationDurations.size(); i++)
+        sum += sequence.animationDurations[i];
+
+    return sum;
+}
+
+vector<float> ModelAnimator::GetSequenceAnimationDurations(const wstring& sequenceName)
+{
+    auto it = m_sequences.find(sequenceName);
+    if (it == m_sequences.end())
+        return vector<float>();
+
+    AnimationSequence& sequence = it->second;
+
+    return sequence.animationDurations;
 }
 
 void ModelAnimator::SetSequenceAnimationDurations(const wstring& sequenceName, const vector<float>& durations)

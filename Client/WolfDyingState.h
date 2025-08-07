@@ -15,5 +15,7 @@ public:
 private:
     float m_dyingTime = 0.0f;  // 대기 상태 지속 시간
     bool m_isAnimationStarted = false;
+    bool m_isDyingComplete = false;  // 추가: 스킬 완료 플래그
+    float m_playSpeed = 2.f;
 };
 

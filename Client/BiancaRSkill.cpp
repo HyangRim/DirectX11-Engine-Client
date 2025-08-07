@@ -159,7 +159,8 @@ void BiancaRSkill::Update()
 		}
 	}
 
-	if (skillFlag && phaseTwo) {
+	if (skillFlag && phaseTwo) 
+	{
 		if (m_innerCircleDuration > m_innerCircleElapsedTime) {
 			m_innerCircleElapsedTime += DT;
 

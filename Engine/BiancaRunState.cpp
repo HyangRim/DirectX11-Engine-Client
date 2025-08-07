@@ -14,7 +14,7 @@ void BiancaRunState::Enter(shared_ptr<ModelAnimator> animator)
 
     // Run 애니메이션 재생
     animator->SetAnimationByTag(L"Run", false);  // 부드러운 전환
-
+    animator->SetAnimationSpeed(2.f);
     m_moveTime = 0.0f;
     m_isAnimationStarted = true;
 
@@ -45,7 +45,7 @@ void BiancaRunState::Exit(shared_ptr<ModelAnimator> animator)
         return;
 
     cout << "Run 상태 종료 - 이동 시간: " << m_moveTime << "초" << endl;
-
+    animator->SetAnimationSpeed(1.f);
     m_moveTime = 0.0f;
     m_isAnimationStarted = false;
 }

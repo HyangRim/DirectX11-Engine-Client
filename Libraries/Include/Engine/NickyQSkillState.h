@@ -60,6 +60,7 @@ private:
     // 애니메이션 상태
     bool m_isStartAnimationPlaying = false;
     float m_startAnimationTime = 0.0f;
+    float m_playSpeed = 2.f;
 
     shared_ptr<ModelAnimator> m_cachedAnimator;
 
@@ -67,5 +68,6 @@ private:
     bool m_isFirstAnimationActive = false;
 public:
     bool IsFirstAnimationActive() const { return m_isFirstAnimationActive; }
+
 
 };

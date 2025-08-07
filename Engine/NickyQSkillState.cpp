@@ -16,7 +16,7 @@ void NickyQSkillState::Enter(shared_ptr<ModelAnimator> animator)
 {
     if (!animator)
         return;
-
+    animator->SetAnimationSpeed(2.f);
     m_cachedAnimator = animator;
 
     // 기존 시퀀스나 애니메이션 중단
@@ -245,7 +245,7 @@ void NickyQSkillState::ReleaseSkill()
     {
         // 차징 시간에 따른 Rush 시퀀스 생성
         vector<wstring> rushSequence = { L"Skill_01_Rush", L"Skill_01_End" };
-        vector<float> rushDurations = { min(m_chargeTime, 5.0f), 13.f / 25.f }; // 차징 시간만큼 재생
+        vector<float> rushDurations = { min(m_chargeTime, 5.0f), (13.f / 25.f) / m_playSpeed }; // 차징 시간만큼 재생
 
         // 동적 시퀀스 생성
         m_cachedAnimator->CreateSequence(L"Dynamic_Rush_Sequence", rushSequence, rushDurations, false);
@@ -354,6 +354,8 @@ void NickyQSkillState::Exit(shared_ptr<ModelAnimator> animator)
     m_isChargingActive = false;
     m_isStartAnimationPlaying = false;
     m_cachedAnimator.reset();
+
+    animator->SetAnimationSpeed(1.f);
 
     m_chargeState = QSkillChargeState::Default;
 }

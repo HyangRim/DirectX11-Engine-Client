@@ -51,4 +51,5 @@ private:
     bool m_isComplete = false;
 
     shared_ptr<ModelAnimator> m_cachedAnimator;
+    float m_playSpeed = 2.f;
 };

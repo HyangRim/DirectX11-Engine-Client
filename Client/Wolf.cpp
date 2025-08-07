@@ -132,15 +132,22 @@ void Wolf::InitWolfAnimation()
 
 	// Wolf µîÀå ½ÃÄö½º. 
 	vector<wstring> appearAnims = { L"Appear", L"AppearWait"};
-	animator->CreateSequence(L"Wolf_Appear_Sequence", appearAnims, false);
+	vector<float> appearAnimsDurations;
+	appearAnimsDurations.push_back(animator->GetAnimationDuration(L"Appear")); 
+	appearAnimsDurations.push_back(animator->GetAnimationDuration(L"AppearWait"));
+	animator->CreateSequence(L"Wolf_Appear_Sequence", appearAnims, appearAnimsDurations, false);
 
-	// Wolf »ç¸Á ½ÃÄö½º. 
-	vector<wstring> deadAnims = { L"Dying" };
-	animator->CreateSequence(L"Wolf_death_Sequence", deadAnims, false);
+	// Wolf »ç¸ÁÇÏ´Â ½ÃÄö½º. 
+	vector<wstring> deadAnims = { L"Death" };
+	vector<float> deadAnimsDurations;
+	deadAnimsDurations.push_back(animator->GetAnimationDuration(L"Death"));
+	animator->CreateSequence(L"Wolf_death_Sequence", deadAnims, deadAnimsDurations, false);
 
-	// Wolf »ç¸Á ½ÃÄö½º. 
-	vector<wstring> dyingAnims = { L"Death" };
-	animator->CreateSequence(L"Wolf_dying_Sequence", dyingAnims, true);
+	// Wolf ¿ÏÀü Á×¾î¼­ ½ÃÃ¼ÀÎ »óÅÂ ½ÃÄö½º. 
+	vector<wstring> dyingAnims = { L"Dying" };
+	vector<float> dyingAnimsDurations;
+	dyingAnimsDurations.push_back(animator->GetAnimationDuration(L"Dying"));
+	animator->CreateSequence(L"Wolf_dying_Sequence", dyingAnims, dyingAnimsDurations, true);
 }
 
 void Wolf::InitWolfComponent()

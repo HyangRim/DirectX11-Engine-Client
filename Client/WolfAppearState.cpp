@@ -11,6 +11,15 @@ void WolfAppearState::Enter(shared_ptr<ModelAnimator> _animator)
     if (!_animator)
         return;
 
+    _animator->SetAnimationSpeed(m_playSpeed);
+    //재생속도에 따라 애니메이션 속도들 재설정
+    m_sequenceDurations = _animator->GetSequenceAnimationDurations(L"Wolf_Appear_Sequence");
+    for (size_t i = 0; i < m_sequenceDurations.size(); i++)
+    {
+        m_sequenceDurations[i] /= m_playSpeed;
+    }
+    _animator->SetSequenceAnimationDurations(L"Wolf_Appear_Sequence", m_sequenceDurations);
+
     // 스킬 시퀀스 재생
     _animator->PlaySequence(L"Wolf_Appear_Sequence");
 
@@ -62,6 +71,13 @@ void WolfAppearState::Exit(shared_ptr<ModelAnimator> _animator)
     m_animTime = 0.0f;
     m_isAnimationStarted = false;
     m_isAppearComplete = false;
+
+    //재생속도에 따라 애니메이션 속도들 원상복구  
+    _animator->SetAnimationSpeed(1.f);
+    for (size_t i = 0; i < m_sequenceDurations.size(); i++)
+    {
+        m_sequenceDurations[i] *= m_playSpeed;
+    }
 }
 
 bool WolfAppearState::CanTransitionTo(AnimationStateType _nextState)
