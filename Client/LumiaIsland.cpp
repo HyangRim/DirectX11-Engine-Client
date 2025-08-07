@@ -101,7 +101,7 @@ void LumiaIsland::Start()
 
 
 	//Monster Ãß°¡.
-	//CreateMonsterWolf(Vec3(15, 18, 9));
+	//CreateMonsterWolf(Vec3(15, 18, 16));
 	CreateMonsterAlpha(Vec3(15, 18, 16));
 
 	//====================UI====================//

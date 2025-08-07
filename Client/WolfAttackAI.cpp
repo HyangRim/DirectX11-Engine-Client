@@ -46,6 +46,7 @@ void WolfAttackAI::Update()
 
 			m_Owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::Move);
 			m_Owner->SetMonsterState(MonsterState::RUN);
+			attackElapsedTime = 0.f;
 		}
 	}
 

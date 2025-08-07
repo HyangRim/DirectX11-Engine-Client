@@ -67,7 +67,7 @@ void WolfAppearState::Exit(shared_ptr<ModelAnimator> _animator)
 bool WolfAppearState::CanTransitionTo(AnimationStateType _nextState)
 {
     // 스킬이 완료되었을 때만 Wait 상태로 전환 가능
-    if (m_isAppearComplete && _nextState == AnimationStateType::Wait)
+    if (_nextState == AnimationStateType::Wait)
     {
         return true;
     }

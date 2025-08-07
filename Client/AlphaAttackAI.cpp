@@ -27,7 +27,7 @@ void AlphaAttackAI::Update()
 {
 	auto target = m_Owner->GetTarget();
 	auto& monsterStatus = m_Owner->GetMonsterStatus();
-
+	skillCoolTime -= DT;
 
 	//Target이 없으면 return;
 	if (target == nullptr)
@@ -41,12 +41,28 @@ void AlphaAttackAI::Update()
 	if (m_Owner->GetMonsterState() == MonsterState::ATTACK) {
 		attackElapsedTime += DT;
 
-		if (attackElapsedTime >= 1.0f / monsterStatus.hitSpeed) {
+		if (attackElapsedTime >= (1.0f / monsterStatus.hitSpeed)) {
 			//데미지 주기. 
 
 			m_Owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::Move);
 			m_Owner->SetMonsterState(MonsterState::RUN);
+			attackElapsedTime = 0.f;
 		}
+		return;
+	}
+
+	if (m_Owner->GetMonsterState() == MonsterState::SKILL) {
+		skillElapsedTime += DT;
+		
+		if (skillElapsedTime >= skillDuration) {
+			//데미지 주기.
+
+			m_Owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::Move);
+			m_Owner->SetMonsterState(MonsterState::RUN);
+			skillElapsedTime = 0.f;
+		}
+
+		return;
 	}
 
 	//target과 자신의 거리 재기. 
@@ -63,6 +79,12 @@ void AlphaAttackAI::Update()
 	}
 	//만약 플레이어와의 거리가 공격 Range보다 작거나 같으면.
 	//공격 사거리 안에 들어왔을 경우. 
+	else if (distance <= m_SkillRange && skillCoolTime < 0.f) {
+		m_Owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::Skill_1);
+		m_Owner->SetMonsterState(MonsterState::SKILL);
+		m_Owner->GetNavMeshAgent()->Stop();
+		skillCoolTime = 15.f;
+	}
 	else if (distance <= monsterStatus.hitRange) {
 		m_Owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::BaseAttack);
 		m_Owner->SetMonsterState(MonsterState::ATTACK);

@@ -146,6 +146,14 @@ void AnimationStateMachine::ChangeState(AnimationStateType newState)
     if (!CanChangeState(newState))
         return;
 
+    if (m_animator == nullptr) {
+        auto gameObject = GetGameObject();
+        if (gameObject)
+        {
+            m_animator = gameObject->GetModelAnimator();
+        }
+    }
+
     // 현재 상태 종료
     if (m_currentState)
     {

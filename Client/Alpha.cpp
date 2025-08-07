@@ -28,6 +28,8 @@ Alpha::~Alpha()
 
 void Alpha::Start()
 {
+	Super::Start();
+
 	InitAlphaModel();
 	InitAlphaAnimation();
 	InitAlphaComponent();
@@ -35,7 +37,6 @@ void Alpha::Start()
 	InitAlphaStats();
 	UpdateState();
 
-	Super::Start();
 }
 
 void Alpha::Update()
@@ -102,6 +103,7 @@ void Alpha::InitAlphaModel()
 
 void Alpha::InitAlphaAnimation()
 {
+	//Appear Wait
 	m_model->ReadAnimation(L"Appear", L"alpha/alpha_appear_anim");
 	m_model->ReadAnimation(L"Atk1", L"alpha/alpha_atk1_anim");
 	m_model->ReadAnimation(L"Atk2", L"alpha/alpha_atk2_anim");
