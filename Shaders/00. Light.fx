@@ -69,7 +69,7 @@ float4 ComputeLight(float3 _normal, float2 _uv, float3 _worldPosition, float sha
     
     float4 baseTexture = DiffuseMap.Sample(LinearSampler, _uv);
     
-    if(baseTexture.a < 0.01f)
+    if (baseTexture.a < 0.01f)
         discard;
     
     //Ambient
@@ -118,7 +118,7 @@ float4 ComputeLight(float3 _normal, float2 _uv, float3 _worldPosition, float sha
     }
     
     
-    float4 finalColor =  ambientColor + (diffuseColor + specularColor + emissiveColor) * shadow;
+    float4 finalColor = ambientColor + (diffuseColor + specularColor + emissiveColor) * shadow;
     
     
     finalColor.rgb = max(finalColor.rgb, baseTexture.rgb * 0.95f);
@@ -134,8 +134,8 @@ void ComputeNormalMapping(inout float3 normal, float3 tangent, float2 uv)
     if (any(map.rgb) == false)
         return;
 
-    float3 N = normalize(normal);   //Z
-    float3 T = normalize(tangent);  //X
+    float3 N = normalize(normal); //Z
+    float3 T = normalize(tangent); //X
     float3 B = normalize(cross(N, T));
     
     //Tangent Space -> World Space
@@ -167,12 +167,13 @@ SamplerComparisonState samShadow
 float CalcShadowFactor(Texture2D shadowMap, float4 shadowPosH)
 {
 	// Complete projection by doing division by w.
-	//shadowPosH.xyz /= shadowPosH.w;
+	shadowPosH.xyz /= shadowPosH.w;
 
 	// Depth in NDC space.
     float depth = saturate(shadowPosH.z);
 
 	// Texel size.
+    /*
     const float dx = SMAP_DX;
 	//return shadowMap.SampleCmpLevelZero(samShadow, shadowPosH.xy, depth).r;
 
@@ -185,13 +186,38 @@ float CalcShadowFactor(Texture2D shadowMap, float4 shadowPosH)
     };
 
 	[unroll]
-	for (int i = 0; i < 9; ++i)
-	{
-		percentLit += shadowMap.SampleCmpLevelZero(samShadow,
+    for (int i = 0; i < 9; ++i)
+    {
+        percentLit += shadowMap.SampleCmpLevelZero(samShadow,
 			shadowPosH.xy + offsets[i], depth).r;
-	}
+    }
 
-	return percentLit /= 9.0f;
+    return percentLit /= 9.0f;
+    */
+    
+    //  샘플 9 -> 16개로. 
+    const float2 offsets[16] =
+    {
+        float2(-1.5f, -1.5f), float2(-0.5f, -1.5f), float2(0.5f, -1.5f), float2(1.5f, -1.5f),
+        float2(-1.5f, -0.5f), float2(-0.5f, -0.5f), float2(0.5f, -0.5f), float2(1.5f, -0.5f),
+        float2(-1.5f, 0.5f), float2(-0.5f, 0.5f), float2(0.5f, 0.5f), float2(1.5f, 0.5f),
+        float2(-1.5f, 1.5f), float2(-0.5f, 1.5f), float2(0.5f, 1.5f), float2(1.5f, 1.5f)
+    };
+    
+    const float dx = SMAP_DX * 0.8f; // 샘플링 범위 축소.
+    float percentLit = 0.0f;
+    
+    [unroll]
+    for (int i = 0; i < 16; ++i)
+    {
+        percentLit += shadowMap.SampleCmpLevelZero(samShadow,
+            shadowPosH.xy + offsets[i] * dx, depth).r;
+    }
+    
+    return percentLit / 16.0f;
 }
+
+
+
 
 #endif

@@ -80,10 +80,17 @@ void LumiaIsland::Start()
 		lightDesc.ambient = Vec4(0.4f);
 		lightDesc.diffuse = Vec4(1.f);
 		lightDesc.specular = Vec4(0.1f);
-		lightDesc.direction = Vec3(1.f, 1.f, 1.f);
+		Vec3 lightDirection = Vec3(1.f, -1.f, 1.f); // Y를 음수로 (아래쪽을 향하도록)
+		lightDirection.Normalize();
+		lightDesc.direction = lightDirection;
 		//light->GetLight()->SetLightDesc(lightDesc);
-		light->GetTransform()->SetRotation(lightDesc.direction);
 		light->GetTransform()->SetPosition(Vec3(0.f, 150.f, 0.f));
+		Vec3 normalizedDir = Vec3(1.f, -1.f, 1.f);
+		normalizedDir.Normalize();
+		lightDesc.direction = normalizedDir;
+		//light->GetTransform()->SetRotation(lightDesc.direction);
+		//light->GetTransform()->SetPosition(Vec3(0.f, 150.f, 0.f));
+
 		static_pointer_cast<Light>(light->GetFixedComponent(ComponentType::Light))->SetLightDesc(lightDesc);
 		Add(light);
 	}

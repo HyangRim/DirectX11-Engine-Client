@@ -116,14 +116,14 @@ void Scene::RenderGameCamera(Camera* cam)
     cam->SortGameObject();
 
     if (light) {
-        light->SetVPMatrix(cam, 100.0f, ::XMMatrixOrthographicLH(100, 100, 0, 200));
+        light->SetVPMatrix(cam, 200.0f, ::XMMatrixOrthographicLH(300.f, 300.f, 1.f, 500.f));
         cam->Render_Forward(true);
         Viewport& vp = GRAPHICS->GetShadowViewport();
         cam->Render_Backward(true);
     }
 
     GRAPHICS->SetRTVAndDSV();
-    GRAPHICS->ClearDepthStencilView(); // 이 줄 추가
+    //GRAPHICS->ClearDepthStencilView(); // 이 줄 추가
 
     cam->SetStaticData();
 

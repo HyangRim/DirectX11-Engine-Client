@@ -32,7 +32,7 @@ void Renderer::InnerRender(bool _isShadowTech)
     if (_isShadowTech) {
         // ¼¨µµ¿ì ¸Ê ·»´õ¸µ
         const auto& shader = m_material->GetShader();
-        shader->SetTechnique(L"T0");
+        shader->SetTechnique(L"shadowTech");
         shader->PushGlobalData(Light::s_MatView, Light::s_MatProjection);
     }
     else if (GRAPHICS->IsCurrentPassGeometry()) {
