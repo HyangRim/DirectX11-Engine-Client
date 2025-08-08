@@ -456,6 +456,7 @@ void RenderManager::RenderDeferredLighting()
 	if (m_deferredLightingShader == nullptr)
 		return;
 
+
 	for (int i = 0; i < 4; ++i) {
 		assert(GRAPHICS->m_gBufferSRVs[i] != nullptr);
 	}
@@ -476,6 +477,11 @@ void RenderManager::RenderDeferredLighting()
 	if (lightObj) {
 		m_deferredLightingShader->PushLightData(lightObj->GetLight()->GetLightDesc());
 	}
+
+	m_deferredLightingShader->PushShadowData(Light::s_ShadowTransform);
+	//  디버깅: 매트릭스 값 출력
+	Matrix shadowMat = Light::s_ShadowTransform;
+
 	m_deferredLightingShader->PushFOWData(m_FogData);
 
 	DC->OMSetDepthStencilState(nullptr, 0);

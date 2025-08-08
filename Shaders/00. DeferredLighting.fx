@@ -79,8 +79,11 @@ float4 ComputeDeferredLight(float4 albedo, float3 normal, float3 worldPos, float
     float4 specularColor = 0;
     float4 emissiveColor = 0;
     
+    
     // Ambient
-    ambientColor = albedo * GlobalLight.ambient * Material.ambient;
+    //ambientColor = albedo * GlobalLight.ambient * Material.ambient;
+    ambientColor = albedo * GlobalLight.ambient * shadow * 3.0f;
+   
     
     // Diffuse
     float3 lightDir = -normalize(GlobalLight.direction);
@@ -105,10 +108,11 @@ float4 ComputeDeferredLight(float4 albedo, float3 normal, float3 worldPos, float
     emissiveColor = GlobalLight.emissive * Material.emissive * emissive;
     
     // 최종 색상 계산
-    float4 finalColor = ambientColor + (diffuseColor + specularColor + emissiveColor) * shadow;
+    float4 finalColor = ambientColor + (diffuseColor + specularColor) * shadow;
+    
     
     // 최소 밝기 보장 (기존 ComputeLight와 동일)
-    finalColor.rgb = max(finalColor.rgb, albedo.rgb * 0.95f);
+    //finalColor.rgb = max(finalColor.rgb, albedo.rgb * 0.95f);
     
     return finalColor;
 }
@@ -122,6 +126,7 @@ float4 PS_DeferredLightingWithFOW(VertexQuadOutput input) : SV_Target
     float4 albedo = GBufferAlbedo.Load(int3(screenPos, 0));
     float4 normalData = GBufferNormal.Load(int3(screenPos, 0));
     float4 positionData = GBufferPosition.Load(int3(screenPos, 0));
+   
     
     if (albedo.a < 0.01f)
         discard;
@@ -156,11 +161,11 @@ float4 PS_DeferredLightingWithFOW(VertexQuadOutput input) : SV_Target
         finalColor = lerp(finalColor, finalColor * float3(0.9f, 0.95f, 1.05f), blueTint);
     }
     
-    
+    //finalColor.rgb = max(finalColor.rgb, albedo.rgb * 1.2f);
     //Outline
     
     
-    return float4(finalColor, baseColor.a);
+    return float4(finalColor, baseColor.a) * 2.f;
 }
 
 
