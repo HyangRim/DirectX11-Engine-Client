@@ -48,21 +48,4 @@ void Light::SetVPMatrix(Camera* _camera, float _backDist, Matrix _matProjection)
         0.5f, 0.5f, 0.0f, 1.0f);
 
     s_ShadowTransform = s_MatView * s_MatProjection * T;
-
-    //  더 자세한 디버깅 출력
-    char debugStr[1024];
-    sprintf_s(debugStr, "=== Shadow Matrix Debug ===\n"
-        "Light Dir: (%.3f, %.3f, %.3f)\n"
-        "Eye Pos: (%.3f, %.3f, %.3f)\n"
-        "Focus Pos: (%.3f, %.3f, %.3f)\n"
-        "View Matrix: [%.3f, %.3f, %.3f, %.3f]\n"
-        "Proj Matrix: [%.3f, %.3f, %.3f, %.3f]\n"
-        "Shadow Transform: [%.3f, %.3f, %.3f, %.3f]\n",
-        lightDir.x, lightDir.y, lightDir.z,
-        eyePosition.x, eyePosition.y, eyePosition.z,
-        focusPosition.x, focusPosition.y, focusPosition.z,
-        s_MatView._11, s_MatView._12, s_MatView._13, s_MatView._14,
-        s_MatProjection._11, s_MatProjection._12, s_MatProjection._13, s_MatProjection._14,
-        s_ShadowTransform._11, s_ShadowTransform._12, s_ShadowTransform._13, s_ShadowTransform._14);
-    cout << debugStr << "\n";
 }

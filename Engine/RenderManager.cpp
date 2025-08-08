@@ -481,10 +481,6 @@ void RenderManager::RenderDeferredLighting()
 	m_deferredLightingShader->PushShadowData(Light::s_ShadowTransform);
 	//  디버깅: 매트릭스 값 출력
 	Matrix shadowMat = Light::s_ShadowTransform;
-	char debugStr[256];
-	sprintf_s(debugStr, "Deferred에서 Shadow Matrix 전달: [%.3f, %.3f, %.3f, %.3f]\n",
-		shadowMat._11, shadowMat._12, shadowMat._13, shadowMat._14);
-	cout<<debugStr<<'\n';
 
 	m_deferredLightingShader->PushFOWData(m_FogData);
 
