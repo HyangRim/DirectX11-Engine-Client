@@ -28,6 +28,7 @@
 #include "NavMeshAgent.h"
 #include "ScrollView.h"
 #include "PlayerStateMachine.h"
+#include "MonsterStateMachine.h"
 
 GameObject::GameObject()
 {
@@ -262,6 +263,12 @@ shared_ptr<PlayerStateMachine> GameObject::GetPlayerStateMachine()
 {
 	shared_ptr<Component> component = GetFixedComponent(ComponentType::PlayerStateMachine);
 	return static_pointer_cast<PlayerStateMachine>(component);
+}
+
+shared_ptr<MonsterStateMachine> GameObject::GetMonsterStateMachine()
+{
+	shared_ptr<Component> component = GetFixedComponent(ComponentType::MonsterStateMachine);
+	return static_pointer_cast<MonsterStateMachine>(component);
 }
 
 

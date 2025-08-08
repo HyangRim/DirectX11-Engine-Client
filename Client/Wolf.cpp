@@ -2,23 +2,23 @@
 #include "Wolf.h"
 
 #include "WolfAppearState.h"
-#include "WolfAttack1State.h"
 #include "WolfDeathState.h"
 #include "WolfDyingState.h"
 #include "WolfRunState.h"
 #include "WolfWaitState.h"
 
-#include "AI.h"
-#include "WolfAppearAI.h"
-#include "WolfAttackAI.h"
-#include "WolfDeathAI.h"
-#include "WolfIdleAI.h"
+#include "WolfAnimAppearState.h"
+#include "WolfAnimDeathState.h"
+#include "WolfAnimDyingState.h"
+#include "WolfAnimRunState.h"
+#include "WolfAnimWaitState.h"
+
+#include "MonsterStateMachine.h"
 
 Wolf::Wolf(shared_ptr<Shader> _shader)
 	: Super(_shader)
 {
 	SetName(L"Wolf");
-	m_monsterState = MonsterState::APPEAR;
 }
 
 Wolf::~Wolf()
@@ -29,8 +29,10 @@ void Wolf::Start()
 {
 	InitWolfModel();
 	InitWolfAnimation();
+	InitWolfMSM();
 	InitWolfComponent();
-	InitWolfAI();
+	//InitWolfAI();
+	
 	InitWolfStats();
 	UpdateState();
 
@@ -39,19 +41,6 @@ void Wolf::Start()
 
 void Wolf::Update()
 {
-
-	if (INPUT->GetButtonDown(KEY_TYPE::KEY_5)) {
-		ChangeState(L"Appear");
-	}
-	else if (INPUT->GetButtonDown(KEY_TYPE::KEY_6)) {
-		ChangeState(L"Idle");
-	}
-	else if (INPUT->GetButtonDown(KEY_TYPE::KEY_7)) {
-		ChangeState(L"Attack");
-	}
-	else if (INPUT->GetButtonDown(KEY_TYPE::KEY_8)) {
-		ChangeState(L"Death");
-	}
 	Super::Update();
 }
 
@@ -80,18 +69,6 @@ void Wolf::OnCollisionExit(shared_ptr<GameObject> _other)
 
 void Wolf::UpdateState()
 {
-	if (m_monsterState == MonsterState::IDLE) {
-
-	}
-	else if (m_monsterState == MonsterState::RUN) {
-
-	}
-	else if (m_monsterState == MonsterState::ATTACK) {
-
-	}
-	else if (m_monsterState == MonsterState::DIE) {
-
-	}
 }
 
 void Wolf::InitWolfModel()
@@ -105,12 +82,12 @@ void Wolf::InitWolfAnimation()
 {
 	m_model->ReadAnimation(L"Appear", L"wolf/wolf_appear_anim");
 	m_model->ReadAnimation(L"AppearWait", L"wolf/wolf_appearwait_anim");
-	m_model->ReadAnimation(L"Atk1", L"wolf/wolf_atk1_anim");
-	m_model->ReadAnimation(L"Atk2", L"wolf/wolf_atk2_anim");
+	/*m_model->ReadAnimation(L"Atk1", L"wolf/wolf_atk1_anim");
+	m_model->ReadAnimation(L"Atk2", L"wolf/wolf_atk2_anim");*/
 	m_model->ReadAnimation(L"Death", L"wolf/wolf_death_anim");
 	m_model->ReadAnimation(L"Dying", L"wolf/wolf_dying_anim");
 	m_model->ReadAnimation(L"Run", L"wolf/wolf_run_anim");
-	m_model->ReadAnimation(L"Skill", L"wolf/wolf_skill_anim");
+	//m_model->ReadAnimation(L"Skill", L"wolf/wolf_skill_anim");
 	m_model->ReadAnimation(L"Wait", L"wolf/wolf_wait_anim");
 
 	AddComponent(make_shared<ModelAnimator>(m_defaultShader));
@@ -120,13 +97,14 @@ void Wolf::InitWolfAnimation()
 	}
 
 	//FSM Ãß°¡. 
-	AddComponent(make_shared<AnimationStateMachine>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait, make_shared<WolfWaitState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Appear, make_shared<WolfAppearState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Move, make_shared<WolfRunState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::BaseAttack, make_shared<WolfAttack1State>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Dead, make_shared<WolfDeathState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Dying, make_shared<WolfDyingState>());
+	m_animationStateMachine = make_shared<AnimationStateMachine>(AnimationStateType::Appear);
+	AddComponent(m_animationStateMachine);
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait,			make_shared<WolfAnimWaitState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Appear,		make_shared<WolfAnimAppearState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Move,			make_shared<WolfAnimRunState>());
+	//GetAnimationStateMachine()->RegisterState(AnimationStateType::BaseAttack,	make_shared<WolfAttack1State>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Death,		make_shared<WolfAnimDeathState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Dying,		make_shared<WolfAnimDyingState>());
 
 	auto animator = GetModelAnimator();
 
@@ -166,7 +144,7 @@ void Wolf::InitWolfComponent()
 
 void Wolf::InitWolfAI()
 {
-	auto sharedThis = dynamic_pointer_cast<Monster>(shared_from_this());
+	/*auto sharedThis = dynamic_pointer_cast<Monster>(shared_from_this());
 
 	auto appearAI = make_shared<WolfAppearAI>(sharedThis);
 	auto attackAI = make_shared<WolfAttackAI>(sharedThis);
@@ -179,7 +157,19 @@ void Wolf::InitWolfAI()
 	m_AIMap[L"Idle"] = idleAI;
 
 	m_curAI = appearAI;
-	m_curAI->Enter();
+	m_curAI->Enter();*/
+}
+
+void Wolf::InitWolfMSM()
+{
+	m_monsterStateMachine = make_shared<MonsterStateMachine>(m_animationStateMachine);
+	AddComponent(m_monsterStateMachine);
+
+	m_monsterStateMachine->RegisterState(MonsterStateType::Wait, make_shared<WolfWaitState>());
+	m_monsterStateMachine->RegisterState(MonsterStateType::Appear, make_shared<WolfAppearState>());
+	m_monsterStateMachine->RegisterState(MonsterStateType::Move, make_shared<WolfRunState>());
+	m_monsterStateMachine->RegisterState(MonsterStateType::Death, make_shared<WolfDeathState>());
+	m_monsterStateMachine->RegisterState(MonsterStateType::Dying, make_shared<WolfDyingState>());
 }
 
 void Wolf::InitWolfStats()

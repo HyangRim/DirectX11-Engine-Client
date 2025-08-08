@@ -27,6 +27,7 @@ class NavMesh;
 class NavMeshAgent;
 class ScrollView;
 class PlayerStateMachine;
+class MonsterStateMachine;
 
 enum class OBJECTTYPE {
 	DEFAULT,
@@ -74,6 +75,7 @@ public:
 	shared_ptr<NavMeshAgent> GetNavMeshAgent();
 	shared_ptr<ScrollView> GetScrollView();
 	shared_ptr<PlayerStateMachine> GetPlayerStateMachine();
+	shared_ptr<MonsterStateMachine> GetMonsterStateMachine();
 
 
 	void AddComponent(shared_ptr<Component> _component);

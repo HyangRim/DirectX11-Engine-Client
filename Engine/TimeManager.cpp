@@ -12,7 +12,11 @@ void TimeManager::Update()
 	uint64 currentCount;
 	::QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&currentCount));
 
-	m_deltaTime = (currentCount - m_prevCount) / static_cast<float>(m_frequency);
+ 
+    m_deltaTime = (currentCount - m_prevCount) / static_cast<float>(m_frequency);
+
+	m_deltaTime = min(m_deltaTime, m_maxDelatTime);
+
 	m_prevCount = currentCount;
 
 	m_frameCount++;
@@ -26,4 +30,11 @@ void TimeManager::Update()
 		m_frameTime = 0.f;
 		m_frameCount = 0;
 	}
+}
+
+// TimeManager.cpp
+void TimeManager::ResetDeltaTime()
+{
+    ::QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&m_prevCount));
+    cout << "TimeManager Reset - Next frame will use fixed delta time" << endl;
 }

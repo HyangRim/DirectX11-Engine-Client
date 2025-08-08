@@ -91,9 +91,6 @@
     <Filter Include="Scripts\Player\Bianca\BiancaE">
       <UniqueIdentifier>{35bedf2a-c2a5-43d5-984e-c2862abe3c04}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scripts\Player\Nicky\NickyQ">
-      <UniqueIdentifier>{b25d2951-85c0-4eae-95b8-310f49f0582f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scripts\Player\Nicky\NickyR">
       <UniqueIdentifier>{fb6acd0c-2b2a-4bb6-8123-e5031b363ece}</UniqueIdentifier>
     </Filter>
@@ -103,17 +100,38 @@
     <Filter Include="Scripts\Monster\Wolf">
       <UniqueIdentifier>{e7a85326-3874-4ad7-bad0-b990cb9e67e2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scripts\Monster\Wolf\AI">
-      <UniqueIdentifier>{6c446041-bb23-469a-965d-515acfe419da}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scripts\Player\Nicky\NickyW">
       <UniqueIdentifier>{36bad6ad-db4a-4648-b3a7-d2dc5cbd27ed}</UniqueIdentifier>
     </Filter>
     <Filter Include="Scripts\Monster\Alpha">
       <UniqueIdentifier>{b540f4e1-6f77-4c1d-b8e4-a3f2ee2937d8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scripts\Monster\Alpha\AI">
-      <UniqueIdentifier>{8f6ef837-8aa4-411e-8794-ee0c31d568e5}</UniqueIdentifier>
+    <Filter Include="Scripts\Player\Nicky\NickyQ">
+      <UniqueIdentifier>{b25d2951-85c0-4eae-95b8-310f49f0582f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Player\Nicky\NickyAnims">
+      <UniqueIdentifier>{488caf35-0726-4e49-b458-68823d9442cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Player\Bianca\BiancaR">
+      <UniqueIdentifier>{3a893f98-9aff-49e2-bbc5-304af8708168}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Player\Bianca\BiancaW">
+      <UniqueIdentifier>{13e4371f-85e7-49bd-be60-d135c967102b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Player\Bianca\BiancaAnims">
+      <UniqueIdentifier>{b43c8a30-e4d8-4d98-911b-d02e07291aa2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Monster\Alpha\LogicState">
+      <UniqueIdentifier>{ff6a6209-a3d8-4ecd-bb62-ee2bc065cda2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Monster\Alpha\AnimState">
+      <UniqueIdentifier>{a2090a1d-7754-46d6-bf61-71a3744e68b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Monster\Wolf\LogicState">
+      <UniqueIdentifier>{3a002245-ecf9-4ade-ae15-db5124e2f4d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Monster\Wolf\AnimState">
+      <UniqueIdentifier>{76ee9bc5-6843-48bc-a095-e40789d96ec6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -213,12 +231,6 @@
     <ClCompile Include="SkillDecalIndicator.cpp">
       <Filter>Scripts\Player\Skill</Filter>
     </ClCompile>
-    <ClCompile Include="BiancaRSkill.cpp">
-      <Filter>Scripts\Player\Bianca</Filter>
-    </ClCompile>
-    <ClCompile Include="BiancaWSkill.cpp">
-      <Filter>Scripts\Player\Bianca</Filter>
-    </ClCompile>
     <ClCompile Include="BiancaQProjectile.cpp">
       <Filter>Scripts\Player\Bianca\BiancaQ</Filter>
     </ClCompile>
@@ -252,36 +264,6 @@
     <ClCompile Include="Wolf.cpp">
       <Filter>Scripts\Monster\Wolf</Filter>
     </ClCompile>
-    <ClCompile Include="WolfAppearState.cpp">
-      <Filter>Scripts\Monster\Wolf</Filter>
-    </ClCompile>
-    <ClCompile Include="WolfAttack1State.cpp">
-      <Filter>Scripts\Monster\Wolf</Filter>
-    </ClCompile>
-    <ClCompile Include="WolfDeathState.cpp">
-      <Filter>Scripts\Monster\Wolf</Filter>
-    </ClCompile>
-    <ClCompile Include="WolfDyingState.cpp">
-      <Filter>Scripts\Monster\Wolf</Filter>
-    </ClCompile>
-    <ClCompile Include="WolfRunState.cpp">
-      <Filter>Scripts\Monster\Wolf</Filter>
-    </ClCompile>
-    <ClCompile Include="WolfWaitState.cpp">
-      <Filter>Scripts\Monster\Wolf</Filter>
-    </ClCompile>
-    <ClCompile Include="WolfAppearAI.cpp">
-      <Filter>Scripts\Monster\Wolf\AI</Filter>
-    </ClCompile>
-    <ClCompile Include="WolfAttackAI.cpp">
-      <Filter>Scripts\Monster\Wolf\AI</Filter>
-    </ClCompile>
-    <ClCompile Include="WolfDeathAI.cpp">
-      <Filter>Scripts\Monster\Wolf\AI</Filter>
-    </ClCompile>
-    <ClCompile Include="WolfIdleAI.cpp">
-      <Filter>Scripts\Monster\Wolf\AI</Filter>
-    </ClCompile>
     <ClCompile Include="NickyWSkill.cpp">
       <Filter>Scripts\Player\Nicky\NickyW</Filter>
     </ClCompile>
@@ -291,41 +273,107 @@
     <ClCompile Include="Alpha.cpp">
       <Filter>Scripts\Monster\Alpha</Filter>
     </ClCompile>
+    <ClCompile Include="NickyQState.cpp">
+      <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyEState.cpp">
+      <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyRState.cpp">
+      <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyWState.cpp">
+      <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyRunState.cpp">
+      <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyWaitState.cpp">
+      <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaRSkill.cpp">
+      <Filter>Scripts\Player\Bianca\BiancaR</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaWSkill.cpp">
+      <Filter>Scripts\Player\Bianca\BiancaW</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaEState.cpp">
+      <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaQState.cpp">
+      <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaRState.cpp">
+      <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaRunState.cpp">
+      <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaWaitState.cpp">
+      <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaWState.cpp">
+      <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaAnimAppearState.cpp">
+      <Filter>Scripts\Monster\Alpha\AnimState</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaAnimDeathState.cpp">
+      <Filter>Scripts\Monster\Alpha\AnimState</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaAnimWaitState.cpp">
+      <Filter>Scripts\Monster\Alpha\AnimState</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaAnimWalkState.cpp">
+      <Filter>Scripts\Monster\Alpha\AnimState</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaAnimDyingState.cpp">
+      <Filter>Scripts\Monster\Alpha\AnimState</Filter>
+    </ClCompile>
     <ClCompile Include="AlphaAppearState.cpp">
-      <Filter>Scripts\Monster\Alpha</Filter>
-    </ClCompile>
-    <ClCompile Include="AlphaAttack1State.cpp">
-      <Filter>Scripts\Monster\Alpha</Filter>
-    </ClCompile>
-    <ClCompile Include="AlphaAttack2State.cpp">
-      <Filter>Scripts\Monster\Alpha</Filter>
+      <Filter>Scripts\Monster\Alpha\LogicState</Filter>
     </ClCompile>
     <ClCompile Include="AlphaDeathState.cpp">
-      <Filter>Scripts\Monster\Alpha</Filter>
+      <Filter>Scripts\Monster\Alpha\LogicState</Filter>
     </ClCompile>
     <ClCompile Include="AlphaDyingState.cpp">
-      <Filter>Scripts\Monster\Alpha</Filter>
-    </ClCompile>
-    <ClCompile Include="AlphaSkill1State.cpp">
-      <Filter>Scripts\Monster\Alpha</Filter>
+      <Filter>Scripts\Monster\Alpha\LogicState</Filter>
     </ClCompile>
     <ClCompile Include="AlphaWaitState.cpp">
-      <Filter>Scripts\Monster\Alpha</Filter>
+      <Filter>Scripts\Monster\Alpha\LogicState</Filter>
     </ClCompile>
     <ClCompile Include="AlphaWalkState.cpp">
-      <Filter>Scripts\Monster\Alpha</Filter>
+      <Filter>Scripts\Monster\Alpha\LogicState</Filter>
     </ClCompile>
-    <ClCompile Include="AlphaAppearAI.cpp">
-      <Filter>Scripts\Monster\Alpha\AI</Filter>
+    <ClCompile Include="WolfAnimAppearState.cpp">
+      <Filter>Scripts\Monster\Wolf\AnimState</Filter>
     </ClCompile>
-    <ClCompile Include="AlphaAttackAI.cpp">
-      <Filter>Scripts\Monster\Alpha\AI</Filter>
+    <ClCompile Include="WolfAnimDeathState.cpp">
+      <Filter>Scripts\Monster\Wolf\AnimState</Filter>
     </ClCompile>
-    <ClCompile Include="AlphaDeathAI.cpp">
-      <Filter>Scripts\Monster\Alpha\AI</Filter>
+    <ClCompile Include="WolfAnimDyingState.cpp">
+      <Filter>Scripts\Monster\Wolf\AnimState</Filter>
     </ClCompile>
-    <ClCompile Include="AlphaIdleAI.cpp">
-      <Filter>Scripts\Monster\Alpha\AI</Filter>
+    <ClCompile Include="WolfAnimRunState.cpp">
+      <Filter>Scripts\Monster\Wolf\AnimState</Filter>
+    </ClCompile>
+    <ClCompile Include="WolfAnimWaitState.cpp">
+      <Filter>Scripts\Monster\Wolf\AnimState</Filter>
+    </ClCompile>
+    <ClCompile Include="WolfAppearState.cpp">
+      <Filter>Scripts\Monster\Wolf\LogicState</Filter>
+    </ClCompile>
+    <ClCompile Include="WolfDeathState.cpp">
+      <Filter>Scripts\Monster\Wolf\LogicState</Filter>
+    </ClCompile>
+    <ClCompile Include="WolfDyingState.cpp">
+      <Filter>Scripts\Monster\Wolf\LogicState</Filter>
+    </ClCompile>
+    <ClCompile Include="WolfRunState.cpp">
+      <Filter>Scripts\Monster\Wolf\LogicState</Filter>
+    </ClCompile>
+    <ClCompile Include="WolfWaitState.cpp">
+      <Filter>Scripts\Monster\Wolf\LogicState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -428,12 +476,6 @@
     <ClInclude Include="SkillDecalIndicator.h">
       <Filter>Scripts\Player\Skill</Filter>
     </ClInclude>
-    <ClInclude Include="BiancaRSkill.h">
-      <Filter>Scripts\Player\Bianca</Filter>
-    </ClInclude>
-    <ClInclude Include="BiancaWSkill.h">
-      <Filter>Scripts\Player\Bianca</Filter>
-    </ClInclude>
     <ClInclude Include="BiancaQProjectile.h">
       <Filter>Scripts\Player\Bianca\BiancaQ</Filter>
     </ClInclude>
@@ -467,36 +509,6 @@
     <ClInclude Include="Wolf.h">
       <Filter>Scripts\Monster\Wolf</Filter>
     </ClInclude>
-    <ClInclude Include="WolfAppearState.h">
-      <Filter>Scripts\Monster\Wolf</Filter>
-    </ClInclude>
-    <ClInclude Include="WolfAttack1State.h">
-      <Filter>Scripts\Monster\Wolf</Filter>
-    </ClInclude>
-    <ClInclude Include="WolfDeathState.h">
-      <Filter>Scripts\Monster\Wolf</Filter>
-    </ClInclude>
-    <ClInclude Include="WolfDyingState.h">
-      <Filter>Scripts\Monster\Wolf</Filter>
-    </ClInclude>
-    <ClInclude Include="WolfRunState.h">
-      <Filter>Scripts\Monster\Wolf</Filter>
-    </ClInclude>
-    <ClInclude Include="WolfWaitState.h">
-      <Filter>Scripts\Monster\Wolf</Filter>
-    </ClInclude>
-    <ClInclude Include="WolfAppearAI.h">
-      <Filter>Scripts\Monster\Wolf\AI</Filter>
-    </ClInclude>
-    <ClInclude Include="WolfAttackAI.h">
-      <Filter>Scripts\Monster\Wolf\AI</Filter>
-    </ClInclude>
-    <ClInclude Include="WolfDeathAI.h">
-      <Filter>Scripts\Monster\Wolf\AI</Filter>
-    </ClInclude>
-    <ClInclude Include="WolfIdleAI.h">
-      <Filter>Scripts\Monster\Wolf\AI</Filter>
-    </ClInclude>
     <ClInclude Include="NickyWSkill.h">
       <Filter>Scripts\Player\Nicky\NickyW</Filter>
     </ClInclude>
@@ -506,41 +518,107 @@
     <ClInclude Include="Alpha.h">
       <Filter>Scripts\Monster\Alpha</Filter>
     </ClInclude>
+    <ClInclude Include="NickyQState.h">
+      <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyEState.h">
+      <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyWState.h">
+      <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyRState.h">
+      <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyRunState.h">
+      <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyWaitState.h">
+      <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaRSkill.h">
+      <Filter>Scripts\Player\Bianca\BiancaR</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaWSkill.h">
+      <Filter>Scripts\Player\Bianca\BiancaW</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaEState.h">
+      <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaQState.h">
+      <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaRState.h">
+      <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaRunState.h">
+      <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaWaitState.h">
+      <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaWState.h">
+      <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaAnimAppearState.h">
+      <Filter>Scripts\Monster\Alpha\AnimState</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaAnimDeathState.h">
+      <Filter>Scripts\Monster\Alpha\AnimState</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaAnimWaitState.h">
+      <Filter>Scripts\Monster\Alpha\AnimState</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaAnimWalkState.h">
+      <Filter>Scripts\Monster\Alpha\AnimState</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaAnimDyingState.h">
+      <Filter>Scripts\Monster\Alpha\AnimState</Filter>
+    </ClInclude>
     <ClInclude Include="AlphaAppearState.h">
-      <Filter>Scripts\Monster\Alpha</Filter>
-    </ClInclude>
-    <ClInclude Include="AlphaAttack1State.h">
-      <Filter>Scripts\Monster\Alpha</Filter>
-    </ClInclude>
-    <ClInclude Include="AlphaAttack2State.h">
-      <Filter>Scripts\Monster\Alpha</Filter>
+      <Filter>Scripts\Monster\Alpha\LogicState</Filter>
     </ClInclude>
     <ClInclude Include="AlphaDeathState.h">
-      <Filter>Scripts\Monster\Alpha</Filter>
+      <Filter>Scripts\Monster\Alpha\LogicState</Filter>
     </ClInclude>
     <ClInclude Include="AlphaDyingState.h">
-      <Filter>Scripts\Monster\Alpha</Filter>
-    </ClInclude>
-    <ClInclude Include="AlphaSkill1State.h">
-      <Filter>Scripts\Monster\Alpha</Filter>
+      <Filter>Scripts\Monster\Alpha\LogicState</Filter>
     </ClInclude>
     <ClInclude Include="AlphaWaitState.h">
-      <Filter>Scripts\Monster\Alpha</Filter>
+      <Filter>Scripts\Monster\Alpha\LogicState</Filter>
     </ClInclude>
     <ClInclude Include="AlphaWalkState.h">
-      <Filter>Scripts\Monster\Alpha</Filter>
+      <Filter>Scripts\Monster\Alpha\LogicState</Filter>
     </ClInclude>
-    <ClInclude Include="AlphaAppearAI.h">
-      <Filter>Scripts\Monster\Alpha\AI</Filter>
+    <ClInclude Include="WolfAnimAppearState.h">
+      <Filter>Scripts\Monster\Wolf\AnimState</Filter>
     </ClInclude>
-    <ClInclude Include="AlphaAttackAI.h">
-      <Filter>Scripts\Monster\Alpha\AI</Filter>
+    <ClInclude Include="WolfAnimDeathState.h">
+      <Filter>Scripts\Monster\Wolf\AnimState</Filter>
     </ClInclude>
-    <ClInclude Include="AlphaDeathAI.h">
-      <Filter>Scripts\Monster\Alpha\AI</Filter>
+    <ClInclude Include="WolfAnimDyingState.h">
+      <Filter>Scripts\Monster\Wolf\AnimState</Filter>
     </ClInclude>
-    <ClInclude Include="AlphaIdleAI.h">
-      <Filter>Scripts\Monster\Alpha\AI</Filter>
+    <ClInclude Include="WolfAnimRunState.h">
+      <Filter>Scripts\Monster\Wolf\AnimState</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfAnimWaitState.h">
+      <Filter>Scripts\Monster\Wolf\AnimState</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfAppearState.h">
+      <Filter>Scripts\Monster\Wolf\LogicState</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfDeathState.h">
+      <Filter>Scripts\Monster\Wolf\LogicState</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfDyingState.h">
+      <Filter>Scripts\Monster\Wolf\LogicState</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfRunState.h">
+      <Filter>Scripts\Monster\Wolf\LogicState</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfWaitState.h">
+      <Filter>Scripts\Monster\Wolf\LogicState</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

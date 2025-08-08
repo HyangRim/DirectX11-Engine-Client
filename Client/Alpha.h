@@ -25,7 +25,10 @@ private:
 private:
     void InitAlphaModel();
     void InitAlphaAnimation();
+    void InitAlphaMSM();
     void InitAlphaComponent();
+    
     void InitAlphaAI();
     void InitAlphaStats();
+
 };

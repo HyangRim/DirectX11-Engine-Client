@@ -2,75 +2,43 @@
 #include "WolfDeathState.h"
 
 WolfDeathState::WolfDeathState()
-    : AnimationState(AnimationStateType::Dead)
+	:Super(MonsterStateType::Death)
 {
+
 }
 
-void WolfDeathState::Enter(shared_ptr<ModelAnimator> _animator)
+void WolfDeathState::Enter()
 {
-    if (!_animator)
-        return;
-    _animator->SetAnimationSpeed(m_playSpeed);
-    m_expectedDuration = _animator->GetAnimationDuration(L"Death") / m_playSpeed;
-    // Wait 애니메이션 재생
-    _animator->PlaySequence(L"Wolf_death_Sequence");
-
-    m_deathTime = 0.0f;
-    m_isAnimationStarted = true;
-    m_isDeathComplete = false;
-    cout << "Death 상태 진입 - Death 애니메이션 재생 시작" << endl;
+	m_animTime = 0.f;
+	m_isAnimationStarted = true;
+	m_isDeathComplete = false;
+	cout << "알파 Death State 진입\n";
 }
 
-void WolfDeathState::Update(shared_ptr<ModelAnimator> _animator)
+void WolfDeathState::Update()
 {
-    if (!_animator)
-        return;
+	m_animTime += DT;
 
-    // 대기 시간 업데이트
-    m_deathTime += DT;
 
-    // 애니메이션이 정상적으로 재생되고 있는지 확인
-    if (m_isAnimationStarted)
-    {
-        wstring currentAnimTag = _animator->GetCurrentAnimationTag();
-        if (currentAnimTag == L"Death")
-        {
-            // Wait 애니메이션이 정상적으로 재생 중
-            // 필요시 추가 로직 구현
-        }
-    }
-
-    // 시간 기반으로 완료 체크
-    if (!m_isDeathComplete && m_deathTime >= m_expectedDuration)
-    {
-        m_isDeathComplete = true;
-        // 안전하게 시퀀스 정지
-        _animator->StopSequence();
-        wcout << L"Wolf : 죽는 모션 완료!" << endl;
-    }
+	// 애니메이션 완료 조건 체크 (예: 3초 후 또는 애니메이션 시퀀스 완료 시)
+	if (!m_isDeathComplete && m_animTime >= (59.f / 25.f) / 2.f) // 3초 예시
+	{
+		cout << "Death State에서 애니메이션 완료 감지!" << endl;
+		m_isDeathComplete = true;
+	}
 }
 
-void WolfDeathState::Exit(shared_ptr<ModelAnimator> _animator)
+void WolfDeathState::Exit()
 {
-    if (!_animator)
-        return;
-
-    cout << "Death 상태 종료 - 대기 시간: " << m_deathTime << "초" << endl;
-
-    // 상태 종료 시 정리
-    m_deathTime = 0.0f;
-    m_isAnimationStarted = false;
-
-    _animator->SetAnimationSpeed(1.f);
+	m_animTime = 0.f;
+	m_isAnimationStarted = false;
+	m_isDeathComplete = false;
+	cout << "알파 Death State 종료\n";
 }
 
-bool WolfDeathState::CanTransitionTo(AnimationStateType _nextState)
+bool WolfDeathState::CanTransitionTo(MonsterStateType newState)
 {
-    switch (_nextState)
-    {
-    case AnimationStateType::Dying:
-        return true;
-    default:
-        return false;
-    }
+	if (m_isDeathComplete && newState == MonsterStateType::Dying)
+		return true;
+	return false;
 }

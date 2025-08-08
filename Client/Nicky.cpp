@@ -2,13 +2,16 @@
 #include "ISkillExecutor.h"
 
 #include "Nicky.h"
-#include "NickyESkillState.h"
-#include "NickyQSkillState.h"
-#include "NickyRSkillState.h"
-#include "NickyMoveState.h"
+
+
+#include "NickyQState.h"
+#include "NickyWState.h"
+#include "NickyEState.h"
+#include "NickyRState.h"
+
 #include "NickyRunState.h"
 #include "NickyWaitState.h"
-#include "NickyWSkillState.h"
+
 #include "FogOfWar.h"
 
 #include "PlayerStateMachine.h"
@@ -46,14 +49,6 @@ void Nicky::Start()
 void Nicky::Update()
 {
 	Super::Update();
-
-
-	//Vec3 forearmPos = GetModelAnimator()->GetAnimatedBonePosition(L"Bip001 R Forearm");
-
-	//// 월드 좌표계로 변환
-	//Vec3 worldPos = Vec3::Transform(forearmPos, GetTransform()->GetWorldMatrix());
-
-	//cout << "worldPos : " << worldPos.x << " , " << worldPos.y << " , " << worldPos.z << endl;
 }
 
 void Nicky::LateUpdate()
@@ -125,14 +120,14 @@ void Nicky::InitNickyAnimation()
 		GetModelAnimator()->SetPass(2);
 	}
 	//FSM 추가. 
-	AddComponent(make_shared<AnimationStateMachine>());
+	AddComponent(make_shared<AnimationStateMachine>(AnimationStateType::Wait));
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait, make_shared<NickyWaitState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Run, make_shared<NickyRunState>());
 
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_2, make_shared<NickyWSkillState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_3, make_shared<NickyESkillState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4, make_shared<NickyRSkillState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1, make_shared<NickyQSkillState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_2, make_shared<NickyWState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_3, make_shared<NickyEState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4, make_shared<NickyRState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1, make_shared<NickyQState>());
 
 	auto animator = GetModelAnimator();
 	// 평타 시퀀스 (BaseAttack_01 -> BaseAttack_02)

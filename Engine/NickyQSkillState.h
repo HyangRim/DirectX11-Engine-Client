@@ -68,6 +68,4 @@ private:
     bool m_isFirstAnimationActive = false;
 public:
     bool IsFirstAnimationActive() const { return m_isFirstAnimationActive; }
-
-
 };

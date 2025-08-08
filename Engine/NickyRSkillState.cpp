@@ -26,19 +26,13 @@ void NickyRSkillState::Enter(shared_ptr<ModelAnimator> animator)
     // 스킬 시퀀스 재생
     animator->PlaySequence(L"Skill_4_Sequence");
 
-    // 시퀀스 완료 콜백 설정
-    animator->SetSequenceCompleteCallback(L"Skill_4_Sequence", [this]() {
-        m_isSkillComplete = true;  // 스킬 완료 플래그 설정
-        wcout << L"R 스킬 시퀀스 완료!" << endl;
-        });
-
     m_skillTime = 0.0f;
     m_isAnimationStarted = true;
     m_isSkillComplete = false;
     m_cachedAnimator = animator;
 
 
-    cout << "Skill4 상태 진입 - Skill4 애니메이션 재생 시작" << endl;
+    cout << "R 스킬 상태 진입 - R 스킬 애니메이션 재생 시작" << endl;
 }
 
 void NickyRSkillState::Update(shared_ptr<ModelAnimator> animator)
@@ -68,7 +62,6 @@ void NickyRSkillState::Update(shared_ptr<ModelAnimator> animator)
     {
         // 시퀀스가 끝났으면 완료 플래그 설정
         m_isSkillComplete = true;
-        cout << "R 스킬 시퀀스 자동 완료 감지" << endl;
     }
 }
 
@@ -77,7 +70,7 @@ void NickyRSkillState::Exit(shared_ptr<ModelAnimator> animator)
     if (!animator)
         return;
 
-    cout << "Skill4 상태 종료 - 대기 시간: " << m_skillTime << "초" << endl;
+    cout << "R 스킬 상태 종료" <<  endl;
   
 
     // 상태 종료 시 정리

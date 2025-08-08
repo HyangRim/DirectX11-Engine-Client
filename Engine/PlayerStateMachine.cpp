@@ -54,7 +54,6 @@ void PlayerStateMachine::Init()
 void PlayerStateMachine::Start()
 {
     Init();
-    //ChangeState("Wait");
 }
 
 void PlayerStateMachine::Update()
@@ -222,8 +221,7 @@ void PlayerStateMachine::ProcessInput()
         m_animationStateMachine->ChangeState(AnimationStateType::Wait);
     }
 
-   
-
+  
     // 스킬 입력 시 이동 중지
     if (INPUT->GetButtonDown(KEY_TYPE::Q))
     {
@@ -325,14 +323,6 @@ Ray PlayerStateMachine::CreateRayFromMouse(POINT mousePos, shared_ptr<Camera> ca
     Vec3 rayDirection = farPoint - nearPoint;
     rayDirection.Normalize();
 
-    //// 디버깅 출력
-    //cout << "=== Ray Generation Debug ===" << endl;
-    //cout << "Mouse Position: (" << mousePos.x << ", " << mousePos.y << ")" << endl;
-    //cout << "Viewport: " << viewport.GetWidth() << "x" << viewport.GetHeight() << endl;
-    //cout << "Near Point: (" << nearPoint.x << ", " << nearPoint.y << ", " << nearPoint.z << ")" << endl;
-    //cout << "Far Point: (" << farPoint.x << ", " << farPoint.y << ", " << farPoint.z << ")" << endl;
-    //cout << "Ray Direction: (" << rayDirection.x << ", " << rayDirection.y << ", " << rayDirection.z << ")" << endl;
-
     // Ray 방향이 아래쪽을 향하는지 확인
     if (rayDirection.y > 0) {
         cout << "WARNING: Ray pointing upward!" << endl;
@@ -364,10 +354,12 @@ void PlayerStateMachine::HandleSpecialStateTransitions()
     {
         if (m_currentState->CanTransitionTo(PlayerStateType::Wait))
         {
+            cout << "들어와라 \n";
             auto gameObject = GetGameObject();
             auto navMeshAgent = gameObject->GetFixedComponent<NavMeshAgent>(ComponentType::NavMeshAgent);
             navMeshAgent->Stop();
             ChangeState(PlayerStateType::Wait);
+            //m_animationStateMachine->ChangeState(AnimationStateType::Wait);
         }
     }
     // W 스킬 완료 후 Wait 상태로 전환
@@ -376,6 +368,7 @@ void PlayerStateMachine::HandleSpecialStateTransitions()
         if (m_currentState->CanTransitionTo(PlayerStateType::Wait))
         {
             ChangeState(PlayerStateType::Wait);
+            //m_animationStateMachine->ChangeState(AnimationStateType::Wait);
         }
     }
     // E 스킬 완료 후 Wait 상태로 전환
@@ -387,6 +380,7 @@ void PlayerStateMachine::HandleSpecialStateTransitions()
             auto navMeshAgent = gameObject->GetFixedComponent<NavMeshAgent>(ComponentType::NavMeshAgent);
             navMeshAgent->Stop();
             ChangeState(PlayerStateType::Wait);
+            //m_animationStateMachine->ChangeState(AnimationStateType::Wait);
         }
     }
     // R 스킬 완료 후 Wait 상태로 전환
@@ -395,11 +389,9 @@ void PlayerStateMachine::HandleSpecialStateTransitions()
         if (m_currentState->CanTransitionTo(PlayerStateType::Wait))
         {
             ChangeState(PlayerStateType::Wait);
+            //m_animationStateMachine->ChangeState(AnimationStateType::Wait);
         }
     }
-
-    // 다른 스킬들도 동일하게 처리 가능
-    // if (GetCurrentState() == AnimationStateType::Skill_1) { ... }
 }
 
 

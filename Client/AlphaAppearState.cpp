@@ -2,64 +2,43 @@
 #include "AlphaAppearState.h"
 
 AlphaAppearState::AlphaAppearState()
-    : AnimationState(AnimationStateType::Appear)
+	:Super(MonsterStateType::Appear)
 {
+
 }
 
-AlphaAppearState::~AlphaAppearState()
+void AlphaAppearState::Enter()
 {
+	m_animTime = 0.f;
+	m_isAnimationStarted = true;
+	m_isAppearComplete = false;
+	cout << "알파 Appear State 진입\n";
 }
 
-void AlphaAppearState::Enter(shared_ptr<ModelAnimator> _animator)
+void AlphaAppearState::Update()
 {
-    if (!_animator)
-        return;
-
-    // Wait 애니메이션 재생
-    _animator->SetAnimationByTag(L"Appear", false);
-
-    m_animTime = 0.0f;
-    m_isAnimationStarted = true;
-
-    cout << "Alpha Appear 상태 진입 - Appear 애니메이션 재생 시작" << endl;
+	m_animTime += DT;
+	// 애니메이션 완료 조건 체크 (예: 3초 후 또는 애니메이션 시퀀스 완료 시)
+	if (!m_isAppearComplete && m_animTime >= (151.f/25.f)/2.f) // 3초 예시
+	{
+		cout << "Appear 애니메이션 완료!" << endl;
+		m_isAppearComplete = true;
+	}
 }
 
-void AlphaAppearState::Update(shared_ptr<ModelAnimator> _animator)
+void AlphaAppearState::Exit()
 {
-    if (!_animator)
-        return;
+	m_animTime = 0.f;
+	m_isAnimationStarted = false;
 
-    // 대기 시간 업데이트
-    m_animTime += DT;
-
-    // 애니메이션이 정상적으로 재생되고 있는지 확인
-    if (m_isAnimationStarted)
-    {
-        wstring currentAnimTag = _animator->GetCurrentAnimationTag();
-        if (currentAnimTag == L"Appear")
-        {
-            // Wait 애니메이션이 정상적으로 재생 중
-            // 필요시 추가 로직 구현
-        }
-    }
+	cout << "알파 Appear State 종료\n";
 }
 
-void AlphaAppearState::Exit(shared_ptr<ModelAnimator> _animator)
+bool AlphaAppearState::CanTransitionTo(MonsterStateType newState)
 {
-    if (!_animator)
-        return;
-
-    cout << "Alpha Appear 상태 종료 - 대기 시간: " << m_animTime << "초" << endl;
-
-    // 상태 종료 시 정리
-    m_animTime = 0.0f;
-    m_isAnimationStarted = false;
+	if (m_isAppearComplete && newState == MonsterStateType::Wait)
+		return true;
+	return false;
 }
 
-bool AlphaAppearState::CanTransitionTo(AnimationStateType _nextState)
-{
-    // 스킬이 완료되었을 때만 Wait 상태로 전환 가능
-    if (_nextState == AnimationStateType::Wait)
-        return true;
-    return false;
-}
+

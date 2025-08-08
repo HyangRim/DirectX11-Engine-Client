@@ -63,11 +63,11 @@ void ModelAnimator::UpdateCurrentAnimation()
     if (!currentAnim) return;
 
     float timePerFrame = 1.0f / (currentAnim->m_frameRate * desc.m_curr.m_speed);
-
     if (desc.m_curr.m_sumTime >= timePerFrame)
     {
         desc.m_curr.m_sumTime = 0;
         desc.m_curr.m_currFrame = (desc.m_curr.m_currFrame + 1) % currentAnim->m_frameCount;
+        //cout << "현재 프레임 : " << desc.m_curr.m_currFrame << endl;
         desc.m_curr.m_nextFrame = (desc.m_curr.m_currFrame + 1) % currentAnim->m_frameCount;
     }
 
@@ -307,6 +307,7 @@ void ModelAnimator::UpdateSequence()
         return;
 
     float currentAnimDuration = GetCurrentSequenceDuration();
+   
     m_currentSequence->currentTime += DT;
     //cout << "이건가 : " << m_currentSequence->currentTime << endl;
     if (m_currentSequence->currentTime >= currentAnimDuration)

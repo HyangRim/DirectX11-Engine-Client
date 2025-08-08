@@ -2,67 +2,43 @@
 #include "AlphaDeathState.h"
 
 AlphaDeathState::AlphaDeathState()
-    : AnimationState(AnimationStateType::Dead)
+	:Super(MonsterStateType::Death)
 {
+
 }
 
-AlphaDeathState::~AlphaDeathState()
+void AlphaDeathState::Enter()
 {
+	m_animTime = 0.f;
+	m_isAnimationStarted = true;
+	m_isDeathComplete = false;
+	cout << "알파 Death State 진입\n";
 }
 
-void AlphaDeathState::Enter(shared_ptr<ModelAnimator> _animator)
+void AlphaDeathState::Update()
 {
-    if (!_animator)
-        return;
+	m_animTime += DT;
 
-    // Wait 애니메이션 재생
-    _animator->SetAnimationByTag(L"Death", false);
 
-    m_animTime = 0.0f;
-    m_isAnimationStarted = true;
-
-    cout << "Alpha Death 상태 진입 - Death 애니메이션 재생 시작" << endl;
+	// 애니메이션 완료 조건 체크 (예: 3초 후 또는 애니메이션 시퀀스 완료 시)
+	if (!m_isDeathComplete && m_animTime >= (77.f/25.f) / 2.f) // 3초 예시
+	{
+		cout << "Death State에서 애니메이션 완료 감지!" << endl;
+		m_isDeathComplete = true;
+	}
 }
 
-void AlphaDeathState::Update(shared_ptr<ModelAnimator> _animator)
+void AlphaDeathState::Exit()
 {
-    if (!_animator)
-        return;
-
-    // 대기 시간 업데이트
-    m_animTime += DT;
-
-    // 애니메이션이 정상적으로 재생되고 있는지 확인
-    if (m_isAnimationStarted)
-    {
-        wstring currentAnimTag = _animator->GetCurrentAnimationTag();
-        if (currentAnimTag == L"Death")
-        {
-            // Wait 애니메이션이 정상적으로 재생 중
-            // 필요시 추가 로직 구현
-        }
-    }
+	m_animTime = 0.f;
+	m_isAnimationStarted = false;
+	m_isDeathComplete = false;
+	cout << "알파 Death State 종료\n";
 }
 
-void AlphaDeathState::Exit(shared_ptr<ModelAnimator> _animator)
+bool AlphaDeathState::CanTransitionTo(MonsterStateType newState)
 {
-    if (!_animator)
-        return;
-
-    cout << "Death 상태 종료 - 대기 시간: " << m_animTime << "초" << endl;
-
-    // 상태 종료 시 정리
-    m_animTime = 0.0f;
-    m_isAnimationStarted = false;
-}
-
-bool AlphaDeathState::CanTransitionTo(AnimationStateType _nextState)
-{
-    switch (_nextState)
-    {
-    case AnimationStateType::Dying:
-        return true;
-    default:
-        return false;
-    }
+	if (m_isDeathComplete && newState == MonsterStateType::Dying)
+		return true;
+	return false;
 }

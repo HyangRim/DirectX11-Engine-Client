@@ -2,61 +2,33 @@
 #include "AlphaDyingState.h"
 
 AlphaDyingState::AlphaDyingState()
-    : AnimationState(AnimationStateType::Dying)
+	:Super(MonsterStateType::Dying)
 {
+
 }
 
-AlphaDyingState::~AlphaDyingState()
+void AlphaDyingState::Enter()
 {
+	m_animTime = 0.f;
+	m_isAnimationStarted = true;
+
+	cout << "알파 Dying State 진입\n";
 }
 
-void AlphaDyingState::Enter(shared_ptr<ModelAnimator> _animator)
+void AlphaDyingState::Update()
 {
-    if (!_animator)
-        return;
 
-    // Wait 애니메이션 재생
-    _animator->SetAnimationByTag(L"Dying", true);
-
-    m_animTime = 0.0f;
-    m_isAnimationStarted = true;
-
-    cout << "Alpha Dying 상태 진입 - Dying 애니메이션 재생 시작" << endl;
 }
 
-void AlphaDyingState::Update(shared_ptr<ModelAnimator> _animator)
+void AlphaDyingState::Exit()
 {
-    if (!_animator)
-        return;
+	m_animTime = 0.f;
+	m_isAnimationStarted = false;
 
-    // 대기 시간 업데이트
-    m_animTime += DT;
-
-    // 애니메이션이 정상적으로 재생되고 있는지 확인
-    if (m_isAnimationStarted)
-    {
-        wstring currentAnimTag = _animator->GetCurrentAnimationTag();
-        if (currentAnimTag == L"Dying")
-        {
-            // Wait 애니메이션이 정상적으로 재생 중
-            // 필요시 추가 로직 구현
-        }
-    }
+	cout << "알파 Dying State 종료\n";
 }
 
-void AlphaDyingState::Exit(shared_ptr<ModelAnimator> _animator)
-{
-    if (!_animator)
-        return;
-
-    cout << "Dying 상태 종료 - 대기 시간: " << m_animTime << "초" << endl;
-
-    // 상태 종료 시 정리
-    m_animTime = 0.0f;
-    m_isAnimationStarted = false;
-}
-
-bool AlphaDyingState::CanTransitionTo(AnimationStateType _nextState)
+bool AlphaDyingState::CanTransitionTo(MonsterStateType newState)
 {
 	return false;
 }

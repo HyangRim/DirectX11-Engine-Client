@@ -13,8 +13,8 @@ WolfDeathAI::~WolfDeathAI()
 
 void WolfDeathAI::Enter()
 {
-	m_Owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::Dead);
-	m_Owner->SetMonsterState(MonsterState::DIE);
+	//m_Owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::Dead);
+	//m_Owner->SetMonsterState(MonsterState::DIE);
 
 	wcout << L"Enter DIE AI\n";
 }

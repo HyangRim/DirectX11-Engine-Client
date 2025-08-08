@@ -1,20 +1,22 @@
 #pragma once
-#include "AnimationState.h"
+#include "MonsterState.h"
 class AlphaDyingState :
-    public AnimationState
+    public MonsterState
 {
+    using Super = MonsterState;
 public:
     AlphaDyingState();
-    virtual ~AlphaDyingState();
+    virtual ~AlphaDyingState() = default;
 
-public:
-    void Enter(shared_ptr<ModelAnimator> _animator) override;
-    void Update(shared_ptr<ModelAnimator> _animator) override;
-    void Exit(shared_ptr<ModelAnimator> _animator) override;
-    bool CanTransitionTo(AnimationStateType _nextState) override;
+    virtual void Enter();
+    virtual void Update();
+    virtual void Exit();
+    virtual bool CanTransitionTo(MonsterStateType newState);
+
+
+
 private:
-    float m_animTime = 0.0f;  // 대기 상태 지속 시간
-    bool m_isAnimationStarted = false;
-    bool m_isAppearComplete = false;  // 추가: 스킬 완료 플래그
+    bool m_isAnimationStarted;
+    float m_animTime;
 };
 

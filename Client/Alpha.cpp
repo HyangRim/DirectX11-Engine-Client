@@ -1,24 +1,24 @@
 #include "pch.h"
 #include "Alpha.h"
 
-#include "AlphaAppearAI.h"
-#include "AlphaAttackAI.h"
-#include "AlphaDeathAI.h"
-#include "AlphaIdleAI.h"
+#include "AlphaAnimAppearState.h"
+#include "AlphaAnimDeathState.h"
+#include "AlphaAnimDyingState.h"
+#include "AlphaAnimWaitState.h"
+#include "AlphaAnimWalkState.h"
 
 #include "AlphaAppearState.h"
-#include "AlphaAttack1State.h"
 #include "AlphaDeathState.h"
 #include "AlphaDyingState.h"
-#include "AlphaSkill1State.h"
 #include "AlphaWaitState.h"
 #include "AlphaWalkState.h"
+
+#include "MonsterStateMachine.h"
 
 Alpha::Alpha(shared_ptr<Shader> _shader)
 	: Super(_shader)
 {
 	SetName(L"Alpha");
-	m_monsterState = MonsterState::APPEAR;
 }
 
 Alpha::~Alpha()
@@ -28,31 +28,24 @@ Alpha::~Alpha()
 
 void Alpha::Start()
 {
-	Super::Start();
-
+	
 	InitAlphaModel();
 	InitAlphaAnimation();
+	InitAlphaMSM();
+
 	InitAlphaComponent();
-	InitAlphaAI();
+
+	//InitAlphaAI();
+	
 	InitAlphaStats();
-	UpdateState();
+
+	Super::Start();
+
 
 }
 
 void Alpha::Update()
 {
-	if (INPUT->GetButtonDown(KEY_TYPE::KEY_5)) {
-		ChangeState(L"Appear");
-	}
-	else if (INPUT->GetButtonDown(KEY_TYPE::KEY_6)) {
-		ChangeState(L"Idle");
-	}
-	else if (INPUT->GetButtonDown(KEY_TYPE::KEY_7)) {
-		ChangeState(L"Attack");
-	}
-	else if (INPUT->GetButtonDown(KEY_TYPE::KEY_8)) {
-		ChangeState(L"Death");
-	}
 	Super::Update();
 }
 
@@ -78,21 +71,6 @@ void Alpha::OnCollisionExit(shared_ptr<GameObject> _other)
 {
 }
 
-void Alpha::UpdateState()
-{
-	if (m_monsterState == MonsterState::IDLE) {
-
-	}
-	else if (m_monsterState == MonsterState::RUN) {
-
-	}
-	else if (m_monsterState == MonsterState::ATTACK) {
-
-	}
-	else if (m_monsterState == MonsterState::DIE) {
-
-	}
-}
 
 void Alpha::InitAlphaModel()
 {
@@ -105,15 +83,15 @@ void Alpha::InitAlphaAnimation()
 {
 	//Appear Wait
 	m_model->ReadAnimation(L"Appear", L"alpha/alpha_appear_anim");
-	m_model->ReadAnimation(L"Atk1", L"alpha/alpha_atk1_anim");
-	m_model->ReadAnimation(L"Atk2", L"alpha/alpha_atk2_anim");
+	//m_model->ReadAnimation(L"Atk1", L"alpha/alpha_atk1_anim");
+	//m_model->ReadAnimation(L"Atk2", L"alpha/alpha_atk2_anim");
 	m_model->ReadAnimation(L"Death", L"alpha/alpha_death_anim");
 	m_model->ReadAnimation(L"Dying", L"alpha/alpha_dying_anim");
 	m_model->ReadAnimation(L"Run", L"alpha/alpha_walk_anim");
 	m_model->ReadAnimation(L"Wait", L"alpha/alpha_wait_anim");
 
-	m_model->ReadAnimation(L"Skill1atk", L"alpha/alpha_skill1atk_anim");
-	m_model->ReadAnimation(L"Skill1ready", L"alpha/alpha_skill1ready_anim");
+	//m_model->ReadAnimation(L"Skill1atk", L"alpha/alpha_skill1atk_anim");
+	//m_model->ReadAnimation(L"Skill1ready", L"alpha/alpha_skill1ready_anim");
 	//m_model->ReadAnimation(L"Skill2", L"alpha/alpha_skill2_anim");
 
 	AddComponent(make_shared<ModelAnimator>(m_defaultShader));
@@ -121,23 +99,52 @@ void Alpha::InitAlphaAnimation()
 		GetModelAnimator()->SetModel(m_model);
 		GetModelAnimator()->SetPass(2);
 	}
-
 	//FSM 추가. 
-	AddComponent(make_shared<AnimationStateMachine>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait, make_shared<AlphaWaitState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Appear, make_shared<AlphaAppearState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Move, make_shared<AlphaWalkState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::BaseAttack, make_shared<AlphaAttack1State>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1, make_shared<AlphaSkill1State>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Dead, make_shared<AlphaDeathState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Dying, make_shared<AlphaDyingState>());
-
+	m_animationStateMachine = make_shared<AnimationStateMachine>(AnimationStateType::Appear);
+	AddComponent(m_animationStateMachine);
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait, make_shared<AlphaAnimWaitState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Appear, make_shared<AlphaAnimAppearState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Move, make_shared<AlphaAnimWalkState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Death, make_shared<AlphaAnimDeathState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Dying, make_shared<AlphaAnimDyingState>());
 
 	auto animator = GetModelAnimator();
 
-	// Wolf 등장 시퀀스. 
-	vector<wstring> skill1 = { L"Skill1ready", L"Skill1atk" };
-	animator->CreateSequence(L"Alpha_Skill1_Sequence", skill1, false);
+	// 알파 등장 시퀀스. 
+	vector<wstring> appear = { L"Appear" };
+	vector<float> appearDuration;
+	appearDuration.push_back(animator->GetAnimationDuration(L"Appear"));
+	animator->CreateSequence(L"Appear", appear, appearDuration, false);
+
+
+	// 알파 죽는 중 시퀀스. 
+	vector<wstring> death = { L"Death" };
+	vector<float> deathDuration;
+	deathDuration.push_back(animator->GetAnimationDuration(L"Death"));
+	animator->CreateSequence(L"Death", death, deathDuration, false);
+
+	// 알파 시체 시퀀스. 
+	vector<wstring> dying = { L"Dying" };
+	vector<float> dyingDuration;
+	dyingDuration.push_back(animator->GetAnimationDuration(L"Dying"));
+	animator->CreateSequence(L"Dying", dying, dyingDuration, true);
+
+
+	//// 알파 등장 시퀀스. 
+	//vector<wstring> skill1 = { L"Skill1ready", L"Skill1atk" };
+	//animator->CreateSequence(L"Alpha_Skill1_Sequence", skill1, false);
+}
+
+void Alpha::InitAlphaMSM()
+{
+	m_monsterStateMachine = make_shared<MonsterStateMachine>(m_animationStateMachine);
+	AddComponent(m_monsterStateMachine);
+
+	m_monsterStateMachine->RegisterState(MonsterStateType::Wait,	make_shared<AlphaWaitState>());
+	m_monsterStateMachine->RegisterState(MonsterStateType::Appear,	make_shared<AlphaAppearState>());
+	m_monsterStateMachine->RegisterState(MonsterStateType::Move,	make_shared<AlphaWalkState>());
+	m_monsterStateMachine->RegisterState(MonsterStateType::Death,	make_shared<AlphaDeathState>());
+	m_monsterStateMachine->RegisterState(MonsterStateType::Dying,	make_shared<AlphaDyingState>());
 }
 
 void Alpha::InitAlphaComponent()
@@ -152,25 +159,26 @@ void Alpha::InitAlphaComponent()
 	AddComponent(m_collider);
 	AddComponent(m_rigidbody);
 	AddComponent(m_navAgent);
+	
 }
 
-void Alpha::InitAlphaAI()
-{
-	auto sharedThis = dynamic_pointer_cast<Monster>(shared_from_this());
-
-	auto appearAI = make_shared<AlphaAppearAI>(sharedThis);
-	auto attackAI = make_shared<AlphaAttackAI>(sharedThis);
-	auto deathAI = make_shared<AlphaDeathAI>(sharedThis);
-	auto idleAI = make_shared<AlphaIdleAI>(sharedThis);
-
-	m_AIMap[L"Appear"] = appearAI;
-	m_AIMap[L"Attack"] = attackAI;
-	m_AIMap[L"Death"] = deathAI;
-	m_AIMap[L"Idle"] = idleAI;
-
-	m_curAI = appearAI;
-	m_curAI->Enter();
-}
+//void Alpha::InitAlphaAI()
+//{
+//	auto sharedThis = dynamic_pointer_cast<Monster>(shared_from_this());
+//
+//	auto appearAI = make_shared<AlphaAppearAI>(sharedThis);
+//	auto attackAI = make_shared<AlphaAttackAI>(sharedThis);
+//	auto deathAI = make_shared<AlphaDeathAI>(sharedThis);
+//	auto idleAI = make_shared<AlphaIdleAI>(sharedThis);
+//
+//	m_AIMap[L"Appear"] = appearAI;
+//	m_AIMap[L"Attack"] = attackAI;
+//	m_AIMap[L"Death"] = deathAI;
+//	m_AIMap[L"Idle"] = idleAI;
+//
+//	m_curAI = appearAI;
+//	m_curAI->Enter();
+//}
 
 void Alpha::InitAlphaStats()
 {

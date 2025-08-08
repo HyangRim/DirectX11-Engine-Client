@@ -64,7 +64,7 @@ void NickyRSkill::Update()
 				SkillEnd();
 			}
 
-			cout << "ÁøÇà·ü : " << moveT * 100 << "%" << endl;
+			//cout << "ÁøÇà·ü : " << moveT * 100 << "%" << endl;
 			Vec3 curPos = Utils::Lerp(m_startPos, m_targetPos, moveT);
 			m_playerObject->GetTransform()->SetPosition(curPos);
 		}

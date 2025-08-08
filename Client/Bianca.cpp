@@ -2,10 +2,10 @@
 #include "Bianca.h"
 #include "BiancaWaitState.h"
 #include "BiancaRunState.h"
-#include "BiancaQSkillState.h"
-#include "BiancaWSkillState.h"
-#include "BiancaESkillState.h"
-#include "BiancaRSkillState.h"
+#include "BiancaQState.h"
+#include "BiancaWState.h"
+#include "BiancaEState.h"
+#include "BiancaRState.h"
 #include "FogOfWar.h"
 
 #include "PlayerStateMachine.h"
@@ -105,10 +105,10 @@ void Bianca::InitBiancaAnimation()
 	AddComponent(make_shared<AnimationStateMachine>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait, make_shared<BiancaWaitState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Run, make_shared<BiancaRunState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1, make_shared<BiancaQSkillState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_2, make_shared<BiancaWSkillState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_3, make_shared<BiancaESkillState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4, make_shared<BiancaRSkillState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1, make_shared<BiancaQState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_2, make_shared<BiancaWState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_3, make_shared<BiancaEState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4, make_shared<BiancaRState>());
 
 	auto animator = GetModelAnimator();
 

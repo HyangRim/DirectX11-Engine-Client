@@ -229,39 +229,6 @@
     <ClCompile Include="AnimationStateMachine.cpp">
       <Filter>04. Component\Animation\AnimationStateMachine</Filter>
     </ClCompile>
-    <ClCompile Include="NickyWaitState.cpp">
-      <Filter>04. Component\Animation\Nicky\Wait</Filter>
-    </ClCompile>
-    <ClCompile Include="NickyRunState.cpp">
-      <Filter>04. Component\Animation\Nicky\Run</Filter>
-    </ClCompile>
-    <ClCompile Include="BiancaRunState.cpp">
-      <Filter>04. Component\Animation\Bianca\Run</Filter>
-    </ClCompile>
-    <ClCompile Include="BiancaWaitState.cpp">
-      <Filter>04. Component\Animation\Bianca\Wait</Filter>
-    </ClCompile>
-    <ClCompile Include="NickyESkillState.cpp">
-      <Filter>04. Component\Animation\Nicky\Skill\Skill_E</Filter>
-    </ClCompile>
-    <ClCompile Include="NickyWSkillState.cpp">
-      <Filter>04. Component\Animation\Nicky\Skill\Skill_W</Filter>
-    </ClCompile>
-    <ClCompile Include="NickyRSkillState.cpp">
-      <Filter>04. Component\Animation\Nicky\Skill\Skill_R</Filter>
-    </ClCompile>
-    <ClCompile Include="BiancaQSkillState.cpp">
-      <Filter>04. Component\Animation\Bianca\Skill\Skill_Q</Filter>
-    </ClCompile>
-    <ClCompile Include="BiancaRSkillState.cpp">
-      <Filter>04. Component\Animation\Bianca\Skill\Skill_R</Filter>
-    </ClCompile>
-    <ClCompile Include="NickyQSkillState.cpp">
-      <Filter>04. Component\Animation\Nicky\Skill\Skill_Q</Filter>
-    </ClCompile>
-    <ClCompile Include="BiancaESkillState.cpp">
-      <Filter>04. Component\Animation\Bianca\Skill\Skill_E</Filter>
-    </ClCompile>
     <ClCompile Include="ImGuizmo.cpp">
       <Filter>98. Utils\ImGui</Filter>
     </ClCompile>
@@ -277,29 +244,8 @@
     <ClCompile Include="ScrollView.cpp">
       <Filter>06. UI &amp; Effect\UI</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerEState.cpp">
-      <Filter>04. Component\PlayerState</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerWaitState.cpp">
-      <Filter>04. Component\PlayerState</Filter>
-    </ClCompile>
     <ClCompile Include="PlayerStateMachine.cpp">
       <Filter>04. Component\PlayerState</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerRunState.cpp">
-      <Filter>04. Component\PlayerState</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerQState.cpp">
-      <Filter>04. Component\PlayerState</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerRState.cpp">
-      <Filter>04. Component\PlayerState</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerWState.cpp">
-      <Filter>04. Component\PlayerState</Filter>
-    </ClCompile>
-    <ClCompile Include="BiancaWSkillState.cpp">
-      <Filter>04. Component\Animation\Bianca\Skill\Skill_W</Filter>
     </ClCompile>
     <ClCompile Include="ISkill.cpp">
       <Filter>00. Engine\Interface</Filter>
@@ -312,6 +258,30 @@
     </ClCompile>
     <ClCompile Include="D2DTextRenderer.cpp">
       <Filter>02. Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="MonsterState.cpp">
+      <Filter>04. Component\MonsterState</Filter>
+    </ClCompile>
+    <ClCompile Include="MonsterStateMachine.cpp">
+      <Filter>04. Component\MonsterState</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerEState.cpp">
+      <Filter>04. Component\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerQState.cpp">
+      <Filter>04. Component\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerRState.cpp">
+      <Filter>04. Component\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerRunState.cpp">
+      <Filter>04. Component\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerWaitState.cpp">
+      <Filter>04. Component\PlayerState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerWState.cpp">
+      <Filter>04. Component\PlayerState\States</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -558,39 +528,6 @@
     <ClInclude Include="AnimationStateMachine.h">
       <Filter>04. Component\Animation\AnimationStateMachine</Filter>
     </ClInclude>
-    <ClInclude Include="NickyWaitState.h">
-      <Filter>04. Component\Animation\Nicky\Wait</Filter>
-    </ClInclude>
-    <ClInclude Include="NickyRunState.h">
-      <Filter>04. Component\Animation\Nicky\Run</Filter>
-    </ClInclude>
-    <ClInclude Include="BiancaRunState.h">
-      <Filter>04. Component\Animation\Bianca\Run</Filter>
-    </ClInclude>
-    <ClInclude Include="BiancaWaitState.h">
-      <Filter>04. Component\Animation\Bianca\Wait</Filter>
-    </ClInclude>
-    <ClInclude Include="NickyESkillState.h">
-      <Filter>04. Component\Animation\Nicky\Skill\Skill_E</Filter>
-    </ClInclude>
-    <ClInclude Include="NickyWSkillState.h">
-      <Filter>04. Component\Animation\Nicky\Skill\Skill_W</Filter>
-    </ClInclude>
-    <ClInclude Include="NickyRSkillState.h">
-      <Filter>04. Component\Animation\Nicky\Skill\Skill_R</Filter>
-    </ClInclude>
-    <ClInclude Include="BiancaQSkillState.h">
-      <Filter>04. Component\Animation\Bianca\Skill\Skill_Q</Filter>
-    </ClInclude>
-    <ClInclude Include="BiancaRSkillState.h">
-      <Filter>04. Component\Animation\Bianca\Skill\Skill_R</Filter>
-    </ClInclude>
-    <ClInclude Include="NickyQSkillState.h">
-      <Filter>04. Component\Animation\Nicky\Skill\Skill_Q</Filter>
-    </ClInclude>
-    <ClInclude Include="BiancaESkillState.h">
-      <Filter>04. Component\Animation\Bianca\Skill\Skill_E</Filter>
-    </ClInclude>
     <ClInclude Include="ImGuizmo.h">
       <Filter>98. Utils\ImGui</Filter>
     </ClInclude>
@@ -606,29 +543,8 @@
     <ClInclude Include="ScrollView.h">
       <Filter>06. UI &amp; Effect\UI</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerEState.h">
-      <Filter>04. Component\PlayerState</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerWaitState.h">
-      <Filter>04. Component\PlayerState</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerStateMachine.h">
       <Filter>04. Component\PlayerState</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerRunState.h">
-      <Filter>04. Component\PlayerState</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerQState.h">
-      <Filter>04. Component\PlayerState</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerRState.h">
-      <Filter>04. Component\PlayerState</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerWState.h">
-      <Filter>04. Component\PlayerState</Filter>
-    </ClInclude>
-    <ClInclude Include="BiancaWSkillState.h">
-      <Filter>04. Component\Animation\Bianca\Skill\Skill_W</Filter>
     </ClInclude>
     <ClInclude Include="ISkill.h">
       <Filter>00. Engine\Interface</Filter>
@@ -641,6 +557,30 @@
     </ClInclude>
     <ClInclude Include="D2DTextRenderer.h">
       <Filter>02. Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="MonsterState.h">
+      <Filter>04. Component\MonsterState</Filter>
+    </ClInclude>
+    <ClInclude Include="MonsterStateMachine.h">
+      <Filter>04. Component\MonsterState</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerEState.h">
+      <Filter>04. Component\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerQState.h">
+      <Filter>04. Component\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerRState.h">
+      <Filter>04. Component\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerRunState.h">
+      <Filter>04. Component\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerWaitState.h">
+      <Filter>04. Component\PlayerState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerWState.h">
+      <Filter>04. Component\PlayerState\States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -710,59 +650,17 @@
     <Filter Include="04. Component\Animation\AnimationStateMachine">
       <UniqueIdentifier>{7f436137-1109-43bf-b82c-b5e3d35b5206}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04. Component\Animation\Nicky">
-      <UniqueIdentifier>{b4615d43-1607-41a1-924c-b2dc5ff07355}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\Animation\Nicky\Wait">
-      <UniqueIdentifier>{bf4736a6-c863-41e0-915d-23781482dd03}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\Animation\Nicky\Skill">
-      <UniqueIdentifier>{ecfb5b81-f439-46ba-9044-218cd595a8f2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\Animation\Bianca">
-      <UniqueIdentifier>{89be299c-2ab0-4e02-b8d7-34e527c49f2e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\Animation\Nicky\Run">
-      <UniqueIdentifier>{b3d9898d-9d08-43df-bc14-dd9ebe588dbe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\Animation\Bianca\Run">
-      <UniqueIdentifier>{4db97fa3-b9df-4c64-8878-2cc9b2db0d76}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\Animation\Bianca\Wait">
-      <UniqueIdentifier>{5817bfe6-2fba-4dd6-ac25-1c1c6a07e426}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\Animation\Nicky\Skill\Skill_E">
-      <UniqueIdentifier>{8661b850-d78f-412d-a8b6-ecbddd90f411}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\Animation\Nicky\Skill\Skill_W">
-      <UniqueIdentifier>{25adfa30-d8b4-4e80-a743-c040ad400f3f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\Animation\Nicky\Skill\Skill_R">
-      <UniqueIdentifier>{61a387ff-ce80-4b09-b9b9-8b980c73a002}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\Animation\Bianca\Skill">
-      <UniqueIdentifier>{18436bdf-f4b1-4d5c-b344-41858578a4c8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\Animation\Bianca\Skill\Skill_Q">
-      <UniqueIdentifier>{278c9da9-212b-4e6d-a623-2ccd09024589}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\Animation\Bianca\Skill\Skill_R">
-      <UniqueIdentifier>{190162d5-3baf-4ae2-b6a1-6d67a305944b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\Animation\Nicky\Skill\Skill_Q">
-      <UniqueIdentifier>{2c65306c-dcf4-4573-9ed0-431b15e5d795}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\Animation\Bianca\Skill\Skill_E">
-      <UniqueIdentifier>{ffb7ef8b-8e89-4233-9701-3bf16510273e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="04. Component\NavMesh">
       <UniqueIdentifier>{bb0affca-4019-4ad1-b1d2-40f2224fff0b}</UniqueIdentifier>
     </Filter>
     <Filter Include="04. Component\PlayerState">
       <UniqueIdentifier>{4349363b-7732-4eee-9734-5cf7aa53689d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04. Component\Animation\Bianca\Skill\Skill_W">
-      <UniqueIdentifier>{2fe9144f-19c5-4540-bcba-abff9e3cc75f}</UniqueIdentifier>
+    <Filter Include="04. Component\MonsterState">
+      <UniqueIdentifier>{a0750e74-fcb7-42f1-8573-d4bad8c79c94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\PlayerState\States">
+      <UniqueIdentifier>{9ae12e3f-2b78-4915-835c-389449225e75}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

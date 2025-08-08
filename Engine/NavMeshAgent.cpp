@@ -74,7 +74,7 @@ void NavMeshAgent::Stop()
     m_state = NavMeshAgentState::Idle;
     m_path.clear();
     m_currentPathIndex = 0;
-    UpdateAnimation();
+   // UpdateAnimation();
 }
 
 void NavMeshAgent::UpdateMovement()

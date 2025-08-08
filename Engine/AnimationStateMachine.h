@@ -8,7 +8,7 @@ class AnimationStateMachine : public Component
     using Super = Component;
 
 public:
-    AnimationStateMachine();
+    AnimationStateMachine(AnimationStateType initialState = AnimationStateType::Wait);
     ~AnimationStateMachine();
 
     virtual void Start() override;
@@ -17,6 +17,7 @@ public:
     // 상태 전환
     void ChangeState(AnimationStateType newState);
     bool CanChangeState(AnimationStateType newState);
+    void SetInitialState(AnimationStateType initialState);
 
     // 상태 조회
     AnimationStateType GetCurrentState() const;
@@ -29,6 +30,7 @@ public:
 
     Ray CreateRayFromMouse(POINT mousePos, shared_ptr<Camera> camera);
 
+
 private:
     void InitializeStates();
     void HandleSpecialStateTransitions();  // 추가
@@ -37,6 +39,7 @@ private:
     unordered_map<AnimationStateType, shared_ptr<AnimationState>> m_states;
     shared_ptr<AnimationState> m_currentState;
     shared_ptr<ModelAnimator> m_animator;
+    AnimationStateType m_initialStateType = AnimationStateType::Wait; // 기본값
 
 
     // 입력 상태

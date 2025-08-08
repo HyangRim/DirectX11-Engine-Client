@@ -27,6 +27,7 @@ private:
     void InitWolfAnimation();
     void InitWolfComponent();
     void InitWolfAI();
+    void InitWolfMSM();
     void InitWolfStats();
 };
 

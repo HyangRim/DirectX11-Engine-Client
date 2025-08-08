@@ -24,7 +24,8 @@ void AlphaDeathAI::Update()
 {
 	m_DeathAnimElapsedTime += DT;
 
-	if (m_DeathAnimElapsedTime >= m_DeathAnimDuration) {
+	if (m_DeathAnimElapsedTime >= m_DeathAnimDuration || !m_Owner->GetModelAnimator()->IsSequencePlaying())
+	{
 		m_Owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::Dying);
 	}
 }

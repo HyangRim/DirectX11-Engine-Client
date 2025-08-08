@@ -14,14 +14,6 @@
 #include "Bianca.h"
 #include "Nicky.h"
 
-#include "NickyESkillState.h"
-#include "NickyQSkillState.h"
-#include "NickyRSkillState.h"
-#include "NickyMoveState.h"
-#include "NickyRunState.h"
-#include "NickyWaitState.h"
-#include "NickyWSkillState.h"
-
 #include "Wolf.h"
 #include "Alpha.h"
 
@@ -61,6 +53,8 @@ const vector<wstring> biancaSkillIcons = {
 
 void LumiaIsland::Start()
 {
+	TIME->ResetDeltaTime();
+
 	m_defaultshader = make_shared<Shader>(L"FOW.fx");
 	//m_testShader = make_shared<Shader>(L"23. RenderDemo.fx");
 	//CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\snowcube1024.dds", L"Sky.fx"));
@@ -90,9 +84,9 @@ void LumiaIsland::Start()
 	CreateCemeteryBase();
 	CreateCemeteryInterior();
 	CreateCemeteryEnvironment();
-	CreateCharacterNicky();
+	//CreateCharacterNicky();
 	CreateCemeteryItemBox();
-	//CreateCharacterBianca();
+	CreateCharacterBianca();
 	CreateTestDummy();
 	//CreateTestDecal();
 
@@ -102,7 +96,7 @@ void LumiaIsland::Start()
 
 	//Monster Ãß°¡.
 	CreateMonsterWolf(Vec3(15, 18, 16));
-	//CreateMonsterAlpha(Vec3(15, 18, 16));
+	CreateMonsterAlpha(Vec3(20, 18, 16));
 
 	//====================UI====================//
 	LoadItemBoxImages();
@@ -121,6 +115,7 @@ void LumiaIsland::Start()
 
 	//CreateTestMesh();
 
+	TIME->ResetDeltaTime();
 	Super::Start();
 }
 
@@ -154,7 +149,8 @@ void LumiaIsland::CreateMainCamera()
 	// Camera
 	auto camera = make_shared<GameObject>();
 	//camera->GetTransform()->SetPosition(Vec3(0.f, 15.f, 15.f));
-	camera->GetTransform()->SetPosition(Vec3{ 0.f, 30.f, -5.f });
+	camera->GetTransform()->SetPosition(Vec3{ 10.f, 30.f, -5.f });
+	camera->GetTransform()->SetLocalRotation(Vec3(45.f, 0.f, 0.f));
 	camera->AddComponent(make_shared<Camera>());
 	camera->AddComponent(make_shared<CameraScript>());
 

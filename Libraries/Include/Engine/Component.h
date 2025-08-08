@@ -25,10 +25,11 @@ enum class ComponentType : uint8 {
 	TextButton,
 	Image,
 	ScrollView,
-	AnimationStateMachine,
 	NavMesh,
 	NavMeshAgent,
 	PlayerStateMachine,
+	MonsterStateMachine,
+	AnimationStateMachine,
 	// ...
 	Script,
 	End

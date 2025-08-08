@@ -130,6 +130,7 @@ private:
 
     // 시퀀스 관련
     void UpdateSequence();
+    //bool IsCurrentAnimationInSequenceFinished();
     void TransitionToNextInSequence();
     float GetCurrentSequenceDuration();
     void CompleteSequence();
@@ -138,6 +139,7 @@ private:
     // 애니메이션 설정 관련
     void SetAnimationImmediate(uint32 _animIndex);
 
+    //bool IsCurrentAnimationInSequenceFinished();
 private:
     // ============================================================================
     // 멤버 변수들

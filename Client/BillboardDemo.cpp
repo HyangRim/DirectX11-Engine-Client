@@ -8,10 +8,6 @@
 #include "AnimationStateMachine.h"
 #include "BiancaRunState.h"
 
-#include "BiancaQSkillState.h"
-#include "BiancaWaitState.h"
-#include "BiancaESkillState.h"
-#include "BiancaRSkillState.h"
 
 
 void BillboardDemo::Init()
@@ -379,11 +375,11 @@ void BillboardDemo::Init()
 			auto stateMachine = make_shared<AnimationStateMachine>();
 			obj->AddComponent(stateMachine);
 
-			obj->GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait, make_shared<BiancaWaitState>());
+			/*obj->GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait, make_shared<BiancaWaitState>());
 			obj->GetAnimationStateMachine()->RegisterState(AnimationStateType::Run, make_shared<BiancaRunState>());
 			obj->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1, make_shared<BiancaQSkillState>());
 			obj->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_3, make_shared<BiancaESkillState>());
-			obj->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4, make_shared<BiancaRSkillState>());
+			obj->GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4, make_shared<BiancaRSkillState>());*/
 
 			// Q ½ºÅ³ ½ÃÄö½º 
 			vector<wstring> skill1Anims = { L"Skill_1" };

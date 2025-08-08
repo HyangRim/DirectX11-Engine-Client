@@ -1,18 +1,10 @@
 #pragma once
 #include "GameObject.h"
+#include "MonsterState.h"
 
 class Player;
 class Item;
 class AI;
-
-enum class MonsterState {
-    APPEAR,
-    IDLE,
-    RUN,
-    ATTACK,
-    SKILL,
-    DIE
-};
 
 struct MonsterStatus {
     int level = 1;
@@ -48,9 +40,6 @@ public:
 public:
     MonsterStatus& GetMonsterStatus() { return m_monsterStatus; }
 
-    void SetMonsterState(MonsterState _state) { m_monsterState = _state; }
-    MonsterState GetMonsterState() { return m_monsterState; }
-
     shared_ptr<Player> GetTarget() { return m_targetPlayer; }
 
     void SetLevel(int _value) { m_monsterStatus.level = _value; }
@@ -76,10 +65,11 @@ protected:
     shared_ptr<SphereCollider> m_collider;
     shared_ptr<NavMeshAgent> m_navAgent;
     shared_ptr<Shader> m_defaultShader;
+    shared_ptr<MonsterStateMachine> m_monsterStateMachine;
+    shared_ptr<AnimationStateMachine> m_animationStateMachine;
 
     MonsterStatus m_monsterStatus;
-    MonsterState m_monsterState;
-
+  
     shared_ptr<Player> m_targetPlayer;
 
     shared_ptr<AI> m_curAI;
