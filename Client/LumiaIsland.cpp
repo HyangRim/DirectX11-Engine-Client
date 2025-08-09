@@ -91,9 +91,9 @@ void LumiaIsland::Start()
 	CreateCemeteryBase();
 	CreateCemeteryInterior();
 	CreateCemeteryEnvironment();
-	//CreateCharacterNicky();
+	CreateCharacterNicky();
 	CreateCemeteryItemBox();
-	CreateCharacterBianca();
+	//CreateCharacterBianca();
 	CreateTestDummy();
 	//CreateTestDecal();
 
