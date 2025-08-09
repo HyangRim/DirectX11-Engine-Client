@@ -133,6 +133,12 @@
     <Filter Include="Scripts\Monster\Wolf\AnimState">
       <UniqueIdentifier>{76ee9bc5-6843-48bc-a095-e40789d96ec6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Player\Bianca\BiancaLogic">
+      <UniqueIdentifier>{6c172846-e401-4ee5-8e36-6ed1c0400d9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Player\Nicky\NickyLogic">
+      <UniqueIdentifier>{400732b6-a316-421f-a8ab-200187e2181a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -273,22 +279,22 @@
     <ClCompile Include="Alpha.cpp">
       <Filter>Scripts\Monster\Alpha</Filter>
     </ClCompile>
-    <ClCompile Include="NickyQState.cpp">
+    <ClCompile Include="NickyAnimQState.cpp">
       <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
     </ClCompile>
-    <ClCompile Include="NickyEState.cpp">
+    <ClCompile Include="NickyAnimEState.cpp">
       <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
     </ClCompile>
-    <ClCompile Include="NickyRState.cpp">
+    <ClCompile Include="NickyAnimRState.cpp">
       <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
     </ClCompile>
-    <ClCompile Include="NickyWState.cpp">
+    <ClCompile Include="NickyAnimWState.cpp">
       <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
     </ClCompile>
-    <ClCompile Include="NickyRunState.cpp">
+    <ClCompile Include="NickyAnimRunState.cpp">
       <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
     </ClCompile>
-    <ClCompile Include="NickyWaitState.cpp">
+    <ClCompile Include="NickyAnimWaitState.cpp">
       <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
     </ClCompile>
     <ClCompile Include="BiancaRSkill.cpp">
@@ -297,22 +303,22 @@
     <ClCompile Include="BiancaWSkill.cpp">
       <Filter>Scripts\Player\Bianca\BiancaW</Filter>
     </ClCompile>
-    <ClCompile Include="BiancaEState.cpp">
+    <ClCompile Include="BiancaAnimEState.cpp">
       <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
     </ClCompile>
-    <ClCompile Include="BiancaQState.cpp">
+    <ClCompile Include="BiancaAnimQState.cpp">
       <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
     </ClCompile>
-    <ClCompile Include="BiancaRState.cpp">
+    <ClCompile Include="BiancaAnimRState.cpp">
       <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
     </ClCompile>
-    <ClCompile Include="BiancaRunState.cpp">
+    <ClCompile Include="BiancaAnimRunState.cpp">
       <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
     </ClCompile>
-    <ClCompile Include="BiancaWaitState.cpp">
+    <ClCompile Include="BiancaAnimWaitState.cpp">
       <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
     </ClCompile>
-    <ClCompile Include="BiancaWState.cpp">
+    <ClCompile Include="BiancaAnimWState.cpp">
       <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
     </ClCompile>
     <ClCompile Include="AlphaAnimAppearState.cpp">
@@ -374,6 +380,42 @@
     </ClCompile>
     <ClCompile Include="WolfWaitState.cpp">
       <Filter>Scripts\Monster\Wolf\LogicState</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyQState.cpp">
+      <Filter>Scripts\Player\Nicky\NickyLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyEState.cpp">
+      <Filter>Scripts\Player\Nicky\NickyLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyRState.cpp">
+      <Filter>Scripts\Player\Nicky\NickyLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyRunState.cpp">
+      <Filter>Scripts\Player\Nicky\NickyLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyWaitState.cpp">
+      <Filter>Scripts\Player\Nicky\NickyLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyWState.cpp">
+      <Filter>Scripts\Player\Nicky\NickyLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaEState.cpp">
+      <Filter>Scripts\Player\Bianca\BiancaLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaQState.cpp">
+      <Filter>Scripts\Player\Bianca\BiancaLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaRState.cpp">
+      <Filter>Scripts\Player\Bianca\BiancaLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaRunState.cpp">
+      <Filter>Scripts\Player\Bianca\BiancaLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaWaitState.cpp">
+      <Filter>Scripts\Player\Bianca\BiancaLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaWState.cpp">
+      <Filter>Scripts\Player\Bianca\BiancaLogic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -518,22 +560,22 @@
     <ClInclude Include="Alpha.h">
       <Filter>Scripts\Monster\Alpha</Filter>
     </ClInclude>
-    <ClInclude Include="NickyQState.h">
+    <ClInclude Include="NickyAnimQState.h">
       <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
     </ClInclude>
-    <ClInclude Include="NickyEState.h">
+    <ClInclude Include="NickyAnimEState.h">
       <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
     </ClInclude>
-    <ClInclude Include="NickyWState.h">
+    <ClInclude Include="NickyAnimWState.h">
       <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
     </ClInclude>
-    <ClInclude Include="NickyRState.h">
+    <ClInclude Include="NickyAnimRState.h">
       <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
     </ClInclude>
-    <ClInclude Include="NickyRunState.h">
+    <ClInclude Include="NickyAnimRunState.h">
       <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
     </ClInclude>
-    <ClInclude Include="NickyWaitState.h">
+    <ClInclude Include="NickyAnimWaitState.h">
       <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
     </ClInclude>
     <ClInclude Include="BiancaRSkill.h">
@@ -542,22 +584,22 @@
     <ClInclude Include="BiancaWSkill.h">
       <Filter>Scripts\Player\Bianca\BiancaW</Filter>
     </ClInclude>
-    <ClInclude Include="BiancaEState.h">
+    <ClInclude Include="BiancaAnimEState.h">
       <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
     </ClInclude>
-    <ClInclude Include="BiancaQState.h">
+    <ClInclude Include="BiancaAnimQState.h">
       <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
     </ClInclude>
-    <ClInclude Include="BiancaRState.h">
+    <ClInclude Include="BiancaAnimRState.h">
       <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
     </ClInclude>
-    <ClInclude Include="BiancaRunState.h">
+    <ClInclude Include="BiancaAnimRunState.h">
       <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
     </ClInclude>
-    <ClInclude Include="BiancaWaitState.h">
+    <ClInclude Include="BiancaAnimWaitState.h">
       <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
     </ClInclude>
-    <ClInclude Include="BiancaWState.h">
+    <ClInclude Include="BiancaAnimWState.h">
       <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
     </ClInclude>
     <ClInclude Include="AlphaAnimAppearState.h">
@@ -619,6 +661,43 @@
     </ClInclude>
     <ClInclude Include="WolfWaitState.h">
       <Filter>Scripts\Monster\Wolf\LogicState</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyQState.h">
+      <Filter>Scripts\Player\Nicky\NickyLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyEState.h">
+      <Filter>Scripts\Player\Nicky\NickyLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyRState.h">
+      <Filter>Scripts\Player\Nicky\NickyLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyRunState.h">
+      <Filter>Scripts\Player\Nicky\NickyLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyWaitState.h">
+      <Filter>Scripts\Player\Nicky\NickyLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyWState.h">
+      <Filter>Scripts\Player\Nicky\NickyLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="BiancaEState.h">
+      <Filter>Scripts\Player\Bianca\BiancaLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaQState.h">
+      <Filter>Scripts\Player\Bianca\BiancaLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaRState.h">
+      <Filter>Scripts\Player\Bianca\BiancaLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaRunState.h">
+      <Filter>Scripts\Player\Bianca\BiancaLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaWaitState.h">
+      <Filter>Scripts\Player\Bianca\BiancaLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaWState.h">
+      <Filter>Scripts\Player\Bianca\BiancaLogic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -688,5 +767,8 @@
     <FxCompile Include="..\Shaders\BiancaEShader.fx">
       <Filter>Shaders\Bianca</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Client.rc" />
   </ItemGroup>
 </Project>

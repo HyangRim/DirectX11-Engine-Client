@@ -1,19 +1,17 @@
 #pragma once
-#include "AnimationState.h"
+#include "PlayerStateMachine.h"
 class BiancaWaitState :
-    public AnimationState
+    public PlayerState
 {
+    using Super = PlayerState;
+
 public:
     BiancaWaitState();
-    ~BiancaWaitState() = default;
+    ~BiancaWaitState();
 
-    void Enter(shared_ptr<ModelAnimator> animator) override;
-    void Update(shared_ptr<ModelAnimator> animator) override;
-    void Exit(shared_ptr<ModelAnimator> animator) override;
-    bool CanTransitionTo(AnimationStateType nextState) override;
-
-private:
-    float m_idleTime = 0.0f;  // 대기 상태 지속 시간
-    bool m_isAnimationStarted = false;
+    virtual void Enter();
+    virtual void Update();
+    virtual void Exit();
+    virtual bool CanTransitionTo(PlayerStateType newState);
 };
 

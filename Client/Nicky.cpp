@@ -4,13 +4,20 @@
 #include "Nicky.h"
 
 
+#include "NickyAnimQState.h"
+#include "NickyAnimWState.h"
+#include "NickyAnimEState.h"
+#include "NickyAnimRState.h"
+#include "NickyAnimRunState.h"
+#include "NickyAnimWaitState.h"
+
 #include "NickyQState.h"
 #include "NickyWState.h"
 #include "NickyEState.h"
 #include "NickyRState.h"
-
 #include "NickyRunState.h"
 #include "NickyWaitState.h"
+
 
 #include "FogOfWar.h"
 
@@ -40,6 +47,7 @@ void Nicky::Start()
 {
 	InitNickyModel();
 	InitNickyAnimation();
+	InitNickyPSM();
 	InitNickyComponent();
 	InitNickySkill();
 	InitNickyStats();
@@ -121,13 +129,12 @@ void Nicky::InitNickyAnimation()
 	}
 	//FSM 추가. 
 	AddComponent(make_shared<AnimationStateMachine>(AnimationStateType::Wait));
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait, make_shared<NickyWaitState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Run, make_shared<NickyRunState>());
-
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_2, make_shared<NickyWState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_3, make_shared<NickyEState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4, make_shared<NickyRState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1, make_shared<NickyQState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait,		make_shared<NickyAnimWaitState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Run,		make_shared<NickyAnimRunState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_2,	make_shared<NickyAnimWState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_3,	make_shared<NickyAnimEState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4,	make_shared<NickyAnimRState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1,	make_shared<NickyAnimQState>());
 
 	auto animator = GetModelAnimator();
 	// 평타 시퀀스 (BaseAttack_01 -> BaseAttack_02)
@@ -158,6 +165,24 @@ void Nicky::InitNickyAnimation()
 	animator->CreateSequence(L"Skill_4_Sequence", skill4Anims, skill4Durations, false);
 }
 
+void Nicky::InitNickyPSM()
+{
+	m_playerStateMachine = make_shared<PlayerStateMachine>(GetAnimationStateMachine(), 8, 15, 1);
+
+	auto self = static_pointer_cast<Player>(shared_from_this());
+	m_playerInterface = make_shared<PlayerInterface>(self);
+
+	m_playerStateMachine->SetPlayerInterface(m_playerInterface);
+
+	m_playerStateMachine->RegisterState(PlayerStateType::Run, make_shared<NickyRunState>());
+	m_playerStateMachine->RegisterState(PlayerStateType::Wait, make_shared<NickyWaitState>());
+
+	m_playerStateMachine->RegisterState(PlayerStateType::Skill_1, make_shared<NickyQState>(GetModelAnimator()));
+	m_playerStateMachine->RegisterState(PlayerStateType::Skill_2, make_shared<NickyWState>(GetModelAnimator()));
+	m_playerStateMachine->RegisterState(PlayerStateType::Skill_3, make_shared<NickyEState>(GetModelAnimator()));
+	m_playerStateMachine->RegisterState(PlayerStateType::Skill_4, make_shared<NickyRState>(GetModelAnimator()));
+}
+
 void Nicky::InitNickyComponent()
 {
 	m_collider = make_shared<SphereCollider>();
@@ -165,12 +190,7 @@ void Nicky::InitNickyComponent()
 	m_collider->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	m_rigidbody = make_shared<Rigidbody>();
 	m_navAgent = make_shared<NavMeshAgent>();
-	m_playerStateMachine = make_shared<PlayerStateMachine>(GetAnimationStateMachine(), 8, 15, 1);
-
-	auto self = static_pointer_cast<Player>(shared_from_this());
-	m_playerInterface = make_shared<PlayerInterface>(self);
-
-	m_playerStateMachine->SetPlayerInterface(m_playerInterface);
+	
 
 	AddComponent(m_collider);
 	AddComponent(m_rigidbody);

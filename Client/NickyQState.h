@@ -1,75 +1,41 @@
 #pragma once
-
-#include "AnimationState.h"
-
-enum class QSkillChargeState
-{
-    Default = -1,
-    ChargingFromWait = 0,       // Wait 상태에서 차징 시작
-    ChargingFromRun,        // Run 상태에서 차징 시작
-    ChargingWaitLoop,       // Wait 상태에서 차징 루프
-    ChargingRunLoop,        // Run 상태에서 차징 루프
-    Releasing,              // 스킬 발동 중
-    Complete                // 스킬 완료
-};
+#include "PlayerStateMachine.h"
 
 class NickyQState :
-    public AnimationState
+    public PlayerState
 {
+    using Super = PlayerState;
+
 public:
-    NickyQState();
-    ~NickyQState() = default;
+    NickyQState(shared_ptr<ModelAnimator> modelAnimator);
+    ~NickyQState();
 
-    void Enter(shared_ptr<ModelAnimator> animator) override;
-    void Update(shared_ptr<ModelAnimator> animator) override;
-    void Exit(shared_ptr<ModelAnimator> animator) override;
-    bool CanTransitionTo(AnimationStateType nextState) override;
+    virtual void Enter();
+    virtual void Update();
+    virtual void Exit();
+    virtual bool CanTransitionTo(PlayerStateType newState);
 
-    // 외부에서 초기 상태 설정
-    void SetInitialMovementState(bool wasMoving);
+    // 가상 함수 오버라이드
+    virtual bool IsCharging() const override { return m_isCharging; }
+    virtual bool IsReleasing() const override { return m_isReleasing; }
+    virtual bool IsMovable() const override { return m_isCharging; } // 차징 중일 때만 이동 가능
 
-    // 상태 조회
-    bool IsCharging() const;
-    bool IsComplete() const;
-    float GetChargeTime() const { return m_chargeTime; }
-
-private:
-    // 내부 로직 처리
+    void UpdateChargingSkill();
     void UpdateCharging();
-    void UpdateReleasing();
-    void HandleMovementInput();
-    void HandleSkillInput();
-    void TransitionToChargeState(QSkillChargeState newState);
-    void PlayAppropriateAnimation();
-    bool IsStartAnimationComplete();
     void ReleaseSkill();
 
 private:
-    shared_ptr<GameObject> GetGameObject() const;
+    float m_skillTime = 0.0f;  // 대기 상태 지속 시간
+    bool m_isAnimationStarted = false;
+    bool m_isSkillComplete = false;  // 추가: 스킬 완료 플래그
 
-private:
-    QSkillChargeState m_chargeState = QSkillChargeState::Default;
-    float m_chargeTime = 0.0f;
-    float m_skillTime = 0.0f;
-    float m_maxChargeTime = 5.0f;
+    bool m_isCharging;
+    bool m_isReleasing;
+    float m_chargeTime = 0;
+    float m_durationTime = 0.f;
 
-    bool m_isMoving = false;
-    bool m_wasMoving = false;
-    bool m_isReleasing = false;
-    bool m_isComplete = false;
-    bool m_isChargingActive = true;  // 차징 활성 상태
+    shared_ptr<ModelAnimator> m_modelAnimator;
 
-    // 애니메이션 상태
-    bool m_isStartAnimationPlaying = false;
-    float m_startAnimationTime = 0.0f;
-    float m_playSpeed = 2.f;
-
-    shared_ptr<ModelAnimator> m_cachedAnimator;
-
-private:
-    bool m_isFirstAnimationActive = false;
-public:
-    bool IsFirstAnimationActive() const { return m_isFirstAnimationActive; }
-
+    friend class PlayerStateMachine;
 };
 

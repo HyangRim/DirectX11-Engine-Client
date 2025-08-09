@@ -24,6 +24,7 @@ public:
 private:
     void InitBiancaModel();
     void InitBiancaAnimation();
+    void InitBiancaPSM();
     void InitBiancaComponent();
     void InitBiancaSkill();
     void InitBiancaStats();

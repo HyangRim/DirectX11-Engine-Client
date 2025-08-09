@@ -1,57 +1,41 @@
 #pragma once
-#include "AnimationState.h"
-
-enum class BiancaESkillChargeState
-{
-    ChargingWait,    // 차징 중 (정지 상태 - Wait)
-    ChargingRun,     // 차징 중 (이동 상태 - Run)
-    Releasing,       // 스킬 발동 중 (Skill_3_2)
-    Ending,          // 스킬 마무리 (Skill_3_3)
-    Complete         // 스킬 완료
-};
-
+#include "PlayerStateMachine.h"
 class BiancaEState :
-    public AnimationState
+    public PlayerState
 {
+    using Super = PlayerState;
+
 public:
-    BiancaEState();
-    ~BiancaEState() = default;
+    BiancaEState(shared_ptr<ModelAnimator> modelAnimator);
+    ~BiancaEState();
 
-    void Enter(shared_ptr<ModelAnimator> animator) override;
-    void Update(shared_ptr<ModelAnimator> animator) override;
-    void Exit(shared_ptr<ModelAnimator> animator) override;
-    bool CanTransitionTo(AnimationStateType nextState) override;
+    virtual void Enter();
+    virtual void Update();
+    virtual void Exit();
+    virtual bool CanTransitionTo(PlayerStateType newState);
 
-    // 상태 조회
-    bool IsCharging() const;
-    bool IsComplete() const;
-    float GetChargeTime() const { return m_chargeTime; }
+    // 가상 함수 오버라이드
+    virtual bool IsCharging() const override { return m_isCharging; }
+    virtual bool IsReleasing() const override { return m_isReleasing; }
+    virtual bool IsMovable() const override { return m_isCharging; } // 차징 중일 때만 이동 가능
 
-private:
+    void UpdateChargingSkill();
     void UpdateCharging();
-    void UpdateReleasing();
-    void UpdateEnding();
-    void HandleSkillInput();
-    void HandleMovementInput();
     void ReleaseSkill();
-    void TransitionToSkillState(BiancaESkillChargeState newState);
+
 
 private:
-    shared_ptr<GameObject> GetGameObject() const;
+    float m_skillTime = 0.0f;  // 대기 상태 지속 시간
+    bool m_isAnimationStarted = false;
+    bool m_isSkillComplete = false;  // 추가: 스킬 완료 플래그
 
-private:
-    BiancaESkillChargeState m_skillState = BiancaESkillChargeState::ChargingWait;
-    float m_chargeTime = 0.0f;
-    float m_skillTime = 0.0f;
-    float m_maxChargeTime = 5.0f;  // 최대 차징 시간
+    bool m_isCharging;
+    bool m_isReleasing;
+    float m_chargeTime = 0;
+    float m_durationTime = 0.f;
 
-    bool m_isMoving = false;
-    bool m_isCharging = true;
-    bool m_isReleasing = false;
-    bool m_isEnding = false;
-    bool m_isComplete = false;
+    shared_ptr<ModelAnimator> m_modelAnimator;
 
-    shared_ptr<ModelAnimator> m_cachedAnimator;
-    float m_playSpeed = 2.f;
+    friend class PlayerStateMachine;
 };
 
