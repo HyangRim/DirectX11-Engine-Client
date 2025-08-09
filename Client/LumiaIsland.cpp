@@ -51,9 +51,27 @@ const vector<wstring> biancaSkillIcons = {
 };
 
 
+LumiaIsland::LumiaIsland()
+{
+}
+
+LumiaIsland::~LumiaIsland()
+{
+	if (m_loadingThread) {
+		WaitForSingleObject(m_loadingThread, INFINITE);
+		CloseHandle(m_loadingThread);
+	}
+
+	DeleteCriticalSection(&m_loadingCS);
+	DeleteCriticalSection(&m_mainThreadTasksCS);
+}
+
 void LumiaIsland::Start()
 {
 	TIME->ResetDeltaTime();
+
+	InitializeCriticalSection(&m_loadingCS);
+	InitializeCriticalSection(&m_mainThreadTasksCS);
 
 	m_defaultshader = make_shared<Shader>(L"FOW.fx");
 	//m_testShader = make_shared<Shader>(L"23. RenderDemo.fx");
@@ -88,6 +106,10 @@ void LumiaIsland::Start()
 		static_pointer_cast<Light>(light->GetFixedComponent(ComponentType::Light))->SetLightDesc(lightDesc);
 		Add(light);
 	}
+
+	m_loadingThread = CreateThread(nullptr, 0, BackgroundLoadingThread, this, 0, nullptr);
+
+
 	CreateCemeteryBase();
 	CreateCemeteryInterior();
 	CreateCemeteryEnvironment();
@@ -97,28 +119,28 @@ void LumiaIsland::Start()
 	CreateTestDummy();
 	//CreateTestDecal();
 
-	// NavMesh 생성 추가
+	//// NavMesh 생성 추가
 	CreateNavMesh();
 
 
-	//Monster 추가.
+	////Monster 추가.
 	CreateMonsterWolf(Vec3(15, 18, 16));
 	CreateMonsterAlpha(Vec3(20, 18, 16));
 
-	//====================UI====================//
-	LoadItemBoxImages();
-	LoadCharStatIcon();
-	LoadCharEquipmentIcon();
-	LoadCharMainImages();
-	LoadCharInventoryImages();
-	
-	
-	CreateItemBoxPanel();
+	////====================UI====================//
+	//LoadItemBoxImages();
+	//LoadCharStatIcon();
+	//LoadCharEquipmentIcon();
+	//LoadCharMainImages();
+	//LoadCharInventoryImages();
+	//
+	//
+	/*CreateItemBoxPanel();
 	CreateCharStatPanel();
 	CreateCharEquipmentPanel();
 	CreateCharMainPanel();
-	CreateCharInventoryPanel();
-	//====================UI====================//
+	CreateCharInventoryPanel();*/
+	////====================UI====================//
 
 	//CreateTestMesh();
 
@@ -128,12 +150,14 @@ void LumiaIsland::Start()
 
 void LumiaIsland::Update()
 {
+	ProcessMainThreadTasks();
+
 	Super::Update();
 
-	
-	CheckPickedItemBox();
-	
-	UpdateSkillCoolDown();
+	if (m_objectsCreated) {
+		CheckPickedItemBox();
+		UpdateSkillCoolDown();
+	}
 }
 
 void LumiaIsland::FixedUpdate()
@@ -1326,6 +1350,67 @@ void LumiaIsland::CreateCharInventoryPanel()
 Vec4 LumiaIsland::ColorNormalize(Vec4 input)
 {
 	return input / 255.f;
+}
+
+DWORD __stdcall LumiaIsland::BackgroundLoadingThread(LPVOID _param)
+{
+	LumiaIsland* scene = static_cast<LumiaIsland*>(_param);
+
+	try {
+		EnterCriticalSection(&scene->m_loadingCS);
+
+		scene->LoadItemBoxImages();
+		scene->LoadCharStatIcon();
+		scene->LoadCharEquipmentIcon();
+		scene->LoadCharMainImages();
+		scene->LoadCharInventoryImages();
+		
+		LeaveCriticalSection(&scene->m_loadingCS);
+
+		EnterCriticalSection(&scene->m_mainThreadTasksCS);
+		scene->m_mainThreadTasks.push([scene]() {
+
+			scene->CreateItemBoxPanel();
+			scene->CreateCharStatPanel();
+			scene->CreateCharEquipmentPanel();
+			scene->CreateCharMainPanel();
+			scene->CreateCharInventoryPanel();
+
+			scene->m_objectsCreated = true;
+		});
+
+		LeaveCriticalSection(&scene->m_mainThreadTasksCS);
+
+		scene->m_loadingComplete = true;
+		cout << "Succeed Background UI Loading.\n";
+	}
+	catch (...) {
+		OutputDebugStringA("Failed Background Loading...\n");
+	}
+
+	return 0;
+}
+
+void LumiaIsland::ProcessMainThreadTasks()
+{
+	EnterCriticalSection(&m_mainThreadTasksCS);
+
+	while (!m_mainThreadTasks.empty()) {
+		auto task = m_mainThreadTasks.front();
+		m_mainThreadTasks.pop();
+		LeaveCriticalSection(&m_mainThreadTasksCS);
+
+		task();
+
+		EnterCriticalSection(&m_mainThreadTasksCS);
+	}
+
+
+	LeaveCriticalSection(&m_mainThreadTasksCS);
+}
+
+void LumiaIsland::CreateDefaultLight()
+{
 }
 
 void LumiaIsland::CreateTestDecal()

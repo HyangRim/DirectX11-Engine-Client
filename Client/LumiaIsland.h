@@ -8,7 +8,12 @@ class LumiaIsland :
     public Scene
 {
 	using Super = Scene;
+
 public:
+	LumiaIsland();
+	virtual ~LumiaIsland();
+public:
+
 	virtual void Start() override;
 	virtual void Update() override;
 	virtual void FixedUpdate() override;
@@ -61,6 +66,12 @@ private:
 	Vec4 ColorNormalize(Vec4 input);	//RGBA ( 0 ~ 255 ) 넣으면 -> ( 0 ~ 1 )
 
 private:
+	//멀티 스레드 로딩용 함수.
+	static DWORD WINAPI BackgroundLoadingThread(LPVOID _param);
+	void ProcessMainThreadTasks();
+	void CreateDefaultLight();
+
+private:
 	//테스트용. 
 	void CreateTestDecal();
 
@@ -91,6 +102,17 @@ private:
 
 	float m_duration = 0.f;
 	shared_ptr<D2DText> m_test;
+
+private:
+	CRITICAL_SECTION m_loadingCS;
+	HANDLE m_loadingThread;
+	atomic<bool> m_loadingComplete{ false };
+
+	//메인 스레드 작업 큐
+	queue<function<void()>> m_mainThreadTasks;
+	CRITICAL_SECTION m_mainThreadTasksCS;
+	atomic<bool> m_objectsCreated{ false };
 };
+
 
 
