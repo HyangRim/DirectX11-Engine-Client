@@ -59,6 +59,7 @@ private:
 	void CreateCharInventoryPanel();
 
 	void UpdateSkillCoolDown();
+	void UpdatePlayerStatus();
 	//=====================UI관련 함수=====================//
 
 
@@ -74,7 +75,7 @@ private:
 private:
 	//테스트용. 
 	void CreateTestDecal();
-
+	void ControlPlayerStatus();
 	void CreateTestMesh();
 	void CreateTestDummy();
 

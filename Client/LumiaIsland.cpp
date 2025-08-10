@@ -10,6 +10,7 @@
 #include "AnimationStateMachine.h"
 #include "SkillDecalIndicator.h"
 
+#include "Player.h"
 
 #include "Bianca.h"
 #include "Nicky.h"
@@ -157,6 +158,9 @@ void LumiaIsland::Update()
 	if (m_objectsCreated) {
 		CheckPickedItemBox();
 		UpdateSkillCoolDown();
+		ControlPlayerStatus();
+		UpdatePlayerStatus();
+		
 	}
 }
 
@@ -1152,11 +1156,11 @@ void LumiaIsland::LoadCharStatIcon()
 	vector<Vec4> statIconColor;
 	statIconColor.push_back(ColorNormalize(Vec4(218, 187, 102, 255)));
 	statIconColor.push_back(ColorNormalize(Vec4(211, 160, 221, 255)));
-	statIconColor.push_back(ColorNormalize(Vec4(209, 120, 66, 255)));
+	statIconColor.push_back(ColorNormalize(Vec4(209, 120, 66 , 255)));
 	statIconColor.push_back(ColorNormalize(Vec4(124, 175, 203, 255)));
 	statIconColor.push_back(ColorNormalize(Vec4(171, 162, 118, 255)));
 	statIconColor.push_back(ColorNormalize(Vec4(200, 200, 200, 255)));
-	statIconColor.push_back(ColorNormalize(Vec4(236, 96, 113, 255)));
+	statIconColor.push_back(ColorNormalize(Vec4(236, 96 , 113, 255)));
 	statIconColor.push_back(ColorNormalize(Vec4(200, 200, 200, 255)));
 
 	for (int i = 0; i < charStatIconNames.size(); i++)
@@ -1190,11 +1194,47 @@ void LumiaIsland::CreateCharStatPanel()
 
 	auto imageUI = m_charStatPanel->GetUIPanel()->AddImageUI(Vec2(0, 0), L"ImageUI");
 
+	PlayerStatus& playerStatus = m_player->GetStatus();
 	for (int i = 0; i < charStatIconNames.size(); i++)
 	{
 		wstring prefixTag = L"Ico_ChaStat_";
 		shared_ptr<Material> cloneMaterial_charStatIcon = RESOURCES->Get<Material>(prefixTag + charStatIconNames[i])->Clone();
 		imageUI->AddImageLayer(i, Vec2(16 + (i % 2) * 70, 13 + (i / 2) * 28), Vec2(17, 17), cloneMaterial_charStatIcon, 5);
+	}
+
+	// 스탯 텍스트 설정 구조체
+	struct StatTextConfig {
+		int col, row;                    // 그리드 위치 (열, 행)
+		function<wstring()> getValue;    // 값 가져오는 함수
+		Vec4 color;                      // 텍스트 색상
+		wstring name;                    // 텍스트 이름
+	};
+
+	// 스탯 텍스트 설정 배열
+	vector<StatTextConfig> statConfigs = {
+		{0, 0, [&]() { return to_wstring((int)playerStatus.hitAttack); },			ColorNormalize(Vec4(218, 187, 102, 255)), L"AttackPower"},
+		{1, 0, [&]() { return to_wstring((int)playerStatus.hitAttack); },			ColorNormalize(Vec4(211, 160, 221, 255)), L"SkillAmpRatio"},
+		{0, 1, [&]() { return to_wstring((int)playerStatus.hitAttack); },			ColorNormalize(Vec4(209, 120, 66 , 255)), L"IncreaseBasicAttackDamageRatio"},
+		{1, 1, [&]() { return to_wstring((int)playerStatus.defense); },				ColorNormalize(Vec4(124, 175, 203, 255)), L"Defense"},
+		{0, 2, [&]() { return to_wstring(playerStatus.hitSpeed); },					ColorNormalize(Vec4(171, 162, 118, 255)), L"AttackSpeedRatio"},
+		{1, 2, [&]() { return to_wstring((int)playerStatus.cooldownReduction); },	ColorNormalize(Vec4(200, 200, 200, 255)), L"CooldownReduction"},
+		{0, 3, [&]() { return to_wstring((int)playerStatus.hitAttack); },			ColorNormalize(Vec4(236, 96 , 113, 255)), L"CriticalStrikeChance"},
+		{1, 3, [&]() { return to_wstring(playerStatus.moveSpeed); },				ColorNormalize(Vec4(200, 200, 200, 255)), L"MoveSpeedRatio"}
+	};
+
+	// 스탯 텍스트 생성
+	for (const auto& config : statConfigs) {
+		panel->AddD2DText(
+			Vec2(16 + config.col * 70 + 20, 13 + 28 * config.row),
+			config.getValue(),
+			17.0f,
+			config.color,
+			1.0f,
+			Vec4(0, 0, 0, 0),
+			1.0f,
+			config.name,
+			TextAlignment::Center
+		);
 	}
 
 	AddUIObject(m_charStatPanel, true);
@@ -1518,5 +1558,58 @@ void LumiaIsland::UpdateSkillCoolDown()
 			skillCoolDownTextUI[i]->SetText(to_wstring(skillCurCoolDown));
 			//skillCoolDownTextUI[i]->SetVisible(skillCurCoolDown > 0); // 0이면 숨김, 아니면 표시
 		}
+	}
+}
+
+void LumiaIsland::UpdatePlayerStatus()
+{
+	vector<shared_ptr<D2DText>> playerStatusTextUI;
+	vector<wstring> statusNames = charStatIconNames;
+
+	for (const auto& statusName : statusNames) {
+		playerStatusTextUI.push_back(m_charStatPanel->GetUIPanel()->GetD2DText(statusName));
+	}
+
+	PlayerStatus& playerStatus = m_player->GetStatus();
+
+	// 소숫점 1자리로 제한하는 함수
+	auto FormatFloat = [](float value, int precision = 1) -> wstring {
+		std::wstringstream ss;
+		ss << std::fixed << std::setprecision(precision) << value;
+		return ss.str();
+		};
+
+	playerStatusTextUI[0]->SetText(to_wstring((int)playerStatus.hitAttack));     // 정수
+	playerStatusTextUI[1]->SetText(to_wstring((int)playerStatus.hitAttack));     // 정수
+	playerStatusTextUI[2]->SetText(to_wstring((int)playerStatus.hitAttack));     // 정수
+	playerStatusTextUI[3]->SetText(to_wstring((int)playerStatus.defense));       // 정수
+	playerStatusTextUI[4]->SetText(FormatFloat(playerStatus.hitSpeed, 1));       // 소숫점 1자리
+	playerStatusTextUI[5]->SetText(to_wstring((int)playerStatus.cooldownReduction)); // 정수
+	playerStatusTextUI[6]->SetText(to_wstring((int)playerStatus.hitAttack));     // 정수
+	playerStatusTextUI[7]->SetText(FormatFloat(playerStatus.moveSpeed, 1));      // 소숫점 1자리
+}
+
+void LumiaIsland::ControlPlayerStatus()
+{
+	PlayerStatus& playerStatus = m_player->GetStatus();
+	if (INPUT->GetButton(KEY_TYPE::KEY_1))
+	{
+		m_player->SetHitAttack(playerStatus.hitAttack + 1);
+	}
+	if (INPUT->GetButton(KEY_TYPE::KEY_2))
+	{
+		m_player->SetDefense(playerStatus.defense + 1);
+	}
+	if (INPUT->GetButton(KEY_TYPE::KEY_3))
+	{
+		m_player->SetHitSpeed(playerStatus.hitSpeed + 0.01f);
+	}
+	if (INPUT->GetButton(KEY_TYPE::KEY_4))
+	{
+		m_player->SetCooldownReduction(playerStatus.cooldownReduction + 10);
+	}
+	if (INPUT->GetButton(KEY_TYPE::KEY_5))
+	{
+		m_player->SetMoveSpeed(playerStatus.moveSpeed + 0.01);
 	}
 }

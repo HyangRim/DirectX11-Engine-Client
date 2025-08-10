@@ -42,10 +42,10 @@ public:
         const Vec4& textColor, 
         OUT int& textWidth,
         OUT int& textHeight,
+        uint64 instanceID,
         const Vec4& outlineColor = Vec4::Zero,
         float outlineWidth = 0.0f,
         TextAlignment alignment = TextAlignment::Left
-   
     );
 
     static void ClearCache();
