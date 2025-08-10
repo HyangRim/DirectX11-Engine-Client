@@ -265,24 +265,6 @@
     <ClCompile Include="MonsterStateMachine.cpp">
       <Filter>04. Component\MonsterState</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerEState.cpp">
-      <Filter>04. Component\PlayerState\States</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerQState.cpp">
-      <Filter>04. Component\PlayerState\States</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerRState.cpp">
-      <Filter>04. Component\PlayerState\States</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerRunState.cpp">
-      <Filter>04. Component\PlayerState\States</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerWaitState.cpp">
-      <Filter>04. Component\PlayerState\States</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerWState.cpp">
-      <Filter>04. Component\PlayerState\States</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Types.h">
@@ -564,24 +546,6 @@
     <ClInclude Include="MonsterStateMachine.h">
       <Filter>04. Component\MonsterState</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerEState.h">
-      <Filter>04. Component\PlayerState\States</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerQState.h">
-      <Filter>04. Component\PlayerState\States</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerRState.h">
-      <Filter>04. Component\PlayerState\States</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerRunState.h">
-      <Filter>04. Component\PlayerState\States</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerWaitState.h">
-      <Filter>04. Component\PlayerState\States</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerWState.h">
-      <Filter>04. Component\PlayerState\States</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Engine">
@@ -658,9 +622,6 @@
     </Filter>
     <Filter Include="04. Component\MonsterState">
       <UniqueIdentifier>{a0750e74-fcb7-42f1-8573-d4bad8c79c94}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Component\PlayerState\States">
-      <UniqueIdentifier>{9ae12e3f-2b78-4915-835c-389449225e75}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

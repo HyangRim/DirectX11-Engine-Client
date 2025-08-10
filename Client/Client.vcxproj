@@ -36,17 +36,23 @@
     <ClInclude Include="BiancaCamera.h" />
     <ClInclude Include="BiancaESkill.h" />
     <ClInclude Include="BiancaESkillCircle.h" />
+    <ClInclude Include="BiancaAnimEState.h" />
     <ClInclude Include="BiancaEState.h" />
     <ClInclude Include="BiancaQCone.h" />
     <ClInclude Include="BiancaQProjectile.h" />
     <ClInclude Include="BiancaQSkill.h" />
+    <ClInclude Include="BiancaAnimQState.h" />
     <ClInclude Include="BiancaQState.h" />
     <ClInclude Include="BiancaRSkill.h" />
+    <ClInclude Include="BiancaAnimRState.h" />
+    <ClInclude Include="BiancaAnimRunState.h" />
     <ClInclude Include="BiancaRState.h" />
     <ClInclude Include="BiancaRunState.h" />
     <ClInclude Include="BiancaTest.h" />
+    <ClInclude Include="BiancaAnimWaitState.h" />
     <ClInclude Include="BiancaWaitState.h" />
     <ClInclude Include="BiancaWSkill.h" />
+    <ClInclude Include="BiancaAnimWState.h" />
     <ClInclude Include="BiancaWState.h" />
     <ClInclude Include="BillboardDemo.h" />
     <ClInclude Include="ButtonDemo.h" />
@@ -66,14 +72,20 @@
     <ClInclude Include="Nicky.h" />
     <ClInclude Include="NickyERange.h" />
     <ClInclude Include="NickyESkill.h" />
+    <ClInclude Include="NickyAnimEState.h" />
     <ClInclude Include="NickyEState.h" />
     <ClInclude Include="NickyQSkill.h" />
+    <ClInclude Include="NickyAnimQState.h" />
     <ClInclude Include="NickyQState.h" />
     <ClInclude Include="NickyRSkill.h" />
+    <ClInclude Include="NickyAnimRState.h" />
+    <ClInclude Include="NickyAnimRunState.h" />
+    <ClInclude Include="NickyAnimWaitState.h" />
     <ClInclude Include="NickyRState.h" />
     <ClInclude Include="NickyRunState.h" />
     <ClInclude Include="NickyWaitState.h" />
     <ClInclude Include="NickyWSkill.h" />
+    <ClInclude Include="NickyAnimWState.h" />
     <ClInclude Include="NickyWState.h" />
     <ClInclude Include="OrthoGraphicDemo.h" />
     <ClInclude Include="ParticleDemo.h" />
@@ -82,6 +94,7 @@
     <ClInclude Include="PlayerInterface.h" />
     <ClInclude Include="PlayerOutlineEffect.h" />
     <ClInclude Include="RawBufferDemo.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="SceneDemo.h" />
     <ClInclude Include="SkillDecalIndicator.h" />
     <ClInclude Include="SnowBillboardDemo.h" />
@@ -120,17 +133,23 @@
     <ClCompile Include="BiancaCamera.cpp" />
     <ClCompile Include="BiancaESkill.cpp" />
     <ClCompile Include="BiancaESkillCircle.cpp" />
+    <ClCompile Include="BiancaAnimEState.cpp" />
     <ClCompile Include="BiancaEState.cpp" />
     <ClCompile Include="BiancaQCone.cpp" />
     <ClCompile Include="BiancaQProjectile.cpp" />
     <ClCompile Include="BiancaQSkill.cpp" />
+    <ClCompile Include="BiancaAnimQState.cpp" />
     <ClCompile Include="BiancaQState.cpp" />
     <ClCompile Include="BiancaRSkill.cpp" />
+    <ClCompile Include="BiancaAnimRState.cpp" />
+    <ClCompile Include="BiancaAnimRunState.cpp" />
     <ClCompile Include="BiancaRState.cpp" />
     <ClCompile Include="BiancaRunState.cpp" />
     <ClCompile Include="BiancaTest.cpp" />
+    <ClCompile Include="BiancaAnimWaitState.cpp" />
     <ClCompile Include="BiancaWaitState.cpp" />
     <ClCompile Include="BiancaWSkill.cpp" />
+    <ClCompile Include="BiancaAnimWState.cpp" />
     <ClCompile Include="BiancaWState.cpp" />
     <ClCompile Include="BillboardDemo.cpp" />
     <ClCompile Include="ButtonDemo.cpp" />
@@ -148,14 +167,20 @@
     <ClCompile Include="Nicky.cpp" />
     <ClCompile Include="NickyERange.cpp" />
     <ClCompile Include="NickyESkill.cpp" />
+    <ClCompile Include="NickyAnimEState.cpp" />
     <ClCompile Include="NickyEState.cpp" />
     <ClCompile Include="NickyQSkill.cpp" />
+    <ClCompile Include="NickyAnimQState.cpp" />
     <ClCompile Include="NickyQState.cpp" />
     <ClCompile Include="NickyRSkill.cpp" />
+    <ClCompile Include="NickyAnimRState.cpp" />
+    <ClCompile Include="NickyAnimRunState.cpp" />
+    <ClCompile Include="NickyAnimWaitState.cpp" />
     <ClCompile Include="NickyRState.cpp" />
     <ClCompile Include="NickyRunState.cpp" />
     <ClCompile Include="NickyWaitState.cpp" />
     <ClCompile Include="NickyWSkill.cpp" />
+    <ClCompile Include="NickyAnimWState.cpp" />
     <ClCompile Include="NickyWState.cpp" />
     <ClCompile Include="OrthoGraphicDemo.cpp" />
     <ClCompile Include="ParticleDemo.cpp" />
@@ -210,6 +235,9 @@
     <FxCompile Include="..\Shaders\SkillDecal.fx" />
     <FxCompile Include="..\Shaders\Sky.fx" />
     <FxCompile Include="..\Shaders\TextShader.fx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Client.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

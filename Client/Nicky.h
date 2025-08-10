@@ -21,6 +21,7 @@ public:
 private:
     void InitNickyModel();
     void InitNickyAnimation();
+    void InitNickyPSM();
     void InitNickyComponent();
     void InitNickySkill();
     void InitNickyStats();

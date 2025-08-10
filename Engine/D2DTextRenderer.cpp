@@ -71,6 +71,7 @@ shared_ptr<Texture> D2DTextRenderer::CreateTextTexture(
     const Vec4& textColor,
     OUT int& textWidth,
     OUT int& textHeight,
+    uint64 instanceID,
     const Vec4& outlineColor,
     float outlineWidth,
     TextAlignment alignment
@@ -80,6 +81,11 @@ shared_ptr<Texture> D2DTextRenderer::CreateTextTexture(
 
     // 캐시 확인
     wstring cacheKey = GenerateCacheKey(text, fontName, fontSize, textColor, alignment);
+
+    if (instanceID != 0) {
+        cacheKey += L"_inst_" + to_wstring(instanceID);
+    }
+
     auto cacheIt = s_textureCache.find(cacheKey);
     if (cacheIt != s_textureCache.end()) {
         if (auto cachedTexture = cacheIt->second.lock()) {
@@ -217,7 +223,7 @@ shared_ptr<Texture> D2DTextRenderer::CreateTextTexture(
     // DirectX 텍스처로 변환
     auto resultTexture = CreateTextureFromWICBitmap(wicBitmap, textWidth, textHeight);
 
-    // 캐시에 저장
+    // 캐시에 저장할 때도 같은 키 사용
     if (resultTexture && s_textureCache.size() < MAX_CACHE_SIZE) {
         s_textureCache[cacheKey] = resultTexture;
     }

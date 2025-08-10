@@ -29,7 +29,6 @@ PlayerStateMachine::PlayerStateMachine(shared_ptr<AnimationStateMachine> animati
     , m_isMovableOnSkill(isMovableOnSkill)
     , m_isNeedTarget(isNeedTarget)
 {
-    
 }
 
 PlayerStateMachine::~PlayerStateMachine()
@@ -39,13 +38,13 @@ PlayerStateMachine::~PlayerStateMachine()
 
 void PlayerStateMachine::Init()
 {
-    shared_ptr<ModelAnimator> modelAnimator = GetGameObject()->GetModelAnimator();
+    /*
     m_states[PlayerStateType::Wait] = make_shared<PlayerWaitState>();
     m_states[PlayerStateType::Run] = make_shared<PlayerRunState>();
     m_states[PlayerStateType::Skill_1] = make_shared<PlayerQState>(modelAnimator, m_chargingInfo & 8);
     m_states[PlayerStateType::Skill_2] = make_shared<PlayerWState>(modelAnimator);
     m_states[PlayerStateType::Skill_3] = make_shared<PlayerEState>(modelAnimator, m_chargingInfo & 2);
-    m_states[PlayerStateType::Skill_4] = make_shared<PlayerRState>(modelAnimator);
+    m_states[PlayerStateType::Skill_4] = make_shared<PlayerRState>(modelAnimator);*/
 
     // 초기화 작업
     m_currentState = m_states[PlayerStateType::Wait];
@@ -112,10 +111,9 @@ void PlayerStateMachine::ProcessInput()
     {
         if ((1 << 3) & m_chargingInfo)
         {
-            bool IsCharging = static_pointer_cast<PlayerQState>(m_currentState)->m_isCharging;
-            if (!IsCharging) 
+            if (!m_currentState->IsMovable())
             {
-                //cout << "Q 스킬 중 이동 금지\n";
+                // 이동 불가능한 상태 (Release 중)
                 return;
             }
         }
@@ -136,10 +134,9 @@ void PlayerStateMachine::ProcessInput()
     {
         if ((1 << 1) & m_chargingInfo)
         {
-            bool IsCharging = static_pointer_cast<PlayerEState>(m_currentState)->m_isCharging;
-            if (!IsCharging)
+            if (!m_currentState->IsMovable())
             {
-                //cout << "E 스킬 중 이동 금지\n";
+                // 이동 불가능한 상태 (Release 중)
                 return;
             }
         }

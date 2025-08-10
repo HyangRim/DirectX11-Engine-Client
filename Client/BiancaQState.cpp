@@ -1,92 +1,77 @@
 #include "pch.h"
 #include "BiancaQState.h"
-#include "ModelAnimator.h"
 
-BiancaQState::BiancaQState()
-    : AnimationState(AnimationStateType::Skill_4)
+#include "ModelAnimator.h"
+#include "AnimationStateMachine.h"
+
+
+BiancaQState::BiancaQState(shared_ptr<ModelAnimator> modelAnimator)
+    :Super(PlayerStateType::Skill_1)
+    , m_modelAnimator(modelAnimator)
 {
 
 }
 
-void BiancaQState::Enter(shared_ptr<ModelAnimator> animator)
+BiancaQState::~BiancaQState()
 {
-    if (!animator)
-        return;
-    animator->SetAnimationSpeed(m_playSpeed);
-    m_expectedDuration = animator->GetAnimationDuration(L"Skill_1") / m_playSpeed;
-    // 스킬 시퀀스 재생
-    animator->PlaySequence(L"Skill_1_Sequence");
 
-    // 시퀀스 완료 콜백 설정
-    animator->SetSequenceCompleteCallback(L"Skill_1_Sequence", [this]() {
-        m_isSkillComplete = true;  // 스킬 완료 플래그 설정
-        wcout << L"Q 스킬 시퀀스 완료!" << endl;
-        });
+}
 
+void BiancaQState::Enter()
+{
     m_skillTime = 0.0f;
     m_isAnimationStarted = true;
     m_isSkillComplete = false;
-
-    cout << "Skill1 상태 진입 - Skill1 애니메이션 재생 시작" << endl;
+    m_durationTime = 0.f;
+    cout << "BiancaQState진입\n";
 }
 
-void BiancaQState::Update(shared_ptr<ModelAnimator> animator)
+void BiancaQState::Update()
 {
-    if (!animator)
-        return;
 
-    //// 대기 시간 업데이트
-    //m_skillTime += DT;
-
-    //if (m_isSkillComplete)
-    //{
-    //    // 스킬이 완료되면 자동으로 Wait 상태로 전환 요청
-    //    // 실제 전환은 AnimationStateMachine에서 처리
-    //    return;
-    //}
-
-    //// 시퀀스 재생 상태 체크
-    //if (m_isAnimationStarted && !animator->IsSequencePlaying())
-    //{
-    //    // 시퀀스가 끝났으면 완료 플래그 설정
-    //    m_isSkillComplete = true;
-    //    cout << "Q 스킬 시퀀스 자동 완료 감지" << endl;
-    //}
-
-    m_skillTime += DT;
-
-    // 시간 기반으로 완료 체크
-    if (!m_isSkillComplete && m_skillTime >= m_expectedDuration)
-    {
-        m_isSkillComplete = true;
-        // 안전하게 시퀀스 정지
-        animator->StopSequence();
-        wcout << L"E 스킬 시간 기반 완료!" << endl;
-    }
+    UpdateNormalSkill();
+    
 }
 
-void BiancaQState::Exit(shared_ptr<ModelAnimator> animator)
+void BiancaQState::Exit()
 {
-    if (!animator)
-        return;
-
-    cout << "Skill1 상태 종료 - 대기 시간: " << m_skillTime << "초" << endl;
-
     // 상태 종료 시 정리
     m_skillTime = 0.0f;
     m_isAnimationStarted = false;
     m_isSkillComplete = false;
-    m_cachedAnimator.reset();
 
-    animator->SetAnimationSpeed(1.f);
+    cout << "BiancaQState종료\n";
 }
 
-bool BiancaQState::CanTransitionTo(AnimationStateType nextState)
+bool BiancaQState::CanTransitionTo(PlayerStateType newState)
 {
     // 스킬이 완료되었을 때만 Wait 상태로 전환 가능
-    if (m_isSkillComplete && nextState == AnimationStateType::Wait)
+    if ((m_isSkillComplete && newState == PlayerStateType::Wait))
     {
         return true;
     }
     return false;
 }
+
+
+void BiancaQState::UpdateNormalSkill()
+{
+    // 대기 시간 업데이트
+    m_skillTime += DT;
+
+    if (m_isSkillComplete)
+    {
+        // 스킬이 완료되면 자동으로 Wait 상태로 전환 요청
+        // 실제 전환은 AnimationStateMachine에서 처리
+        return;
+    }
+
+    // 시퀀스 재생 상태 체크
+    if (m_isAnimationStarted && !m_modelAnimator->IsSequencePlaying())
+    {
+        // 시퀀스가 끝났으면 완료 플래그 설정
+        m_isSkillComplete = true;
+        cout << "Q 스킬 시퀀스 자동 완료 감지" << endl;
+    }
+}
+

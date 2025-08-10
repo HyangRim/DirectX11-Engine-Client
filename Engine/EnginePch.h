@@ -18,6 +18,8 @@
 #include <set>
 #include <unordered_set>
 #include <algorithm>
+#include <sstream>  // wstringstream 사용 시
+#include <iomanip>  // setprecision 사용 시
 using namespace std;
 
 // WIN

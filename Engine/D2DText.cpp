@@ -205,6 +205,10 @@ void D2DText::CreateTextTexture()
 {
     if (m_text.empty()) return;
 
+    // GameObject 포인터를 고유 ID로 사용
+    uint64 instanceID = (uint64)GetGameObject().get();
+
+  
     auto d2dRenderer = D2DTextRenderer::GetInstance();
     m_textTexture = d2dRenderer->CreateTextTexture(
         m_text,
@@ -213,6 +217,7 @@ void D2DText::CreateTextTexture()
         m_color,
         m_textWidth,
         m_textHeight,
+        instanceID,
         m_enableOutline ? m_outlineColor : Vec4::Zero,
         m_enableOutline ? m_outlineWidth : 0.0f,
         m_alignment

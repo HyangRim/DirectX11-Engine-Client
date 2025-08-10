@@ -27,6 +27,11 @@ public:
     virtual void Exit() = 0;              // 상태 종료 시 호출
     virtual bool CanTransitionTo(PlayerStateType newState) = 0;
 
+    // 새로 추가할 가상 함수들
+    virtual bool IsCharging() const { return false; }      // 차징 중인지 확인
+    virtual bool IsReleasing() const { return false; }     // 릴리즈 중인지 확인
+    virtual bool IsMovable() const { return true; }        // 이동 가능한지 확인
+
     PlayerStateType GetType() const { return m_type; }
 
 protected:
@@ -67,6 +72,7 @@ public:
     void SetPlayerInterface(shared_ptr<IPlayer> pIayerInterface) { m_playerInterface = pIayerInterface; }
 
 private:
+    shared_ptr<ModelAnimator> m_modelAnimator;
     unordered_map<PlayerStateType, shared_ptr<PlayerState>> m_states;
     shared_ptr<PlayerState> m_currentState;
 

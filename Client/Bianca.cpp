@@ -1,11 +1,20 @@
 #include "pch.h"
 #include "Bianca.h"
+
+#include "BiancaAnimWaitState.h"
+#include "BiancaAnimRunState.h"
+#include "BiancaAnimQState.h"
+#include "BiancaAnimWState.h"
+#include "BiancaAnimEState.h"
+#include "BiancaAnimRState.h"
+
 #include "BiancaWaitState.h"
 #include "BiancaRunState.h"
 #include "BiancaQState.h"
 #include "BiancaWState.h"
 #include "BiancaEState.h"
 #include "BiancaRState.h"
+
 #include "FogOfWar.h"
 
 #include "PlayerStateMachine.h"
@@ -30,6 +39,7 @@ void Bianca::Start()
 {
 	InitBiancaModel();
 	InitBiancaAnimation();
+	InitBiancaPSM();
 	InitBiancaComponent();
 	InitBiancaSkill();
 	InitBiancaStats();
@@ -103,12 +113,12 @@ void Bianca::InitBiancaAnimation()
 
 	//FSM Ãß°¡. 
 	AddComponent(make_shared<AnimationStateMachine>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait, make_shared<BiancaWaitState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Run, make_shared<BiancaRunState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1, make_shared<BiancaQState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_2, make_shared<BiancaWState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_3, make_shared<BiancaEState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4, make_shared<BiancaRState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait,		make_shared<BiancaAnimWaitState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Run,		make_shared<BiancaAnimRunState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1,	make_shared<BiancaAnimQState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_2,	make_shared<BiancaAnimWState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_3,	make_shared<BiancaAnimEState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4,	make_shared<BiancaAnimRState>());
 
 	auto animator = GetModelAnimator();
 
@@ -129,6 +139,23 @@ void Bianca::InitBiancaAnimation()
 	animator->CreateSequence(L"Skill_4_Sequence", skill4Anims, skill4Durations, false);
 }
 
+void Bianca::InitBiancaPSM()
+{
+	m_playerStateMachine = make_shared<PlayerStateMachine>(GetAnimationStateMachine(), 2, 14, 0);
+
+	auto self = static_pointer_cast<Player>(shared_from_this());
+	m_playerInterface = make_shared<PlayerInterface>(self);
+
+	m_playerStateMachine->SetPlayerInterface(m_playerInterface);
+
+	m_playerStateMachine->RegisterState(PlayerStateType::Run,		make_shared<BiancaRunState>());
+	m_playerStateMachine->RegisterState(PlayerStateType::Wait,		make_shared<BiancaWaitState>());																				
+	m_playerStateMachine->RegisterState(PlayerStateType::Skill_1,	make_shared<BiancaQState>(GetModelAnimator()));
+	m_playerStateMachine->RegisterState(PlayerStateType::Skill_2,	make_shared<BiancaWState>(GetModelAnimator()));
+	m_playerStateMachine->RegisterState(PlayerStateType::Skill_3,	make_shared<BiancaEState>(GetModelAnimator()));
+	m_playerStateMachine->RegisterState(PlayerStateType::Skill_4,	make_shared<BiancaRState>(GetModelAnimator()));
+}
+
 void Bianca::InitBiancaComponent()
 {
 	m_collider = make_shared<SphereCollider>();
@@ -137,12 +164,6 @@ void Bianca::InitBiancaComponent()
 	m_collider->SetVisible(false);
 	m_rigidbody = make_shared<Rigidbody>();
 	m_navAgent = make_shared<NavMeshAgent>();
-	m_playerStateMachine = make_shared<PlayerStateMachine>(GetAnimationStateMachine(), 2, 14, 0);
-
-	auto self = static_pointer_cast<Player>(shared_from_this());
-	m_playerInterface = make_shared<PlayerInterface>(self);
-
-	m_playerStateMachine->SetPlayerInterface(m_playerInterface);
 
 	AddComponent(m_playerStateMachine);
 	AddComponent(m_collider);

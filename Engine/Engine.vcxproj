@@ -208,13 +208,7 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     <ClInclude Include="MonsterStateMachine.h" />
     <ClInclude Include="NavMesh.h" />
     <ClInclude Include="NavMeshAgent.h" />
-    <ClInclude Include="PlayerEState.h" />
-    <ClInclude Include="PlayerQState.h" />
-    <ClInclude Include="PlayerRState.h" />
-    <ClInclude Include="PlayerRunState.h" />
     <ClInclude Include="PlayerStateMachine.h" />
-    <ClInclude Include="PlayerWaitState.h" />
-    <ClInclude Include="PlayerWState.h" />
     <ClInclude Include="QuadTree.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="Light.h" />
@@ -329,13 +323,7 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     <ClCompile Include="MonsterStateMachine.cpp" />
     <ClCompile Include="NavMesh.cpp" />
     <ClCompile Include="NavMeshAgent.cpp" />
-    <ClCompile Include="PlayerEState.cpp" />
-    <ClCompile Include="PlayerQState.cpp" />
-    <ClCompile Include="PlayerRState.cpp" />
-    <ClCompile Include="PlayerRunState.cpp" />
     <ClCompile Include="PlayerStateMachine.cpp" />
-    <ClCompile Include="PlayerWaitState.cpp" />
-    <ClCompile Include="PlayerWState.cpp" />
     <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="Light.cpp" />
