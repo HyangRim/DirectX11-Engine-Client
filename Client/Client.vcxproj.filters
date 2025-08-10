@@ -620,6 +620,9 @@
     <ClInclude Include="WolfWaitState.h">
       <Filter>Scripts\Monster\Wolf\LogicState</Filter>
     </ClInclude>
+    <ClInclude Include="Define.h">
+      <Filter>Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Shaders\00. Global.fx">

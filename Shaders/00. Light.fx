@@ -204,7 +204,7 @@ float CalcShadowFactor(Texture2D shadowMap, float4 shadowPosH)
         float2(-1.5f, 1.5f), float2(-0.5f, 1.5f), float2(0.5f, 1.5f), float2(1.5f, 1.5f)
     };
     
-    const float dx = SMAP_DX * 0.8f; // 샘플링 범위 축소.
+    const float dx = SMAP_DX * 1.5f; // 샘플링 범위 축소.
     float percentLit = 0.0f;
     
     [unroll]
