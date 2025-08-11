@@ -24,6 +24,9 @@ void StartScene::Start()
 	//CreateTestPanel();
 	CreateLobbyBackGround();
 
+
+
+	SOUND->PlayBGM(L"BGM_Eternal world.wav", 0.5f);
 	Scene::Start();
 }
 
@@ -141,9 +144,10 @@ void StartScene::CreateLobbyBackGround()
 		OnStartButtonClicked();
 		};
 
-	//button->OnHoverEnter += []() {
-	//	//std::cout << "Start Button Hovered!" << std::endl;
-	//	};
+	button->OnHoverEnter += [this]() {
+		std::cout << "Start Button Hovered!" << std::endl;
+		OnButtonHover();
+	};
 
 	//button->OnHoverExit += []() {
 	//	//std::cout << "Start Button Hover Exit!" << std::endl;
@@ -294,7 +298,12 @@ void StartScene::LoadLobbyImages()
 void StartScene::OnStartButtonClicked()
 {
 	std::wcout << L"Start Button Clicked! Changing to Character Select Scene...\n";
-
+	SOUND->PlaySound(L"SFX/oui_matchClick2.wav", 2, 0.5f);
 	auto characterSelectScene = make_shared<CharacterSelectScene>();
 	SCENE->ChangeScene(characterSelectScene);
+}
+
+void StartScene::OnButtonHover()
+{
+	SOUND->PlaySound(L"SFX/oui_mainMenu_hover.wav", 2, 0.5f);
 }

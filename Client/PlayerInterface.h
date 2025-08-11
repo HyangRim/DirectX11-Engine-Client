@@ -49,7 +49,7 @@ public:
         m_player.lock()->GetTransform()->SetRotation(rot);
     }
 
-    void TakeDamage(int damage) override 
+    void TakeDamage(int damage) override
     {
         m_player.lock()->Damaged(damage);
     }

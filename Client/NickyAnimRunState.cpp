@@ -27,6 +27,12 @@ void NickyAnimRunState::Update(shared_ptr<ModelAnimator> animator)
         return;
 
     m_moveTime += DT;
+    m_moveSound += DT;
+
+    if (m_moveSound > 0.2f) {
+        //SOUND->PlaySound(L"SFX/Pc_Walk.wav", 5, 0.5f);
+        m_moveSound = 0.f;
+    }
 
     // 이동 애니메이션이 정상적으로 재생되고 있는지 확인
     if (m_isAnimationStarted)

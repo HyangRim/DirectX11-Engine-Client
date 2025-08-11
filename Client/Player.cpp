@@ -41,6 +41,10 @@ void Player::Update()
 			skill->Update();
 		}
 	}
+
+	if (m_isStun > 0.f) {
+		m_isStun -= DT;
+	}
 }
 
 void Player::LateUpdate()
@@ -162,9 +166,49 @@ void Player::LevelUp()
 	m_status.healing_Stamina += m_growStatus.healing_Stamina;
 }
 
-void Player::Damaged(float _damage)
+void Player::Damaged(DamageInfo _damage)
 {
-	//데미지 공식 적어놓기. 
+	PlayerStatus info = GetStatus();
+	
+	int32 baseAttack = _damage.damage * 100;
+	int32 baseDefense = info.defense; + 100;
+
+	int32 finalDamage = baseAttack / baseDefense;
+
+	int32 playerHP = info.hp;
+	playerHP -= finalDamage;
+
+	if (playerHP <= 0) {
+		//사망 애니메이션으로. 
+		//캐릭터 사망은 보여줄 일 없을듯.
+		m_isStun = true;
+	}
+	
+	if (_damage.stunTime > 0.f) {
+		m_isStun = max(m_isStun, _damage.stunTime);
+	}
+
+	SetHP(playerHP);
+}
+
+void Player::Damaged(int _damage)
+{
+	PlayerStatus info = GetStatus();
+
+	int32 baseAttack = _damage * 100;
+	int32 baseDefense = info.defense; +100;
+
+	int32 finalDamage = baseAttack / baseDefense;
+
+	int32 playerHP = info.hp;
+	playerHP -= finalDamage;
+
+	if (playerHP <= 0) {
+		//사망 애니메이션으로. 
+		//캐릭터 사망은 보여줄 일 없을듯.
+		m_isStun = true;
+	}
+	SetHP(playerHP);
 }
 
 void Player::ApplyEquipStatus(ItemStatus& _Equipstatus)

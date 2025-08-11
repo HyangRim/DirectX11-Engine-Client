@@ -8,6 +8,7 @@ class BaseSkill;
 class PlayerStateMachine;
 class PlayerInterface;
 
+struct DamageInfo;
 struct ItemStatus;
 
 struct PlayerStatus {
@@ -76,11 +77,13 @@ public:
 
 public:
     //Helper Function.
+    bool isStun() { return m_isStun > 0.f ? true : false; }
     PlayerStatus& GetStatus() { return m_status; }
     shared_ptr<Shader> GetShader() { return m_defaultShader; }
 
-    void Damaged(float _damage);
-    
+    void Damaged(DamageInfo _damage);
+    void Damaged(int _damage);
+
     void SetLevel(int _value) { m_status.level = _value; }
     void SetCurExpLimit(int _value) { m_status.curExpLimit = _value; }
     void SetCurExp(int _value) { m_status.curExp = _value; LevelUp(); }
@@ -144,7 +147,9 @@ protected:
     
 
 private:
+    float m_isStun = 0.f;
     float m_healingCoolTime = 0.f;
+
 
 
 

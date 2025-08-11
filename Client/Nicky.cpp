@@ -57,6 +57,11 @@ void Nicky::Start()
 void Nicky::Update()
 {
 	Super::Update();
+
+	if (isStun()) {
+		GetNavMeshAgent()->Stop();
+		return;
+	}
 }
 
 void Nicky::LateUpdate()

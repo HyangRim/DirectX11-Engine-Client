@@ -15,6 +15,7 @@ public:
 
 private:
     float m_moveTime = 0.0f;
+    float m_moveSound = 0.f;
     bool m_isAnimationStarted = false;
 };
 

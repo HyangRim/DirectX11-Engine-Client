@@ -35,6 +35,10 @@ private:
 	void LoadCharacterImages();
 	void LoadCharacterFullAndHalfImages();
 
+
+	void OnCharacterSelectButtonClicked(int charIndex);
+	void OnCharacterSelectButtonHover();
+
 private:
 	shared_ptr<Shader> m_defaultshader = nullptr;
 	shared_ptr<Shader> m_imageShader = nullptr;
