@@ -7,7 +7,7 @@
 
 HealthBar::HealthBar()
 {
-	m_barSize = Vec2(60.f, 8.f);
+	m_barSize = Vec2(150.f, 15.f);
 	m_offset = Vec3(0.f, 6.f, 0.f);
 }
 
@@ -18,7 +18,7 @@ HealthBar::~HealthBar()
 void HealthBar::Start()
 {
 	Super::Start();
-	Create();
+	//Create();
 }
 
 void HealthBar::Update()
@@ -38,7 +38,7 @@ void HealthBar::Create(Vec3 _offset)
 	m_healthBarPanel = make_shared<UIPanel>();
 	panelObj->AddComponent(m_healthBarPanel);
 
-	m_healthBarPanel->Create(Vec2(100, 100), Vec2(70, 20), nullptr);
+	m_healthBarPanel->Create(Vec2(100, 100), Vec2(120, 17.5), nullptr);
 
 	auto backgroundMaterial = make_shared<Material>();
 	auto shader = make_shared<Shader>(L"ImageShader.fx");
@@ -50,9 +50,10 @@ void HealthBar::Create(Vec3 _offset)
 	bgDesc.diffuse = Vec4(0.2f, 0.2f, 0.2f, 0.8f);
 
 	m_healthBarUI = m_healthBarPanel->AddImageUI(Vec2(0, 0), L"HealthBar");
-	m_healthBarUI->AddImageLayer(0, Vec2(0, 0), m_barSize, backgroundMaterial, 2);
+	m_healthBarUI->AddImageLayer(0, Vec2(60, 8), m_barSize, backgroundMaterial, 2);
 
 	auto healthMaterial = make_shared<Material>();
+	auto healthShader = make_shared<Shader>(L"ImageShader.fx");
 	healthMaterial->SetShader(shader);
 	healthMaterial->SetRenderQueue(RenderQueue::Transparent);
 	healthMaterial->SetTransparent(true);
@@ -60,7 +61,7 @@ void HealthBar::Create(Vec3 _offset)
 	MaterialDesc& healthDesc = healthMaterial->GetMaterialDesc();
 	healthDesc.diffuse = Vec4(0.2f, 0.8f, 0.2f, 1.f);
 
-	m_healthBarUI->AddImageLayer(1, Vec2(0, 0), m_barSize, healthMaterial, 2);
+	m_healthBarUI->AddImageLayer(1, Vec2(60, 8), m_barSize, healthMaterial, 6);
 
 	CURSCENE->AddUIObject(panelObj, true);
 	CURSCENE->RegisterUIParent(panelObj);
@@ -74,12 +75,15 @@ void HealthBar::UpdateHealth(int _curHP, int _maxHP)
 	m_lastCurHP = _curHP;
 	m_lastMaxHP = _maxHP;
 
-	if (m_lastMaxHP <= 0)return;
+	if (m_lastMaxHP <= 0) return;
 
+	//cout << m_lastCurHP << " " << m_lastMaxHP << "\n";
 	float healthRatio = static_cast<float>(_curHP) / static_cast<float>(_maxHP);
 	healthRatio = max(0.f, min(healthRatio, 1.f));
-	
-	UpdateHealthBarSize(healthRatio);
+
+	if (auto material = m_healthBarUI->GetLayers()[1].material) {
+		material->GetShader()->PushHealthBarData(healthRatio);
+	}
 }
 
 void HealthBar::SetVisible(bool _visible)
@@ -93,7 +97,7 @@ void HealthBar::UpdateHealthBarPosition()
 {
 	Vec3 targetPos = GetTransform()->GetPosition();
 
-	if (Vec3::Distance(targetPos, m_lastTargetPos) < 0.1f)
+	if (Vec3::Distance(targetPos, m_lastTargetPos) < 0.03f)
 		return;
 
 	m_lastTargetPos = targetPos;
@@ -121,7 +125,7 @@ void HealthBar::UpdateHealthBarSize(float _healthRatio)
 	m_healthBarUI->SetLayerSize(1, currentHealthBarSize);
 
 	// ¿ÞÂÊ Á¤·Ä
-	float offsetX = -(m_barSize.x - currentHealthBarSize.x) / 2.0f;
+	float offsetX = (currentHealthBarSize.x - m_barSize.x) / 2.0f;
 	m_healthBarUI->SetLayerPosition(1, Vec2(offsetX, 0));
 }
 

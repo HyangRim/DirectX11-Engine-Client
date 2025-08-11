@@ -7,6 +7,7 @@
 
 Player::Player()
 {
+
 }
 
 Player::~Player()
@@ -25,9 +26,10 @@ Player::~Player()
 void Player::Start()
 {
 	Super::Start();
-
 	m_healthBar = make_shared<HealthBar>();
 	AddComponent(m_healthBar);
+	m_healthBar->Create();
+	
 }
 
 void Player::Update()
