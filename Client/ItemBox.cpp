@@ -13,8 +13,7 @@ ItemBox::~ItemBox()
 
 void ItemBox::Start()
 {
-	m_collider = make_shared<AABBBoxCollider>();
-	AddComponent(m_collider);
+	//m_collider = make_shared<AABBBoxCollider>();
 
 	Super::Start();
 }

@@ -189,7 +189,7 @@ shared_ptr<UIPanel> ScrollView::AddPanel(Vec2 localPos, Vec2 size, shared_ptr<Ma
 
     // ÄÁÅÙÃ÷ ÁÂÇ¥¸¦ È­¸é ÁÂÇ¥·Î º¯È¯
     Vec2 screenPos = ContentToScreenPosition(localPos);
-    panelComponent->Create(screenPos, size, material);
+    panelComponent->Create(screenPos, size, Vec4(0.f), material);
 
     panelObj->SetLayerIndex(LAYER_UI);
 

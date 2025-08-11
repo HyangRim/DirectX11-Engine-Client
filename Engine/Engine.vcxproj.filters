@@ -265,6 +265,12 @@
     <ClCompile Include="MonsterStateMachine.cpp">
       <Filter>04. Component\MonsterState</Filter>
     </ClCompile>
+    <ClCompile Include="..\Client\ItemBox.cpp">
+      <Filter>03. GameObject\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>03. GameObject\Item</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Types.h">
@@ -546,6 +552,12 @@
     <ClInclude Include="MonsterStateMachine.h">
       <Filter>04. Component\MonsterState</Filter>
     </ClInclude>
+    <ClInclude Include="..\Client\ItemBox.h">
+      <Filter>03. GameObject\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>03. GameObject\Item</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Engine">
@@ -622,6 +634,9 @@
     </Filter>
     <Filter Include="04. Component\MonsterState">
       <UniqueIdentifier>{a0750e74-fcb7-42f1-8573-d4bad8c79c94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. GameObject\Item">
+      <UniqueIdentifier>{9412bb29-60cb-4eb7-b97b-77675bc38af2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

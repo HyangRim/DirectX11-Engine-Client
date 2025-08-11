@@ -540,7 +540,7 @@ void UITestDemo::CreatePanelWithImageUI()
 
 		// UIPanel 컴포넌트 추가
 		panelObj->AddComponent(make_shared<UIPanel>());
-		panelObj->GetUIPanel()->Create(Vec2(400, 300), Vec2(600, 400),
+		panelObj->GetUIPanel()->Create(Vec2(400, 300), Vec2(600, 400), Vec4(0.f),
 			nullptr);
 
 		// 패널에 ImageUI 추가

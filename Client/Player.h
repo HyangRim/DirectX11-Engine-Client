@@ -3,7 +3,7 @@
 #include "ISkill.h"
 
 class Item;
-class EquipItem;
+class EquipableItem;
 class BaseSkill;
 class PlayerStateMachine;
 class PlayerInterface;
@@ -66,7 +66,7 @@ public:
     virtual void OnCollisionExit(shared_ptr<GameObject> _other) = 0;
 
 public:
-    void WearEquipment(shared_ptr<EquipItem> _item);
+    void WearEquipment(shared_ptr<EquipableItem> _item);
     void TakeOffEquipment(int _index);
 
     void LevelUp();
@@ -113,8 +113,8 @@ public:
 
 
 private:
-    void ApplyEquipStatus(ItemStatus& _Equipstatus);
-    void ReleaseEquipStatus(ItemStatus& _Equipstatus);
+    void ApplyEquipStatus(const ItemStatus& _Equipstatus);
+    void ReleaseEquipStatus(const ItemStatus& _Equipstatus);
     
 
 protected:
@@ -126,7 +126,7 @@ protected:
     array<unique_ptr<ISkill>, 4> m_skills;
 
     //무기, 상의, 머리, 팔, 다리 순서. 
-    array<shared_ptr<EquipItem>, 5> m_curEquipment;
+    array<shared_ptr<EquipableItem>, 5> m_curEquipment;
 
     //모든 아이템 전부 보유 가능.(기타, 소비, 장비)
     array<shared_ptr<Item>, 10> m_inventory;

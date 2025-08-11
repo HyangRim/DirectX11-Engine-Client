@@ -51,6 +51,8 @@ public:
 	void UpdatePickingRect(const Vec2& screenPos);
 	void SetZPos(float zPos) { m_zPos = zPos; }
 
+	RECT GetRect() { return m_rect; }
+
 private:
 	void UpdateState();
 	void ChangeState(ButtonState newState);
@@ -68,6 +70,7 @@ private:
 	Vec2 m_size;           // 버튼 크기
 	Vec2 m_materialSize;
 
+	bool m_clickStartedInside = false;
 
 	// 상태 관리
 	ButtonState m_currentState = ButtonState::Normal;

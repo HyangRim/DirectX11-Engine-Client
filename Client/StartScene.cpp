@@ -112,6 +112,7 @@ void StartScene::CreateLobbyBackGround()
 		->Create(
 			Vec2(width / 2.f,  height / 2.f),
 			Vec2(width, height),
+			Vec4(0.f),
 			RESOURCES->Get<Material>(L"LobbyImage")
 			//nullptr
 		);

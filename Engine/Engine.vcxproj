@@ -165,6 +165,7 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Client\ItemBox.h" />
     <ClInclude Include="AABBBoxCollider.h" />
     <ClInclude Include="AnimationState.h" />
     <ClInclude Include="AnimationStateMachine.h" />
@@ -203,6 +204,7 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     <ClInclude Include="InstancingBuffer.h" />
     <ClInclude Include="IPlayer.h" />
     <ClInclude Include="ISkill.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="LobbyScene.h" />
     <ClInclude Include="MonsterState.h" />
     <ClInclude Include="MonsterStateMachine.h" />
@@ -260,6 +262,7 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     <ClInclude Include="Viewport.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Client\ItemBox.cpp" />
     <ClCompile Include="AABBBoxCollider.cpp" />
     <ClCompile Include="AnimationState.cpp" />
     <ClCompile Include="AnimationStateMachine.cpp" />
@@ -318,6 +321,7 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     <ClCompile Include="InstancingBuffer.cpp" />
     <ClCompile Include="IPlayer.cpp" />
     <ClCompile Include="ISkill.cpp" />
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="LobbyScene.cpp" />
     <ClCompile Include="MonsterState.cpp" />
     <ClCompile Include="MonsterStateMachine.cpp" />

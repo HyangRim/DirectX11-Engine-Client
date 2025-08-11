@@ -1,6 +1,7 @@
 #pragma once
-#include "GameObject.h"
+
 class Item;
+
 class ItemBox :
     public GameObject
 {
@@ -25,6 +26,6 @@ public:
 
 private:
     array<shared_ptr<Item>, 8> m_boxInventory;
-    shared_ptr<AABBBoxCollider> m_collider;
+    //shared_ptr<AABBBoxCollider> m_collider;
 };
 

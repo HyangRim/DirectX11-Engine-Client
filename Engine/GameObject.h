@@ -76,7 +76,7 @@ public:
 	shared_ptr<ScrollView> GetScrollView();
 	shared_ptr<PlayerStateMachine> GetPlayerStateMachine();
 	shared_ptr<MonsterStateMachine> GetMonsterStateMachine();
-
+	
 
 	void AddComponent(shared_ptr<Component> _component);
 

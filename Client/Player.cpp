@@ -2,7 +2,7 @@
 #include "Player.h"
 #include "BaseSkill.h"
 #include "Item.h"
-#include "EquipItem.h"
+#include "EquipableItem.h"
 
 Player::Player()
 {
@@ -57,7 +57,7 @@ void Player::FixedUpdate()
 	Super::FixedUpdate();
 }
 
-void Player::WearEquipment(shared_ptr<EquipItem> _item)
+void Player::WearEquipment(shared_ptr<EquipableItem> _item)
 {
 	//기존 Inventory에서 Equip빼주고. 
 	//미리 빼주기 때문에 무조건 빔. 
@@ -70,24 +70,24 @@ void Player::WearEquipment(shared_ptr<EquipItem> _item)
 
 	//Equip Index에 맞게 장착하기. 
 	EquipmentType itemType = _item->GetEquipType();
-	if (itemType == EquipmentType::HAT) {
+	if (itemType == EquipmentType::HEAD) {
 		//비어있지 않다면. 
-		if (m_curEquipment[1] != nullptr) {
-			//장비 해제 후, 넣어주기. 
-			TakeOffEquipment(1);
-			m_curEquipment[1] = _item;
-		}
-		else {//비어있다면 그대로 넣어주기. 
-			m_curEquipment[1] = _item;
-		}
-	}//하술 동일. 
-	else if (itemType == EquipmentType::CLOTHES) {
 		if (m_curEquipment[2] != nullptr) {
+			//장비 해제 후, 넣어주기. 
 			TakeOffEquipment(2);
 			m_curEquipment[2] = _item;
 		}
-		else {
+		else {//비어있다면 그대로 넣어주기. 
 			m_curEquipment[2] = _item;
+		}
+	}//하술 동일. 
+	else if (itemType == EquipmentType::CHEST) {
+		if (m_curEquipment[1] != nullptr) {
+			TakeOffEquipment(1);
+			m_curEquipment[1] = _item;
+		}
+		else {
+			m_curEquipment[1] = _item;
 		}
 	}
 	else if (itemType == EquipmentType::ARM) {
@@ -99,7 +99,7 @@ void Player::WearEquipment(shared_ptr<EquipItem> _item)
 			m_curEquipment[3] = _item;
 		}
 	}
-	else if (itemType == EquipmentType::LEGS) {
+	else if (itemType == EquipmentType::LEG) {
 		if (m_curEquipment[4] != nullptr) {
 			TakeOffEquipment(4);
 			m_curEquipment[4] = _item;
@@ -211,37 +211,37 @@ void Player::Damaged(int _damage)
 	SetHP(playerHP);
 }
 
-void Player::ApplyEquipStatus(ItemStatus& _Equipstatus)
+void Player::ApplyEquipStatus(const ItemStatus& _Equipstatus)
 {
 	float hpRatio = static_cast<float>(m_status.hp) / static_cast<float>(m_status.max_HP);
 	float staminaRatio = static_cast<float>(m_status.hp) / static_cast<float>(m_status.max_HP);
 
-	m_status.max_HP += _Equipstatus.hp;
-	m_status.max_Stamina += _Equipstatus.stamina;
-	m_status.hitAttack += _Equipstatus.hitattack;
-	m_status.hitSpeed += _Equipstatus.hitSpeed;
+	m_status.max_HP += _Equipstatus.maxHP;
+	m_status.max_Stamina += _Equipstatus.maxSP;
+	m_status.hitAttack += _Equipstatus.attackPower;
+	m_status.hitSpeed += _Equipstatus.attackSpeed;
 	m_status.defense += _Equipstatus.defense;
 	m_status.cooldownReduction += _Equipstatus.cooldownReduction;
-	m_status.healing += _Equipstatus.healing;
-	m_status.healing_Stamina += _Equipstatus.healing_Stamina;
+	m_status.healing += _Equipstatus.hpRegen;
+	m_status.healing_Stamina += _Equipstatus.spRegen;
 
 	m_status.hp = static_cast<int>(m_status.max_HP * hpRatio);
 	m_status.stamina = m_status.max_Stamina * staminaRatio;
 }
 
-void Player::ReleaseEquipStatus(ItemStatus& _Equipstatus)
+void Player::ReleaseEquipStatus(const ItemStatus& _Equipstatus)
 {
 	float hpRatio = static_cast<float>(m_status.hp) / static_cast<float>(m_status.max_HP);
 	float staminaRatio = static_cast<float>(m_status.hp) / static_cast<float>(m_status.max_HP);
 
-	m_status.max_HP -= _Equipstatus.hp;
-	m_status.max_Stamina -= _Equipstatus.stamina;
-	m_status.hitAttack -= _Equipstatus.hitattack;
-	m_status.hitSpeed -= _Equipstatus.hitSpeed;
+	m_status.max_HP -= _Equipstatus.maxHP;
+	m_status.max_Stamina -= _Equipstatus.maxSP;
+	m_status.hitAttack -= _Equipstatus.attackPower;
+	m_status.hitSpeed -= _Equipstatus.attackSpeed;
 	m_status.defense -= _Equipstatus.defense;
 	m_status.cooldownReduction -= _Equipstatus.cooldownReduction;
-	m_status.healing -= _Equipstatus.healing;
-	m_status.healing_Stamina -= _Equipstatus.healing_Stamina;
+	m_status.healing -= _Equipstatus.hpRegen;
+	m_status.healing_Stamina -= _Equipstatus.spRegen;
 
 	m_status.hp = m_status.max_HP * hpRatio;
 	m_status.stamina = m_status.max_Stamina * staminaRatio;

@@ -133,10 +133,10 @@ void Button::UpdatePosition(const Vec2& parentWorldPos)
 
 void Button::UpdatePickingRect(const Vec2& screenPos)
 {
-    m_rect.left = static_cast<LONG>(screenPos.x - m_materialSize.x / 2.f);
-    m_rect.right = static_cast<LONG>(screenPos.x + m_materialSize.x / 2.f);
-    m_rect.top = static_cast<LONG>(screenPos.y - m_materialSize.y / 2.f);
-    m_rect.bottom = static_cast<LONG>(screenPos.y + m_materialSize.y / 2.f);
+    m_rect.left = static_cast<LONG>(screenPos.x - m_size.x / 2.f);
+    m_rect.right = static_cast<LONG>(screenPos.x + m_size.x / 2.f);
+    m_rect.top = static_cast<LONG>(screenPos.y - m_size.y / 2.f);
+    m_rect.bottom = static_cast<LONG>(screenPos.y + m_size.y / 2.f);
 }
 
 
@@ -170,13 +170,70 @@ void Button::SetEnabled(bool enabled)
 
 void Button::UpdateState()
 {
+    //if (!m_isEnabled)
+    //    return;
+
+    //POINT mousePos = INPUT->GetMousePos();
+    //bool isMouseInside = Picked(mousePos);
+    //bool isMousePressed = INPUT->GetButton(KEY_TYPE::LBUTTON);
+    //bool isMouseClicked = INPUT->GetButtonDown(KEY_TYPE::LBUTTON);
+
+    //ButtonState newState = m_currentState;
+
+    //// 마우스가 버튼 안에 있는 경우
+    //if (isMouseInside)
+    //{
+    //    // 마우스가 처음 들어온 경우
+    //    if (!m_isMouseInside)
+    //    {
+    //        OnHoverEnter();
+    //    }
+
+    //    // 마우스가 눌려진 상태
+    //    if (isMousePressed)
+    //    {
+    //        newState = ButtonState::Pressed;
+    //    }
+    //    else
+    //    {
+    //        newState = ButtonState::Hovered;
+    //    }
+
+    //    // 클릭된 경우
+    //    if (isMouseClicked)
+    //    {
+    //        OnClick();
+    //    }
+    //}
+    //else
+    //{
+    //    // 마우스가 버튼 밖으로 나간 경우
+    //    if (m_isMouseInside)
+    //    {
+    //        OnHoverExit();
+    //    }
+
+    //    newState = ButtonState::Normal;
+    //}
+
+    //// 상태 업데이트
+    //m_isMouseInside = isMouseInside;
+    //m_wasMousePressed = isMousePressed;
+
+    //// 상태 변경
+    //if (newState != m_currentState)
+    //{
+    //    ChangeState(newState);
+    //}
+
     if (!m_isEnabled)
         return;
 
     POINT mousePos = INPUT->GetMousePos();
     bool isMouseInside = Picked(mousePos);
     bool isMousePressed = INPUT->GetButton(KEY_TYPE::LBUTTON);
-    bool isMouseClicked = INPUT->GetButtonDown(KEY_TYPE::LBUTTON);
+    bool isMouseDown = INPUT->GetButtonDown(KEY_TYPE::LBUTTON);
+    bool isMouseUp = INPUT->GetButtonUp(KEY_TYPE::LBUTTON);
 
     ButtonState newState = m_currentState;
 
@@ -189,6 +246,12 @@ void Button::UpdateState()
             OnHoverEnter();
         }
 
+        // 버튼 안에서 마우스를 누르기 시작한 경우
+        if (isMouseDown)
+        {
+            m_clickStartedInside = true;
+        }
+
         // 마우스가 눌려진 상태
         if (isMousePressed)
         {
@@ -199,10 +262,11 @@ void Button::UpdateState()
             newState = ButtonState::Hovered;
         }
 
-        // 클릭된 경우
-        if (isMouseClicked)
+        // 클릭 판정: 버튼 안에서 누르기 시작했고, 버튼 안에서 떼는 경우
+        if (isMouseUp && m_clickStartedInside)
         {
             OnClick();
+            m_clickStartedInside = false; // 클릭 완료 후 리셋
         }
     }
     else
@@ -214,6 +278,12 @@ void Button::UpdateState()
         }
 
         newState = ButtonState::Normal;
+
+        // 버튼 밖에서 마우스를 떼면 클릭 시작 플래그 리셋
+        if (isMouseUp)
+        {
+            m_clickStartedInside = false;
+        }
     }
 
     // 상태 업데이트

@@ -90,7 +90,7 @@ void UIPanel::Update()
     UpdateChildPositions();
 }
 
-void UIPanel::Create(Vec2 screenPos, Vec2 size, shared_ptr<Material> backgroundMaterial)
+void UIPanel::Create(Vec2 screenPos, Vec2 size, Vec4 diffuseInfo, shared_ptr<Material> backgroundMaterial)
 {
     Init();
     m_position = screenPos;
@@ -120,7 +120,7 @@ void UIPanel::Create(Vec2 screenPos, Vec2 size, shared_ptr<Material> backgroundM
 
         MaterialDesc& desc = m_backgroundMaterial->GetMaterialDesc();
         desc.ambient = Vec4(0.f, 0.f, 0.f, 1.f);
-        desc.diffuse = Vec4(0.f, 0.f, 0.f, 1.f);
+        desc.diffuse = diffuseInfo;
         desc.specular = Vec4(0.f);
         desc.emissive = Vec4(0.f);
 
@@ -528,4 +528,11 @@ shared_ptr<D2DText> UIPanel::GetD2DText(const wstring& name)
         }
     }
     return nullptr;
+}
+
+void UIPanel::SetBackgroundMaterial(shared_ptr<Material> material)
+{
+    m_backgroundMaterial = material;
+    GetGameObject()->GetMeshRenderer()->SetMaterial(m_backgroundMaterial);
+    GetGameObject()->GetMeshRenderer()->SetPass(1);
 }

@@ -70,6 +70,16 @@ namespace Delegate {
 			}
 		}
 
+		// IsBound() 함수 추가
+		inline bool IsBound() const {
+			return !m_functionList.empty();
+		}
+
+		// 등록된 함수 개수 반환
+		inline size_t GetFunctionCount() const {
+			return m_functionList.size();
+		}
+
 	private:
 		std::vector<Function> m_functionList;
 	};

@@ -32,6 +32,8 @@ enum class ComponentType : uint8 {
 	AnimationStateMachine,
 	// ...
 	Script,
+
+	Custom,
 	End
 };
 

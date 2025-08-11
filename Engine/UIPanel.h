@@ -25,7 +25,7 @@ public:
     void SetPosition(const Vec2& position);
     void SetSize(const Vec2& size);
     void SetBackgroundColor(const Vec4& color);
-    void SetBackgroundTexture(shared_ptr<Texture> texture);
+    void SetBackgroundMaterial(shared_ptr<Material> material);
     void SetVisible(bool visible);
 
     // UI 요소 추가 함수들
@@ -51,7 +51,7 @@ public:
     bool IsVisible() const { return m_visible; }
 
     // 패널 생성 함수
-    void Create(Vec2 screenPos, Vec2 size, shared_ptr<Material> backgroundMaterial = nullptr);
+    void Create(Vec2 screenPos, Vec2 size, Vec4 diffuseInfo, shared_ptr<Material> backgroundMaterial = nullptr);
 
 public:
     // 소멸 관련 메서드

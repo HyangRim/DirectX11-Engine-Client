@@ -1,6 +1,10 @@
 #pragma once
 #include "Engine/Scene.h"
 #include "IExecute.h"
+
+#include "InventoryManager.h"
+#include "ItemSlot.h"
+
 class GameObject;
 class Player;
 
@@ -79,6 +83,9 @@ private:
 	void CreateTestMesh();
 	void CreateTestDummy();
 
+	void LoadItemIcons();
+	void LoadItemGradeMaterial();
+
 private:
 	shared_ptr<GameObject> m_CemeteryParent;
 	shared_ptr<Shader> m_defaultshader = nullptr;
@@ -113,6 +120,24 @@ private:
 	queue<function<void()>> m_mainThreadTasks;
 	CRITICAL_SECTION m_mainThreadTasksCS;
 	atomic<bool> m_objectsCreated{ false };
+
+
+private:
+	//테스트용 아이템
+	// 인벤토리 슬롯 관련 추가
+	vector<shared_ptr<ItemSlot>> m_inventorySlots;
+	vector<shared_ptr<ItemSlot>> m_equipmentSlots;
+	vector<shared_ptr<Item>> m_testItems; // 테스트용 아이템들
+
+	shared_ptr<InventoryManager> m_inventoryManager;
+
+public:
+	// 새로운 함수들 추가
+	void CreateInventorySlots();
+	void CreateEquipmentSlots();
+	void CreateTestItems();
+	// 함수 추가
+	void CreateInventoryManager();
 };
 
 
