@@ -139,6 +139,9 @@
     <Filter Include="Scripts\Player\Nicky\NickyLogic">
       <UniqueIdentifier>{400732b6-a316-421f-a8ab-200187e2181a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\UI">
+      <UniqueIdentifier>{28fc06fd-ec5c-4ed4-9229-720e295837e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -416,6 +419,9 @@
     </ClCompile>
     <ClCompile Include="BiancaWState.cpp">
       <Filter>Scripts\Player\Bianca\BiancaLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="HealthBar.cpp">
+      <Filter>Scripts\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -701,6 +707,9 @@
     </ClInclude>
     <ClInclude Include="Define.h">
       <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthBar.h">
+      <Filter>Scripts\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

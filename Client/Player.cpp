@@ -3,6 +3,7 @@
 #include "BaseSkill.h"
 #include "Item.h"
 #include "EquipItem.h"
+#include "HealthBar.h"
 
 Player::Player()
 {
@@ -24,6 +25,9 @@ Player::~Player()
 void Player::Start()
 {
 	Super::Start();
+
+	m_healthBar = make_shared<HealthBar>();
+	AddComponent(m_healthBar);
 }
 
 void Player::Update()
@@ -44,6 +48,10 @@ void Player::Update()
 
 	if (m_isStun > 0.f) {
 		m_isStun -= DT;
+	}
+
+	if (m_healthBar) {
+		m_healthBar->UpdateHealth(m_status.hp, m_status.max_HP);
 	}
 }
 

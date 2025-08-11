@@ -63,6 +63,7 @@
     <ClInclude Include="EquipItem.h" />
     <ClInclude Include="FogOfWar.h" />
     <ClInclude Include="GroupBufferDemo.h" />
+    <ClInclude Include="HealthBar.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="ItemBox.h" />
     <ClInclude Include="Loader.h" />
@@ -158,6 +159,7 @@
     <ClCompile Include="EquipItem.cpp" />
     <ClCompile Include="FogOfWar.cpp" />
     <ClCompile Include="GroupBufferDemo.cpp" />
+    <ClCompile Include="HealthBar.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="ItemBox.cpp" />
     <ClCompile Include="Loader.cpp" />
