@@ -17,6 +17,12 @@ cbuffer ScrollViewClippingBuffer : register(b10)
     float3 ScrollViewClippingPadding;
 };
 
+cbuffer HealthBarBuffer
+{
+    float HealthRatio;
+    float3 HealthPadding;
+};
+
 SamplerState ImageSampler
 {
     Filter = MIN_MAG_MIP_LINEAR;
@@ -122,6 +128,15 @@ float4 PS_ReplaceColor(VertexOutput2 input) : SV_TARGET
     return outColor;
 }
 
+float4 PS_HealthBar(VertexOutput2 input) : SV_TARGET
+{ 
+    if (input.uv.x > HealthRatio)
+    {
+        discard;
+    }
+    return float4(0.f, 0.8f, 0.f, 1.f);
+}
+
 // Å×Å©´Ð
 technique11 T0
 {
@@ -173,6 +188,15 @@ technique11 T0
         SetBlendState(AlphaBlend, float4(0, 0, 0, 0), 0xFF);
         SetVertexShader(CompileShader(vs_5_0, VS()));
         SetPixelShader(CompileShader(ps_5_0, PS_ReplaceColor()));
+    }
+
+
+    pass P6
+    {
+        SetDepthStencilState(UIDepthStencil, 0);
+        SetBlendState(AlphaBlend, float4(0, 0, 0, 0), 0xFF);
+        SetVertexShader(CompileShader(vs_5_0, VS()));
+        SetPixelShader(CompileShader(ps_5_0, PS_HealthBar()));
     }
 }
 

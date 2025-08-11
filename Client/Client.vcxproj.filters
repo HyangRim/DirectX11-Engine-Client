@@ -58,6 +58,9 @@
     <Filter Include="Scripts\Item\Equipment">
       <UniqueIdentifier>{a47bf411-7dad-4b44-a14e-b1b8cda2087f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Item\Etc">
+      <UniqueIdentifier>{13463e65-7153-4a62-93bf-7203bf0394ef}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Scripts\Monster">
       <UniqueIdentifier>{0ae9907a-c8d1-443f-978e-5f702783a10e}</UniqueIdentifier>
     </Filter>
@@ -69,6 +72,9 @@
     </Filter>
     <Filter Include="Game\CSScene">
       <UniqueIdentifier>{d0457b38-34ae-4d3a-88b7-b52d1dcf3c89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Item\ITEMBOX">
+      <UniqueIdentifier>{7b4e6b20-939d-4cbc-85e7-0cf34b3055be}</UniqueIdentifier>
     </Filter>
     <Filter Include="Scripts\Player\Skill">
       <UniqueIdentifier>{171ecbac-caa9-4e7c-97e7-5cbdb4203f48}</UniqueIdentifier>
@@ -133,11 +139,8 @@
     <Filter Include="Scripts\Player\Nicky\NickyLogic">
       <UniqueIdentifier>{400732b6-a316-421f-a8ab-200187e2181a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scripts\Item\ItemSlot">
-      <UniqueIdentifier>{ab6f320e-4e9d-476b-9b6f-773712f6208e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Scripts\Item\InventoryManager">
-      <UniqueIdentifier>{264d2a1f-6f25-49af-9895-77dc6fbf3fac}</UniqueIdentifier>
+    <Filter Include="Scripts\UI">
+      <UniqueIdentifier>{28fc06fd-ec5c-4ed4-9229-720e295837e6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -210,7 +213,10 @@
     <ClCompile Include="BaseSkill.cpp">
       <Filter>Scripts\Player</Filter>
     </ClCompile>
-    <ClCompile Include="EquipableItem.cpp">
+    <ClCompile Include="Item.cpp">
+      <Filter>Scripts\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="EquipItem.cpp">
       <Filter>Scripts\Item\Equipment</Filter>
     </ClCompile>
     <ClCompile Include="AI.cpp">
@@ -227,6 +233,9 @@
     </ClCompile>
     <ClCompile Include="Nicky.cpp">
       <Filter>Scripts\Player\Nicky</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemBox.cpp">
+      <Filter>Scripts\Item\ITEMBOX</Filter>
     </ClCompile>
     <ClCompile Include="SkillDecalIndicator.cpp">
       <Filter>Scripts\Player\Skill</Filter>
@@ -411,11 +420,8 @@
     <ClCompile Include="BiancaWState.cpp">
       <Filter>Scripts\Player\Bianca\BiancaLogic</Filter>
     </ClCompile>
-    <ClCompile Include="ItemSlot.cpp">
-      <Filter>Scripts\Item\ItemSlot</Filter>
-    </ClCompile>
-    <ClCompile Include="InventoryManager.cpp">
-      <Filter>Scripts\Item\InventoryManager</Filter>
+    <ClCompile Include="HealthBar.cpp">
+      <Filter>Scripts\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -491,7 +497,10 @@
     <ClInclude Include="BaseSkill.h">
       <Filter>Scripts\Player</Filter>
     </ClInclude>
-    <ClInclude Include="EquipableItem.h">
+    <ClInclude Include="Item.h">
+      <Filter>Scripts\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="EquipItem.h">
       <Filter>Scripts\Item\Equipment</Filter>
     </ClInclude>
     <ClInclude Include="AI.h">
@@ -508,6 +517,9 @@
     </ClInclude>
     <ClInclude Include="Nicky.h">
       <Filter>Scripts\Player\Nicky</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemBox.h">
+      <Filter>Scripts\Item\ITEMBOX</Filter>
     </ClInclude>
     <ClInclude Include="SkillDecalIndicator.h">
       <Filter>Scripts\Player\Skill</Filter>
@@ -696,11 +708,8 @@
     <ClInclude Include="Define.h">
       <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="ItemSlot.h">
-      <Filter>Scripts\Item\ItemSlot</Filter>
-    </ClInclude>
-    <ClInclude Include="InventoryManager.h">
-      <Filter>Scripts\Item\InventoryManager</Filter>
+    <ClInclude Include="HealthBar.h">
+      <Filter>Scripts\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

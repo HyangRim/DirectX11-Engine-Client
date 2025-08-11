@@ -87,6 +87,7 @@ public:
 	void PushOutlineData(const OutlineDesc& _desc);
 	void PushDecalData(const DecalBufferData& _desc); 
 	void PushScrollViewClippingData(const Vec4& clippingRect, bool enableClipping);
+	void PushHealthBarData(float _healthRatio);
 	void SetDecalTexture(shared_ptr<Texture> _texture);
 	void SetDepthTexture(shared_ptr<Texture> _depthtexture);
 
@@ -162,6 +163,11 @@ private:
 	DecalBufferData m_DecalDesc;
 	shared_ptr<ConstantBuffer<DecalBufferData>> m_DecalBuffer;
 	ComPtr<ID3DX11EffectConstantBuffer> m_DecalEffectBuffer;
+
+	//HealthBar 
+	HealthBarData m_healthBarDesc;
+	shared_ptr<ConstantBuffer<HealthBarData>> m_healthBarBuffer;
+	ComPtr<ID3DX11EffectConstantBuffer> m_healthBarEffectBuffer;
 
 	shared_ptr<Texture> m_decalTexture;
 	shared_ptr<Texture> m_depthTexture;
