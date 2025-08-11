@@ -146,6 +146,8 @@ void LumiaIsland::Start()
 	//CreateTestMesh();
 
 	TIME->ResetDeltaTime();
+	SOUND->StopAll();
+	SOUND->PlayBGM(L"BSER_AreaBGM_CEMETERY.wav", 0.5f);
 	Super::Start();
 }
 

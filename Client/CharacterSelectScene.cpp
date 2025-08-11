@@ -66,6 +66,12 @@ const vector<wstring> characterKoreanNames = {
 		L"유키"
 };
 
+const vector<wstring> charcaterSelectVoice = {
+	L"Bianca/Bianca_selected_1_ko.wav",
+	L"Bianca/Bianca_selected_1_ko.wav",
+	L"Nicky/Nicky_selected_1_ko.wav"
+};
+
 void CharacterSelectScene::Start()
 {	
 	m_defaultshader = make_shared<Shader>(L"FOW.fx");
@@ -375,6 +381,20 @@ void CharacterSelectScene::LoadCharacterFullAndHalfImages()
 	}
 }
 
+void CharacterSelectScene::OnCharacterSelectButtonClicked(int charindex)
+{
+	SOUND->PlaySound(L"SFX/oui_mainMenu_click.wav", 2, 0.5f);
+
+	if (charindex > 0 && charindex < 3) {
+		SOUND->PlaySound(charcaterSelectVoice[charindex], 2, 0.5f);
+	}
+}
+
+void CharacterSelectScene::OnCharacterSelectButtonHover()
+{
+	SOUND->PlaySound(L"SFX/oui_mainMenu_hover.wav", 2, 0.5f);
+}
+
 void CharacterSelectScene::CreateBackGround()
 {
 	float width = GRAPHICS->GetViewport().GetWidth();
@@ -486,10 +506,15 @@ void CharacterSelectScene::CreateScrollableCharacterList()
 			button->SetHoveredMaterial(cloneMaterial_SlotRollOver);
 			button->SetPressedMaterial(cloneMaterial_SlotRollOver);
 
+			button->OnHoverEnter += [this]() {
+				OnCharacterSelectButtonHover();
+			};
+
 			// Delegate에 함수 등록 (함수 호출이 아님!)
 			button->OnClick += [this, button, i]() {
 				UpdateFullImage(button, 0);
 				UpdateSkinList(button, i);
+				OnCharacterSelectButtonClicked(i);
 			};
 			//=======================버튼==============================//
 			
@@ -578,9 +603,14 @@ void CharacterSelectScene::UpdateSkinList(shared_ptr<Button> button, int charInd
 		button->SetHoveredMaterial(clonMaterial_SkinSlotRollOver);
 		button->SetPressedMaterial(clonMaterial_SkinSlotRollOver);
 
+		button->OnHoverEnter += [this]() {
+			OnCharacterSelectButtonHover();
+		};
+
 		// Delegate에 함수 등록 (함수 호출이 아님!)
 		button->OnClick += [this, button, i]() {
 			UpdateFullImage(button, i);
+			OnCharacterSelectButtonClicked(i);
 			};
 		//=======================버튼==============================//
 

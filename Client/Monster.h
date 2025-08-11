@@ -39,9 +39,8 @@ public:
 
 public:
     MonsterStatus& GetMonsterStatus() { return m_monsterStatus; }
-
     shared_ptr<Player> GetTarget() { return m_targetPlayer; }
-
+    bool IsStun() { return m_isStun > 0.f ? true : false; }
     void SetLevel(int _value) { m_monsterStatus.level = _value; }
     void SetMaxHP(int32 _value) { m_monsterStatus.maxHp = _value; }
     void SetHP(int32 _value) { m_monsterStatus.hp = _value; }
@@ -53,7 +52,7 @@ public:
     void ChangeState(shared_ptr<AI> _nextAI);
     void ChangeState(wstring&& _key);
 
-    virtual void Damaged(int _damage, shared_ptr<Player> _player);
+    void Damaged(DamageInfo _damage);
 
 protected:
     //아이템 보유 가능. 죽을 시 열어볼 수 있음. 
@@ -74,5 +73,8 @@ protected:
 
     shared_ptr<AI> m_curAI;
     unordered_map<wstring, shared_ptr<AI>> m_AIMap;
+
+private:
+    float m_isStun = 0.f;
 };
 

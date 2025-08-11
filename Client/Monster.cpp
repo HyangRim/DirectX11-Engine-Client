@@ -2,6 +2,9 @@
 #include "Monster.h"
 #include "AI.h"
 #include "Item.h"
+#include "Player.h"
+#include "MonsterStateMachine.h"
+#include "MonsterState.h"
 
 Monster::Monster(shared_ptr<Shader> _shader)
 	: m_defaultShader(_shader)
@@ -22,10 +25,20 @@ void Monster::Start()
 
 void Monster::Update()
 {
+	Super::Update();
+
+
+	if (m_isStun > 0.f) {
+		m_isStun -= DT;
+	}
+
+	if (IsStun())
+		return;
+
+
 	if (m_curAI != nullptr) {
 		m_curAI->Update();
 	}
-	Super::Update();
 }
 
 void Monster::LateUpdate()
@@ -60,10 +73,33 @@ void Monster::ChangeState(wstring&& _key)
 	m_curAI->Enter();
 }
 
-void Monster::Damaged(int _damage, shared_ptr<Player> _player)
+void Monster::Damaged(DamageInfo _damage)
 {
-	if (m_monsterStatus.hp <= 0)
-		return;
+	m_targetPlayer = static_pointer_cast<Player>(_damage.attacker);
 
+
+	MonsterStatus info = GetMonsterStatus();
+
+	int32 baseAttack = _damage.damage * 100;
+	int32 baseDefense = 100;
+
+	int32 finalDamage = baseAttack / baseDefense;
+
+	int32 monsterHP = info.hp;
+	monsterHP -= finalDamage;
+
+
+
+	if (monsterHP <= 0) {
+		//사망 애니메이션으로. 
+		GetMonsterStateMachine()->ChangeState(MonsterStateType::Death);
+		m_isStun = true;
+	}
+
+	if (_damage.stunTime > 0.f) {
+		m_isStun = max(m_isStun, _damage.stunTime);
+	}
+
+	SetHP(monsterHP);
 }
 

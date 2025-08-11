@@ -699,6 +699,9 @@
     <ClInclude Include="BiancaWState.h">
       <Filter>Scripts\Player\Bianca\BiancaLogic</Filter>
     </ClInclude>
+    <ClInclude Include="Define.h">
+      <Filter>Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Shaders\00. Global.fx">

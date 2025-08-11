@@ -30,6 +30,7 @@ private:
 	void LoadLobbyImages();
 
 	void OnStartButtonClicked();
+	void OnButtonHover();
 
 private:
 	shared_ptr<Shader> m_defaultshader = nullptr;

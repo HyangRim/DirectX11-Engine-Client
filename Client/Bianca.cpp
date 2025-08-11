@@ -49,6 +49,13 @@ void Bianca::Start()
 
 void Bianca::Update()
 {
+	Super::Update();
+
+	if (isStun()) {
+		GetNavMeshAgent()->Stop();
+		return;
+	}
+
 	if (INPUT->GetButtonDown(KEY_TYPE::Q)) {
 		m_skills[0]->PlaySkill();
 	}
@@ -61,7 +68,6 @@ void Bianca::Update()
 	else if (INPUT->GetButtonDown(KEY_TYPE::R)) {
 		m_skills[3]->PlaySkill();
 	}
-	Super::Update();
 }
 
 void Bianca::LateUpdate()

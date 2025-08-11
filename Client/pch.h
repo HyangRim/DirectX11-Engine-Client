@@ -3,6 +3,7 @@
 #pragma comment(lib, "Engine/Engine.lib")
 #include "Engine/EnginePch.h"
 
+#include "Define.h"
 #include "Utils.h"
 #include "GameObject.h"
 #include "GeometryHelper.h"

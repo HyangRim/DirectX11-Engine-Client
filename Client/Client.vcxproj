@@ -59,6 +59,7 @@
     <ClInclude Include="CameraScript.h" />
     <ClInclude Include="CharacterSelectScene.h" />
     <ClInclude Include="Client_Define.h" />
+    <ClInclude Include="Define.h" />
     <ClInclude Include="EquipItem.h" />
     <ClInclude Include="FogOfWar.h" />
     <ClInclude Include="GroupBufferDemo.h" />
