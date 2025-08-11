@@ -2,7 +2,7 @@
 #include "Player.h"
 #include "BaseSkill.h"
 #include "Item.h"
-#include "EquipItem.h"
+#include "EquipableItem.h"
 #include "HealthBar.h"
 
 Player::Player()

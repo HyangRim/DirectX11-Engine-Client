@@ -38,7 +38,7 @@ void HealthBar::Create(Vec3 _offset)
 	m_healthBarPanel = make_shared<UIPanel>();
 	panelObj->AddComponent(m_healthBarPanel);
 
-	m_healthBarPanel->Create(Vec2(100, 100), Vec2(120, 17.5), nullptr);
+	m_healthBarPanel->Create(Vec2(100, 100), Vec2(120, 17.5), Vec4(0.f), nullptr);
 
 	auto backgroundMaterial = make_shared<Material>();
 	auto shader = make_shared<Shader>(L"ImageShader.fx");
