@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "ISkill.h"
+#include "EquipableItem.h"
 
 class Item;
 class EquipableItem;
@@ -153,8 +154,6 @@ private:
     float m_healingCoolTime = 0.f;
 
 
-
-
 public:
     ISkill* GetSkill(int index) const
     {
@@ -164,5 +163,6 @@ public:
     }
 
     friend class PlayerInterface;
+
 };
 

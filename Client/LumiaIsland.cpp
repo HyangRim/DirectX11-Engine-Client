@@ -1723,6 +1723,10 @@ void LumiaIsland::ControlPlayerStatus()
 	{
 		m_player->SetMoveSpeed(playerStatus.moveSpeed + 0.01);
 	}
+	if (INPUT->GetButton(KEY_TYPE::Z))
+	{
+		m_player->SetHP(playerStatus.hp -= 1);
+	}
 }
 
 

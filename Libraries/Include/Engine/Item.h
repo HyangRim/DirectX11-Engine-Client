@@ -30,21 +30,23 @@ public:
     void SetDescription(wstring&& _desc) { m_itemDescription = move(_desc); }
     const wstring& GetDesc() const { return m_itemDescription; }
 
-    // 아이템 타입
-    void SetItemType(ITEMTYPE _type) { m_itemType = _type; }
-    ITEMTYPE GetItemType() const { return m_itemType; }
+    // 아이템 타입/등급 - inline으로 최적화
+    void SetItemType(ITEMTYPE _type) noexcept { m_itemType = _type; }
+    ITEMTYPE GetItemType() const noexcept { return m_itemType; }
 
-    // 아이템 등급
-    void SetItemGrade(ITEMGRADE _grade) { m_itemGrade = _grade; }
-    ITEMGRADE GetItemGrade() const { return m_itemGrade; }
+    void SetItemGrade(ITEMGRADE _grade) noexcept { m_itemGrade = _grade; }
+    ITEMGRADE GetItemGrade() const noexcept { return m_itemGrade; }
 
-    // 아이템 ID (고유 식별자)
-    void SetItemID(int32 _id) { m_itemID = _id; }
-    int32 GetItemID() const { return m_itemID; }
+    void SetItemID(int32 _id) noexcept { m_itemID = _id; }
+    int32 GetItemID() const noexcept { return m_itemID; }
 
     // 이미지
     void SetMaterial(shared_ptr<Material> _itemMaterial) { m_itemMaterial = _itemMaterial; }
     shared_ptr<Material> GetMaterial() const { return m_itemMaterial; }
+
+    // 이미지 - 텍스처로 변경하여 메모리 최적화
+    void SetImage(shared_ptr<Texture> _itemTexture) { m_itemTexture = _itemTexture; }
+    shared_ptr<Texture> GetImage() const { return m_itemTexture; }
 
     // 가상 함수들 (하위 클래스에서 구현)
     virtual bool Use() { return false; }
@@ -62,4 +64,5 @@ protected:
 
     // UI
     shared_ptr<Material> m_itemMaterial;
+    shared_ptr<Texture> m_itemTexture;
 };
