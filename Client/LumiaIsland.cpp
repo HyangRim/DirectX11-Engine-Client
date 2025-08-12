@@ -71,14 +71,16 @@ LumiaIsland::~LumiaIsland()
 
 void LumiaIsland::Start()
 {
+
 	TIME->ResetDeltaTime();
 
 	InitializeCriticalSection(&m_loadingCS);
 	InitializeCriticalSection(&m_mainThreadTasksCS);
 
 	m_defaultshader = make_shared<Shader>(L"FOW.fx");
+	//CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\skyBox.png", L"Sky.fx"));
 	//m_testShader = make_shared<Shader>(L"23. RenderDemo.fx");
-	//CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\snowcube1024.dds", L"Sky.fx"));
+	CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\snowcube1024.dds", L"Sky.fx"));
 	
 	CreateMainCamera();
 	CreateUICamera();

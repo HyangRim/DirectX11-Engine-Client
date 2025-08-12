@@ -23,6 +23,9 @@ private:
 	void CreateBackGround(); 
 	void CreateScrollableCharacterList();
 	void CreateScrollableSkinList(); // 스킨 목록 + full image
+
+	void CreateTimeProgressBar();
+	void UpdateTimeProgressBar();
 	
 	void UpdateSkinList(shared_ptr<Button> button, int charIndex);
 	void UpdateFullImage(shared_ptr<Button> button, int skinIndex);
@@ -35,9 +38,11 @@ private:
 	void LoadCharacterImages();
 	void LoadCharacterFullAndHalfImages();
 
-
 	void OnCharacterSelectButtonClicked(int charIndex);
 	void OnCharacterSelectButtonHover();
+
+
+	void StartLumiaIsland();
 
 private:
 	shared_ptr<Shader> m_defaultshader = nullptr;
@@ -46,6 +51,17 @@ private:
 	shared_ptr<GameObject> m_backPanel = nullptr;
 	shared_ptr<GameObject> m_characterList = nullptr;
 	shared_ptr<GameObject> m_selectedCharacterSkinScrollView = nullptr;
+
+private:
+	shared_ptr<GameObject> m_timeProgressBar = nullptr;
+	shared_ptr<UIPanel> m_timeProgressPanel = nullptr;
+	shared_ptr<ImageUI> m_timeProgressUI = nullptr;
+	Vec2 m_progressBarSize = Vec2(1800.f, 25.f); // 바 크기
+private:
+	float m_selectDuration = 55.f;
+	float m_selectElapsedTime = 0.f;
+
+	float m_countTimer = 0.f;
 };
 
 

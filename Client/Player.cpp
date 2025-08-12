@@ -149,6 +149,7 @@ void Player::TakeOffEquipment(int _index)
 	ReleaseEquipStatus(m_curEquipment[_index]->GetStatus());
 	m_inventory[emptyInventoryIDX] = move(m_curEquipment[_index]);
 	m_curEquipment[_index] = nullptr;
+	SOUND->PlaySound(L"SFX/PickUpItem.wav", 5, 0.5f);
 }
 
 void Player::LevelUp()
@@ -174,6 +175,7 @@ void Player::LevelUp()
 	m_status.defense += m_growStatus.defense;
 	m_status.healing += m_growStatus.healing;
 	m_status.healing_Stamina += m_growStatus.healing_Stamina;
+	SOUND->PlaySound(L"SFX/effect_levelup.wav", 5, 0.5f);
 }
 
 void Player::Damaged(DamageInfo _damage)
@@ -237,6 +239,8 @@ void Player::ApplyEquipStatus(const ItemStatus& _Equipstatus)
 
 	m_status.hp = static_cast<int>(m_status.max_HP * hpRatio);
 	m_status.stamina = m_status.max_Stamina * staminaRatio;
+
+	SOUND->PlaySound(L"SFX/equipmentinstall_underrare.wav", 5, 0.5f);
 }
 
 void Player::ReleaseEquipStatus(const ItemStatus& _Equipstatus)

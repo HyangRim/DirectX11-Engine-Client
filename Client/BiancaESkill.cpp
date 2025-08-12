@@ -111,7 +111,7 @@ void BiancaESkill::Update()
 	}
 	else if(INPUT->GetButtonUp(KEY_TYPE::E) || m_circleKeepElapedTime > 4.f)
 	{
-		//m_playerObject->GetNavMeshAgent()->Stop();
+		m_playerObject->GetNavMeshAgent()->Stop();
 		//E키 떼었을 때. 
 		//얼마나 나갈지 세팅.
 		float range =  m_maxRange * min(1.f, m_circleKeepElapedTime / m_circleSizeDuration);
@@ -130,6 +130,7 @@ void BiancaESkill::Update()
 
 		float distance = Vec3::Distance(m_startPos, m_targetPos);
 		m_moveDuration = distance / m_speed;
+
 
 		
 		m_moveElapsedTime = 0.f;
@@ -167,7 +168,7 @@ void BiancaESkill::Update()
 			//////아직 구현 X
 
 			m_circle->DamageFlag(false);
-			m_playerObject->GetNavMeshAgent()->Stop();
+			
 			SkillEnd();
 			//m_circle->SetActive(false);
 			m_endFlag = true;

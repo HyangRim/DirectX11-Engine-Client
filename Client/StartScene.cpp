@@ -300,6 +300,7 @@ void StartScene::OnStartButtonClicked()
 {
 	std::wcout << L"Start Button Clicked! Changing to Character Select Scene...\n";
 	SOUND->PlaySound(L"SFX/oui_matchClick2.wav", 2, 0.5f);
+
 	auto characterSelectScene = make_shared<CharacterSelectScene>();
 	SCENE->ChangeScene(characterSelectScene);
 }

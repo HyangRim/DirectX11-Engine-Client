@@ -130,11 +130,12 @@ float4 PS_ReplaceColor(VertexOutput2 input) : SV_TARGET
 
 float4 PS_HealthBar(VertexOutput2 input) : SV_TARGET
 { 
+    float4 color = DiffuseMap.Sample(ImageSampler, input.uv);
     if (input.uv.x > HealthRatio)
     {
         discard;
     }
-    return float4(0.f, 0.8f, 0.f, 1.f);
+    return color;
 }
 
 // Å×Å©´Ð
