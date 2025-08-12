@@ -23,7 +23,7 @@ BiancaWSkill::BiancaWSkill(shared_ptr<Player> _player)
 		obj->SetName(L"Bianca_Coffin");
 		//obj->GetTransform()->SetParent(_player->GetTransform());
 		obj->GetTransform()->SetLocalPosition(Vec3(0, 0, 0));
-		obj->GetTransform()->SetLocalScale(Vec3(1.f));
+		obj->GetTransform()->SetLocalScale(Vec3(2.f));
 		obj->SetActive(false);
 		obj->AddComponent(make_shared<ModelRenderer>(m_shader));
 		{

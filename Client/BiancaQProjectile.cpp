@@ -59,7 +59,9 @@ void BiancaQProjectile::OnCollisionExit(shared_ptr<GameObject> _other)
 void BiancaQProjectile::SetMoveTarget(Vec3& _startPos, Vec3& _endPos, float _timer)
 {
 	m_startPos = _startPos;
+	m_startPos.y += 2.5f;
 	m_endPos = _endPos;
+	m_endPos.y += 2.5f;
 	m_direction = m_endPos - m_startPos;
 	m_duration = _timer;
 	GetTransform()->SetPosition(m_startPos);

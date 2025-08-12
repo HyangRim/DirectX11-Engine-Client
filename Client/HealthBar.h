@@ -30,7 +30,7 @@ private:
 private:
     shared_ptr<UIPanel> m_healthBarPanel;
     shared_ptr<ImageUI> m_healthBarUI;
-
+    
     Vec3 m_offset;
     Vec2 m_barSize;
 

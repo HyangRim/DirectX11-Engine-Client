@@ -25,7 +25,7 @@ private:
 
     float m_eSkillEndElapsedTime = 0.f;
 
-    float m_maxRange = 5.5f;
+    float m_maxRange = 11.0f;
     float m_speed = 15.f;
 
     float m_moveDuration = 0.f;

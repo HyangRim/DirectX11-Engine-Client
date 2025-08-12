@@ -35,7 +35,7 @@ BiancaQSkill::BiancaQSkill(shared_ptr<Player> _player)
 		m_Cone->SetName(L"Bianca_Q_Cone");
 		m_Cone->SetActive(false);
 		m_Cone->AddComponent(make_shared<MeshRenderer>());
-		m_Cone->GetTransform()->SetScale(Vec3(1, 2, 1));
+		m_Cone->GetTransform()->SetScale(Vec3(2.f, 4.f, 2.f));
 		m_Cone->GetTransform()->SetPosition(_player->GetTransform()->GetPosition());
 		m_Cone->AddComponent(make_shared<AABBBoxCollider>());
 		m_Cone->GetCollider()->SetOffsetScale(Vec3(1, 10, 1));
@@ -100,7 +100,7 @@ void BiancaQSkill::Update()
 
 		//그 자리에 Cone 배치.
 		Vec3 ProjectilePos = m_Projectile->GetTransform()->GetPosition();
-		ProjectilePos.y -= 3.f;
+		ProjectilePos.y -= 5.f;
 		//cout << ProjectilePos.x << " " << ProjectilePos.y << " " << ProjectilePos.z << "\n";
 		m_Cone->GetTransform()->SetPosition(ProjectilePos);
 		m_Cone->SetActive(true);
