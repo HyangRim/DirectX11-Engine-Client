@@ -214,7 +214,11 @@ float CalcShadowFactor(Texture2D shadowMap, float4 shadowPosH)
             shadowPosH.xy + offsets[i] * dx, depth).r;
     }
     
-    return percentLit / 16.0f;
+    float shadowStrength =  percentLit / 16.0f;
+    
+    float shadowSoftness = 0.5f;
+    return lerp(shadowSoftness, 1.f, shadowStrength);
+
 }
 
 

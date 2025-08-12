@@ -78,13 +78,12 @@ float4 ComputeDeferredLight(float4 albedo, float3 normal, float3 worldPos, float
     float4 diffuseColor = 0;
     float4 specularColor = 0;
     float4 emissiveColor = 0;
-    
-    
+
     // Ambient
     //ambientColor = albedo * GlobalLight.ambient * Material.ambient;
     ambientColor = albedo * GlobalLight.ambient * shadow * 3.0f;
-   
     
+   
     // Diffuse
     float3 lightDir = -normalize(GlobalLight.direction);
     float NdotL = saturate(dot(normal, lightDir));
@@ -106,6 +105,7 @@ float4 ComputeDeferredLight(float4 albedo, float3 normal, float3 worldPos, float
     emissive = smoothstep(0.0f, 1.0f, emissive);
     emissive = pow(emissive, 2);
     emissiveColor = GlobalLight.emissive * Material.emissive * emissive;
+    
     
     // 최종 색상 계산
     float4 finalColor = ambientColor + (diffuseColor + specularColor) * shadow;
