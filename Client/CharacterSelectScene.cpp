@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CharacterSelectScene.h"
+#include "LumiaIsland.h"
 #include "FogOfWar.h"
 #include "CameraScript.h"
 
@@ -76,20 +77,43 @@ void CharacterSelectScene::Start()
 {	
 	m_defaultshader = make_shared<Shader>(L"FOW.fx");
 	m_imageShader = make_shared<Shader>(L"ImageShader.fx");
+	m_selectElapsedTime = 0.f;
+	m_countTimer = 0.f;
+
+	SOUND->StopAll();
+	SOUND->PlayBGM(L"SFX/Select/BSER_BGM_StrategyMap.wav", 0.5f);
+
 	CreateMainCamera();
 	CreateUICamera();
 	CreateLight();
-	
 	LoadCharacterSelectSceneImages();
 
 	CreateBackGround();
 	CreateScrollableCharacterList();
 	CreateScrollableSkinList();
+
+	CreateTimeProgressBar();
+
 	Scene::Start();
 }
 
 void CharacterSelectScene::Update()
 {
+	m_selectElapsedTime += DT;
+
+	if (m_selectElapsedTime >= 45.f) {
+		m_countTimer += DT;
+
+		if (m_countTimer >= 1.f) {
+			SOUND->PlaySound(L"SFX/Select/StrategyMapCount.wav", 2, 0.5f);
+			m_countTimer = 0.f;
+		}
+	}
+
+	if (m_selectElapsedTime >= 55.f) {
+		StartLumiaIsland();
+	}
+	UpdateTimeProgressBar();
 	Scene::Update();
 }
 
@@ -387,12 +411,24 @@ void CharacterSelectScene::OnCharacterSelectButtonClicked(int charindex)
 
 	if (charindex > 0 && charindex < 3) {
 		SOUND->PlaySound(charcaterSelectVoice[charindex], 2, 0.5f);
+		m_selectCharIdx = charindex - 1;
+
+		if (m_selectElapsedTime < 44.5f) {
+			m_selectElapsedTime = 44.5f;
+		}
 	}
 }
 
 void CharacterSelectScene::OnCharacterSelectButtonHover()
 {
 	SOUND->PlaySound(L"SFX/oui_mainMenu_hover.wav", 2, 0.5f);
+}
+
+void CharacterSelectScene::StartLumiaIsland()
+{
+	auto LumiaIslandScene = make_shared<LumiaIsland>();
+	LumiaIslandScene->SetSelectedCharacter(m_selectCharIdx);
+	SCENE->ChangeScene(LumiaIslandScene);
 }
 
 void CharacterSelectScene::CreateBackGround()
@@ -572,6 +608,71 @@ void CharacterSelectScene::CreateScrollableSkinList()
 
 	AddUIObject(m_selectedCharacterSkinScrollView, true);
 	RegisterUIParent(m_selectedCharacterSkinScrollView);
+}
+
+void CharacterSelectScene::CreateTimeProgressBar()
+{
+	float width = GRAPHICS->GetViewport().GetWidth();
+	float height = GRAPHICS->GetViewport().GetHeight();
+
+	// 프로그레스 바 게임오브젝트 생성
+	m_timeProgressBar = make_shared<GameObject>();
+	m_timeProgressBar->SetName(L"TimeProgressBar");
+
+	// UIPanel 컴포넌트 추가
+	m_timeProgressPanel = make_shared<UIPanel>();
+	m_timeProgressBar->AddComponent(m_timeProgressPanel);
+
+	Vec3 timerBarPos = m_timeProgressPanel->GetTransform()->GetPosition();
+	timerBarPos.z = -1.f;
+	m_timeProgressPanel->GetTransform()->SetPosition(timerBarPos);
+
+	// 화면 상단 중앙에 배치 (위치는 원하는 대로 조정)
+	Vec2 progressBarPos = Vec2(1580.f, 30.f);
+	Vec2 progressBarSize = Vec2(m_progressBarSize.x, m_progressBarSize.y);
+
+	m_timeProgressPanel->Create(progressBarPos, progressBarSize, Vec4(0.f), nullptr);
+
+	// ImageUI 추가
+	m_timeProgressUI = m_timeProgressPanel->AddImageUI(Vec2(0, 0), L"TimeProgressUI");
+
+	// 청록색 프로그레스 바 머티리얼 생성
+	auto progressMaterial = make_shared<Material>();
+	auto shader = make_shared<Shader>(L"ImageShader.fx");
+	progressMaterial->SetShader(shader);
+	progressMaterial->SetRenderQueue(RenderQueue::Transparent);
+	progressMaterial->SetTransparent(true);
+	progressMaterial->SetRenderingMode(RenderingMode::Forward);
+
+	auto progressBarTexture = RESOURCES->Load<Texture>(L"BlueBar", L"..\\Resources\\Textures\\UI\\StatusBar\\Gauge\\Img_HyperloopGauge_LumiaIsland.png");
+	progressMaterial->SetDiffuseMap(progressBarTexture);
+
+	MaterialDesc& progressDesc = progressMaterial->GetMaterialDesc();
+	progressDesc.diffuse = Vec4(1.0f, 1.0f, 1.0f, 1.0f); // 청록색
+	progressDesc.ambient = Vec4(1.f);
+	progressDesc.specular = Vec4(1.0f);
+
+	// 초기에는 너비가 0인 상태로 시작
+	m_timeProgressUI->AddImageLayer(0, Vec2(0, 0), m_progressBarSize, progressMaterial, 6);
+
+	m_timeProgressBar->SetLayerIndex(LAYER_UI);
+	AddUIObject(m_timeProgressBar, true);
+	RegisterUIParent(m_timeProgressBar);
+}
+
+void CharacterSelectScene::UpdateTimeProgressBar()
+{
+	if (!m_timeProgressUI) return;
+
+	float timeRatio = m_selectElapsedTime / m_selectDuration;
+	timeRatio = max(0.f, min(timeRatio, 1.f));
+	//timeRatio = 1.f;
+
+	auto material = m_timeProgressUI->GetLayers()[0].material;
+	if (material) {
+		material->GetShader()->PushHealthBarData(timeRatio);
+	}
+
 }
 
 void CharacterSelectScene::UpdateSkinList(shared_ptr<Button> button, int charIndex)

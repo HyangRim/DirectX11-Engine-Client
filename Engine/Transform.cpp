@@ -75,9 +75,10 @@ void Transform::UpdateTransform()
 	//Scale Rotation Translation
 
 	Matrix matScale = Matrix::CreateScale(m_localScale);
-	Matrix matRotation = Matrix::CreateRotationY(XMConvertToRadians(m_localRotation.y));
-	matRotation *= Matrix::CreateRotationX(XMConvertToRadians(m_localRotation.x));
-	matRotation *= Matrix::CreateRotationZ(XMConvertToRadians(m_localRotation.z));
+	Matrix matRotation = Matrix::CreateFromQuaternion(m_localQuaternion);
+	//Matrix matRotation = Matrix::CreateRotationY(XMConvertToRadians(m_localRotation.y));
+	//matRotation *= Matrix::CreateRotationX(XMConvertToRadians(m_localRotation.x));
+	//matRotation *= Matrix::CreateRotationZ(XMConvertToRadians(m_localRotation.z));
 	Matrix matTranslation = Matrix::CreateTranslation(m_localPosition);
 
 	m_matLocal = matScale * matRotation * matTranslation;
@@ -128,29 +129,57 @@ void Transform::SetScale(const Vec3& _Scale)
 void Transform::SetRotation(const Vec3& _Rotation)
 {
 	if (HasParent()) {
-		// Y-X-Z 순서로 회전 행렬 생성 (UpdateTransform()과 동일)
-		XMMATRIX rotY = XMMatrixRotationY(XMConvertToRadians(_Rotation.y));
-		XMMATRIX rotX = XMMatrixRotationX(XMConvertToRadians(_Rotation.x));
-		XMMATRIX rotZ = XMMatrixRotationZ(XMConvertToRadians(_Rotation.z));
+		//// Y-X-Z 순서로 회전 행렬 생성 (UpdateTransform()과 동일)
+		//XMMATRIX rotY = XMMatrixRotationY(XMConvertToRadians(_Rotation.y));
+		//XMMATRIX rotX = XMMatrixRotationX(XMConvertToRadians(_Rotation.x));
+		//XMMATRIX rotZ = XMMatrixRotationZ(XMConvertToRadians(_Rotation.z));
 
-		XMMATRIX worldRotMatrix = rotY * rotX * rotZ;
-		XMVECTOR worldQuatVec = XMQuaternionRotationMatrix(worldRotMatrix);
+		//XMMATRIX worldRotMatrix = rotY * rotX * rotZ;
+		//XMVECTOR worldQuatVec = XMQuaternionRotationMatrix(worldRotMatrix);
 
-		// 부모 회전도 동일한 순서
+		//// 부모 회전도 동일한 순서
+		//Vec3 parentRot = m_parent->GetRotation();
+		//XMMATRIX parentRotY = XMMatrixRotationY(XMConvertToRadians(parentRot.y));
+		//XMMATRIX parentRotX = XMMatrixRotationX(XMConvertToRadians(parentRot.x));
+		//XMMATRIX parentRotZ = XMMatrixRotationZ(XMConvertToRadians(parentRot.z));
+
+		//XMMATRIX parentRotMatrix = parentRotY * parentRotX * parentRotZ;
+		//XMVECTOR parentQuatVec = XMQuaternionRotationMatrix(parentRotMatrix);
+
+		//XMVECTOR parentInverseVec = XMQuaternionInverse(parentQuatVec);
+		//XMVECTOR localQuatVec = XMQuaternionMultiply(worldQuatVec, parentInverseVec);
+
+		//Quaternion localQuat;
+		//XMStoreFloat4(&localQuat, localQuatVec);
+
+		//Vec3 localRotation = ToEulerAngles(localQuat);
+		//SetLocalRotation(localRotation);
+
+				// 목표 world rotation을 쿼터니언으로 변환
+		Quaternion worldQuat = Quaternion::CreateFromYawPitchRoll(
+			XMConvertToRadians(_Rotation.y),
+			XMConvertToRadians(_Rotation.x),
+			XMConvertToRadians(_Rotation.z)
+		);
+
+		// 부모 rotation도 쿼터니언으로
 		Vec3 parentRot = m_parent->GetRotation();
-		XMMATRIX parentRotY = XMMatrixRotationY(XMConvertToRadians(parentRot.y));
-		XMMATRIX parentRotX = XMMatrixRotationX(XMConvertToRadians(parentRot.x));
-		XMMATRIX parentRotZ = XMMatrixRotationZ(XMConvertToRadians(parentRot.z));
+		Quaternion parentQuat = Quaternion::CreateFromYawPitchRoll(
+			XMConvertToRadians(parentRot.y),
+			XMConvertToRadians(parentRot.x),
+			XMConvertToRadians(parentRot.z)
+		);
 
-		XMMATRIX parentRotMatrix = parentRotY * parentRotX * parentRotZ;
-		XMVECTOR parentQuatVec = XMQuaternionRotationMatrix(parentRotMatrix);
-
-		XMVECTOR parentInverseVec = XMQuaternionInverse(parentQuatVec);
+		// Local = World * Parent^-1
+		XMVECTOR worldQuatVec = XMLoadFloat4(&worldQuat);
+		XMVECTOR parentQuatVec = XMLoadFloat4(&parentQuat);
+		XMVECTOR parentInverseVec = XMQuaternionInverse(parentQuatVec);  // 이렇게!
 		XMVECTOR localQuatVec = XMQuaternionMultiply(worldQuatVec, parentInverseVec);
 
 		Quaternion localQuat;
 		XMStoreFloat4(&localQuat, localQuatVec);
 
+		// 쿼터니언을 Vec3로 변환하여 설정
 		Vec3 localRotation = ToEulerAngles(localQuat);
 		SetLocalRotation(localRotation);
 	}

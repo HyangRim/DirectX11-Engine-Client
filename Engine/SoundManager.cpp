@@ -102,31 +102,63 @@ int SoundManager::Pause(const int _eID)
 
 void SoundManager::LoadSoundFile()
 {
-	const wstring soundFolderPath = L"..\\Resources\\Sounds\\";
+	InitializeCriticalSection(&m_loadingCS);
 
-	for (const auto& iter : fs::recursive_directory_iterator(soundFolderPath)) {
-		if (!iter.is_regular_file())
-			continue;
-
-		//전체 경로, FMOD용 경로. 
-		const fs::path& fullPath = iter.path();
-		std::string sFullPath = fullPath.string();
-
-		//새로운 Sound할당. 
-		FMOD::Sound* sound = nullptr;
-		FMOD_RESULT RESULT = m_System->createSound(sFullPath.c_str(), FMOD_LOOP_OFF, 0, &sound);
-
-		if (RESULT == FMOD_OK) {
-			fs::path relativePath = fs::relative(fullPath, soundFolderPath);
-			std::wstring wkey = relativePath.generic_wstring();
-
-			m_mapSound[wkey] = sound;
-		}
-	}
-
+	m_loadingThread = CreateThread(nullptr, 0, BackgroundLoadingThread, this, 0, nullptr);
 	m_System->update();
 }
 
+
+DWORD __stdcall SoundManager::BackgroundLoadingThread(LPVOID _param)
+{
+	SoundManager* soundManager = static_cast<SoundManager*>(_param);
+
+	try {
+		EnterCriticalSection(&soundManager->m_loadingCS);
+
+		const wstring soundFolderPath = L"..\\Resources\\Sounds\\";
+
+		// 백그라운드에서 직접 사운드 파일들 로딩
+		for (const auto& iter : fs::recursive_directory_iterator(soundFolderPath)) {
+			if (!iter.is_regular_file())
+				continue;
+
+			const fs::path& fullPath = iter.path();
+			std::string sFullPath = fullPath.string();
+
+			// FMOD는 thread-safe이므로 직접 생성 가능
+			FMOD::Sound* sound = nullptr;
+			FMOD_RESULT result = soundManager->m_System->createSound(
+				sFullPath.c_str(),
+				FMOD_LOOP_OFF,
+				0,
+				&sound
+			);
+
+			if (result == FMOD_OK) {
+				fs::path relativePath = fs::relative(fullPath, soundFolderPath);
+				std::wstring wkey = relativePath.generic_wstring();
+
+				// Critical Section으로 map 접근만 보호
+				soundManager->m_mapSound[wkey] = sound;
+			}
+		}
+
+		// 시스템 업데이트도 백그라운드에서 가능
+		soundManager->m_System->update();
+
+		LeaveCriticalSection(&soundManager->m_loadingCS);
+		soundManager->m_loadingComplete = true;
+
+		std::cout << "Background sound loading completed successfully.\n";
+	}
+	catch (...) {
+		LeaveCriticalSection(&soundManager->m_loadingCS);
+		OutputDebugStringA("Failed background sound loading...\n");
+	}
+
+	return 0;
+}
 
 void SoundManager::Free()
 {

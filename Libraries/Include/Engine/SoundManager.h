@@ -41,6 +41,13 @@ private:
 	FMOD::System* m_System;
 
 public:
+	static DWORD __stdcall BackgroundLoadingThread(LPVOID _param);
 	virtual void Free();
+
+
+private:
+	CRITICAL_SECTION m_loadingCS;
+	HANDLE m_loadingThread;
+	atomic<bool> m_loadingComplete{ false };
 };
 

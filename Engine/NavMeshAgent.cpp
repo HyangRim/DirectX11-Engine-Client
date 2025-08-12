@@ -122,7 +122,7 @@ void NavMeshAgent::UpdateMovement()
         transform->SetLocalRotation(newRotation);
 
         // 위치 업데이트
-        Vec3 newPos = currentPos + direction * m_speed * DT;
+        Vec3 newPos = currentPos + direction * m_speed * DT * 2;
         if (m_navMesh)
         {
             newPos = m_navMesh->GetNearestPointOnNavMesh(newPos);

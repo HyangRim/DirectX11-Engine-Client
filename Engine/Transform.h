@@ -22,6 +22,11 @@ public:
 	void SetLocalRotation(const Vec3& _localRotation) {
 
 		m_localRotation = NormalizeAngles(_localRotation);  // 정규화 추가
+		m_localQuaternion = Quaternion::CreateFromYawPitchRoll(
+			XMConvertToRadians(m_localRotation.y),  // Yaw
+			XMConvertToRadians(m_localRotation.x),  // Pitch  
+			XMConvertToRadians(m_localRotation.z)   // Roll
+		);
 		UpdateTransform(); 
 	
 	}
@@ -91,6 +96,9 @@ private:
 	Vec3 m_localPosition = { 0.f, 0.f, 0.f };
 
 
+	Quaternion m_localQuaternion = Quaternion::Identity;
+
+
 	//나의 부모를 좌표계로 삼는 local 좌표계. 
 	Matrix m_matLocal = Matrix::Identity;
 	Matrix m_matWorld = Matrix::Identity;
@@ -100,6 +108,8 @@ private:
 	Vec3 m_WorldScale;
 	Vec3 m_WorldRotation;
 	Vec3 m_WorldPosition;
+
+
 
 private:
 	shared_ptr<Transform> m_parent;

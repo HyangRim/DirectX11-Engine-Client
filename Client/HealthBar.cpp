@@ -49,6 +49,7 @@ void HealthBar::Create(Vec3 _offset)
 	MaterialDesc& bgDesc = backgroundMaterial->GetMaterialDesc();
 	bgDesc.diffuse = Vec4(0.2f, 0.2f, 0.2f, 0.8f);
 
+
 	m_healthBarUI = m_healthBarPanel->AddImageUI(Vec2(0, 0), L"HealthBar");
 	m_healthBarUI->AddImageLayer(0, Vec2(60, 8), m_barSize, backgroundMaterial, 2);
 
@@ -58,8 +59,11 @@ void HealthBar::Create(Vec3 _offset)
 	healthMaterial->SetRenderQueue(RenderQueue::Transparent);
 	healthMaterial->SetTransparent(true);
 
+	auto healthBarTexture = RESOURCES->Load<Texture>(L"GreenBar", L"..\\Resources\\Textures\\UI\\StatusBar\\Gauge\\Img_Main_Gage_01.png");
+	healthMaterial->SetDiffuseMap(healthBarTexture);
+
 	MaterialDesc& healthDesc = healthMaterial->GetMaterialDesc();
-	healthDesc.diffuse = Vec4(0.2f, 0.8f, 0.2f, 1.f);
+	healthDesc.diffuse = Vec4(1.0f, 1.0f, 1.0f, 1.f);
 
 	m_healthBarUI->AddImageLayer(1, Vec2(60, 8), m_barSize, healthMaterial, 6);
 

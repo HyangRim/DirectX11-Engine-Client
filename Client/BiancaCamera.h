@@ -15,6 +15,7 @@ public:
 
 private:
     weak_ptr<GameObject> m_target;
-    Vec3 m_offset = Vec3(0.f, 0.f, 0.f);
+    Vec3 m_offset = Vec3(25.f, 27.f, -20.f);
+    Vec3 m_rotationOffset = Vec3(20.f, -0.f, 0.f);
 };
 
