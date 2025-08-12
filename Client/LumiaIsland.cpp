@@ -128,7 +128,7 @@ void LumiaIsland::Start()
 		CreateCharacterNicky();
 	}
 
-	//m_cameraScript->SetTarget(m_player);
+	m_cameraScript->SetTarget(m_player);
 	//CreateCharacterNicky();
 	CreateCemeteryItemBox();
 	CreateTestDummy();
@@ -201,11 +201,11 @@ void LumiaIsland::CreateMainCamera()
 	auto camera = make_shared<GameObject>();
 	//camera->GetTransform()->SetPosition(Vec3(0.f, 15.f, 15.f));
 	//camera->GetTransform()->SetPosition(Vec3{ 10.f, 30.f, -5.f });
-	camera->GetTransform()->SetRotation(Vec3(45.f, -65.f, 2.f));
+	camera->GetTransform()->SetRotation(Vec3(45.f, -45.f, 0.f));
 	camera->AddComponent(make_shared<Camera>());
-	camera->AddComponent(make_shared<CameraScript>());
-	//m_cameraScript = make_shared<BiancaCamera>();
-	//camera->AddComponent(m_cameraScript);
+	//camera->AddComponent(make_shared<CameraScript>());
+	m_cameraScript = make_shared<BiancaCamera>();
+	camera->AddComponent(m_cameraScript);
 
 	camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
 	CURSCENE->Add(camera);
@@ -1010,7 +1010,7 @@ void LumiaIsland::CreateNavMesh()
 		m_navMesh = make_shared<GameObject>();
 		m_navMesh->SetName(to_wstring(i));
 
-		m_navMesh->GetTransform()->SetPosition(Vec3(-76.7, 18, -52));
+		m_navMesh->GetTransform()->SetPosition(Vec3(-76.7, 18, -54));
 		//m_navMesh->GetTransform()->SetPosition(Vec3(0, 18, 0));
 		m_navMesh->GetTransform()->SetScale(Vec3(2.f));
 		m_navMesh->GetTransform()->SetLocalRotation(Vec3(270.f, 270.f, 90.f));
