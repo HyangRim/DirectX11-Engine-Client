@@ -64,6 +64,6 @@ void CameraScript::Update()
 	Vec3 tpos = GetTransform()->GetPosition();
 	Vec3 trot = GetTransform()->GetRotation();
 
-	//cout << "Pos : " << tpos.x << " " << tpos.y << " " << tpos.z << "\n";
-	//cout << "Rot : " << trot.x << " " << trot.y << " " << trot.z << "\n";
+	cout << "Pos : " << tpos.x << " " << tpos.y << " " << tpos.z << "\n";
+	cout << "Rot : " << trot.x << " " << trot.y << " " << trot.z << "\n";
 }
