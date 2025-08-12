@@ -63,7 +63,7 @@ void HealthBar::Create(Vec3 _offset)
 	healthMaterial->SetDiffuseMap(healthBarTexture);
 
 	MaterialDesc& healthDesc = healthMaterial->GetMaterialDesc();
-	healthDesc.diffuse = Vec4(0.2f, 0.8f, 0.2f, 1.f);
+	healthDesc.diffuse = Vec4(1.0f, 1.0f, 1.0f, 1.f);
 
 	m_healthBarUI->AddImageLayer(1, Vec2(60, 8), m_barSize, healthMaterial, 6);
 

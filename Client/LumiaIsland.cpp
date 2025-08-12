@@ -118,9 +118,16 @@ void LumiaIsland::Start()
 	CreateCemeteryBase();
 	CreateCemeteryInterior();
 	CreateCemeteryEnvironment();
-	CreateCharacterNicky();
+	if (selectedCharacterIdx == 0) {
+		CreateCharacterNicky();
+	}
+	else if (selectedCharacterIdx == 1) {
+		CreateCharacterBianca();
+	}
+
+	//m_cameraScript->SetTarget(m_player);
+	//CreateCharacterNicky();
 	CreateCemeteryItemBox();
-	//CreateCharacterBianca();
 	CreateTestDummy();
 	//CreateTestDecal();
 
@@ -190,10 +197,12 @@ void LumiaIsland::CreateMainCamera()
 	// Camera
 	auto camera = make_shared<GameObject>();
 	//camera->GetTransform()->SetPosition(Vec3(0.f, 15.f, 15.f));
-	camera->GetTransform()->SetPosition(Vec3{ 10.f, 30.f, -5.f });
-	camera->GetTransform()->SetLocalRotation(Vec3(45.f, 0.f, 0.f));
+	//camera->GetTransform()->SetPosition(Vec3{ 10.f, 30.f, -5.f });
+	camera->GetTransform()->SetRotation(Vec3(45.f, -65.f, 2.f));
 	camera->AddComponent(make_shared<Camera>());
 	camera->AddComponent(make_shared<CameraScript>());
+	//m_cameraScript = make_shared<BiancaCamera>();
+	//camera->AddComponent(m_cameraScript);
 
 	camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
 	CURSCENE->Add(camera);
@@ -998,9 +1007,10 @@ void LumiaIsland::CreateNavMesh()
 		m_navMesh = make_shared<GameObject>();
 		m_navMesh->SetName(to_wstring(i));
 
-		m_navMesh->GetTransform()->SetPosition(Vec3(-76.7, 18, -57));
+		m_navMesh->GetTransform()->SetPosition(Vec3(-76.7, 18, -52));
+		//m_navMesh->GetTransform()->SetPosition(Vec3(0, 18, 0));
 		m_navMesh->GetTransform()->SetScale(Vec3(2.f));
-		m_navMesh->GetTransform()->SetLocalRotation(Vec3(270.f, 90.f, 90.f));
+		m_navMesh->GetTransform()->SetLocalRotation(Vec3(270.f, 270.f, 90.f));
 
 		m_navMesh->AddComponent(make_shared<SphereCollider>());
 		m_navMesh->AddComponent(make_shared<Rigidbody>());
@@ -1026,7 +1036,7 @@ void LumiaIsland::CreateCharacterNicky()
 	shared_ptr<Nicky> nicky = make_shared<Nicky>(m_defaultshader);
 	nicky->SetName(L"Nicky");
 	nicky->GetTransform()->SetPosition(Vec3(15, 18, 5));
-	nicky->GetTransform()->SetScale(Vec3(1.f));
+	nicky->GetTransform()->SetScale(Vec3(2.f));
 	
 	selectedCharacterIdx = 1;
 
@@ -1040,7 +1050,7 @@ void LumiaIsland::CreateCharacterBianca()
 {
 	shared_ptr<Bianca> bianca = make_shared<Bianca>(m_defaultshader);
 	bianca->GetTransform()->SetPosition(Vec3(15, 18, 5));
-	bianca->GetTransform()->SetScale(Vec3(1.f));
+	bianca->GetTransform()->SetScale(Vec3(2.f));
 
 	selectedCharacterIdx = 0;
 

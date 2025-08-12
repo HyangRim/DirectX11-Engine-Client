@@ -411,6 +411,11 @@ void CharacterSelectScene::OnCharacterSelectButtonClicked(int charindex)
 
 	if (charindex > 0 && charindex < 3) {
 		SOUND->PlaySound(charcaterSelectVoice[charindex], 2, 0.5f);
+		m_selectCharIdx = charindex - 1;
+
+		if (m_selectElapsedTime < 44.5f) {
+			m_selectElapsedTime = 44.5f;
+		}
 	}
 }
 
@@ -421,8 +426,9 @@ void CharacterSelectScene::OnCharacterSelectButtonHover()
 
 void CharacterSelectScene::StartLumiaIsland()
 {
-	auto characterSelectScene = make_shared<LumiaIsland>();
-	SCENE->ChangeScene(characterSelectScene);
+	auto LumiaIslandScene = make_shared<LumiaIsland>();
+	LumiaIslandScene->SetSelectedCharacter(m_selectCharIdx);
+	SCENE->ChangeScene(LumiaIslandScene);
 }
 
 void CharacterSelectScene::CreateBackGround()

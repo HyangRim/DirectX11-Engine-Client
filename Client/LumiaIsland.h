@@ -7,6 +7,7 @@
 
 class GameObject;
 class Player;
+class BiancaCamera;
 
 class LumiaIsland :
     public Scene
@@ -23,6 +24,9 @@ public:
 	virtual void FixedUpdate() override;
 	virtual void LateUpdate() override;
 	virtual void Render() override;
+
+public:
+	void SetSelectedCharacter(int _idx) { selectedCharacterIdx = _idx; }
 
 
 
@@ -88,6 +92,11 @@ private:
 
 private:
 	shared_ptr<GameObject> m_CemeteryParent;
+
+	//=====================카메라 관련 변수=====================//
+	shared_ptr<BiancaCamera> m_cameraScript = nullptr;
+
+
 	shared_ptr<Shader> m_defaultshader = nullptr;
 	shared_ptr<Shader> m_testShader = nullptr;
 
@@ -120,6 +129,7 @@ private:
 	queue<function<void()>> m_mainThreadTasks;
 	CRITICAL_SECTION m_mainThreadTasksCS;
 	atomic<bool> m_objectsCreated{ false };
+
 
 
 private:

@@ -58,6 +58,7 @@ private:
 	shared_ptr<ImageUI> m_timeProgressUI = nullptr;
 	Vec2 m_progressBarSize = Vec2(1800.f, 25.f); // ¹Ù Å©±â
 private:
+	int m_selectCharIdx = 0;
 	float m_selectDuration = 55.f;
 	float m_selectElapsedTime = 0.f;
 
