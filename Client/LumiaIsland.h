@@ -68,6 +68,7 @@ private:
 
 	void UpdateSkillCoolDown();
 	void UpdatePlayerStatus();
+	void UpdateHPAndSPBar();
 	//=====================UI관련 함수=====================//
 
 

@@ -219,6 +219,41 @@ void UIPanel::SetVisible(bool visible)
     }
 }
 
+shared_ptr<UIPanel> UIPanel::AddPanel(Vec2 localPos, Vec2 size, shared_ptr<Material> material, const wstring& name)
+{
+    auto childPanelObj = make_shared<GameObject>();
+    childPanelObj->SetName(name);
+
+    auto childPanelComponent = make_shared<UIPanel>();
+    childPanelObj->AddComponent(childPanelComponent);
+
+    // 월드 좌표로 변환하여 버튼 생성
+    Vec2 worldPos = LocalToWorldPosition(localPos);
+    childPanelComponent->Create(worldPos, size, Vec4(0.f,0.f,0.f,1.f), material);
+
+    // 로컬 위치 저장
+    //buttonComponent->SetLocalPosition(localPos);
+
+    // Z 위치를 패널보다 앞쪽으로 설정
+    childPanelObj->GetTransform()->SetPosition(Vec3(
+        childPanelObj->GetTransform()->GetPosition().x,
+        childPanelObj->GetTransform()->GetPosition().y,
+        Z_UIPANEL - 0.01  // 패널보다 앞쪽
+    ));
+
+    childPanelObj->SetLayerIndex(LAYER_UI);
+
+    // 자식 요소로 등록 (weak_ptr 사용)
+    m_childElements.push_back(childPanelObj);
+    m_namedElements[name] = childPanelObj;
+
+    // **UI 객체로 씬에 추가 (자식으로 등록)**
+    CURSCENE->AddUIObject(childPanelObj, false);  // false = 자식
+    CURSCENE->RegisterUIChild(childPanelObj);
+
+    return childPanelComponent;
+}
+
 shared_ptr<Button> UIPanel::AddButton(Vec2 localPos, Vec2 size, shared_ptr<Material> material, const wstring& name)
 {
     // 버튼 GameObject 생성
@@ -358,6 +393,17 @@ void UIPanel::RemoveUIElement(const wstring& name)
         }
         m_namedElements.erase(it);
     }
+}
+
+shared_ptr<UIPanel> UIPanel::GetChildUIPanel(const wstring& name)
+{
+    auto it = m_namedElements.find(name);
+    if (it != m_namedElements.end()) {
+        if (auto child = it->second.lock()) {
+            return child->GetUIPanel();
+        }
+    }
+    return nullptr;
 }
 
 shared_ptr<Button> UIPanel::GetButton(const wstring& name)

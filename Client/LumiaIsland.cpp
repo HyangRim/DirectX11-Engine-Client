@@ -118,11 +118,14 @@ void LumiaIsland::Start()
 	CreateCemeteryBase();
 	CreateCemeteryInterior();
 	CreateCemeteryEnvironment();
+
+	cout << "LumiaIsland SelectedCharIndex : " << selectedCharacterIdx << endl;
+
 	if (selectedCharacterIdx == 0) {
-		CreateCharacterNicky();
+		CreateCharacterBianca();
 	}
 	else if (selectedCharacterIdx == 1) {
-		CreateCharacterBianca();
+		CreateCharacterNicky();
 	}
 
 	//m_cameraScript->SetTarget(m_player);
@@ -173,7 +176,7 @@ void LumiaIsland::Update()
 		UpdateSkillCoolDown();
 		ControlPlayerStatus();
 		UpdatePlayerStatus();
-		
+		UpdateHPAndSPBar();
 	}
 }
 
@@ -1358,6 +1361,37 @@ void LumiaIsland::LoadCharMainImages()
 		charSkillIconDesc.specular = Vec4(1.f);
 		RESOURCES->Add(tag, charSkillIcon);
 	}
+
+
+	//hp 이미지
+	shared_ptr<Material> charHpBar = make_shared<Material>();
+	SetupUIMaterial(charHpBar);
+
+	wstring tag = L"HPBar_UI";
+	wstring path = L"..\\Resources\\Textures\\UI\\status\\" + tag + L".png";
+	auto charHpBarTexture = RESOURCES->Load<Texture>(tag, path);
+
+	charHpBar->SetDiffuseMap(charHpBarTexture);
+	MaterialDesc& charHpBarDesc = charHpBar->GetMaterialDesc();
+	charHpBarDesc.ambient = Vec4(1.f);
+	charHpBarDesc.diffuse = Vec4(1.f);
+	charHpBarDesc.specular = Vec4(1.f);
+	RESOURCES->Add(tag, charHpBar);
+
+	//sp 이미지
+	shared_ptr<Material> charSpBar = make_shared<Material>();
+	SetupUIMaterial(charSpBar);
+
+	tag = L"SPBar_UI";
+	path = L"..\\Resources\\Textures\\UI\\status\\" + tag + L".png";
+	auto charSpBarTexture = RESOURCES->Load<Texture>(tag, path);
+
+	charSpBar->SetDiffuseMap(charSpBarTexture);
+	MaterialDesc& charSpBarDesc = charSpBar->GetMaterialDesc();
+	charSpBarDesc.ambient = Vec4(1.f);
+	charSpBarDesc.diffuse = Vec4(1.f);
+	charSpBarDesc.specular = Vec4(1.f);
+	RESOURCES->Add(tag, charSpBar);
 }
 
 void LumiaIsland::CreateCharMainPanel()
@@ -1368,7 +1402,7 @@ void LumiaIsland::CreateCharMainPanel()
 	auto panel = make_shared<UIPanel>();
 	m_charMainPanel->AddComponent(panel);
 
-	panel->Create(Vec2(615.f, 768 - 57), Vec2(414, 115), Vec4(0.f, 0.f, 0.f, 0.7f), nullptr);
+	panel->Create(Vec2(615.f, 768 - 57), Vec2(414, 115), Vec4(1.f, 0.f, 1.f, 0.7f), nullptr);
 	m_charMainPanel->SetLayerIndex(LAYER_UI);
 
 
@@ -1408,6 +1442,43 @@ void LumiaIsland::CreateCharMainPanel()
 		Vec4(1, 0, 0, 1), 1.0f, Vec4(0, 0, 0, 0), 1.0f,
 		L"RSkillCoolDown", TextAlignment::Center);
 	textR->SetUpdateInterval(1.f);
+
+
+	//HP바 UI
+	auto hpPanel = panel->AddPanel(Vec2(194, 70.f), Vec2(153, 10), nullptr, L"ChildHPPanel");
+	hpPanel->AddD2DText(
+		Vec2(153, 10) / 2.f,
+		L"Test",
+		10.f,
+		Vec4(1.f, 1.f, 1.f, 1.f),
+		1.f,
+		Vec4(0.f),
+		0.f,
+		L"HPText",
+		TextAlignment::Center
+	);
+	auto hpPanelImageUI = hpPanel->AddImageUI(Vec2(0.f), L"HPPanelImageUI");
+	hpPanelImageUI->AddImageLayer(0, Vec2(153, 10) / 2.f, Vec2(153, 10) * (1/RESOLUTION_CONSTANT), RESOURCES->Get<Material>(L"HPBar_UI")->Clone(), 1);
+
+	Vec3 hpPos = hpPanelImageUI->GetGameObject()->GetTransform()->GetPosition();
+	cout << "HPPos : " << hpPos.x << " , " << hpPos.y << endl;
+
+
+	//SP바 UI
+	auto spPanel = panel->AddPanel(Vec2(194, 85.f), Vec2(153, 10), nullptr, L"ChildSPPanel");
+	spPanel->AddD2DText(
+		Vec2(153, 10) / 2.f,
+		L"Test",
+		10.f,
+		Vec4(1.f, 1.f, 1.f, 1.f),
+		1.f,
+		Vec4(0.f),
+		0.f,
+		L"SPText",
+		TextAlignment::Center
+	);
+	auto spPanelImageUI = spPanel->AddImageUI(Vec2(0.f), L"SPPanelImageUI");
+	spPanelImageUI->AddImageLayer(0, Vec2(153, 10) / 2.f, Vec2(153, 10) * (1 / RESOLUTION_CONSTANT), RESOURCES->Get<Material>(L"SPBar_UI")->Clone(), 1);
 
 
 	AddUIObject(m_charMainPanel, true);
@@ -1712,6 +1783,39 @@ void LumiaIsland::UpdatePlayerStatus()
 	playerStatusTextUI[7]->SetText(FormatFloat(playerStatus.moveSpeed, 1));      // 소숫점 1자리
 }
 
+void LumiaIsland::UpdateHPAndSPBar()
+{
+	PlayerStatus& playerStatus = m_player->GetStatus();
+
+	auto hpPanel = m_charMainPanel->GetUIPanel()->GetChildUIPanel(L"ChildHPPanel");
+	auto spPanel = m_charMainPanel->GetUIPanel()->GetChildUIPanel(L"ChildSPPanel");
+
+	auto hpPanelText = hpPanel->GetD2DText(L"HPText");
+	wstring hpText = to_wstring(playerStatus.hp) + L"/" + to_wstring(playerStatus.max_HP);
+	hpPanelText->SetText(hpText);
+
+	// 직접 size 수정 대신 SetLayerSize() 사용
+	auto hpImageUI = hpPanel->GetImageUI(L"HPPanelImageUI");
+	float ratio = ((float)playerStatus.hp / (float)playerStatus.max_HP);
+	Vec2 newSize = Vec2(153.f * ratio, 10.f);
+	Vec2 newPos = Vec2(153.f /2.f - (153.f/2.f) * (1-ratio), 10.f / 2.f);
+	hpImageUI->SetLayerSize(0, newSize);  // 레이어 0의 크기 변경
+	hpImageUI->SetLayerPosition(0, newPos);
+
+
+	auto spPanelText = spPanel->GetD2DText(L"SPText");
+	wstring spText = to_wstring(playerStatus.stamina) + L"/" + to_wstring(playerStatus.max_Stamina);
+	spPanelText->SetText(spText);
+
+	// 직접 size 수정 대신 SetLayerSize() 사용
+	auto spImageUI = spPanel->GetImageUI(L"SPPanelImageUI");
+	ratio = ((float)playerStatus.stamina / (float)playerStatus.max_Stamina);
+	newSize = Vec2(153.f * ratio, 10.f);
+	newPos = Vec2(153.f / 2.f - (153.f / 2.f) * (1 - ratio), 10.f / 2.f);
+	spImageUI->SetLayerSize(0, newSize);  // 레이어 0의 크기 변경
+	spImageUI->SetLayerPosition(0, newPos);
+}
+
 void LumiaIsland::ControlPlayerStatus()
 {
 	PlayerStatus& playerStatus = m_player->GetStatus();
@@ -1735,9 +1839,13 @@ void LumiaIsland::ControlPlayerStatus()
 	{
 		m_player->SetMoveSpeed(playerStatus.moveSpeed + 0.01);
 	}
-	if (INPUT->GetButton(KEY_TYPE::Z))
+	if (INPUT->GetButtonDown(KEY_TYPE::Z))
 	{
-		m_player->SetHP(playerStatus.hp -= 1);
+		m_player->SetHP(playerStatus.hp -= 10);
+	}
+	if (INPUT->GetButtonDown(KEY_TYPE::C))
+	{
+		m_player->SetStamina(playerStatus.stamina -= 10);
 	}
 }
 

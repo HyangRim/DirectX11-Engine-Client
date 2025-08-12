@@ -11,6 +11,8 @@ struct ImageLayer {
     shared_ptr<Material> material;
     uint32 pass;
 
+    Vec2 parentPos;
+
     ImageLayer() : layer(0), position(Vec2::Zero), size(Vec2::Zero), pass(0) {}
 };
 

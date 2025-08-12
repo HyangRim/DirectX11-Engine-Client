@@ -185,6 +185,7 @@ void ImageUI::CreateImageGameObject(ImageLayer& layer)
 
    
     // GameObject 생성
+    layer.parentPos = Vec2(parentPos.x, parentPos.y);
     layer.gameObject = make_shared<GameObject>();
     layer.gameObject->SetName(L"ImageLayer_" + std::to_wstring(layer.layer));
 
@@ -198,7 +199,6 @@ void ImageUI::CreateImageGameObject(ImageLayer& layer)
     float x = parentPos.x + layer.position.x - width / 2;
     float y = height / 2 - (parentPos.y + layer.position.y);
 
-  
     // 레이어 순서에 따른 Z값 계산
     float z = m_zPos - (static_cast<float>(layer.layer) * 0.001f);
 
@@ -227,17 +227,20 @@ void ImageUI::UpdateImageGameObject(ImageLayer& layer)
 {
     if (!layer.gameObject || m_isDestroying) return;
 
+   
     // Transform 업데이트
     float height = GRAPHICS->GetViewport().GetHeight();
     float width = GRAPHICS->GetViewport().GetWidth();
 
-    float x = layer.position.x - width / 2;
-    float y = height / 2 - layer.position.y;
+    float x = layer.parentPos.x + layer.position.x - width / 2;
+    float y = height / 2 - (layer.position.y  + layer.parentPos.y );
 
+ 
     // 기존 Z좌표 보존
     Vec3 currentPos = layer.gameObject->GetTransform()->GetPosition();
     Vec3 position = Vec3(x, y, currentPos.z);  // Z좌표 보존
 
+    
     layer.gameObject->GetTransform()->SetPosition(position);
     layer.gameObject->GetTransform()->SetScale(Vec3(layer.size.x, layer.size.y, 1));
 }

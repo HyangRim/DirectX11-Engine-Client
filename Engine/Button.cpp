@@ -45,7 +45,7 @@ void Button::Create(Vec2 _localPos, Vec2 _size, shared_ptr<class Material> _mate
 {
     auto go = m_gameObject.lock();
 
-    m_size = _size;
+    m_size = _size * RESOLUTION_CONSTANT;
     m_defaultMaterial = _material;
 
     // Normal 상태의 기본 Material로 설정

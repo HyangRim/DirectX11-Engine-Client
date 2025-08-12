@@ -428,6 +428,7 @@ void CharacterSelectScene::StartLumiaIsland()
 {
 	auto LumiaIslandScene = make_shared<LumiaIsland>();
 	LumiaIslandScene->SetSelectedCharacter(m_selectCharIdx);
+	cout << "선택된 캐릭 인덱스 : " << m_selectCharIdx << endl;
 	SCENE->ChangeScene(LumiaIslandScene);
 }
 

@@ -29,6 +29,7 @@ public:
     void SetVisible(bool visible);
 
     // UI 요소 추가 함수들
+    shared_ptr<UIPanel> AddPanel(Vec2 localPos, Vec2 size, shared_ptr<Material> material, const wstring& name = L"ChildPanel");
     shared_ptr<Button> AddButton(Vec2 localPos, Vec2 size, shared_ptr<Material> material, const wstring& name = L"Button");
     shared_ptr<Text> AddText(Vec2 localPos, const wstring& text, float fontSize = 16.0f,
         Vec4 color = Vec4(1, 1, 1, 1), float alpha = 1.0f,
@@ -40,6 +41,7 @@ public:
 
     // UI 요소 관리
     void RemoveUIElement(const wstring& name);
+    shared_ptr<UIPanel> GetChildUIPanel(const wstring& name);
     shared_ptr<Button> GetButton(const wstring& name);
     shared_ptr<Text> GetText(const wstring& name);
     shared_ptr<ImageUI> GetImageUI(const wstring& name);
