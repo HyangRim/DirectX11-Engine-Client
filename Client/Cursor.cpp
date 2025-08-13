@@ -43,6 +43,7 @@ void Cursor::Start()
         RESOURCES->Add<Material>(L"Cursor", cursorMaterial);
     }
     m_cursorImageUI->AddImageLayer(0, Vec2(0, 0), m_cursorSize, cursorMaterial, 1);
+    m_cursorImageUI->SetZPos(0.1);
 
     // ¾À¿¡ Ãß°¡
     CURSCENE->AddUIObject(cursorObj, true);

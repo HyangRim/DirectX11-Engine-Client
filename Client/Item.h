@@ -3,7 +3,7 @@
 enum class ITEMTYPE {
     EQUIPABLE,   //장착 가능 장비
     CONSUMABLE,  // 소비템
-    MATERIAL,    // 제작 재료
+    INGREDIENTS,    // 제작 재료
 };
 
 enum class ITEMGRADE {
@@ -57,7 +57,7 @@ protected:
     wstring m_itemDescription;
     int32 m_itemID = 0;
 
-    ITEMTYPE m_itemType = ITEMTYPE::MATERIAL;
+    ITEMTYPE m_itemType = ITEMTYPE::INGREDIENTS;
     ITEMGRADE m_itemGrade = ITEMGRADE::COMMON;
 
     // UI

@@ -169,6 +169,9 @@
     <Filter Include="Scripts\UI\TimePanelUI">
       <UniqueIdentifier>{b92033e7-52c3-4ec0-a664-3e01e89f662a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Item\NewFilter1">
+      <UniqueIdentifier>{12393fba-34da-4d66-9876-0ddb9596edbb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
