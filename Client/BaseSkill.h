@@ -51,6 +51,10 @@ public:
         return m_skillName;
     }
   
+    virtual void SetMaxSkillLevel(int _maxLevel) { m_maxSkillLevel = _maxLevel; }
+    virtual void SkillLevelUp();
+    virtual int GetMaxSkillLevel() { return m_maxSkillLevel; }
+    virtual int GetCurSkillLevel() { return m_curSkillLevel; }
 
 public:
 	virtual void Update() override;
@@ -77,18 +81,11 @@ public:
 	float GetCooldown() { return m_skillCooldown; }
 	XMVECTOR ScreenToWorld(POINT _screenPos);
 
-    void AddSkillLevel(int _value);
-    int GetSkillLevel() { return m_curSkillLevel; }
-
-    void SetMaxSkillLevel(int _maxLevel) { m_maxSkillLevel = _maxLevel; }
-
 protected:
 	bool m_isPassive = false;
 	wstring m_skillName;
 	wstring m_skillDesc;
 	
-	int m_maxSkillLevel;
-    int m_curSkillLevel = 0;
 	//스킬 사용 시 이 값으로 초기화. 
 	float m_skillCooldown;
 	//현재 스킬 쿨다운, 

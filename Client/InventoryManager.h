@@ -9,10 +9,11 @@ class Player;
 
 class InventoryManager : public Component
 {
+    using Super = Component;
 public:
     InventoryManager();
     virtual ~InventoryManager();
-    using Super = Component;
+
 
     // ½½·Ô µî·Ï
     void RegisterInventorySlots(const vector<shared_ptr<ItemSlot>>& inventorySlots);

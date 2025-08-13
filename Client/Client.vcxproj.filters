@@ -142,6 +142,33 @@
     <Filter Include="Scripts\Item\ItemSlot">
       <UniqueIdentifier>{180a0ecb-0039-4d9e-b5fa-3c062ce34b30}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\UI\UIManager">
+      <UniqueIdentifier>{238f0a9e-6155-474c-ad40-7ce7f699a113}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\UI\InventoryPanelUI">
+      <UniqueIdentifier>{dcffdc44-1020-45ba-9165-fd76f6614171}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\UI\GameHUDPanelUI">
+      <UniqueIdentifier>{8787c27c-cba3-46c5-b433-fc1be232d94e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\UI\PlayerStatusPanelUI">
+      <UniqueIdentifier>{d787a9b9-94ed-41d2-825e-20108384cf5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\UI\EquipmentPanelUI">
+      <UniqueIdentifier>{54069f4e-1957-4a8b-8eb3-186944c0b73a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\UI\Interface">
+      <UniqueIdentifier>{8c7db2d1-3440-4fef-9575-550e05908021}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\UI\SkillLevelUpPanelUI">
+      <UniqueIdentifier>{c3d5c95b-82fb-443d-94d5-baa2c4861dbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\UI\DayPanelUI">
+      <UniqueIdentifier>{93126d48-aa34-4718-b0d0-09d2f1357a69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\UI\TimePanelUI">
+      <UniqueIdentifier>{b92033e7-52c3-4ec0-a664-3e01e89f662a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -425,6 +452,33 @@
     </ClCompile>
     <ClCompile Include="Cursor.cpp">
       <Filter>Scripts\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIManager.cpp">
+      <Filter>Scripts\UI\UIManager</Filter>
+    </ClCompile>
+    <ClCompile Include="InventoryPanelUI.cpp">
+      <Filter>Scripts\UI\InventoryPanelUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GameHUDPanelUI.cpp">
+      <Filter>Scripts\UI\GameHUDPanelUI</Filter>
+    </ClCompile>
+    <ClCompile Include="IBasePanelUI.cpp">
+      <Filter>Scripts\UI\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="SkillLevelUpPanelUI.cpp">
+      <Filter>Scripts\UI\SkillLevelUpPanelUI</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerStatusPanelUI.cpp">
+      <Filter>Scripts\UI\PlayerStatusPanelUI</Filter>
+    </ClCompile>
+    <ClCompile Include="DayPanelUI.cpp">
+      <Filter>Scripts\UI\DayPanelUI</Filter>
+    </ClCompile>
+    <ClCompile Include="TimePanelUI.cpp">
+      <Filter>Scripts\UI\TimePanelUI</Filter>
+    </ClCompile>
+    <ClCompile Include="EquipmentPanelUI.cpp">
+      <Filter>Scripts\UI\EquipmentPanelUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -716,6 +770,33 @@
     </ClInclude>
     <ClInclude Include="Cursor.h">
       <Filter>Scripts\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager.h">
+      <Filter>Scripts\UI\UIManager</Filter>
+    </ClInclude>
+    <ClInclude Include="InventoryPanelUI.h">
+      <Filter>Scripts\UI\InventoryPanelUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GameHUDPanelUI.h">
+      <Filter>Scripts\UI\GameHUDPanelUI</Filter>
+    </ClInclude>
+    <ClInclude Include="IBasePanelUI.h">
+      <Filter>Scripts\UI\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="SkillLevelUpPanelUI.h">
+      <Filter>Scripts\UI\SkillLevelUpPanelUI</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerStatusPanelUI.h">
+      <Filter>Scripts\UI\PlayerStatusPanelUI</Filter>
+    </ClInclude>
+    <ClInclude Include="DayPanelUI.h">
+      <Filter>Scripts\UI\DayPanelUI</Filter>
+    </ClInclude>
+    <ClInclude Include="TimePanelUI.h">
+      <Filter>Scripts\UI\TimePanelUI</Filter>
+    </ClInclude>
+    <ClInclude Include="EquipmentPanelUI.h">
+      <Filter>Scripts\UI\EquipmentPanelUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

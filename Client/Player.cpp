@@ -39,7 +39,7 @@ void Player::Update()
 
 	if (m_healingCoolTime >= 0.25f) {
 		SetHP(m_status.hp + m_status.healing);
-		SetCurExp(m_status.curExp + 1);
+		SetCurExp(m_status.curExp + 20);
 		m_healingCoolTime = 0.f;
 	}
 

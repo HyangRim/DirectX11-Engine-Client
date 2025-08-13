@@ -206,7 +206,7 @@ int InventoryManager::GetEquipmentSlotIndex(EquipmentType equipType)
 
 void InventoryManager::OnInventorySlotClicked(int slotIndex)
 {
-   // cout << "ÀÎº¥Åä¸® ½½·Ô " << slotIndex << " Å¬¸¯µÊ!" << endl;
+    cout << "ÀÎº¥Åä¸® ½½·Ô " << slotIndex << " Å¬¸¯µÊ!" << endl;
 
     if (slotIndex < 0 || slotIndex >= m_inventorySlots.size()) return;
 

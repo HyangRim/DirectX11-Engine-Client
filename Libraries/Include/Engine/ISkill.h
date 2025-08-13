@@ -24,5 +24,15 @@ public:
     // 스킬 정보
     virtual int GetSkillIndex() const = 0;
     virtual const wstring& GetSkillName() const = 0;
+
+    //스킬 레벨 정보
+    virtual void SetMaxSkillLevel(int _maxLevel) = 0;
+    virtual void SkillLevelUp() = 0;
+    virtual int GetMaxSkillLevel() = 0;
+    virtual int GetCurSkillLevel() = 0;
+
+protected:
+    int m_curSkillLevel = 0;
+    int m_maxSkillLevel = 5;
 };
 

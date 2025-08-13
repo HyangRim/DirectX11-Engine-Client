@@ -29,6 +29,7 @@
 
 #include "EquipableItem.h"
 #include <string>
+#include "GameHUDPanelUI.h"
 
 const vector<wstring> charStatIconNames = {
 	L"AttackPower",
@@ -60,6 +61,7 @@ const vector<wstring> biancaSkillIcons = {
 
 LumiaIsland::LumiaIsland()
 {
+	
 }
 
 LumiaIsland::~LumiaIsland()
@@ -75,8 +77,10 @@ LumiaIsland::~LumiaIsland()
 
 void LumiaIsland::Start()
 {
+	
 
 	TIME->ResetDeltaTime();
+
 
 	InitializeCriticalSection(&m_loadingCS);
 	InitializeCriticalSection(&m_mainThreadTasksCS);
@@ -88,7 +92,6 @@ void LumiaIsland::Start()
 	
 	CreateMainCamera();
 	CreateUICamera();
-
 
 	//Default Light
 
@@ -116,13 +119,6 @@ void LumiaIsland::Start()
 		Add(light);
 	}
 
-	m_loadingThread = CreateThread(nullptr, 0, BackgroundLoadingThread, this, 0, nullptr);
-
-	
-	CreateCemeteryBase();
-	CreateCemeteryInterior();
-	CreateCemeteryEnvironment();
-
 	cout << "LumiaIsland SelectedCharIndex : " << m_selectedCharacterIdx << endl;
 	m_selectedCharacterIdx = 1;
 	if (m_selectedCharacterIdx == 0) {
@@ -131,7 +127,17 @@ void LumiaIsland::Start()
 	else if (m_selectedCharacterIdx == 1) {
 		CreateCharacterNicky();
 	}
+	m_uiManager = make_shared<UIManager>(m_player, m_selectedCharacterIdx); //플레이가 존재할때 선언
 
+
+	m_loadingThread = CreateThread(nullptr, 0, BackgroundLoadingThread, this, 0, nullptr);
+
+	
+	CreateCemeteryBase();
+	CreateCemeteryInterior();
+	CreateCemeteryEnvironment();
+
+	
 	m_cameraScript->SetTarget(m_player);
 	//CreateCharacterNicky();
 	CreateCemeteryItemBox();
@@ -146,20 +152,7 @@ void LumiaIsland::Start()
 	//CreateMonsterWolf(Vec3(15, 18, 16));
 	//CreateMonsterAlpha(Vec3(20, 18, 16));
 
-	////====================UI====================//
-	//LoadItemBoxImages();
-	//LoadCharStatIcon();
-	//LoadCharEquipmentIcon();
-	//LoadCharMainImages();
-	//LoadCharInventoryImages();
-	//
-	//
-	/*CreateItemBoxPanel();
-	CreateCharStatPanel();
-	CreateCharEquipmentPanel();
-	CreateCharMainPanel();
-	CreateCharInventoryPanel();*/
-	////====================UI====================//
+	
 
 	//CreateTestMesh();
 
@@ -176,17 +169,14 @@ void LumiaIsland::Update()
 
 	Super::Update();
 
-	cout << "스킬 포인트 : " << m_player->GetStatus().availableSkillPoints << endl;
 
 	if (m_objectsCreated) {
+		m_uiManager->Update();
+
+
 		CheckPickedItemBox();
-		UpdateSkillCoolDown();
 		ControlPlayerStatus();
-		UpdatePlayerStatus();
-		UpdateHPAndSPBar();
-		UpdatePlayerLevel();
-		UpdateTimeline();
-		UpdateSkillLevelPanel();
+	
 	}
 }
 
@@ -1179,428 +1169,7 @@ void LumiaIsland::CheckPickedItemBox()
 	}
 }
 
-void LumiaIsland::LoadCharStatIcon()
-{
-	shared_ptr<Shader> shader = make_shared<Shader>(L"ImageShader.fx");
 
-	// 모든 UI 머티리얼에 동일한 설정 적용
-	auto SetupUIMaterial = [&](shared_ptr<Material> material) {
-		material->SetShader(shader);
-		material->SetRenderQueue(RenderQueue::Transparent);
-		material->SetTransparent(true);  // 모든 UI에 추가
-		material->SetRenderingMode(RenderingMode::Forward);
-	};
-
-	wstring prefixTag = L"Ico_ChaStat_";
-	wstring prefixPath = L"..\\Resources\\Textures\\UI\\CharStatIcon\\";
-
-	vector<Vec4> statIconColor;
-	statIconColor.push_back(ColorNormalize(Vec4(218, 187, 102, 255)));
-	statIconColor.push_back(ColorNormalize(Vec4(211, 160, 221, 255)));
-	statIconColor.push_back(ColorNormalize(Vec4(209, 120, 66 , 255)));
-	statIconColor.push_back(ColorNormalize(Vec4(124, 175, 203, 255)));
-	statIconColor.push_back(ColorNormalize(Vec4(171, 162, 118, 255)));
-	statIconColor.push_back(ColorNormalize(Vec4(200, 200, 200, 255)));
-	statIconColor.push_back(ColorNormalize(Vec4(236, 96 , 113, 255)));
-	statIconColor.push_back(ColorNormalize(Vec4(200, 200, 200, 255)));
-
-	for (int i = 0; i < charStatIconNames.size(); i++)
-	{
-		shared_ptr<Material> charLobbyImage = make_shared<Material>();
-		SetupUIMaterial(charLobbyImage);
-
-		wstring tag = prefixTag + charStatIconNames[i];
-		wstring path = prefixPath + tag + L".png";
-		auto charLobbyTexture = RESOURCES->Load<Texture>(tag, path);
-
-		charLobbyImage->SetDiffuseMap(charLobbyTexture);
-		MaterialDesc& charLobbyDesc = charLobbyImage->GetMaterialDesc();
-		charLobbyDesc.ambient = Vec4(1.f);
-		charLobbyDesc.diffuse =	statIconColor[i];
-		charLobbyDesc.specular = Vec4(1.0f);
-		RESOURCES->Add(tag, charLobbyImage);
-	}
-}
-
-void LumiaIsland::CreateCharStatPanel()
-{
-	m_charStatPanel = make_shared<GameObject>();
-	m_charStatPanel->SetName(L"CharStatPanel");
-
-	auto panel = make_shared<UIPanel>();
-	m_charStatPanel->AddComponent(panel);
-
-	panel->Create(Vec2(274.f, 768 - 57), Vec2(155, 115), Vec4(0.f, 0.f, 0.f,0.7f), nullptr);
-	m_charStatPanel->SetLayerIndex(LAYER_UI);
-
-	auto imageUI = m_charStatPanel->GetUIPanel()->AddImageUI(Vec2(0, 0), L"ImageUI");
-
-	PlayerStatus& playerStatus = m_player->GetStatus();
-	for (int i = 0; i < charStatIconNames.size(); i++)
-	{
-		wstring prefixTag = L"Ico_ChaStat_";
-		shared_ptr<Material> cloneMaterial_charStatIcon = RESOURCES->Get<Material>(prefixTag + charStatIconNames[i])->Clone();
-		imageUI->AddImageLayer(i, Vec2(16 + (i % 2) * 70, 13 + (i / 2) * 28), Vec2(17, 17), cloneMaterial_charStatIcon, 5);
-	}
-
-	// 스탯 텍스트 설정 구조체
-	struct StatTextConfig {
-		int col, row;                    // 그리드 위치 (열, 행)
-		function<wstring()> getValue;    // 값 가져오는 함수
-		Vec4 color;                      // 텍스트 색상
-		wstring name;                    // 텍스트 이름
-	};
-
-	// 스탯 텍스트 설정 배열
-	vector<StatTextConfig> statConfigs = {
-		{0, 0, [&]() { return to_wstring((int)playerStatus.hitAttack); },			ColorNormalize(Vec4(218, 187, 102, 255)), L"AttackPower"},
-		{1, 0, [&]() { return to_wstring((int)playerStatus.hitAttack); },			ColorNormalize(Vec4(211, 160, 221, 255)), L"SkillAmpRatio"},
-		{0, 1, [&]() { return to_wstring((int)playerStatus.hitAttack); },			ColorNormalize(Vec4(209, 120, 66 , 255)), L"IncreaseBasicAttackDamageRatio"},
-		{1, 1, [&]() { return to_wstring((int)playerStatus.defense); },				ColorNormalize(Vec4(124, 175, 203, 255)), L"Defense"},
-		{0, 2, [&]() { return to_wstring(playerStatus.hitSpeed); },					ColorNormalize(Vec4(171, 162, 118, 255)), L"AttackSpeedRatio"},
-		{1, 2, [&]() { return to_wstring((int)playerStatus.cooldownReduction); },	ColorNormalize(Vec4(200, 200, 200, 255)), L"CooldownReduction"},
-		{0, 3, [&]() { return to_wstring((int)playerStatus.hitAttack); },			ColorNormalize(Vec4(236, 96 , 113, 255)), L"CriticalStrikeChance"},
-		{1, 3, [&]() { return to_wstring(playerStatus.moveSpeed); },				ColorNormalize(Vec4(200, 200, 200, 255)), L"MoveSpeedRatio"}
-	};
-
-	// 스탯 텍스트 생성
-	for (const auto& config : statConfigs) {
-		panel->AddD2DText(
-			Vec2(16 + config.col * 70 + 20, 13 + 28 * config.row),
-			config.getValue(),
-			17.0f,
-			config.color,
-			1.0f,
-			Vec4(0, 0, 0, 0),
-			1.0f,
-			config.name,
-			TextAlignment::Center
-		);
-	}
-	
-	AddUIObject(m_charStatPanel, true);
-	RegisterUIParent(m_charStatPanel);
-}
-
-void LumiaIsland::LoadCharEquipmentIcon()
-{
-	shared_ptr<Shader> shader = make_shared<Shader>(L"ImageShader.fx");
-
-	// 모든 UI 머티리얼에 동일한 설정 적용
-	auto SetupUIMaterial = [&](shared_ptr<Material> material) {
-		material->SetShader(shader);
-		material->SetRenderQueue(RenderQueue::Transparent);
-		material->SetTransparent(true);  // 모든 UI에 추가
-		material->SetRenderingMode(RenderingMode::Forward);
-		};
-
-	wstring prefixTag = L"Ico_Status_";
-	vector<wstring> slotTag = { L"Weapon", L"Armor", L"Head", L"Arm", L"Leg" };
-	wstring prefixPath = L"..\\Resources\\Textures\\UI\\CharEquipmentIcon\\";
-
-	for (int i = 0; i < slotTag.size(); i++)
-	{
-		shared_ptr<Material> charEquipIcon = make_shared<Material>();
-		SetupUIMaterial(charEquipIcon);
-
-		wstring tag = prefixTag + slotTag[i];
-		wstring path = prefixPath + tag + L".png";
-		auto charEquipTexture = RESOURCES->Load<Texture>(tag, path);
-
-		charEquipIcon->SetDiffuseMap(charEquipTexture);
-		MaterialDesc& charEquipDesc = charEquipIcon->GetMaterialDesc();
-		charEquipDesc.ambient = Vec4(1.f);
-		charEquipDesc.diffuse = Vec4(1.f);
-		charEquipDesc.specular = Vec4(1.0f);
-		RESOURCES->Add(tag, charEquipIcon);
-	}
-}
-
-void LumiaIsland::CreateCharEquipmentPanel()
-{
-	m_charEquipPanel = make_shared<GameObject>();
-	m_charEquipPanel->SetName(L"CharEquipPanel");
-
-	auto panel = make_shared<UIPanel>();
-	m_charEquipPanel->AddComponent(panel);
-
-	panel->Create(Vec2(380.f, 768 - 57), Vec2(38, 115), Vec4(0.f, 0.f, 0.f, 0.7f), nullptr);
-	m_charEquipPanel->SetLayerIndex(LAYER_UI);
-
-	AddUIObject(m_charEquipPanel, true);
-	RegisterUIParent(m_charEquipPanel);
-
-	CreateEquipmentSlots();
-}
-
-void LumiaIsland::LoadCharMainImages()
-{
-	shared_ptr<Shader> shader = make_shared<Shader>(L"ImageShader.fx");
-
-	// 모든 UI 머티리얼에 동일한 설정 적용
-	auto SetupUIMaterial = [&](shared_ptr<Material> material) {
-		material->SetShader(shader);
-		material->SetRenderQueue(RenderQueue::Transparent);
-		material->SetTransparent(true);  // 모든 UI에 추가
-		material->SetRenderingMode(RenderingMode::Forward);
-	};
-
-	wstring prefixPath = L"..\\Resources\\Textures\\UI\\SkillIcon\\";
-	vector<wstring> skillTag = { L"P", L"Q", L"W", L"E", L"R"};
-	//니키 스킬 아이콘
-	for (int i = 0; i < nickySkillIcons.size(); i++)
-	{
-		shared_ptr<Material> charSkillIcon = make_shared<Material>();
-		SetupUIMaterial(charSkillIcon);
-
-		wstring tag = L"Nicky" + skillTag[i];
-		wstring path = prefixPath + nickySkillIcons[i] + L".png";
-		auto charSkillIconTexture = RESOURCES->Load<Texture>(tag, path);
-
-		charSkillIcon->SetDiffuseMap(charSkillIconTexture);
-		MaterialDesc& charSkillIconDesc = charSkillIcon->GetMaterialDesc();
-		charSkillIconDesc.ambient = Vec4(1.f);
-		charSkillIconDesc.diffuse = Vec4(1.f);
-		charSkillIconDesc.specular = Vec4(1.f);
-		RESOURCES->Add(tag, charSkillIcon);
-	}
-
-
-	//비앙카 스킬 아이콘
-	for (int i = 0; i < biancaSkillIcons.size(); i++)
-	{
-		shared_ptr<Material> charSkillIcon = make_shared<Material>();
-		SetupUIMaterial(charSkillIcon);
-
-		wstring tag = L"Bianca" + skillTag[i];
-		wstring path = prefixPath + biancaSkillIcons[i] + L".png";
-		auto charSkillIconTexture = RESOURCES->Load<Texture>(tag, path);
-
-		charSkillIcon->SetDiffuseMap(charSkillIconTexture);
-		MaterialDesc& charSkillIconDesc = charSkillIcon->GetMaterialDesc();
-		charSkillIconDesc.ambient = Vec4(1.f);
-		charSkillIconDesc.diffuse = Vec4(1.f);
-		charSkillIconDesc.specular = Vec4(1.f);
-		RESOURCES->Add(tag, charSkillIcon);
-	}
-
-
-	//hp 이미지
-	shared_ptr<Material> charHpBar = make_shared<Material>();
-	SetupUIMaterial(charHpBar);
-
-	wstring tag = L"HPBar_UI";
-	wstring path = L"..\\Resources\\Textures\\UI\\status\\" + tag + L".png";
-	auto charHpBarTexture = RESOURCES->Load<Texture>(tag, path);
-
-	charHpBar->SetDiffuseMap(charHpBarTexture);
-	MaterialDesc& charHpBarDesc = charHpBar->GetMaterialDesc();
-	charHpBarDesc.ambient = Vec4(1.f);
-	charHpBarDesc.diffuse = Vec4(1.f);
-	charHpBarDesc.specular = Vec4(1.f);
-	RESOURCES->Add(tag, charHpBar);
-
-	//sp 이미지
-	shared_ptr<Material> charSpBar = make_shared<Material>();
-	SetupUIMaterial(charSpBar);
-
-	tag = L"SPBar_UI";
-	path = L"..\\Resources\\Textures\\UI\\status\\" + tag + L".png";
-	auto charSpBarTexture = RESOURCES->Load<Texture>(tag, path);
-
-	charSpBar->SetDiffuseMap(charSpBarTexture);
-	MaterialDesc& charSpBarDesc = charSpBar->GetMaterialDesc();
-	charSpBarDesc.ambient = Vec4(1.f);
-	charSpBarDesc.diffuse = Vec4(1.f);
-	charSpBarDesc.specular = Vec4(1.f);
-	RESOURCES->Add(tag, charSpBar);
-
-	//스킬 레벨업 이미지
-	shared_ptr<Material> btn_SkillLevelUp = make_shared<Material>();
-	SetupUIMaterial(btn_SkillLevelUp);
-
-	tag = L"Btn_LevelUp_MouseOver";
-	path = L"..\\Resources\\Textures\\UI\\status\\" + tag + L".png";
-	auto btn_SkillLevelUpTexture = RESOURCES->Load<Texture>(tag, path);
-
-	btn_SkillLevelUp->SetDiffuseMap(btn_SkillLevelUpTexture);
-	MaterialDesc& btn_SkillLevelUpDesc = btn_SkillLevelUp->GetMaterialDesc();
-	btn_SkillLevelUpDesc.ambient = Vec4(1.f);
-	btn_SkillLevelUpDesc.diffuse = Vec4(1.f);
-	btn_SkillLevelUpDesc.specular = Vec4(1.f);
-	RESOURCES->Add(tag, btn_SkillLevelUp);
-}
-
-void LumiaIsland::CreateCharMainPanel()
-{
-	m_charMainPanel = make_shared<GameObject>();
-	m_charMainPanel->SetName(L"CharMainPanel");
-
-	auto panel = make_shared<UIPanel>();
-	m_charMainPanel->AddComponent(panel);
-
-	panel->Create(Vec2(615.f, 768 - 57), Vec2(414, 115), Vec4(1.f, 0.f, 1.f, 0.7f), nullptr);
-	m_charMainPanel->SetLayerIndex(LAYER_UI);
-
-
-	wstring characterTag = L"";
-	if (m_selectedCharacterIdx == 0) characterTag = L"Bianca";
-	else if (m_selectedCharacterIdx == 1) characterTag = L"Nicky";
-
-	auto imageUI = m_charMainPanel->GetUIPanel()->AddImageUI(Vec2(0, 0), L"ImageUI");
-
-	vector<wstring> skillTag = { L"Q", L"W", L"E", L"R" };
-	for (int i = 0; i < 4; i++)
-	{
-		shared_ptr<Material> cloneMaterial_skillIcon = RESOURCES->Get<Material>(characterTag + skillTag[i])->Clone();
-		imageUI->AddImageLayer(i, Vec2(128 + 43 * i, 25), Vec2(35, 38), cloneMaterial_skillIcon, 1);
-	}
-	
-	//Q
-	auto textQ = panel->AddD2DText(Vec2(128, 25), L"5", 20.0f,
-		Vec4(1, 0, 0, 1), 1.0f, Vec4(0, 0, 0, 0), 1.0f,
-		L"QSkillCoolDown", TextAlignment::Center);
-	textQ->SetUpdateInterval(1.f);
-
-	//W
-	auto textW = panel->AddD2DText(Vec2(128 + 43 * 1, 25), L"4", 20.0f,
-		Vec4(1, 0, 0, 1), 1.0f, Vec4(0, 0, 0, 0), 1.0f,
-		L"WSkillCoolDown", TextAlignment::Center);
-	textW->SetUpdateInterval(1.f);
-
-	//E
-	auto textE = panel->AddD2DText(Vec2(128 + 43 * 2, 25), L"3", 20.0f,
-		Vec4(1, 0, 0, 1), 1.0f, Vec4(0, 0, 0, 0), 1.0f,
-		L"ESkillCoolDown", TextAlignment::Center);
-	textE->SetUpdateInterval(1.f);
-
-	//R
-	auto textR = panel->AddD2DText(Vec2(128 + 43 * 3, 25), L"2", 20.0f,
-		Vec4(1, 0, 0, 1), 1.0f, Vec4(0, 0, 0, 0), 1.0f,
-		L"RSkillCoolDown", TextAlignment::Center);
-	textR->SetUpdateInterval(1.f);
-
-
-	//HP바 UI
-	auto hpPanel = panel->AddPanel(Vec2(194, 70.f), Vec2(153, 10), nullptr, L"ChildHPPanel");
-	hpPanel->AddD2DText(
-		Vec2(153, 10) / 2.f,
-		L"",
-		10.f,
-		Vec4(1.f, 1.f, 1.f, 1.f),
-		1.f,
-		Vec4(0.f),
-		0.f,
-		L"HPText",
-		TextAlignment::Center
-	);
-	auto hpPanelImageUI = hpPanel->AddImageUI(Vec2(0.f), L"HPPanelImageUI");
-	hpPanelImageUI->AddImageLayer(0, Vec2(153, 10) / 2.f, Vec2(153, 10) * (1/RESOLUTION_CONSTANT), RESOURCES->Get<Material>(L"HPBar_UI")->Clone(), 1);
-
-	Vec3 hpPos = hpPanelImageUI->GetGameObject()->GetTransform()->GetPosition();
-
-
-	//SP바 UI
-	auto spPanel = panel->AddPanel(Vec2(194, 85.f), Vec2(153, 10), nullptr, L"ChildSPPanel");
-	spPanel->AddD2DText(
-		Vec2(153, 10) / 2.f,
-		L"",
-		10.f,
-		Vec4(1.f, 1.f, 1.f, 1.f),
-		1.f,
-		Vec4(0.f),
-		0.f,
-		L"SPText",
-		TextAlignment::Center
-	);
-	auto spPanelImageUI = spPanel->AddImageUI(Vec2(0.f), L"SPPanelImageUI");
-	spPanelImageUI->AddImageLayer(0, Vec2(153, 10) / 2.f, Vec2(153, 10) * (1 / RESOLUTION_CONSTANT), RESOURCES->Get<Material>(L"SPBar_UI")->Clone(), 1);
-
-	//경험치바 UI
-	auto expPanel = panel->AddPanel(Vec2(194, 100.f), Vec2(153, 10), nullptr, L"ChildEXPPanel");
-	expPanel->AddD2DText(
-		Vec2(153, 10) / 2.f,
-		L"",
-		10.f,
-		Vec4(1.f, 1.f, 1.f, 1.f),
-		1.f,
-		Vec4(0.f),
-		0.f,
-		L"EXPText",
-		TextAlignment::Center
-	);
-	auto expPanelImageUI = expPanel->AddImageUI(Vec2(0.f), L"EXPPanelImageUI");
-	expPanelImageUI->AddImageLayer(0, Vec2(153, 10) / 2.f, Vec2(153, 10) * (1 / RESOLUTION_CONSTANT), RESOURCES->Get<Material>(L"HPBar_UI")->Clone(), 1);
-
-
-	//캐릭터 이미지 패널 + 레벨
-	//캐릭터 초상화
-	shared_ptr<Material> cloneMaterial_charLobbyImage;
-	if (m_selectedCharacterIdx == 0) cloneMaterial_charLobbyImage = RESOURCES->Get<Material>(L"CharLobbyBianca");
-	else if(m_selectedCharacterIdx == 1) cloneMaterial_charLobbyImage = RESOURCES->Get<Material>(L"CharLobbyNicky");
-
-	auto charImagePanel = panel->AddPanel(Vec2(58.f, 58.f), Vec2(100, 100), cloneMaterial_charLobbyImage, L"CharImagePanel");
-	auto charLevelPanel = charImagePanel->AddPanel(Vec2(10.f, 80), Vec2(30.f, 30.f), nullptr, L"LevelPanel");
-	Vec3 pos = charLevelPanel->GetGameObject()->GetTransform()->GetPosition();
-	charLevelPanel->GetGameObject()->GetTransform()->SetPosition(Vec3(pos.x, pos.y, pos.z - 0.01));
-
-	charLevelPanel->AddD2DText(
-		Vec2(15.f, 15.f),
-		L"20",
-		12.f,
-		Vec4(1.f),
-		1.f,
-		Vec4(0.f),
-		0.f,
-		L"LevelText",
-		TextAlignment::Center
-	);
-
-	
-	m_skillLevelUpPanel = make_shared<GameObject>();
-	m_skillLevelUpPanel->SetName(L"SkillLevelUpPanel");
-
-	auto skillPanel = make_shared<UIPanel>();
-	m_skillLevelUpPanel->AddComponent(skillPanel);
-
-	skillPanel->Create(Vec2(602.f, 768 - 57 - 85), Vec2(153, 40), Vec4(1.f, 1.f, 1.f, 0.7f), nullptr);
-	m_skillLevelUpPanel->SetLayerIndex(LAYER_UI);
-
-	shared_ptr<Material> cloneMaterial_skillLevelUpBtn = RESOURCES->Get<Material>(L"Btn_LevelUp_MouseOver");
-	for (int i = 0; i < 4; i++)
-	{
-		auto skillLevelUpBtn = skillPanel->AddButton(Vec2(10 + 43 * i, 25), Vec2(48, 52), cloneMaterial_skillLevelUpBtn->Clone(), L"SkillLevelUpBtn" + to_wstring(i));
-	}
-
-
-	AddUIObject(m_charMainPanel, true);
-	RegisterUIParent(m_charMainPanel);
-
-	AddUIObject(m_skillLevelUpPanel, true);
-	RegisterUIParent(m_skillLevelUpPanel);
-}
-
-void LumiaIsland::LoadCharInventoryImages()
-{
-
-}
-
-void LumiaIsland::CreateCharInventoryPanel()
-{
-	m_charInventoryPanel = make_shared<GameObject>();
-	m_charInventoryPanel->SetName(L"CharMainPanel");
-
-	auto panel = make_shared<UIPanel>();
-	m_charInventoryPanel->AddComponent(panel);
-
-	panel->Create(Vec2(960.f, 768 - 57), Vec2(252, 62), Vec4(0.f, 0.f, 0.f, 0.f), nullptr);
-	m_charInventoryPanel->SetLayerIndex(LAYER_UI);
-
-	AddUIObject(m_charInventoryPanel, true);
-	RegisterUIParent(m_charInventoryPanel);
-
-	CreateInventorySlots();
-}
 
 Vec4 LumiaIsland::ColorNormalize(Vec4 input)
 {
@@ -1611,36 +1180,21 @@ DWORD __stdcall LumiaIsland::BackgroundLoadingThread(LPVOID _param)
 {
 	LumiaIsland* scene = static_cast<LumiaIsland*>(_param);
 
+	
 	try {
 		EnterCriticalSection(&scene->m_loadingCS);
 
+		scene->m_uiManager->InitializeUI();
+
 		scene->LoadItemBoxImages();
-		scene->LoadCharStatIcon();
-		scene->LoadCharEquipmentIcon();
-		scene->LoadCharMainImages();
-		scene->LoadCharInventoryImages();
-		scene->LoadItemIcons();
-		scene->LoadItemGradeMaterial();
-		scene->LoadCharEquipmentIcon();
-		scene->LoadTimeImage();
 		
 		LeaveCriticalSection(&scene->m_loadingCS);
 
 		EnterCriticalSection(&scene->m_mainThreadTasksCS);
 		scene->m_mainThreadTasks.push([scene]() {
-
-			scene->CreateTestItems();
-
+	
 			scene->CreateItemBoxPanel();
-			scene->CreateCharStatPanel();
-			scene->CreateCharEquipmentPanel();
-			scene->CreateCharMainPanel();
-			scene->CreateCharInventoryPanel();
-
 			
-			scene->CreateInventoryManager();
-			scene->CreateTimePanel();
-			scene->CreateDayPanel();
 			scene->m_objectsCreated = true;
 		});
 
@@ -1765,349 +1319,6 @@ void LumiaIsland::CreateTestDummy()
 	}
 }
 
-void LumiaIsland::LoadItemIcons()
-{
-	shared_ptr<Shader> shader = make_shared<Shader>(L"ImageShader.fx");
-
-	// 모든 UI 머티리얼에 동일한 설정 적용
-	auto SetupUIMaterial = [&](shared_ptr<Material> material) {
-		material->SetShader(shader);
-		material->SetRenderQueue(RenderQueue::Transparent);
-		material->SetTransparent(true);  // 모든 UI에 추가
-		material->SetRenderingMode(RenderingMode::Forward);
-	};
-
-	wstring prefixPath = L"..\\Resources\\Textures\\UI\\ItemIcon\\";
-	vector<int> itemTag = { 110406, 110504, 201413, 202409, 203506, 204408 };
-
-	for (int i = 0; i < 6; i++)
-	{
-		shared_ptr<Material> itemIcon = make_shared<Material>();
-		SetupUIMaterial(itemIcon);
-
-		wstring tag = L"ItemIcon_" + to_wstring(itemTag[i]);
-		wstring path = prefixPath + tag + L".png";
-		auto itemIconTexture = RESOURCES->Load<Texture>(tag, path);
-
-		itemIcon->SetDiffuseMap(itemIconTexture);
-		MaterialDesc& itemIconDesc = itemIcon->GetMaterialDesc();
-		itemIconDesc.ambient = Vec4(1.f);
-		itemIconDesc.diffuse = Vec4(1.f);
-		itemIconDesc.specular = Vec4(1.f);
-		RESOURCES->Add(tag, itemIcon);
-	}
-}
-
-void LumiaIsland::LoadItemGradeMaterial()
-{
-	shared_ptr<Shader> shader = make_shared<Shader>(L"ImageShader.fx");
-
-	// 모든 UI 머티리얼에 동일한 설정 적용
-	auto SetupUIMaterial = [&](shared_ptr<Material> material) {
-		material->SetShader(shader);
-		material->SetRenderQueue(RenderQueue::Transparent);
-		material->SetTransparent(true);  // 모든 UI에 추가
-		material->SetRenderingMode(RenderingMode::Forward);
-		};
-
-	wstring prefixPath = L"..\\Resources\\Textures\\UI_Btn\\";
-	wstring prefixBtnTag = L"Img_Item_Slot_";
-	vector<wstring> gradeTag = { L"Common", L"Uncommon", L"Rare", L"Epic", L"Legendary"};
-	
-	for (int i = 0; i < 5; i++)
-	{
-		shared_ptr<Material> btnImg = make_shared<Material>();
-		SetupUIMaterial(btnImg);
-
-		wstring tag = prefixBtnTag + gradeTag[i];
-		wstring path = prefixPath + tag + L".png";
-		auto btnImgTexture = RESOURCES->Load<Texture>(tag, path);
-
-		btnImg->SetDiffuseMap(btnImgTexture);
-		MaterialDesc& btnImgDesc = btnImg->GetMaterialDesc();
-		btnImgDesc.ambient = Vec4(1.f);
-		btnImgDesc.diffuse = Vec4(1.f);
-		btnImgDesc.specular = Vec4(1.f);
-		RESOURCES->Add(tag, btnImg);
-	}
-}
-
-
-void LumiaIsland::UpdateSkillCoolDown()
-{
-	vector<shared_ptr<D2DText>> skillCoolDownTextUI;
-	vector<wstring> skillNames = { L"QSkillCoolDown", L"WSkillCoolDown", L"ESkillCoolDown", L"RSkillCoolDown" };
-
-	for (const auto& skillName : skillNames) {
-		skillCoolDownTextUI.push_back(m_charMainPanel->GetUIPanel()->GetD2DText(skillName));
-	}
-
-	for (int i = 0; i < 4; i++) {
-		ISkill* skill = m_player->GetSkill(i);
-		int skillCurCoolDown = (int)(skill->GetCurrentCooldown());
-
-		if (skillCoolDownTextUI[i]) {
-			skillCoolDownTextUI[i]->SetText(to_wstring(skillCurCoolDown));
-			//skillCoolDownTextUI[i]->SetVisible(skillCurCoolDown > 0); // 0이면 숨김, 아니면 표시
-		}
-	}
-}
-
-void LumiaIsland::UpdatePlayerStatus()
-{
-	vector<shared_ptr<D2DText>> playerStatusTextUI;
-	vector<wstring> statusNames = charStatIconNames;
-
-	for (const auto& statusName : statusNames) {
-		playerStatusTextUI.push_back(m_charStatPanel->GetUIPanel()->GetD2DText(statusName));
-	}
-
-	PlayerStatus& playerStatus = m_player->GetStatus();
-
-	// 소숫점 1자리로 제한하는 함수
-	auto FormatFloat = [](float value, int precision = 1) -> wstring {
-		std::wstringstream ss;
-		ss << std::fixed << std::setprecision(precision) << value;
-		return ss.str();
-		};
-
-	playerStatusTextUI[0]->SetText(to_wstring((int)playerStatus.hitAttack));     // 정수
-	playerStatusTextUI[1]->SetText(to_wstring((int)playerStatus.hitAttack));     // 정수
-	playerStatusTextUI[2]->SetText(to_wstring((int)playerStatus.hitAttack));     // 정수
-	playerStatusTextUI[3]->SetText(to_wstring((int)playerStatus.defense));       // 정수
-	playerStatusTextUI[4]->SetText(FormatFloat(playerStatus.hitSpeed, 1));       // 소숫점 1자리
-	playerStatusTextUI[5]->SetText(to_wstring((int)playerStatus.cooldownReduction)); // 정수
-	playerStatusTextUI[6]->SetText(to_wstring((int)playerStatus.hitAttack));     // 정수
-	playerStatusTextUI[7]->SetText(FormatFloat(playerStatus.moveSpeed, 1));      // 소숫점 1자리
-}
-
-void LumiaIsland::UpdateHPAndSPBar()
-{
-	PlayerStatus& playerStatus = m_player->GetStatus();
-
-	auto hpPanel = m_charMainPanel->GetUIPanel()->GetChildUIPanel(L"ChildHPPanel");
-	auto spPanel = m_charMainPanel->GetUIPanel()->GetChildUIPanel(L"ChildSPPanel");
-	auto expPanel = m_charMainPanel->GetUIPanel()->GetChildUIPanel(L"ChildEXPPanel");
-
-
-	auto hpPanelText = hpPanel->GetD2DText(L"HPText");
-	wstring hpText = to_wstring(playerStatus.hp) + L"/" + to_wstring(playerStatus.max_HP);
-	hpPanelText->SetText(hpText);
-
-	// 직접 size 수정 대신 SetLayerSize() 사용
-	auto hpImageUI = hpPanel->GetImageUI(L"HPPanelImageUI");
-	float ratio = ((float)playerStatus.hp / (float)playerStatus.max_HP);
-	Vec2 newSize = Vec2(153.f * ratio, 10.f);
-	Vec2 newPos = Vec2(153.f /2.f - (153.f/2.f) * (1-ratio), 10.f / 2.f);
-	hpImageUI->SetLayerSize(0, newSize);  // 레이어 0의 크기 변경
-	hpImageUI->SetLayerPosition(0, newPos);
-
-
-	auto spPanelText = spPanel->GetD2DText(L"SPText");
-	wstring spText = to_wstring(playerStatus.stamina) + L"/" + to_wstring(playerStatus.max_Stamina);
-	spPanelText->SetText(spText);
-
-	// 직접 size 수정 대신 SetLayerSize() 사용
-	auto spImageUI = spPanel->GetImageUI(L"SPPanelImageUI");
-	ratio = ((float)playerStatus.stamina / (float)playerStatus.max_Stamina);
-	newSize = Vec2(153.f * ratio, 10.f);
-	newPos = Vec2(153.f / 2.f - (153.f / 2.f) * (1 - ratio), 10.f / 2.f);
-	spImageUI->SetLayerSize(0, newSize);  // 레이어 0의 크기 변경
-	spImageUI->SetLayerPosition(0, newPos);
-
-
-	auto expPanelText = expPanel->GetD2DText(L"EXPText");
-	wstring expText = to_wstring(playerStatus.curExp) + L"/" + to_wstring(playerStatus.curExpLimit);
-	expPanelText->SetText(expText);
-
-	// 직접 size 수정 대신 SetLayerSize() 사용
-	auto expImageUI = expPanel->GetImageUI(L"EXPPanelImageUI");
-	ratio = ((float)playerStatus.curExp / (float)playerStatus.curExpLimit);
-	newSize = Vec2(153.f * ratio, 10.f);
-	newPos = Vec2(153.f / 2.f - (153.f / 2.f) * (1 - ratio), 10.f / 2.f);
-	expImageUI->SetLayerSize(0, newSize);  // 레이어 0의 크기 변경
-	expImageUI->SetLayerPosition(0, newPos);
-}
-
-void LumiaIsland::UpdatePlayerLevel()
-{
-	auto levelPanel = m_charMainPanel->GetUIPanel()->GetChildUIPanel(L"CharImagePanel")->GetChildUIPanel(L"LevelPanel");
-
-	PlayerStatus& playerStatus = m_player->GetStatus();
-
-	levelPanel->GetD2DText(L"LevelText")->SetText(to_wstring(playerStatus.level));
-}
-
-void LumiaIsland::UpdateTimeline()
-{
-	if (!m_timePanel) return;
-
-	m_lastFloatTime += DT;
-
-	int currentSeconds = static_cast<int>(m_lastFloatTime);
-
-	if (currentSeconds <= m_lastTime)
-		return;
-
-	auto timeText = m_timePanel->GetUIPanel()->GetD2DText(L"TimeText");
-	if (timeText) {
-		// 현재 게임 시간 계산 (예시)
-		float currentTime = m_lastFloatTime; // 또는 게임 시간 로직
-		int minutes = (int)(currentTime / 60.0f);
-		int seconds = (int)(currentTime) % 60;
-
-		wchar_t timeBuffer[8];
-		swprintf_s(timeBuffer, 8, L"%02d : %02d", minutes, seconds);
-		wstring timeString = timeBuffer;
-
-		timeText->SetText(timeString);
-	}
-}
-
-void LumiaIsland::UpdateSkillLevelPanel()
-{
-	PlayerStatus& playerStatus = m_player->GetStatus();
-
-	if (playerStatus.availableSkillPoints > 0)
-		m_skillLevelUpPanel->GetUIPanel()->SetVisible(true);
-	else
-		m_skillLevelUpPanel->GetUIPanel()->SetVisible(false);
-}
-
-
-void LumiaIsland::LoadTimeImage()
-{
-	shared_ptr<Shader> shader = make_shared<Shader>(L"ImageShader.fx");
-
-	// 모든 UI 머티리얼에 동일한 설정 적용
-	auto SetupUIMaterial = [&](shared_ptr<Material> material) {
-		material->SetShader(shader);
-		material->SetRenderQueue(RenderQueue::Transparent);
-		material->SetTransparent(true);  // 모든 UI에 추가
-		material->SetRenderingMode(RenderingMode::Forward);
-	};
-	
-	wstring prefixPath = L"..\\Resources\\Textures\\UI\\time\\";
-
-	{
-		shared_ptr<Material> TimeUIImage = make_shared<Material>();
-		SetupUIMaterial(TimeUIImage);
-
-		wstring path = prefixPath + L"Time_UI_Bg.png";
-		auto TimeUITexture = RESOURCES->Load<Texture>(L"Time_UI_Image", path);
-
-		TimeUIImage->SetDiffuseMap(TimeUITexture);
-		MaterialDesc& TimeUIDesc = TimeUIImage->GetMaterialDesc();
-		TimeUIDesc.ambient = Vec4(1.f);
-		TimeUIDesc.diffuse = Vec4(1.f);
-		TimeUIDesc.specular = Vec4(1.0f);
-		RESOURCES->Add(L"Time_UI_BG", TimeUIImage);
-	}
-
-	//=====================날짜관련 함수=====================//
-	{
-		shared_ptr<Material> TimeUIImage = make_shared<Material>();
-		SetupUIMaterial(TimeUIImage);
-
-		wstring path = prefixPath + L"Img_HUD_Union.png";
-		auto TimeUITexture = RESOURCES->Load<Texture>(L"DAY_UI_Image", path);
-
-		TimeUIImage->SetDiffuseMap(TimeUITexture);
-		MaterialDesc& TimeUIDesc = TimeUIImage->GetMaterialDesc();
-		TimeUIDesc.ambient = Vec4(1.f);
-		TimeUIDesc.diffuse = Vec4(1.f);
-		TimeUIDesc.specular = Vec4(1.0f);
-		RESOURCES->Add(L"DAY_UI_BG", TimeUIImage);
-	}
-	//Ico_DaySun.png
-
-	{
-		shared_ptr<Material> sunIcon = make_shared<Material>();
-		SetupUIMaterial(sunIcon);
-		auto sunIconTexture = RESOURCES->Load<Texture>(L"SUN_ICON", prefixPath + L"Ico_DaySun.png"); // 실제 파일명으로 변경
-		sunIcon->SetDiffuseMap(sunIconTexture);
-		MaterialDesc& sunIconDesc = sunIcon->GetMaterialDesc();
-		sunIconDesc.ambient = Vec4(1.f);
-		sunIconDesc.diffuse = Vec4(1.f);
-		sunIconDesc.specular = Vec4(1.0f);
-		RESOURCES->Add(L"SUN_UI_ICON", sunIcon);
-	}
-}
-
-void LumiaIsland::CreateTimePanel()
-{
-	m_timePanel = make_shared<GameObject>();
-	m_timePanel->SetName(L"Time Panel");
-
-	auto timePanel = make_shared<UIPanel>();
-	m_timePanel->AddComponent(timePanel);
-
-
-	shared_ptr<Material> TimePanelBackGround = RESOURCES->Get<Material>(L"Time_UI_BG")->Clone();
-	timePanel->Create(Vec2(GAME->GetGameDesc().width / 2.f , 0.f), Vec2(117, 58), Vec4(1.f, 1.f, 1.f, 0.5f), TimePanelBackGround);
-	m_timePanel->SetLayerIndex(LAYER_UI);
-
-	// 가운데에 하얀 텍스트 추가
-	timePanel->AddD2DText(
-		Vec2(117 / 2.f, 58 / 2.f + 14.f),      // 패널 가운데 위치
-		L"00 : 00",                        // 시간 텍스트 (예시)
-		16.0f,                          // 폰트 크기
-		Vec4(1.f, 1.f, 1.f, 1.f),      // 하얀색 (RGBA)
-		1.0f,                           // 불투명도
-		Vec4(0, 0, 0, 0),               // 배경색 (투명)
-		0.0f,                           // 배경 불투명도
-		L"TimeText",                    // 텍스트 이름
-		TextAlignment::Center           // 가운데 정렬
-	);
-
-	m_timePanel->GetMeshRenderer()->SetActive(true);
-
-	AddUIObject(m_timePanel, true);
-	RegisterUIParent(m_timePanel);
-}
-
-void LumiaIsland::CreateDayPanel()
-{
-	m_dayPanel = make_shared<GameObject>();
-	m_dayPanel->SetName(L"Day Panel");
-
-	auto dayPanel = make_shared<UIPanel>();
-	m_dayPanel->AddComponent(dayPanel);
-
-
-	shared_ptr<Material> TimePanelBackGround = RESOURCES->Get<Material>(L"Time_UI_BG")->Clone();
-	dayPanel->Create(Vec2(GAME->GetGameDesc().width / 2.f - 70.f , 0.f), Vec2(58, 58), Vec4(1.f, 1.f, 1.f, 0.5f), TimePanelBackGround);
-	m_dayPanel->SetLayerIndex(LAYER_UI);
-
-	// 태양 아이콘 ImageUI 먼저 추가 (텍스트 뒤에 배치)
-	auto sunImageUI = dayPanel->AddImageUI(Vec2(58 / 2.f, 58 / 2.f - 5.f), L"SUN_UI_ICON");
-	shared_ptr<Material> sunIconMaterial = RESOURCES->Get<Material>(L"SUN_UI_ICON")->Clone();
-	sunImageUI->AddImageLayer(
-		5,                              // 레이어 인덱스
-		Vec2(0, 0),                     // 로컬 위치 (ImageUI 내에서의 위치)
-		Vec2(24, 24),                   // 이미지 크기 (패널에 맞게 조정)
-		sunIconMaterial,                // 머티리얼
-		1                               // 렌더 순서
-	);
-
-	// 가운데에 하얀 텍스트 추가
-	dayPanel->AddD2DText(
-		Vec2(58 / 2.f , 58 / 2.f + 6.f),      // 패널 가운데 위치
-		L"1일 차",                        // 시간 텍스트 (예시)
-		8.0f,                          // 폰트 크기
-		Vec4(1.f, 1.f, 1.f, 1.f),      // 하얀색 (RGBA)
-		1.0f,                           // 불투명도
-		Vec4(0, 0, 0, 0),               // 배경색 (투명)
-		0.0f,                           // 배경 불투명도
-		L"TimeText",                    // 텍스트 이름
-		TextAlignment::Center           // 가운데 정렬
-	);
-
-	m_dayPanel->GetMeshRenderer()->SetActive(true);
-
-	AddUIObject(m_dayPanel, true);
-	RegisterUIParent(m_dayPanel);
-}
 
 void LumiaIsland::ControlPlayerStatus()
 {
@@ -2142,205 +1353,16 @@ void LumiaIsland::ControlPlayerStatus()
 	}
 	if (INPUT->GetButtonDown(KEY_TYPE::B))
 	{
-		playerStatus.availableSkillPoints += 1;
-		//m_charMainPanel->GetUIPanel()->SetVisible(true);
+		int qLevel = m_player->GetSkill(0)->GetCurSkillLevel();
+		int wLevel = m_player->GetSkill(1)->GetCurSkillLevel();
+		int eLevel = m_player->GetSkill(2)->GetCurSkillLevel();
+		int rLevel = m_player->GetSkill(3)->GetCurSkillLevel();
+
+
+		cout << "스킬 레벨 : " << qLevel << " , " << wLevel << " , " << eLevel << " , " << rLevel << endl;
 	}
 	if (INPUT->GetButtonDown(KEY_TYPE::D))
 	{
-		playerStatus.availableSkillPoints -= 1;
-		//m_charMainPanel->GetUIPanel()->SetVisible(false);
+		cout << "현재 스킬 포이늩 : " << m_player->GetStatus().availableSkillPoints << endl;
 	}
-}
-
-
-void LumiaIsland::CreateInventorySlots()
-{
-	m_inventorySlots.clear();
-
-	// 5x2 그리드로 10개 슬롯 생성
-	int slotsX = 5;
-	int slotsY = 2;
-	Vec2 slotSize = Vec2(46, 28);
-	Vec2 spacing = Vec2(5, 5);
-	Vec2 startPos = Vec2(960.f - (252 /2.f)+23, (768 - 57) - (62 /2.f) + 14); // 패널 내 시작 위치
-	Vec2 panelSize = Vec2(252, 62);
-
-	for (int row = 0; row < slotsY; row++)
-	{
-		for (int col = 0; col < slotsX; col++)
-		{
-			int slotIndex = row * slotsX + col;
-
-			// ItemSlot 생성
-			shared_ptr<ItemSlot> itemSlot;
-			
-			if (row == 0 && col == 0) itemSlot = make_shared<ItemSlot>(m_testItems[0], true);
-			else if (row == 0 && col == 1) itemSlot = make_shared<ItemSlot>(m_testItems[1], true);
-			else if (row == 0 && col == 2) itemSlot = make_shared<ItemSlot>(m_testItems[2], true);
-			else if (row == 0 && col == 3) itemSlot = make_shared<ItemSlot>(m_testItems[3], true);
-			else if (row == 0 && col == 4) itemSlot = make_shared<ItemSlot>(m_testItems[4], true);
-
-			else itemSlot = make_shared<ItemSlot>(m_testItems[5], true);
-
-			itemSlot->SetSlotType(SLOTTYPE::INVENTORY);
-			Vec2 slotPos = Vec2(
-				startPos.x + col * (slotSize.x + spacing.x),
-				startPos.y + row * (slotSize.y + spacing.y)
-			);
-			itemSlot->CreateSlot(slotPos, slotSize, slotIndex);
-
-			m_inventorySlots.push_back(itemSlot);
-		}
-	}
-}
-void LumiaIsland::CreateEquipmentSlots()
-{
-	m_equipmentSlots.clear();
-
-	// 5x2 그리드로 10개 슬롯 생성
-	int slotsX = 1;
-	int slotsY = 5;
-	Vec2 slotSize = Vec2(34, 22);
-	Vec2 spacing = Vec2(0, 1);
-
-	Vec2 startPos = Vec2(380.f - (38 / 2.f) + 19, (768 - 57) - (115 / 2.f) + 13); // 패널 내 시작 위치
-	Vec2 panelSize = Vec2(38, 115);
-
-	for (int row = 0; row < slotsY; row++)
-	{
-		for (int col = 0; col < slotsX; col++)
-		{
-			int slotIndex = row * slotsX + col;
-
-			// ItemSlot 생성
-			auto itemSlot = make_shared<ItemSlot>(nullptr, false);
-			itemSlot->SetSlotType(SLOTTYPE::EQUIPMENT);
-			Vec2 slotPos = Vec2(
-				startPos.x + col * (slotSize.x + spacing.x),
-				startPos.y + row * (slotSize.y + spacing.y)
-			);
-			itemSlot->CreateSlot(slotPos, slotSize, slotIndex);
-
-			m_equipmentSlots.push_back(itemSlot);
-		}
-	}
-}
-void LumiaIsland::CreateTestItems()
-{
-	m_testItems.clear();
-
-	// 테스트 아이템 1: 일반 무기
-	auto weapon = make_shared<EquipableItem>();
-	weapon->SetItemID(110406); // 기존에 로드된 아이템 아이콘 ID
-	weapon->SetName(L"IronSword");
-	weapon->SetDescription(L"날카로운 철검입니다.");
-	weapon->SetItemType(ITEMTYPE::EQUIPABLE);
-	weapon->SetItemGrade(ITEMGRADE::COMMON);
-	weapon->SetEquipType(EquipmentType::WEAPON);
-
-	ItemStatus weaponStatus;
-	weaponStatus.attackPower = 50;
-	weaponStatus.attackSpeed = 1.2f;
-	weapon->SetStatus(weaponStatus);
-
-	m_testItems.push_back(weapon);
-
-	// 테스트 아이템 2: 희귀 방어구
-	auto armor = make_shared<EquipableItem>();
-	armor->SetItemID(110504);
-	armor->SetName(L"IronPlate");
-	armor->SetDescription(L"튼튼한 강철 갑옷입니다.");
-	armor->SetItemType(ITEMTYPE::EQUIPABLE);
-	armor->SetItemGrade(ITEMGRADE::RARE);
-	armor->SetEquipType(EquipmentType::CHEST);
-
-	ItemStatus armorStatus;
-	armorStatus.defense = 30;
-	armorStatus.maxHP = 100;
-	armor->SetStatus(armorStatus);
-
-	m_testItems.push_back(armor);
-
-	// 테스트 아이템 3: 전설 아이템
-	auto legendary = make_shared<EquipableItem>();
-	legendary->SetItemID(201413);
-	legendary->SetName(L"DragonSword");
-	legendary->SetDescription(L"전설의 드래곤 검입니다.");
-	legendary->SetItemType(ITEMTYPE::EQUIPABLE);
-	legendary->SetItemGrade(ITEMGRADE::LEGENDARY);
-	legendary->SetEquipType(EquipmentType::HEAD);
-
-	ItemStatus legendaryStatus;
-	legendaryStatus.attackPower = 150;
-	legendaryStatus.attackSpeed = 1.8f;
-	legendaryStatus.lifeSteal = 10.0f;
-	legendary->SetStatus(legendaryStatus);
-
-	m_testItems.push_back(legendary);
-
-	// 테스트 아이템 4: 전설 아이템
-	auto lsword = make_shared<EquipableItem>();
-	lsword->SetItemID(202409);
-	lsword->SetName(L"LSword");
-	lsword->SetDescription(L"L곤 검입니다.");
-	lsword->SetItemType(ITEMTYPE::EQUIPABLE);
-	lsword->SetItemGrade(ITEMGRADE::LEGENDARY);
-	lsword->SetEquipType(EquipmentType::CHEST);
-
-	ItemStatus lStatus;
-	lStatus.attackPower = 150;
-	lStatus.attackSpeed = 1.8f;
-	lStatus.lifeSteal = 10.0f;
-	lsword->SetStatus(lStatus);
-
-	m_testItems.push_back(lsword);
-
-	// 테스트 아이템 5: 전설 아이템
-	auto legendary2 = make_shared<EquipableItem>();
-	legendary2->SetItemID(203506);
-	legendary2->SetName(L"L1Sword");
-	legendary2->SetDescription(L"L1곤 검입니다.");
-	legendary2->SetItemType(ITEMTYPE::EQUIPABLE);
-	legendary2->SetItemGrade(ITEMGRADE::LEGENDARY);
-	legendary2->SetEquipType(EquipmentType::ARM);
-
-	ItemStatus legendary2Status;
-	legendary2Status.attackPower = 150;
-	legendary2Status.attackSpeed = 1.8f;
-	legendary2Status.lifeSteal = 10.0f;
-	legendary2->SetStatus(legendary2Status);
-
-	m_testItems.push_back(legendary2);
-
-	// 테스트 아이템 6: 전설 아이템
-	auto legendary3 = make_shared<EquipableItem>();
-	legendary3->SetItemID(204408);
-	legendary3->SetName(L"L2Sword");
-	legendary3->SetDescription(L"L2곤 검입니다.");
-	legendary3->SetItemType(ITEMTYPE::EQUIPABLE);
-	legendary3->SetItemGrade(ITEMGRADE::LEGENDARY);
-	legendary3->SetEquipType(EquipmentType::LEG);
-
-	ItemStatus legendary3Status;
-	legendary3Status.attackPower = 150;
-	legendary3Status.attackSpeed = 1.8f;
-	legendary3Status.lifeSteal = 10.0f;
-	legendary3->SetStatus(legendary3Status);
-
-	m_testItems.push_back(legendary3);
-
-}
-
-void LumiaIsland::CreateInventoryManager()
-{
-	auto managerObj = make_shared<GameObject>();
-	managerObj->SetName(L"InventoryManager");
-
-	m_inventoryManager = make_shared<InventoryManager>();
-	managerObj->AddComponent(m_inventoryManager);
-
-	// 슬롯들 등록
-	m_inventoryManager->RegisterInventorySlots(m_inventorySlots);
-	m_inventoryManager->RegisterEquipmentSlots(m_equipmentSlots);
-	m_inventoryManager->SetPlayer(m_player);
 }

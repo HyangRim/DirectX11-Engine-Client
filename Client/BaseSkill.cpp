@@ -14,6 +14,8 @@ BaseSkill::~BaseSkill()
 
 }
 
+
+
 void BaseSkill::Update()
 {
 
@@ -67,9 +69,9 @@ XMVECTOR BaseSkill::ScreenToWorld(POINT _screenPos)
 	return worldPos;
 }
 
-void BaseSkill::AddSkillLevel(int _value)
+void BaseSkill::SkillLevelUp()
 {
-	m_curSkillLevel += _value;
+	m_curSkillLevel += 1;
 	if (m_curSkillLevel > m_maxSkillLevel)
 		m_curSkillLevel = m_maxSkillLevel;
 }

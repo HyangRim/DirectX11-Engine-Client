@@ -34,7 +34,7 @@ struct PlayerStatus {
     float healing = 7.2;
     float healing_Stamina = 11.4;
 
-    int availableSkillPoints = 0;
+    int availableSkillPoints = 1;
 };
 
 
@@ -168,6 +168,7 @@ public:
             return m_skills[index].get();
         return nullptr;
     }
+   
 
     friend class PlayerInterface;
 

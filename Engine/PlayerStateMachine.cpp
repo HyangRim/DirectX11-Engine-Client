@@ -219,10 +219,16 @@ void PlayerStateMachine::ProcessInput()
         m_animationStateMachine->ChangeState(AnimationStateType::Wait);
     }
 
-  
+    if (INPUT->GetButtonDown(KEY_TYPE::LCTRL) || INPUT->GetButton(KEY_TYPE::LCTRL))
+    {
+        cout << "왼쪽컨트롤 키 눌림\n";
+        return;
+    }
+
     // 스킬 입력 시 이동 중지
     if (INPUT->GetButtonDown(KEY_TYPE::Q))
     {
+        
         float curCoolDown = m_playerInterface->GetCurSkillCooldown(0);
         float maxCoolDown = m_playerInterface->GetMaxSkillCooldown(0);
 
