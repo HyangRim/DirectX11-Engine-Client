@@ -162,5 +162,6 @@ struct ScrollViewClippingData
 
 struct HealthBarData {
 	float healthRatio;
-	Vec3 padding;
+	float manaRatio;
+	Vec2 padding;
 };
