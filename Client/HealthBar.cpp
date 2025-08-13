@@ -40,6 +40,21 @@ void HealthBar::Create(Vec3 _offset)
 
 	m_healthBarPanel->Create(Vec2(100, 100), Vec2(120, 17.5), Vec4(0.f), nullptr);
 
+
+
+	// 가운데에 하얀 텍스트 추가
+	m_healthBarPanel->AddD2DText(
+		Vec2(120.f * 0.5f, 17.5 * 0.5f - 15.f),      // 패널 가운데 위치
+		L"비앙카",                        // 시간 텍스트 (예시)
+		12.0f,                          // 폰트 크기
+		Vec4(1.f, 1.f, 1.f, 1.f),      // 하얀색 (RGBA)
+		1.0f,                           // 불투명도
+		Vec4(0, 0, 0, 0),               // 배경색 (투명)
+		0.0f,                           // 배경 불투명도
+		L"NameText",                    // 텍스트 이름
+		TextAlignment::Center           // 가운데 정렬
+	);
+
 	auto backgroundMaterial = make_shared<Material>();
 	auto shader = make_shared<Shader>(L"ImageShader.fx");
 	backgroundMaterial->SetShader(shader);
@@ -51,7 +66,7 @@ void HealthBar::Create(Vec3 _offset)
 
 
 	m_healthBarUI = m_healthBarPanel->AddImageUI(Vec2(0, 0), L"HealthBar");
-	m_healthBarUI->AddImageLayer(0, Vec2(60, 8), m_barSize, backgroundMaterial, 2);
+	m_healthBarUI->AddImageLayer(0, Vec2(60, -38), m_barSize, backgroundMaterial, 2);
 
 	auto healthMaterial = make_shared<Material>();
 	auto healthShader = make_shared<Shader>(L"ImageShader.fx");
@@ -65,7 +80,10 @@ void HealthBar::Create(Vec3 _offset)
 	MaterialDesc& healthDesc = healthMaterial->GetMaterialDesc();
 	healthDesc.diffuse = Vec4(1.0f, 1.0f, 1.0f, 1.f);
 
-	m_healthBarUI->AddImageLayer(1, Vec2(60, 8), m_barSize, healthMaterial, 6);
+	m_healthBarUI->AddImageLayer(1, Vec2(60, -38), m_barSize, healthMaterial, 6);
+
+
+
 
 	CURSCENE->AddUIObject(panelObj, true);
 	CURSCENE->RegisterUIParent(panelObj);

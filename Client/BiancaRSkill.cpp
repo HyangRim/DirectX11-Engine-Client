@@ -26,11 +26,11 @@ BiancaRSkill::BiancaRSkill(shared_ptr<Player> _player)
 		m_outerCircle->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"default"));
 		m_outerCircle->GetMeshRenderer()->SetMesh(RESOURCES->Get<Mesh>(L"Sphere"));
 		m_outerCircle->GetMeshRenderer()->GetMaterial()->SetCastShadow(false);
-		m_outerCircle->GetTransform()->SetScale(Vec3(5.5f, 0.03f, 5.5f));
+		m_outerCircle->GetTransform()->SetScale(Vec3(8.5f, 0.03f, 8.5f));
 
 		m_outerCircleCollider = make_shared<SphereCollider>();
 		m_outerCircle->AddComponent(m_outerCircleCollider);
-		m_outerCircleCollider->SetOffsetScale(Vec3(1.f, 30.f, 1.f));
+		m_outerCircleCollider->SetOffsetScale(Vec3(1.f, 50.f, 1.f));
 		m_outerCircle->SetActive(false);
 
 		//m_outerCircle->GetTransform()->SetParent(m_playerObject->GetTransform());
@@ -46,7 +46,7 @@ BiancaRSkill::BiancaRSkill(shared_ptr<Player> _player)
 		obj->SetName(L"Bianca_Gather_Blood");
 		obj->GetTransform()->SetParent(m_playerObject->GetTransform());
 		obj->GetTransform()->SetLocalPosition(Vec3(0, 3, 0));
-		obj->AddComponent(make_shared<SnowBillboard>(Vec3(0, 0, 0), Vec3(3, 3, 3), 50));
+		obj->AddComponent(make_shared<SnowBillboard>(Vec3(0, 0, 0), Vec3(5, 5, 5), 50));
 		{
 			// Material
 			{

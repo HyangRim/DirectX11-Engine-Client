@@ -68,7 +68,7 @@ void BiancaQCone::OnCollisionEnter(shared_ptr<GameObject> _other)
 	if (m_targetPlayer != nullptr || m_targetMonster != nullptr || debugFlag) {
 		m_isBind = true;
 		m_startY = GetTransform()->GetPosition().y;
-		m_endY = m_startY + 3.f;
+		m_endY = m_startY + 5.5f;
 		m_upElapsedTime = 0.f;
 		//그 대상을 CASTING(BIND) 상태로 바꿈.
 

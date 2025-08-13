@@ -1,4 +1,5 @@
 #include "pch.h"
+
 #include "LumiaIsland.h"
 
 #include "BillboardDemo.h"
@@ -25,6 +26,7 @@
 #include "ISkill.h"
 
 #include "EquipableItem.h"
+#include <string>
 
 const vector<wstring> charStatIconNames = {
 	L"AttackPower",
@@ -80,7 +82,7 @@ void LumiaIsland::Start()
 	m_defaultshader = make_shared<Shader>(L"FOW.fx");
 	//CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\skyBox.png", L"Sky.fx"));
 	//m_testShader = make_shared<Shader>(L"23. RenderDemo.fx");
-	CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\snowcube1024.dds", L"Sky.fx"));
+	CURSCENE->SetSky(make_shared<Sky>(L"..\\Resources\\Textures\\Sky\\skybox.dds", L"Sky.fx"));
 	
 	CreateMainCamera();
 	CreateUICamera();
@@ -178,6 +180,7 @@ void LumiaIsland::Update()
 		UpdatePlayerStatus();
 		UpdateHPAndSPBar();
 		UpdatePlayerLevel();
+		UpdateTimeline();
 	}
 }
 
@@ -1011,7 +1014,7 @@ void LumiaIsland::CreateNavMesh()
 		m_navMesh = make_shared<GameObject>();
 		m_navMesh->SetName(to_wstring(i));
 
-		m_navMesh->GetTransform()->SetPosition(Vec3(-76.7, 18, -54));
+		m_navMesh->GetTransform()->SetPosition(Vec3(-75.7, 18, -54));
 		//m_navMesh->GetTransform()->SetPosition(Vec3(0, 18, 0));
 		m_navMesh->GetTransform()->SetScale(Vec3(2.f));
 		m_navMesh->GetTransform()->SetLocalRotation(Vec3(270.f, 270.f, 90.f));
@@ -1567,6 +1570,7 @@ DWORD __stdcall LumiaIsland::BackgroundLoadingThread(LPVOID _param)
 		scene->LoadItemIcons();
 		scene->LoadItemGradeMaterial();
 		scene->LoadCharEquipmentIcon();
+		scene->LoadTimeImage();
 		
 		LeaveCriticalSection(&scene->m_loadingCS);
 
@@ -1583,6 +1587,8 @@ DWORD __stdcall LumiaIsland::BackgroundLoadingThread(LPVOID _param)
 
 			
 			scene->CreateInventoryManager();
+			scene->CreateTimePanel();
+			scene->CreateDayPanel();
 			scene->m_objectsCreated = true;
 		});
 
@@ -1878,6 +1884,166 @@ void LumiaIsland::UpdatePlayerLevel()
 	PlayerStatus& playerStatus = m_player->GetStatus();
 
 	levelPanel->GetD2DText(L"LevelText")->SetText(to_wstring(playerStatus.level));
+}
+
+void LumiaIsland::UpdateTimeline()
+{
+	if (!m_timePanel) return;
+
+	m_lastFloatTime += DT;
+
+	int currentSeconds = static_cast<int>(m_lastFloatTime);
+
+	if (currentSeconds <= m_lastTime)
+		return;
+
+	auto timeText = m_timePanel->GetUIPanel()->GetD2DText(L"TimeText");
+	if (timeText) {
+		// 현재 게임 시간 계산 (예시)
+		float currentTime = m_lastFloatTime; // 또는 게임 시간 로직
+		int minutes = (int)(currentTime / 60.0f);
+		int seconds = (int)(currentTime) % 60;
+
+		wchar_t timeBuffer[8];
+		swprintf_s(timeBuffer, 8, L"%02d : %02d", minutes, seconds);
+		wstring timeString = timeBuffer;
+
+		timeText->SetText(timeString);
+	}
+}
+
+void LumiaIsland::LoadTimeImage()
+{
+	shared_ptr<Shader> shader = make_shared<Shader>(L"ImageShader.fx");
+
+	// 모든 UI 머티리얼에 동일한 설정 적용
+	auto SetupUIMaterial = [&](shared_ptr<Material> material) {
+		material->SetShader(shader);
+		material->SetRenderQueue(RenderQueue::Transparent);
+		material->SetTransparent(true);  // 모든 UI에 추가
+		material->SetRenderingMode(RenderingMode::Forward);
+	};
+	
+	wstring prefixPath = L"..\\Resources\\Textures\\UI\\time\\";
+
+	{
+		shared_ptr<Material> TimeUIImage = make_shared<Material>();
+		SetupUIMaterial(TimeUIImage);
+
+		wstring path = prefixPath + L"Time_UI_Bg.png";
+		auto TimeUITexture = RESOURCES->Load<Texture>(L"Time_UI_Image", path);
+
+		TimeUIImage->SetDiffuseMap(TimeUITexture);
+		MaterialDesc& TimeUIDesc = TimeUIImage->GetMaterialDesc();
+		TimeUIDesc.ambient = Vec4(1.f);
+		TimeUIDesc.diffuse = Vec4(1.f);
+		TimeUIDesc.specular = Vec4(1.0f);
+		RESOURCES->Add(L"Time_UI_BG", TimeUIImage);
+	}
+
+	//=====================날짜관련 함수=====================//
+	{
+		shared_ptr<Material> TimeUIImage = make_shared<Material>();
+		SetupUIMaterial(TimeUIImage);
+
+		wstring path = prefixPath + L"Img_HUD_Union.png";
+		auto TimeUITexture = RESOURCES->Load<Texture>(L"DAY_UI_Image", path);
+
+		TimeUIImage->SetDiffuseMap(TimeUITexture);
+		MaterialDesc& TimeUIDesc = TimeUIImage->GetMaterialDesc();
+		TimeUIDesc.ambient = Vec4(1.f);
+		TimeUIDesc.diffuse = Vec4(1.f);
+		TimeUIDesc.specular = Vec4(1.0f);
+		RESOURCES->Add(L"DAY_UI_BG", TimeUIImage);
+	}
+	//Ico_DaySun.png
+
+	{
+		shared_ptr<Material> sunIcon = make_shared<Material>();
+		SetupUIMaterial(sunIcon);
+		auto sunIconTexture = RESOURCES->Load<Texture>(L"SUN_ICON", prefixPath + L"Ico_DaySun.png"); // 실제 파일명으로 변경
+		sunIcon->SetDiffuseMap(sunIconTexture);
+		MaterialDesc& sunIconDesc = sunIcon->GetMaterialDesc();
+		sunIconDesc.ambient = Vec4(1.f);
+		sunIconDesc.diffuse = Vec4(1.f);
+		sunIconDesc.specular = Vec4(1.0f);
+		RESOURCES->Add(L"SUN_UI_ICON", sunIcon);
+	}
+}
+
+void LumiaIsland::CreateTimePanel()
+{
+	m_timePanel = make_shared<GameObject>();
+	m_timePanel->SetName(L"Time Panel");
+
+	auto timePanel = make_shared<UIPanel>();
+	m_timePanel->AddComponent(timePanel);
+
+
+	shared_ptr<Material> TimePanelBackGround = RESOURCES->Get<Material>(L"Time_UI_BG")->Clone();
+	timePanel->Create(Vec2(GAME->GetGameDesc().width / 2.f , 0.f), Vec2(117, 58), Vec4(1.f, 1.f, 1.f, 0.5f), TimePanelBackGround);
+	m_timePanel->SetLayerIndex(LAYER_UI);
+
+	// 가운데에 하얀 텍스트 추가
+	timePanel->AddD2DText(
+		Vec2(117 / 2.f, 58 / 2.f + 14.f),      // 패널 가운데 위치
+		L"00 : 00",                        // 시간 텍스트 (예시)
+		16.0f,                          // 폰트 크기
+		Vec4(1.f, 1.f, 1.f, 1.f),      // 하얀색 (RGBA)
+		1.0f,                           // 불투명도
+		Vec4(0, 0, 0, 0),               // 배경색 (투명)
+		0.0f,                           // 배경 불투명도
+		L"TimeText",                    // 텍스트 이름
+		TextAlignment::Center           // 가운데 정렬
+	);
+
+	m_timePanel->GetMeshRenderer()->SetActive(true);
+
+	AddUIObject(m_timePanel, true);
+	RegisterUIParent(m_timePanel);
+}
+
+void LumiaIsland::CreateDayPanel()
+{
+	m_dayPanel = make_shared<GameObject>();
+	m_dayPanel->SetName(L"Day Panel");
+
+	auto dayPanel = make_shared<UIPanel>();
+	m_dayPanel->AddComponent(dayPanel);
+
+
+	shared_ptr<Material> TimePanelBackGround = RESOURCES->Get<Material>(L"Time_UI_BG")->Clone();
+	dayPanel->Create(Vec2(GAME->GetGameDesc().width / 2.f - 70.f , 0.f), Vec2(58, 58), Vec4(1.f, 1.f, 1.f, 0.5f), TimePanelBackGround);
+	m_dayPanel->SetLayerIndex(LAYER_UI);
+
+	// 태양 아이콘 ImageUI 먼저 추가 (텍스트 뒤에 배치)
+	auto sunImageUI = dayPanel->AddImageUI(Vec2(58 / 2.f, 58 / 2.f - 5.f), L"SUN_UI_ICON");
+	shared_ptr<Material> sunIconMaterial = RESOURCES->Get<Material>(L"SUN_UI_ICON")->Clone();
+	sunImageUI->AddImageLayer(
+		5,                              // 레이어 인덱스
+		Vec2(0, 0),                     // 로컬 위치 (ImageUI 내에서의 위치)
+		Vec2(24, 24),                   // 이미지 크기 (패널에 맞게 조정)
+		sunIconMaterial,                // 머티리얼
+		1                               // 렌더 순서
+	);
+
+	// 가운데에 하얀 텍스트 추가
+	dayPanel->AddD2DText(
+		Vec2(58 / 2.f , 58 / 2.f + 6.f),      // 패널 가운데 위치
+		L"1일 차",                        // 시간 텍스트 (예시)
+		8.0f,                          // 폰트 크기
+		Vec4(1.f, 1.f, 1.f, 1.f),      // 하얀색 (RGBA)
+		1.0f,                           // 불투명도
+		Vec4(0, 0, 0, 0),               // 배경색 (투명)
+		0.0f,                           // 배경 불투명도
+		L"TimeText",                    // 텍스트 이름
+		TextAlignment::Center           // 가운데 정렬
+	);
+
+	m_dayPanel->GetMeshRenderer()->SetActive(true);
+
+	AddUIObject(m_dayPanel, true);
+	RegisterUIParent(m_dayPanel);
 }
 
 void LumiaIsland::ControlPlayerStatus()

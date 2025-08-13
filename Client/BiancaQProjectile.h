@@ -27,7 +27,7 @@ private:
     bool m_moving = false;
     bool m_arrive = false;
 
-    float m_speed = 20.f;
+    float m_speed = 30.f;
     float m_elapsedTime = 0.f;
     float m_duration = 0.f;
 

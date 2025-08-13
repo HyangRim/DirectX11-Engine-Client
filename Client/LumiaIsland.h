@@ -28,9 +28,6 @@ public:
 public:
 	void SetSelectedCharacter(int _idx) { m_selectedCharacterIdx = _idx; }
 
-
-
-
 private:
 	void CreateMainCamera();
 	void CreateUICamera();
@@ -47,7 +44,6 @@ private:
 
 	void CreateMonsterWolf(Vec3 _pos);
 	void CreateMonsterAlpha(Vec3 _pos);
-
 
 	//=====================UI관련 함수=====================//
 	void LoadItemBoxImages();
@@ -66,9 +62,15 @@ private:
 	void LoadCharInventoryImages();
 	void CreateCharInventoryPanel();
 
+	void LoadTimeImage();
+	void CreateTimePanel();
+	void CreateDayPanel();
+
 	void UpdateSkillCoolDown();
 	void UpdatePlayerStatus();
 	void UpdateHPAndSPBar();
+	void UpdateTimeline();
+
 	void UpdatePlayerLevel();
 	//=====================UI관련 함수=====================//
 
@@ -109,6 +111,9 @@ private:
 	shared_ptr<GameObject> m_charEquipPanel = nullptr;
 	shared_ptr<GameObject> m_charMainPanel = nullptr;
 	shared_ptr<GameObject> m_charInventoryPanel = nullptr;
+
+	shared_ptr<GameObject> m_timePanel = nullptr;
+	shared_ptr<GameObject> m_dayPanel = nullptr;
 	//=====================UI관련 변수=====================//
 
 	// 테스트용
@@ -119,7 +124,8 @@ private:
 
 	int m_selectedCharacterIdx = 0; //0 : 비앙카 , 1 : 니키
 
-	float m_duration = 0.f;
+	float m_lastFloatTime = 0.f;
+	int m_lastTime = -1;
 	shared_ptr<D2DText> m_test;
 
 private:
@@ -131,8 +137,6 @@ private:
 	queue<function<void()>> m_mainThreadTasks;
 	CRITICAL_SECTION m_mainThreadTasksCS;
 	atomic<bool> m_objectsCreated{ false };
-
-
 
 private:
 	//테스트용 아이템
