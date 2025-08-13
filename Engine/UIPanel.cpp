@@ -500,7 +500,7 @@ void UIPanel::UpdateChildPositions()
             {
                 ImageUI->UpdatePosition(panelLeftTop);
             }
-            else if (auto d2dText = dynamic_pointer_cast<D2DText>(child->GetFixedComponent(ComponentType::Text))) {
+            else if (auto d2dText = child->GetD2DText()) {
                 d2dText->UpdatePosition(panelLeftTop);
             }
 

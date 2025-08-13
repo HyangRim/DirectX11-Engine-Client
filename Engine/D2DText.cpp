@@ -193,9 +193,10 @@ void D2DText::Create(Vec2 screenPos, const wstring& text, float fontSize,
     m_position = screenPos;
     m_localPosition = screenPos;
 
-    SetPosition(screenPos);
+    
 
     auto go = GetGameObject();
+    SetPosition(screenPos);
     go->GetTransform()->SetScale(Vec3(1, 1, 1));
 
     m_needUpdate = true;
@@ -229,6 +230,7 @@ void D2DText::CreateTextTexture()
         if (go) {
             float scaleX = static_cast<float>(m_textWidth);
             float scaleY = static_cast<float>(m_textHeight);
+         
             go->GetTransform()->SetScale(Vec3(scaleX, scaleY, 1.0f));
         }
     }
