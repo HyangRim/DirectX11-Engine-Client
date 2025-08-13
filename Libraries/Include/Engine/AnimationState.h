@@ -38,5 +38,4 @@ public:
 protected:
     AnimationStateType m_type;
     float m_expectedDuration;
-
 };

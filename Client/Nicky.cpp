@@ -45,10 +45,13 @@ Nicky::~Nicky()
 
 void Nicky::Start()
 {
+	
 	InitNickyModel();
+	
 	InitNickyAnimation();
 	InitNickyPSM();
 	InitNickyComponent();
+	
 	InitNickySkill();
 	InitNickyStats();
 	Super::Start();
@@ -186,6 +189,19 @@ void Nicky::InitNickyPSM()
 	m_playerStateMachine->RegisterState(PlayerStateType::Skill_2, make_shared<NickyWState>(GetModelAnimator()));
 	m_playerStateMachine->RegisterState(PlayerStateType::Skill_3, make_shared<NickyEState>(GetModelAnimator()));
 	m_playerStateMachine->RegisterState(PlayerStateType::Skill_4, make_shared<NickyRState>(GetModelAnimator()));
+
+	m_playerStateMachine->OnSkillUsed += [this](int skillIndex, shared_ptr<GameObject> target) {
+		if (skillIndex >= 0 && skillIndex < (int)m_skills.size() && m_skills[skillIndex])
+		{
+			// R 스킬(인덱스 3)인 경우 타겟 설정
+			if (skillIndex == 3 && target)
+			{
+				// NickyRSkill에 타겟 설정
+				static_cast<NickyRSkill*>(m_skills[skillIndex].get())->SetTarget(target);
+			}
+			m_skills[skillIndex]->PlaySkill();
+		}
+		};
 }
 
 void Nicky::InitNickyComponent()
@@ -196,7 +212,6 @@ void Nicky::InitNickyComponent()
 	m_rigidbody = make_shared<Rigidbody>();
 	m_navAgent = make_shared<NavMeshAgent>();
 	
-
 	AddComponent(m_collider);
 	AddComponent(m_rigidbody);
 	AddComponent(m_navAgent);
@@ -210,18 +225,7 @@ void Nicky::InitNickyComponent()
 	//		m_skills[skillIndex]->PlaySkill();
 	//	}
 	//};
-	m_playerStateMachine->OnSkillUsed += [this](int skillIndex, shared_ptr<GameObject> target) {
-		if (skillIndex >= 0 && skillIndex < (int)m_skills.size() && m_skills[skillIndex])
-		{
-			// R 스킬(인덱스 3)인 경우 타겟 설정
-			if (skillIndex == 3 && target)
-			{
-				// NickyRSkill에 타겟 설정
-				static_cast<NickyRSkill*>(m_skills[skillIndex].get())->SetTarget(target);
-			}
-			m_skills[skillIndex]->PlaySkill();
-		}
-	};
+	
 
 }
 

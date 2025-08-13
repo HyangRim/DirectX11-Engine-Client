@@ -119,12 +119,12 @@ void LumiaIsland::Start()
 	CreateCemeteryInterior();
 	CreateCemeteryEnvironment();
 
-	cout << "LumiaIsland SelectedCharIndex : " << selectedCharacterIdx << endl;
-
-	if (selectedCharacterIdx == 0) {
+	cout << "LumiaIsland SelectedCharIndex : " << m_selectedCharacterIdx << endl;
+	m_selectedCharacterIdx = 1;
+	if (m_selectedCharacterIdx == 0) {
 		CreateCharacterBianca();
 	}
-	else if (selectedCharacterIdx == 1) {
+	else if (m_selectedCharacterIdx == 1) {
 		CreateCharacterNicky();
 	}
 
@@ -177,6 +177,7 @@ void LumiaIsland::Update()
 		ControlPlayerStatus();
 		UpdatePlayerStatus();
 		UpdateHPAndSPBar();
+		UpdatePlayerLevel();
 	}
 }
 
@@ -1041,7 +1042,7 @@ void LumiaIsland::CreateCharacterNicky()
 	nicky->GetTransform()->SetPosition(Vec3(15, 18, 5));
 	nicky->GetTransform()->SetScale(Vec3(2.f));
 	
-	selectedCharacterIdx = 1;
+	m_selectedCharacterIdx = 1;
 
 	m_player = nicky;
 
@@ -1055,7 +1056,7 @@ void LumiaIsland::CreateCharacterBianca()
 	bianca->GetTransform()->SetPosition(Vec3(15, 18, 5));
 	bianca->GetTransform()->SetScale(Vec3(2.f));
 
-	selectedCharacterIdx = 0;
+	m_selectedCharacterIdx = 0;
 
 	m_player = bianca;
 
@@ -1407,8 +1408,8 @@ void LumiaIsland::CreateCharMainPanel()
 
 
 	wstring characterTag = L"";
-	if (selectedCharacterIdx == 0) characterTag = L"Bianca";
-	else if (selectedCharacterIdx == 1) characterTag = L"Nicky";
+	if (m_selectedCharacterIdx == 0) characterTag = L"Bianca";
+	else if (m_selectedCharacterIdx == 1) characterTag = L"Nicky";
 
 	auto imageUI = m_charMainPanel->GetUIPanel()->AddImageUI(Vec2(0, 0), L"ImageUI");
 
@@ -1448,7 +1449,7 @@ void LumiaIsland::CreateCharMainPanel()
 	auto hpPanel = panel->AddPanel(Vec2(194, 70.f), Vec2(153, 10), nullptr, L"ChildHPPanel");
 	hpPanel->AddD2DText(
 		Vec2(153, 10) / 2.f,
-		L"Test",
+		L"",
 		10.f,
 		Vec4(1.f, 1.f, 1.f, 1.f),
 		1.f,
@@ -1461,14 +1462,13 @@ void LumiaIsland::CreateCharMainPanel()
 	hpPanelImageUI->AddImageLayer(0, Vec2(153, 10) / 2.f, Vec2(153, 10) * (1/RESOLUTION_CONSTANT), RESOURCES->Get<Material>(L"HPBar_UI")->Clone(), 1);
 
 	Vec3 hpPos = hpPanelImageUI->GetGameObject()->GetTransform()->GetPosition();
-	cout << "HPPos : " << hpPos.x << " , " << hpPos.y << endl;
 
 
 	//SP바 UI
 	auto spPanel = panel->AddPanel(Vec2(194, 85.f), Vec2(153, 10), nullptr, L"ChildSPPanel");
 	spPanel->AddD2DText(
 		Vec2(153, 10) / 2.f,
-		L"Test",
+		L"",
 		10.f,
 		Vec4(1.f, 1.f, 1.f, 1.f),
 		1.f,
@@ -1480,6 +1480,46 @@ void LumiaIsland::CreateCharMainPanel()
 	auto spPanelImageUI = spPanel->AddImageUI(Vec2(0.f), L"SPPanelImageUI");
 	spPanelImageUI->AddImageLayer(0, Vec2(153, 10) / 2.f, Vec2(153, 10) * (1 / RESOLUTION_CONSTANT), RESOURCES->Get<Material>(L"SPBar_UI")->Clone(), 1);
 
+	//경험치바 UI
+	auto expPanel = panel->AddPanel(Vec2(194, 100.f), Vec2(153, 10), nullptr, L"ChildEXPPanel");
+	expPanel->AddD2DText(
+		Vec2(153, 10) / 2.f,
+		L"",
+		10.f,
+		Vec4(1.f, 1.f, 1.f, 1.f),
+		1.f,
+		Vec4(0.f),
+		0.f,
+		L"EXPText",
+		TextAlignment::Center
+	);
+	auto expPanelImageUI = expPanel->AddImageUI(Vec2(0.f), L"EXPPanelImageUI");
+	expPanelImageUI->AddImageLayer(0, Vec2(153, 10) / 2.f, Vec2(153, 10) * (1 / RESOLUTION_CONSTANT), RESOURCES->Get<Material>(L"HPBar_UI")->Clone(), 1);
+
+
+	//캐릭터 이미지 패널 + 레벨
+	//캐릭터 초상화
+	shared_ptr<Material> cloneMaterial_charLobbyImage;
+	if (m_selectedCharacterIdx == 0) cloneMaterial_charLobbyImage = RESOURCES->Get<Material>(L"CharLobbyBianca");
+	else if(m_selectedCharacterIdx == 1) cloneMaterial_charLobbyImage = RESOURCES->Get<Material>(L"CharLobbyNicky");
+
+	auto charImagePanel = panel->AddPanel(Vec2(58.f, 58.f), Vec2(100, 100), cloneMaterial_charLobbyImage, L"CharImagePanel");
+	auto charLevelPanel = charImagePanel->AddPanel(Vec2(10.f, 80), Vec2(30.f, 30.f), nullptr, L"LevelPanel");
+	Vec3 pos = charLevelPanel->GetGameObject()->GetTransform()->GetPosition();
+	charLevelPanel->GetGameObject()->GetTransform()->SetPosition(Vec3(pos.x, pos.y, pos.z - 0.01));
+
+
+	charLevelPanel->AddD2DText(
+		Vec2(15.f, 15.f),
+		L"20",
+		12.f,
+		Vec4(1.f),
+		1.f,
+		Vec4(0.f),
+		0.f,
+		L"LevelText",
+		TextAlignment::Center
+	);
 
 	AddUIObject(m_charMainPanel, true);
 	RegisterUIParent(m_charMainPanel);
@@ -1789,6 +1829,8 @@ void LumiaIsland::UpdateHPAndSPBar()
 
 	auto hpPanel = m_charMainPanel->GetUIPanel()->GetChildUIPanel(L"ChildHPPanel");
 	auto spPanel = m_charMainPanel->GetUIPanel()->GetChildUIPanel(L"ChildSPPanel");
+	auto expPanel = m_charMainPanel->GetUIPanel()->GetChildUIPanel(L"ChildEXPPanel");
+
 
 	auto hpPanelText = hpPanel->GetD2DText(L"HPText");
 	wstring hpText = to_wstring(playerStatus.hp) + L"/" + to_wstring(playerStatus.max_HP);
@@ -1814,6 +1856,28 @@ void LumiaIsland::UpdateHPAndSPBar()
 	newPos = Vec2(153.f / 2.f - (153.f / 2.f) * (1 - ratio), 10.f / 2.f);
 	spImageUI->SetLayerSize(0, newSize);  // 레이어 0의 크기 변경
 	spImageUI->SetLayerPosition(0, newPos);
+
+
+	auto expPanelText = expPanel->GetD2DText(L"EXPText");
+	wstring expText = to_wstring(playerStatus.curExp) + L"/" + to_wstring(playerStatus.curExpLimit);
+	expPanelText->SetText(expText);
+
+	// 직접 size 수정 대신 SetLayerSize() 사용
+	auto expImageUI = expPanel->GetImageUI(L"EXPPanelImageUI");
+	ratio = ((float)playerStatus.curExp / (float)playerStatus.curExpLimit);
+	newSize = Vec2(153.f * ratio, 10.f);
+	newPos = Vec2(153.f / 2.f - (153.f / 2.f) * (1 - ratio), 10.f / 2.f);
+	expImageUI->SetLayerSize(0, newSize);  // 레이어 0의 크기 변경
+	expImageUI->SetLayerPosition(0, newPos);
+}
+
+void LumiaIsland::UpdatePlayerLevel()
+{
+	auto levelPanel = m_charMainPanel->GetUIPanel()->GetChildUIPanel(L"CharImagePanel")->GetChildUIPanel(L"LevelPanel");
+
+	PlayerStatus& playerStatus = m_player->GetStatus();
+
+	levelPanel->GetD2DText(L"LevelText")->SetText(to_wstring(playerStatus.level));
 }
 
 void LumiaIsland::ControlPlayerStatus()
@@ -1846,6 +1910,14 @@ void LumiaIsland::ControlPlayerStatus()
 	if (INPUT->GetButtonDown(KEY_TYPE::C))
 	{
 		m_player->SetStamina(playerStatus.stamina -= 10);
+	}
+	if (INPUT->GetButtonDown(KEY_TYPE::B))
+	{
+		m_player->SetLevel(playerStatus.level += 1);
+	}
+	if (INPUT->GetButtonDown(KEY_TYPE::D))
+	{
+		m_player->SetCurExp(playerStatus.curExp += 1);
 	}
 }
 

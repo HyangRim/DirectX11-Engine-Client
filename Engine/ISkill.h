@@ -24,7 +24,5 @@ public:
     // 스킬 정보
     virtual int GetSkillIndex() const = 0;
     virtual const wstring& GetSkillName() const = 0;
-
-
 };
 

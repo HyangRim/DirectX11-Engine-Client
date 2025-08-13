@@ -86,7 +86,7 @@ public:
     void Damaged(DamageInfo _damage);
     void Damaged(int _damage);
 
-    void SetLevel(int _value) { m_status.level = _value; }
+    void SetLevel(int _value) { m_status.level = _value; if (m_status.level > 20) m_status.level = 20; }
     void SetCurExpLimit(int _value) { m_status.curExpLimit = _value; }
     void SetCurExp(int _value) { m_status.curExp = _value; LevelUp(); }
     void SetMaxHP(int32 _value) { m_status.max_HP = _value; }

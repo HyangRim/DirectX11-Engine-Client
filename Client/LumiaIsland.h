@@ -26,7 +26,7 @@ public:
 	virtual void Render() override;
 
 public:
-	void SetSelectedCharacter(int _idx) { selectedCharacterIdx = _idx; }
+	void SetSelectedCharacter(int _idx) { m_selectedCharacterIdx = _idx; }
 
 
 
@@ -69,6 +69,7 @@ private:
 	void UpdateSkillCoolDown();
 	void UpdatePlayerStatus();
 	void UpdateHPAndSPBar();
+	void UpdatePlayerLevel();
 	//=====================UI관련 함수=====================//
 
 
@@ -116,7 +117,7 @@ private:
 	shared_ptr<Player> m_player;
 
 
-	int selectedCharacterIdx = 0; //0 : 비앙카 , 1 : 니키
+	int m_selectedCharacterIdx = 0; //0 : 비앙카 , 1 : 니키
 
 	float m_duration = 0.f;
 	shared_ptr<D2DText> m_test;

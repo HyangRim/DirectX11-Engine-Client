@@ -33,6 +33,9 @@ public:										\
 #define CURSCENE	SCENE->GetCurScene()
 #define CUR_SCENE	SCENE->GetCurScene()
 
+#define PSM			PlayerStateMachine
+#define ASM			AnimationStateMachine
+
 
 #define GET_TECH(_isShadow) _isShadow == true ? 1 : 0
 

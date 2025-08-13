@@ -13,7 +13,8 @@ BiancaWSkill::BiancaWSkill(shared_ptr<Player> _player)
 	m_skillCooldown = 10.f;
 	m_skillName = L"짧은 안식";
 	m_skillDesc = L"비앙카가 정신 집중을 하며 최대 3초 동안 관속으로 잠시 몸을 피합니다.";
-	m_skillLevel = 1;
+	m_curSkillLevel = 0;
+	m_maxSkillLevel = 5;
 	//Coffin 모델 생성. 
 	{
 		shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"BiancaCoffin", L"Bianca/BiancaCoffin_mesh");

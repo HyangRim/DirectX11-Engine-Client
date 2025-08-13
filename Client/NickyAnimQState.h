@@ -65,7 +65,7 @@ private:
     float m_playSpeed = 2.f;
 
     shared_ptr<ModelAnimator> m_cachedAnimator;
-
+  
 private:
     bool m_isFirstAnimationActive = false;
 public:

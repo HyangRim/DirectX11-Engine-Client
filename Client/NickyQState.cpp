@@ -49,7 +49,7 @@ void NickyQState::Exit()
 bool NickyQState::CanTransitionTo(PlayerStateType newState)
 {
     // 스킬이 완료되었을 때만 Wait 상태로 전환 가능
-    if ((m_isSkillComplete && newState == PlayerStateType::Wait))
+    if ((m_isSkillComplete && newState == PlayerStateType::Wait) || (m_isSkillComplete && newState == PlayerStateType::Run))
     {
         return true;
     }

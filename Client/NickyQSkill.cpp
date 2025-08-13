@@ -2,7 +2,7 @@
 #include "NickyQSkill.h"
 
 #include "Player.h"
-#include "NickyQSkillState.h"
+#include "NickyAnimQState.h"
 #include "NavMeshAgent.h"
 
 #include "ModelAnimator.h"
@@ -166,7 +166,7 @@ bool NickyQSkill::IsFirstAnimationPlaying()
 {
 	shared_ptr<AnimationState> curAnimState = m_playerObject->GetAnimationStateMachine()->GetCurrentState2(AnimationStateType::Skill_1);
 
-	return static_pointer_cast<NickyQSkillState>(curAnimState)->IsFirstAnimationActive();
+	return static_pointer_cast<NickyAnimQState>(curAnimState)->IsFirstAnimationActive();
 
 	//auto animator = m_playerObject->GetModelAnimator();
 	//if (!animator) return false;

@@ -66,3 +66,10 @@ XMVECTOR BaseSkill::ScreenToWorld(POINT _screenPos)
 	XMVECTOR worldPos = rayOrigin + rayDir * t;
 	return worldPos;
 }
+
+void BaseSkill::AddSkillLevel(int _value)
+{
+	m_curSkillLevel += _value;
+	if (m_curSkillLevel > m_maxSkillLevel)
+		m_curSkillLevel = m_maxSkillLevel;
+}

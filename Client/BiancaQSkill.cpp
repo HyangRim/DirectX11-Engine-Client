@@ -11,7 +11,8 @@ BiancaQSkill::BiancaQSkill(shared_ptr<Player> _player)
 		m_skillCooldown = 10.f;
 		m_skillName = L"선혈의 투창.";
 		m_skillDesc = L"비앙카가 지정한 지점에 피의 창을 던져 충돌한 대상에게 스킬 피해를 입힙니다. 피의 창은 도착 위치에서 원형으로 퍼져 충돌하는 적에게 스킬 피해를 입히고 사라집니다.";
-		m_skillLevel = 1;
+		m_curSkillLevel = 0;
+		m_maxSkillLevel = 5;
 		m_skillImage = RESOURCES->GetOrAddTexture(L"BiancaQ", L"..\\Resources\\Textures\\UI\\SkillIcon\\SkillIcon_1042200.png");
 	}
 	{

@@ -30,6 +30,7 @@ public:
 
     Ray CreateRayFromMouse(POINT mousePos, shared_ptr<Camera> camera);
 
+    void PrintCurState();
 
 private:
     void InitializeStates();

@@ -4,6 +4,7 @@
 
 NickyAnimEState::NickyAnimEState()
     : AnimationState(AnimationStateType::Skill_3)
+    
 {
 }
 

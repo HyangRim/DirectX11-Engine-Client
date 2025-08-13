@@ -32,6 +32,8 @@ public:
     virtual bool IsReleasing() const { return false; }     // 릴리즈 중인지 확인
     virtual bool IsMovable() const { return true; }        // 이동 가능한지 확인
 
+
+
     PlayerStateType GetType() const { return m_type; }
 
 protected:
@@ -70,6 +72,8 @@ public:
     void HandleSpecialStateTransitions();
 
     void SetPlayerInterface(shared_ptr<IPlayer> pIayerInterface) { m_playerInterface = pIayerInterface; }
+
+    void PrintCurState();
 
 private:
     shared_ptr<ModelAnimator> m_modelAnimator;

@@ -57,6 +57,7 @@ void PlayerStateMachine::Start()
 
 void PlayerStateMachine::Update()
 {
+    PrintCurState();
     ProcessInput();
    
     if (m_currentState)
@@ -340,6 +341,7 @@ void PlayerStateMachine::RegisterState(PlayerStateType type, shared_ptr<PlayerSt
 
 PlayerStateType PlayerStateMachine::GetCurrentState() const
 {
+    shared_ptr<PlayerState> m_tes = m_currentState;
     return m_currentState ? m_currentState->GetType() : PlayerStateType::Wait;
 }
 
@@ -351,12 +353,12 @@ void PlayerStateMachine::HandleSpecialStateTransitions()
     {
         if (m_currentState->CanTransitionTo(PlayerStateType::Wait))
         {
-            cout << "들어와라 \n";
+            cout << "들어와라Q \n";
             auto gameObject = GetGameObject();
             auto navMeshAgent = gameObject->GetFixedComponent<NavMeshAgent>(ComponentType::NavMeshAgent);
             navMeshAgent->Stop();
             ChangeState(PlayerStateType::Wait);
-            //m_animationStateMachine->ChangeState(AnimationStateType::Wait);
+            m_animationStateMachine->ChangeState(AnimationStateType::Wait);
         }
     }
     // W 스킬 완료 후 Wait 상태로 전환
@@ -365,7 +367,7 @@ void PlayerStateMachine::HandleSpecialStateTransitions()
         if (m_currentState->CanTransitionTo(PlayerStateType::Wait))
         {
             ChangeState(PlayerStateType::Wait);
-            //m_animationStateMachine->ChangeState(AnimationStateType::Wait);
+            m_animationStateMachine->ChangeState(AnimationStateType::Wait);
         }
     }
     // E 스킬 완료 후 Wait 상태로 전환
@@ -373,11 +375,12 @@ void PlayerStateMachine::HandleSpecialStateTransitions()
     {
         if (m_currentState->CanTransitionTo(PlayerStateType::Wait))
         {
+            cout << "들어와라E \n";
             auto gameObject = GetGameObject();
             auto navMeshAgent = gameObject->GetFixedComponent<NavMeshAgent>(ComponentType::NavMeshAgent);
             navMeshAgent->Stop();
             ChangeState(PlayerStateType::Wait);
-            //m_animationStateMachine->ChangeState(AnimationStateType::Wait);
+            m_animationStateMachine->ChangeState(AnimationStateType::Wait);
         }
     }
     // R 스킬 완료 후 Wait 상태로 전환
@@ -386,7 +389,35 @@ void PlayerStateMachine::HandleSpecialStateTransitions()
         if (m_currentState->CanTransitionTo(PlayerStateType::Wait))
         {
             ChangeState(PlayerStateType::Wait);
-            //m_animationStateMachine->ChangeState(AnimationStateType::Wait);
+            m_animationStateMachine->ChangeState(AnimationStateType::Wait);
+        }
+    }
+}
+
+void PlayerStateMachine::PrintCurState()
+{
+    if (INPUT->GetButtonDown(KEY_TYPE::A))
+    {
+        switch (m_currentState->GetType())
+        {
+        case PlayerStateType::Skill_1:
+            cout << "PlayerCurstate : Q 스킬 상태\n";
+            break;
+        case PlayerStateType::Skill_2:
+            cout << "PlayerCurstate : W 스킬 상태\n";
+            break;
+        case PlayerStateType::Skill_3:
+            cout << "PlayerCurstate : E 스킬 상태\n";
+            break;
+        case PlayerStateType::Skill_4:
+            cout << "PlayerCurstate : R 스킬 상태\n";
+            break;
+        case PlayerStateType::Run:
+            cout << "PlayerCurstate : Run 상태\n";
+            break;
+        case PlayerStateType::Wait:
+            cout << "PlayerCurstate : Wait 상태\n";
+            break;
         }
     }
 }

@@ -45,7 +45,7 @@ void AnimationStateMachine::Start()
 void AnimationStateMachine::Update()
 {
     Super::Update();
-
+    PrintCurState();
    // ProcessInput();
 
     if (m_currentState)
@@ -54,6 +54,34 @@ void AnimationStateMachine::Update()
 
         // 특수 상태 처리 추가
         HandleSpecialStateTransitions();
+    }
+}
+
+void AnimationStateMachine::PrintCurState()
+{
+    if (INPUT->GetButtonDown(KEY_TYPE::A))
+    {
+        switch (m_currentState->GetType())
+        {
+        case AnimationStateType::Skill_1:
+            cout << "AnimationCurState : Q 스킬 상태\n";
+            break;
+        case AnimationStateType::Skill_2:
+            cout << "AnimationCurState : W 스킬 상태\n";
+            break;
+        case AnimationStateType::Skill_3:
+            cout << "AnimationCurState : E 스킬 상태\n";
+            break;
+        case AnimationStateType::Skill_4:
+            cout << "AnimationCurState : R 스킬 상태\n";
+            break;
+        case AnimationStateType::Move:
+            cout << "AnimationCurState : Run 상태\n";
+            break;
+        case AnimationStateType::Wait:
+            cout << "AnimationCurState : Wait 상태\n";
+            break;
+        } 
     }
 }
 

@@ -198,6 +198,12 @@ void NickyAnimQState::UpdateReleasing()
             cout << "Nicky Q 스킬 애니메이션 완료!" << endl;
         }
     }
+    else
+    {
+        if (currentAnim == L"Skill_01_Attack" || currentAnim == L"Skill_01_Rush") return;
+        else
+            m_isComplete = true;
+    }
 }
 
 void NickyAnimQState::SetInitialMovementState(bool wasMoving)
@@ -363,7 +369,7 @@ void NickyAnimQState::Exit(shared_ptr<ModelAnimator> animator)
 bool NickyAnimQState::CanTransitionTo(AnimationStateType nextState)
 {
     // 스킬이 완료되었을 때만 Wait 상태로 전환 가능
-    return (m_isComplete && nextState == AnimationStateType::Wait);
+    return (m_isComplete && nextState == AnimationStateType::Wait) || nextState == AnimationStateType::Move;
 }
 
 bool NickyAnimQState::IsCharging() const

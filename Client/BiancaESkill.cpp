@@ -16,7 +16,8 @@ BiancaESkill::BiancaESkill(shared_ptr<Player> _player)
 		m_skillCooldown = 8.f;
 		m_skillName = L"순환.";
 		m_skillDesc = L"비앙카가 혈액의 고리를 충전하고 전방으로 돌진하여 스킬 피해를 입힙니다.";
-		m_skillLevel = 1;
+		m_curSkillLevel = 0;
+		m_maxSkillLevel = 5;
 		m_skillImage = RESOURCES->GetOrAddTexture(L"BiancaE", L"..\\Resources\\Textures\\UI\\SkillIcon\\SkillIcon_1042400.png");
 	}
 	//Coffin 모델 생성. 
