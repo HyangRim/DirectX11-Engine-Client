@@ -33,6 +33,8 @@ struct PlayerStatus {
     //0.25초마다 회복되는 양. 
     float healing = 7.2;
     float healing_Stamina = 11.4;
+
+    int availableSkillPoints = 0;
 };
 
 
@@ -113,6 +115,11 @@ public:
     void SetHealing(float _value) { m_status.healing = _value; }
     void SetHealingStamina(float _value) { m_status.healing_Stamina = _value; }
 
+
+public:
+    void AddSkillPoint(int points = 1) { m_status.availableSkillPoints += points; }
+    bool HasSkillPoints() const { return m_status.availableSkillPoints > 0; }
+    //bool TryLevelUpSkill(int skillIndex);
 
 private:
     void ApplyEquipStatus(const ItemStatus& _Equipstatus);

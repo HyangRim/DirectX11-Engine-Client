@@ -160,6 +160,8 @@ void Player::LevelUp()
 	if (m_status.level >= 20)
 		return;
 
+	AddSkillPoint(1);
+
 	m_status.curExp -= m_status.curExpLimit;
 	SetLevel(m_status.level + 1);
 	m_status.curExpLimit += m_growStatus.ExpLimit;
