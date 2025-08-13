@@ -423,6 +423,9 @@
     <ClCompile Include="ItemSlot.cpp">
       <Filter>Scripts\Item\ItemSlot</Filter>
     </ClCompile>
+    <ClCompile Include="Cursor.cpp">
+      <Filter>Scripts\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -710,6 +713,9 @@
     </ClInclude>
     <ClInclude Include="ItemSlot.h">
       <Filter>Scripts\Item\ItemSlot</Filter>
+    </ClInclude>
+    <ClInclude Include="Cursor.h">
+      <Filter>Scripts\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

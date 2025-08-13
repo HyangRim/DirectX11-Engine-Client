@@ -15,6 +15,7 @@
 #include "ScrollView.h"
 
 #include "Button.h"
+#include "Cursor.h"
 
 const vector<int> skinCount = {
 	5, 6, 3, 4, 5,
@@ -93,6 +94,7 @@ void CharacterSelectScene::Start()
 	CreateScrollableSkinList();
 
 	CreateTimeProgressBar();
+	CreateCursor();
 
 	Scene::Start();
 }
@@ -178,6 +180,18 @@ void CharacterSelectScene::CreateLight()
 	static_pointer_cast<Light>(light->GetFixedComponent(ComponentType::Light))->SetLightDesc(lightDesc);
 	//CURSCENE->Add(light);
 	Add(light);
+}
+
+void CharacterSelectScene::CreateCursor()
+{
+	auto cursorObj = make_shared<GameObject>();
+	cursorObj->SetName(L"MouseCursorObject");
+
+	m_cursor = make_shared<Cursor>();
+	cursorObj->AddComponent(m_cursor);
+	m_cursor->SetVisible(true);
+
+	CURSCENE->Add(cursorObj);
 }
 
 void CharacterSelectScene::LoadCharacterSelectSceneImages()
