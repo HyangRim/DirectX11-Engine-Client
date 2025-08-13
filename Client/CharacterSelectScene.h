@@ -3,6 +3,7 @@
 #include "Engine/Scene.h"
 
 class GameObject;
+class Cursor;
 
 class CharacterSelectScene :
     public Scene
@@ -19,6 +20,7 @@ private:
 	void CreateMainCamera();
 	void CreateUICamera();
 	void CreateLight();
+	void CreateCursor();
 
 	void CreateBackGround(); 
 	void CreateScrollableCharacterList();
@@ -47,6 +49,8 @@ private:
 private:
 	shared_ptr<Shader> m_defaultshader = nullptr;
 	shared_ptr<Shader> m_imageShader = nullptr;
+
+	shared_ptr<Cursor> m_cursor = nullptr;
 	
 	shared_ptr<GameObject> m_backPanel = nullptr;
 	shared_ptr<GameObject> m_characterList = nullptr;

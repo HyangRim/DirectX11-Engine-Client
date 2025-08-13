@@ -2,6 +2,8 @@
 
 #include "LumiaIsland.h"
 
+#include "Cursor.h"
+
 #include "BillboardDemo.h"
 #include "BiancaTest.h"
 #include "BiancaCamera.h"
@@ -164,6 +166,7 @@ void LumiaIsland::Start()
 	TIME->ResetDeltaTime();
 	SOUND->StopAll();
 	SOUND->PlayBGM(L"BSER_AreaBGM_CEMETERY.wav", 0.5f);
+	CreateCursor();
 	Super::Start();
 }
 
@@ -1085,6 +1088,18 @@ void LumiaIsland::CreateMonsterAlpha(Vec3 _pos)
 	alpha->GetTransform()->SetScale(Vec3(1.f));
 	CURSCENE->Add(alpha);
 }
+
+void LumiaIsland::CreateCursor()
+{
+	auto cursorObj = make_shared<GameObject>();
+	cursorObj->SetName(L"MouseCursorObject");
+
+	m_cursor = make_shared<Cursor>();
+	cursorObj->AddComponent(m_cursor);
+
+	CURSCENE->Add(cursorObj);
+}
+
 
 void LumiaIsland::LoadItemBoxImages()
 {

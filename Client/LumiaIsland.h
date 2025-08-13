@@ -7,6 +7,7 @@
 
 class GameObject;
 class Player;
+class Cursor;
 class BiancaCamera;
 
 class LumiaIsland :
@@ -46,6 +47,8 @@ private:
 	void CreateMonsterAlpha(Vec3 _pos);
 
 	//=====================UI관련 함수=====================//
+	void CreateCursor();
+
 	void LoadItemBoxImages();
 	void CreateItemBoxPanel();
 	void CheckPickedItemBox();
@@ -105,6 +108,7 @@ private:
 	shared_ptr<Shader> m_testShader = nullptr;
 
 	//=====================UI관련 변수=====================//
+	shared_ptr<Cursor> m_cursor = nullptr;
 	shared_ptr<GameObject> m_itemBox = nullptr;
 
 	shared_ptr<GameObject> m_charStatPanel = nullptr;

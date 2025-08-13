@@ -3,6 +3,7 @@
 #include "Engine/Scene.h"
 
 class GameObject;
+class Cursor;
 class CharacterSelectScene;
 
 class StartScene :
@@ -22,8 +23,7 @@ private:
 	void CreateLight();
 
 	void CreateLobbyBackGround();
-
-
+	void CreateCursor();
 
 	void LoadStartSceneImages();
 	void LoadBtnImages();
@@ -35,6 +35,8 @@ private:
 private:
 	shared_ptr<Shader> m_defaultshader = nullptr;
 	shared_ptr<Shader> m_imageShader = nullptr;
+	shared_ptr<Cursor> m_cursor = nullptr;
+	
 
 	shared_ptr<GameObject> m_backPanel = nullptr;
 	shared_ptr<GameObject> m_button = nullptr;

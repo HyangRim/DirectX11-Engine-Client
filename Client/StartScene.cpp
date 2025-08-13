@@ -3,10 +3,12 @@
 #include "FogOfWar.h"
 #include "CameraScript.h"
 #include "UIPanel.h"
+#include "Cursor.h"
 #include "Graphics.h"
 #include "Viewport.h"
 #include "Camera.h"
 #include "Material.h"
+#include "Cursor.h"
 #include "CharacterSelectScene.h"
 
 void StartScene::Start()
@@ -23,7 +25,7 @@ void StartScene::Start()
 
 	//CreateTestPanel();
 	CreateLobbyBackGround();
-
+	CreateCursor();
 
 
 	SOUND->PlayBGM(L"BGM_Eternal world.wav", 0.5f);
@@ -193,6 +195,18 @@ void StartScene::CreateLobbyBackGround()
 
 	AddUIObject(m_backPanel, true);  // CURSCENE 대신 AddUIObject 사용
 	RegisterUIParent(m_backPanel);   // CURSCENE 대신 RegisterUIParent 사용
+}
+
+void StartScene::CreateCursor()
+{
+	auto cursorObj = make_shared<GameObject>();
+	cursorObj->SetName(L"MouseCursorObject");
+
+	m_cursor = make_shared<Cursor>();
+	cursorObj->AddComponent(m_cursor);
+	m_cursor->SetVisible(true);
+
+	CURSCENE->Add(cursorObj);
 }
 
 
