@@ -20,7 +20,8 @@ cbuffer ScrollViewClippingBuffer : register(b10)
 cbuffer HealthBarBuffer
 {
     float HealthRatio;
-    float3 HealthPadding;
+    float ManaRatio;
+    float2 HealthPadding;
 };
 
 SamplerState ImageSampler
@@ -133,11 +134,21 @@ float4 PS_HealthBar(VertexOutput2 input) : SV_TARGET
     float4 color = DiffuseMap.Sample(ImageSampler, input.uv);
     if (input.uv.x > HealthRatio)
     {
-        discard;
+        return float4(0, 0, 0, 1);
     }
     return color;
 }
 
+
+float4 PS_ManaBar(VertexOutput2 input) : SV_TARGET
+{ 
+    float4 color = DiffuseMap.Sample(ImageSampler, input.uv);
+    if (input.uv.x > ManaRatio)
+    {
+        discard;
+    }
+    return color;
+}
 // Å×Å©´Ð
 technique11 T0
 {
@@ -198,6 +209,14 @@ technique11 T0
         SetBlendState(AlphaBlend, float4(0, 0, 0, 0), 0xFF);
         SetVertexShader(CompileShader(vs_5_0, VS()));
         SetPixelShader(CompileShader(ps_5_0, PS_HealthBar()));
+    }
+
+    pass P7
+    {
+        SetDepthStencilState(UIDepthStencil, 0);
+        SetBlendState(AlphaBlend, float4(0, 0, 0, 0), 0xFF);
+        SetVertexShader(CompileShader(vs_5_0, VS()));
+        SetPixelShader(CompileShader(ps_5_0, PS_ManaBar()));
     }
 }
 

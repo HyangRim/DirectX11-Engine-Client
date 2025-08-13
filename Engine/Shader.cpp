@@ -652,7 +652,7 @@ void Shader::PushScrollViewClippingData(const Vec4& clippingRect, bool enableCli
 	m_scrollViewClippingEffectBuffer->SetConstantBuffer(m_scrollViewClippingBuffer->GetComPtr().Get());
 }
 
-void Shader::PushHealthBarData(float _healthRatio)
+void Shader::PushHealthBarData(float _healthRatio, float _manaRatio)
 {
 	if (m_healthBarBuffer == nullptr) {
 		m_healthBarBuffer = make_shared<ConstantBuffer<HealthBarData>>();
@@ -661,7 +661,8 @@ void Shader::PushHealthBarData(float _healthRatio)
 	}
 
 	m_healthBarDesc.healthRatio = _healthRatio;
-	m_healthBarDesc.padding = Vec3(0, 0, 0);
+	m_healthBarDesc.manaRatio = _manaRatio;
+	m_healthBarDesc.padding = Vec2(0, 0);
 	m_healthBarBuffer->CopyData(m_healthBarDesc);
 	m_healthBarEffectBuffer->SetConstantBuffer(m_healthBarBuffer->GetComPtr().Get());
 }

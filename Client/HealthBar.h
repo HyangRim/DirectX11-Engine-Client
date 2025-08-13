@@ -19,7 +19,7 @@ public:
 
     void Create(Vec3 _offset = Vec3(0.f, 2.5f, 0.f));
 
-    void UpdateHealth(int _curHP, int _maxHP);
+    void UpdateHealthBar(int _curHP, int _maxHP, int _curMP, int _maxMP);
 
     void SetVisible(bool _visible);
 
@@ -30,12 +30,17 @@ private:
 private:
     shared_ptr<UIPanel> m_healthBarPanel;
     shared_ptr<ImageUI> m_healthBarUI;
+    shared_ptr<ImageUI> m_manaBarUI;
     
     Vec3 m_offset;
     Vec2 m_barSize;
+    Vec2 m_manaBarSize;
 
     int m_lastCurHP = -1;
     int m_lastMaxHP = -1;
+
+    int m_lastCurMP = -1;
+    int m_lastMaxMP = -1;
 
     Vec3 m_lastTargetPos;
 };

@@ -54,7 +54,7 @@ void Player::Update()
 	}
 
 	if (m_healthBar) {
-		m_healthBar->UpdateHealth(m_status.hp, m_status.max_HP);
+		m_healthBar->UpdateHealthBar(m_status.hp, m_status.max_HP, m_status.stamina, m_status.max_Stamina);
 	}
 }
 

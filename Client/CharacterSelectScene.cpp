@@ -685,7 +685,7 @@ void CharacterSelectScene::UpdateTimeProgressBar()
 
 	auto material = m_timeProgressUI->GetLayers()[0].material;
 	if (material) {
-		material->GetShader()->PushHealthBarData(timeRatio);
+		material->GetShader()->PushHealthBarData(timeRatio, 0);
 	}
 
 }
