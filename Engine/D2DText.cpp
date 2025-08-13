@@ -277,10 +277,7 @@ void D2DText::SetVisible(bool visible)
 {
     m_visible = visible;
 
-    auto go = GetGameObject();
-    if (go) {
-        go->SetActive(visible);
-    }
+    GetGameObject()->SetActive(visible);
 }
 
 // D2DText.cpp¿¡¼­

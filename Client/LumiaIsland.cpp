@@ -176,6 +176,8 @@ void LumiaIsland::Update()
 
 	Super::Update();
 
+	cout << "스킬 포인트 : " << m_player->GetStatus().availableSkillPoints << endl;
+
 	if (m_objectsCreated) {
 		CheckPickedItemBox();
 		UpdateSkillCoolDown();
@@ -184,6 +186,7 @@ void LumiaIsland::Update()
 		UpdateHPAndSPBar();
 		UpdatePlayerLevel();
 		UpdateTimeline();
+		UpdateSkillLevelPanel();
 	}
 }
 
@@ -1412,7 +1415,20 @@ void LumiaIsland::LoadCharMainImages()
 	charSpBarDesc.specular = Vec4(1.f);
 	RESOURCES->Add(tag, charSpBar);
 
+	//스킬 레벨업 이미지
+	shared_ptr<Material> btn_SkillLevelUp = make_shared<Material>();
+	SetupUIMaterial(btn_SkillLevelUp);
 
+	tag = L"Btn_LevelUp_MouseOver";
+	path = L"..\\Resources\\Textures\\UI\\status\\" + tag + L".png";
+	auto btn_SkillLevelUpTexture = RESOURCES->Load<Texture>(tag, path);
+
+	btn_SkillLevelUp->SetDiffuseMap(btn_SkillLevelUpTexture);
+	MaterialDesc& btn_SkillLevelUpDesc = btn_SkillLevelUp->GetMaterialDesc();
+	btn_SkillLevelUpDesc.ambient = Vec4(1.f);
+	btn_SkillLevelUpDesc.diffuse = Vec4(1.f);
+	btn_SkillLevelUpDesc.specular = Vec4(1.f);
+	RESOURCES->Add(tag, btn_SkillLevelUp);
 }
 
 void LumiaIsland::CreateCharMainPanel()
@@ -1528,7 +1544,6 @@ void LumiaIsland::CreateCharMainPanel()
 	Vec3 pos = charLevelPanel->GetGameObject()->GetTransform()->GetPosition();
 	charLevelPanel->GetGameObject()->GetTransform()->SetPosition(Vec3(pos.x, pos.y, pos.z - 0.01));
 
-
 	charLevelPanel->AddD2DText(
 		Vec2(15.f, 15.f),
 		L"20",
@@ -1541,8 +1556,28 @@ void LumiaIsland::CreateCharMainPanel()
 		TextAlignment::Center
 	);
 
+	
+	m_skillLevelUpPanel = make_shared<GameObject>();
+	m_skillLevelUpPanel->SetName(L"SkillLevelUpPanel");
+
+	auto skillPanel = make_shared<UIPanel>();
+	m_skillLevelUpPanel->AddComponent(skillPanel);
+
+	skillPanel->Create(Vec2(602.f, 768 - 57 - 85), Vec2(153, 40), Vec4(1.f, 1.f, 1.f, 0.7f), nullptr);
+	m_skillLevelUpPanel->SetLayerIndex(LAYER_UI);
+
+	shared_ptr<Material> cloneMaterial_skillLevelUpBtn = RESOURCES->Get<Material>(L"Btn_LevelUp_MouseOver");
+	for (int i = 0; i < 4; i++)
+	{
+		auto skillLevelUpBtn = skillPanel->AddButton(Vec2(10 + 43 * i, 25), Vec2(48, 52), cloneMaterial_skillLevelUpBtn->Clone(), L"SkillLevelUpBtn" + to_wstring(i));
+	}
+
+
 	AddUIObject(m_charMainPanel, true);
 	RegisterUIParent(m_charMainPanel);
+
+	AddUIObject(m_skillLevelUpPanel, true);
+	RegisterUIParent(m_skillLevelUpPanel);
 }
 
 void LumiaIsland::LoadCharInventoryImages()
@@ -1929,6 +1964,17 @@ void LumiaIsland::UpdateTimeline()
 	}
 }
 
+void LumiaIsland::UpdateSkillLevelPanel()
+{
+	PlayerStatus& playerStatus = m_player->GetStatus();
+
+	if (playerStatus.availableSkillPoints > 0)
+		m_skillLevelUpPanel->GetUIPanel()->SetVisible(true);
+	else
+		m_skillLevelUpPanel->GetUIPanel()->SetVisible(false);
+}
+
+
 void LumiaIsland::LoadTimeImage()
 {
 	shared_ptr<Shader> shader = make_shared<Shader>(L"ImageShader.fx");
@@ -2096,11 +2142,13 @@ void LumiaIsland::ControlPlayerStatus()
 	}
 	if (INPUT->GetButtonDown(KEY_TYPE::B))
 	{
-		m_player->SetLevel(playerStatus.level += 1);
+		playerStatus.availableSkillPoints += 1;
+		//m_charMainPanel->GetUIPanel()->SetVisible(true);
 	}
 	if (INPUT->GetButtonDown(KEY_TYPE::D))
 	{
-		m_player->SetCurExp(playerStatus.curExp += 1);
+		playerStatus.availableSkillPoints -= 1;
+		//m_charMainPanel->GetUIPanel()->SetVisible(false);
 	}
 }
 

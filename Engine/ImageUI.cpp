@@ -54,6 +54,17 @@ void ImageUI::ClearAllLayers()
     m_sortedLayers.clear();
 }
 
+void ImageUI::SetVisible(bool visible)
+{
+    m_visible = visible;
+    GetGameObject()->SetActive(visible);
+
+    for (auto layer : m_imageLayers)
+    {
+        layer.second.gameObject->SetActive(visible);
+    }
+}
+
 void ImageUI::OnDestroy()
 {
     m_isDestroying = true;

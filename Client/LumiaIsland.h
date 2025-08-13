@@ -73,7 +73,7 @@ private:
 	void UpdatePlayerStatus();
 	void UpdateHPAndSPBar();
 	void UpdateTimeline();
-
+	void UpdateSkillLevelPanel();
 	void UpdatePlayerLevel();
 	//=====================UI관련 함수=====================//
 
@@ -113,7 +113,10 @@ private:
 
 	shared_ptr<GameObject> m_charStatPanel = nullptr;
 	shared_ptr<GameObject> m_charEquipPanel = nullptr;
+
 	shared_ptr<GameObject> m_charMainPanel = nullptr;
+	shared_ptr<GameObject> m_skillLevelUpPanel = nullptr;
+
 	shared_ptr<GameObject> m_charInventoryPanel = nullptr;
 
 	shared_ptr<GameObject> m_timePanel = nullptr;

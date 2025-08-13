@@ -43,6 +43,7 @@ public:
 	ButtonState GetCurrentState() const { return m_currentState; }
 	void SetEnabled(bool enabled);
 	bool IsEnabled() const { return m_isEnabled; }
+	void SetVisible(bool visible);
 
 	//위치관련
 	void UpdatePosition(const Vec2& parentWorldPos);  // 부모 위치 기준으로 업데이트
@@ -78,6 +79,7 @@ private:
 	bool m_isEnabled = true;
 	bool m_isMouseInside = false;
 	bool m_wasMousePressed = false;
+	bool m_visible = true;
 
 
 	// Material 관리

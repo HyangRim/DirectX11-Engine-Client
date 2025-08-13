@@ -43,6 +43,8 @@ public:
 
     void SetZPos(float zPos) { m_zPos = zPos; }
 
+    void SetVisible(bool visible);
+
     // 모든 레이어 업데이트
     void UpdateLayers();
  
@@ -67,6 +69,7 @@ private:
     std::vector<int> m_sortedLayers;          // 정렬된 레이어 순서
     bool m_needsSort;
     bool m_isDestroying;  // 소멸 중인지 확인하는 플래그
+    bool m_visible = true;
 
     float m_zPos = 0.4f;
 private:

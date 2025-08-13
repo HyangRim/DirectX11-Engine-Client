@@ -209,12 +209,21 @@ void UIPanel::SetVisible(bool visible)
     if (go) {
         // 패널 자체의 가시성 설정
         // 실제 구현에서는 렌더링 활성화/비활성화 처리
+        go->SetActive(visible);
     }
 
     // 자식 요소들의 가시성도 함께 설정 (weak_ptr 사용)
     for (auto& weakChild : m_childElements) {
         if (auto child = weakChild.lock()) {
             // 자식 요소들의 가시성 설정
+            if (child->GetUIPanel())
+                child->GetUIPanel()->SetVisible(visible);
+            else if (child->GetButton())
+                child->GetButton()->SetVisible(visible);
+            else if (child->GetD2DText())
+                child->GetD2DText()->SetVisible(visible);
+            else if (child->GetImageUI())
+                child->GetImageUI()->SetVisible(visible);
         }
     }
 }

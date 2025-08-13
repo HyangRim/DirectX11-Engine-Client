@@ -40,6 +40,11 @@ bool Button::Picked(POINT _screenPos)
     return ::PtInRect(&m_rect, _screenPos);
 }
 
+void Button::SetVisible(bool visible)
+{
+    m_visible = visible;
+    GetGameObject()->SetActive(visible);
+}
 
 void Button::Create(Vec2 _localPos, Vec2 _size, shared_ptr<class Material> _material, uint32 _pass)
 {
