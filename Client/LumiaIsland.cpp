@@ -1411,6 +1411,8 @@ void LumiaIsland::LoadCharMainImages()
 	charSpBarDesc.diffuse = Vec4(1.f);
 	charSpBarDesc.specular = Vec4(1.f);
 	RESOURCES->Add(tag, charSpBar);
+
+
 }
 
 void LumiaIsland::CreateCharMainPanel()
