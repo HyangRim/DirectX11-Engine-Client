@@ -175,6 +175,9 @@
     <Filter Include="Scripts\Item\Ingredient">
       <UniqueIdentifier>{12393fba-34da-4d66-9876-0ddb9596edbb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Item\Recipe">
+      <UniqueIdentifier>{e4e36c2e-585a-479b-9ac5-7b06c5832a91}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -491,6 +494,12 @@
     </ClCompile>
     <ClCompile Include="ItemManager.cpp">
       <Filter>Scripts\Item\ItemManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Recipe.cpp">
+      <Filter>Scripts\Item\Recipe</Filter>
+    </ClCompile>
+    <ClCompile Include="RecipeManager.cpp">
+      <Filter>Scripts\Item\Recipe</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -815,6 +824,12 @@
     </ClInclude>
     <ClInclude Include="ItemManager.h">
       <Filter>Scripts\Item\ItemManager</Filter>
+    </ClInclude>
+    <ClInclude Include="RecipeManager.h">
+      <Filter>Scripts\Item\Recipe</Filter>
+    </ClInclude>
+    <ClInclude Include="Recipe.h">
+      <Filter>Scripts\Item\Recipe</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

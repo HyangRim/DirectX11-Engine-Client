@@ -104,6 +104,8 @@
     <ClInclude Include="PlayerOutlineEffect.h" />
     <ClInclude Include="PlayerStatusPanelUI.h" />
     <ClInclude Include="RawBufferDemo.h" />
+    <ClInclude Include="Recipe.h" />
+    <ClInclude Include="RecipeManager.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SceneDemo.h" />
     <ClInclude Include="SkillDecalIndicator.h" />
@@ -215,6 +217,8 @@
     <ClCompile Include="PlayerOutlineEffect.cpp" />
     <ClCompile Include="PlayerStatusPanelUI.cpp" />
     <ClCompile Include="RawBufferDemo.cpp" />
+    <ClCompile Include="Recipe.cpp" />
+    <ClCompile Include="RecipeManager.cpp" />
     <ClCompile Include="SceneDemo.cpp" />
     <ClCompile Include="SkillDecalIndicator.cpp" />
     <ClCompile Include="SkillLevelUpPanelUI.cpp" />
