@@ -6,12 +6,13 @@
 #include "EquipableItem.h"
 
 class Player;
+class Recipe;
 
-class InventoryManager : public Component
+class InventoryManager
 {
-    using Super = Component;
+    DECLARE_SINGLE(InventoryManager);
+
 public:
-    InventoryManager();
     virtual ~InventoryManager();
 
 
@@ -33,10 +34,22 @@ public:
     void OnInventorySlotClicked(int slotIndex);
     void OnEquipmentSlotClicked(int slotIndex);
 
-    virtual void Update() override;
+    void Update();
 
     void SetPlayer(shared_ptr<Player> player) { m_player = player; }
     shared_ptr<Player> GetPlayer() { return m_player; }
+
+    vector<shared_ptr<ItemSlot>>& GetInventorySlots() { return m_inventorySlots; }
+
+    // 조합 관련 함수들
+    bool TryCraftItems(int slot1Index, int slot2Index);
+    vector<shared_ptr<Recipe>> GetAvailableRecipes() const;
+    void OnSlotRightClicked(int slotIndex); // 우클릭으로 조합 모드 활성화
+
+public:
+    // 인벤토리 변화 알림 델리게이트
+    Delegate::Delegate<> OnInventoryChanged;
+    void NotifyInventoryChanged();
 
 private:
     // 내부 함수들
@@ -55,4 +68,8 @@ private:
     shared_ptr<ItemSlot> m_selectedSlot;
     int m_selectedSlotIndex = -1;
     SLOTTYPE m_selectedSlotType;
+
+    bool m_craftingMode = false;
+    shared_ptr<ItemSlot> m_craftingSlot1;
+    shared_ptr<ItemSlot> m_craftingSlot2;
 };

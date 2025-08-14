@@ -28,9 +28,12 @@ public:
     void CreatItems();
 
     shared_ptr<Item> GetItem(const wstring& name);
-   
+    shared_ptr<Item> GetItem(int32 ID);
+
+
 private:
-    unordered_map<wstring, shared_ptr<Item>> m_items;
+    unordered_map<wstring, shared_ptr<Item>> m_itemsContainerByName;
+    unordered_map<int32, shared_ptr<Item>> m_itemsContainerByID;
 
 
    

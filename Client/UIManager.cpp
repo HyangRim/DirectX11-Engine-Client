@@ -8,6 +8,7 @@
 #include "DayPanelUI.h"
 #include "EquipmentPanelUI.h"
 #include "InventoryPanelUI.h"
+#include "CraftListPanelUI.h"
 
 UIManager::UIManager(shared_ptr<Player> player, int selectedCharIdx)
 	:Super(ComponentType::Custom)
@@ -20,6 +21,7 @@ UIManager::UIManager(shared_ptr<Player> player, int selectedCharIdx)
 	m_day = make_shared<DayPanelUI>();
 	m_equipment = make_shared<EquipmentPanelUI>();
 	m_inventory = make_shared<InventoryPanelUI>();
+	m_craftList = make_shared<CraftListPanelUI>(player);
 }
 
 UIManager::~UIManager()
@@ -36,6 +38,7 @@ void UIManager::Update()
 	m_day->Update();
 	m_equipment->Update();
 	m_inventory->Update();
+	m_craftList->Update();
 }
 
 void UIManager::InitializeUI()
@@ -49,6 +52,8 @@ void UIManager::InitializeUI()
 	m_equipment->Initialize();
 	m_inventory->Initialize();
 	CreateInventoryManager();
+
+	m_craftList->Initialize();
 }
 
 void UIManager::UpdateUI()
@@ -58,14 +63,9 @@ void UIManager::UpdateUI()
 
 void UIManager::CreateInventoryManager()
 {
-	auto managerObj = make_shared<GameObject>();
-	managerObj->SetName(L"InventoryManager");
-
-	m_inventoryManager = make_shared<InventoryManager>();
-	managerObj->AddComponent(m_inventoryManager);
 
 	// ½½·Ôµé µî·Ï
-	m_inventoryManager->RegisterInventorySlots(m_inventory->GetInventroySlots());
-	m_inventoryManager->RegisterEquipmentSlots(m_equipment->GetEquipmentSlots());
-	m_inventoryManager->SetPlayer(m_player);
+	InventoryManager::GetInstance()->RegisterInventorySlots(m_inventory->GetInventroySlots());
+	InventoryManager::GetInstance()->RegisterEquipmentSlots(m_equipment->GetEquipmentSlots());
+	InventoryManager::GetInstance()->SetPlayer(m_player);
 }

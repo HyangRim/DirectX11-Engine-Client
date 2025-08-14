@@ -230,15 +230,94 @@ void Button::UpdateState()
     //{
     //    ChangeState(newState);
     //}
+    ////=======================================================================================//
+    //if (!m_isEnabled)
+    //    return;
+
+    //POINT mousePos = INPUT->GetMousePos();
+    //bool isMouseInside = Picked(mousePos);
+    //bool isMousePressed = INPUT->GetButton(KEY_TYPE::LBUTTON);
+    //bool isMouseDown = INPUT->GetButtonDown(KEY_TYPE::LBUTTON);
+    //bool isMouseUp = INPUT->GetButtonUp(KEY_TYPE::LBUTTON);
+
+    //ButtonState newState = m_currentState;
+
+    //// 마우스가 버튼 안에 있는 경우
+    //if (isMouseInside)
+    //{
+    //    // 마우스가 처음 들어온 경우
+    //    if (!m_isMouseInside)
+    //    {
+    //        OnHoverEnter();
+    //    }
+
+    //    // 버튼 안에서 마우스를 누르기 시작한 경우
+    //    if (isMouseDown)
+    //    {
+    //        m_clickStartedInside = true;
+    //    }
+
+    //    // 마우스가 눌려진 상태
+    //    if (isMousePressed)
+    //    {
+    //        newState = ButtonState::Pressed;
+    //    }
+    //    else
+    //    {
+    //        newState = ButtonState::Hovered;
+    //    }
+
+    //    // 클릭 판정: 버튼 안에서 누르기 시작했고, 버튼 안에서 떼는 경우
+    //    if (isMouseUp && m_clickStartedInside)
+    //    {
+    //        OnClick();
+    //        m_clickStartedInside = false; // 클릭 완료 후 리셋
+    //    }
+    //}
+    //else
+    //{
+    //    // 마우스가 버튼 밖으로 나간 경우
+    //    if (m_isMouseInside)
+    //    {
+    //        OnHoverExit();
+    //    }
+
+    //    newState = ButtonState::Normal;
+
+    //    // 버튼 밖에서 마우스를 떼면 클릭 시작 플래그 리셋
+    //    if (isMouseUp)
+    //    {
+    //        m_clickStartedInside = false;
+    //    }
+    //}
+
+    //// 상태 업데이트
+    //m_isMouseInside = isMouseInside;
+    //m_wasMousePressed = isMousePressed;
+
+    //// 상태 변경
+    //if (newState != m_currentState)
+    //{
+    //    ChangeState(newState);
+    //}
+
+    ////==============================================================================================//
 
     if (!m_isEnabled)
-        return;
+    return;
 
     POINT mousePos = INPUT->GetMousePos();
     bool isMouseInside = Picked(mousePos);
+
+    // 좌클릭 관련
     bool isMousePressed = INPUT->GetButton(KEY_TYPE::LBUTTON);
     bool isMouseDown = INPUT->GetButtonDown(KEY_TYPE::LBUTTON);
     bool isMouseUp = INPUT->GetButtonUp(KEY_TYPE::LBUTTON);
+
+    // 우클릭 관련 추가
+    bool isRightMousePressed = INPUT->GetButton(KEY_TYPE::RBUTTON);
+    bool isRightMouseDown = INPUT->GetButtonDown(KEY_TYPE::RBUTTON);
+    bool isRightMouseUp = INPUT->GetButtonUp(KEY_TYPE::RBUTTON);
 
     ButtonState newState = m_currentState;
 
@@ -251,14 +330,20 @@ void Button::UpdateState()
             OnHoverEnter();
         }
 
-        // 버튼 안에서 마우스를 누르기 시작한 경우
+        // 좌클릭 - 버튼 안에서 마우스를 누르기 시작한 경우
         if (isMouseDown)
         {
             m_clickStartedInside = true;
         }
 
-        // 마우스가 눌려진 상태
-        if (isMousePressed)
+        // 우클릭 - 버튼 안에서 우마우스를 누르기 시작한 경우
+        if (isRightMouseDown)
+        {
+            m_rightClickStartedInside = true;
+        }
+
+        // 마우스가 눌려진 상태 (좌클릭 또는 우클릭)
+        if (isMousePressed || isRightMousePressed)
         {
             newState = ButtonState::Pressed;
         }
@@ -267,11 +352,18 @@ void Button::UpdateState()
             newState = ButtonState::Hovered;
         }
 
-        // 클릭 판정: 버튼 안에서 누르기 시작했고, 버튼 안에서 떼는 경우
+        // 좌클릭 판정: 버튼 안에서 누르기 시작했고, 버튼 안에서 떼는 경우
         if (isMouseUp && m_clickStartedInside)
         {
             OnClick();
-            m_clickStartedInside = false; // 클릭 완료 후 리셋
+            m_clickStartedInside = false;
+        }
+
+        // 우클릭 판정: 버튼 안에서 누르기 시작했고, 버튼 안에서 떼는 경우
+        if (isRightMouseUp && m_rightClickStartedInside)
+        {
+            OnRightClick();
+            m_rightClickStartedInside = false;
         }
     }
     else
@@ -281,19 +373,23 @@ void Button::UpdateState()
         {
             OnHoverExit();
         }
-
         newState = ButtonState::Normal;
 
-        // 버튼 밖에서 마우스를 떼면 클릭 시작 플래그 리셋
+        // 버튼 밖에서 마우스를 떼면 클릭 시작 플래그들 리셋
         if (isMouseUp)
         {
             m_clickStartedInside = false;
+        }
+        if (isRightMouseUp)
+        {
+            m_rightClickStartedInside = false;
         }
     }
 
     // 상태 업데이트
     m_isMouseInside = isMouseInside;
     m_wasMousePressed = isMousePressed;
+    m_wasRightMousePressed = isRightMousePressed;  // 우마우스 상태 업데이트
 
     // 상태 변경
     if (newState != m_currentState)
@@ -309,6 +405,17 @@ void Button::ChangeState(ButtonState newState)
 
     ApplyCurrentMaterial();
     OnStateChanged(newState);
+}
+
+// 우클릭 이벤트 함수들 추가
+void Button::AddOnRightClickedEvent(std::function<void(void)> _func)
+{
+    m_onRightClicked = _func;
+}
+
+void Button::InvokeOnRightClicked()
+{
+    OnRightClick();
 }
 
 void Button::ApplyCurrentMaterial()

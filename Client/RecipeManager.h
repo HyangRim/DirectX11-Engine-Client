@@ -1,6 +1,8 @@
+// RecipeManager.h
 #pragma once
-
 #include "Recipe.h"
+
+class ItemSlot;
 
 class RecipeManager
 {
@@ -9,25 +11,35 @@ class RecipeManager
 
 public:
     void Initialize();
-    void LoadRecipesFromFile(const wstring& filePath);
 
     // 레시피 등록
     void RegisterRecipe(shared_ptr<Recipe> recipe);
 
-    // 특정 아이템을 만들 수 있는 레시피 찾기
+    // ID로 레시피 찾기
     shared_ptr<Recipe> FindRecipeByResult(int32 resultItemID) const;
 
-    // 현재 가진 아이템으로 만들 수 있는 모든 레시피 찾기
-    vector<shared_ptr<Recipe>> GetCraftableRecipes(const map<int32, int32>& playerItems) const;
+    // 두 재료로 만들 수 있는 레시피 찾기
+    shared_ptr<Recipe> FindRecipeByIngredients(int32 ingredient1ID, int32 ingredient2ID) const;
 
-    // 특정 재료로 만들 수 있는 레시피들 찾기
+    // 두 슬롯으로 조합 가능한 레시피 찾기
+    shared_ptr<Recipe> FindRecipeBySlots(shared_ptr<ItemSlot> slot1, shared_ptr<ItemSlot> slot2) const;
+
+    // 인벤토리 슬롯들에서 조합 가능한 레시피들 찾기
+    vector<shared_ptr<Recipe>> GetCraftableRecipesFromSlots(const vector<shared_ptr<ItemSlot>>& inventorySlots) const;
+
+    // 특정 재료가 포함된 레시피들 찾기
     vector<shared_ptr<Recipe>> GetRecipesByIngredient(int32 ingredientID) const;
 
-private:
+    // 인벤토리 매니저와 연동한 조합 실행
+    bool TryCraftWithInventoryManager(shared_ptr<ItemSlot> slot1, shared_ptr<ItemSlot> slot2);
 
+    // 모든 레시피 가져오기
+    const map<int32, shared_ptr<Recipe>>& GetAllRecipes() const { return m_recipes; }
+
+private:
     map<int32, shared_ptr<Recipe>> m_recipes; // resultItemID -> Recipe
     multimap<int32, shared_ptr<Recipe>> m_recipesByIngredient; // ingredientID -> Recipe
 
     void SetupDefaultRecipes();
+    void AddRecipeToIngredientMap(shared_ptr<Recipe> recipe);
 };
-

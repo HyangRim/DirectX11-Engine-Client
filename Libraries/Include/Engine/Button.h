@@ -26,8 +26,14 @@ public:
 	void AddOnClickedEvent(std::function<void(void)> _func);
 	void InvokeOnClicked();
 
+	// 우클릭 이벤트 추가
+	void AddOnRightClickedEvent(std::function<void(void)> _func);
+	void InvokeOnRightClicked();
+
 	// 새로운 이벤트들 (Delegate 사용)
 	Delegate::Delegate<> OnClick;
+	Delegate::Delegate<> OnRightClick;
+
 	Delegate::Delegate<> OnHoverEnter;
 	Delegate::Delegate<> OnHoverExit;
 	Delegate::Delegate<ButtonState> OnStateChanged;
@@ -63,6 +69,7 @@ private:
 private:
 
 	std::function<void(void)> m_onClicked;
+	std::function<void(void)> m_onRightClicked;  // 우클릭 콜백 추가
 	RECT m_rect;
 	uint32 m_pass;
 	float m_zPos = 0.6f;
@@ -72,6 +79,7 @@ private:
 	Vec2 m_materialSize;
 
 	bool m_clickStartedInside = false;
+	bool m_rightClickStartedInside = false;  // 우클릭 시작 플래그 추가
 
 	// 상태 관리
 	ButtonState m_currentState = ButtonState::Normal;
@@ -79,6 +87,7 @@ private:
 	bool m_isEnabled = true;
 	bool m_isMouseInside = false;
 	bool m_wasMousePressed = false;
+	bool m_wasRightMousePressed = false;  // 우마우스 상태 추가
 	bool m_visible = true;
 
 

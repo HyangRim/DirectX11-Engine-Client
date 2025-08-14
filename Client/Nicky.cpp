@@ -130,6 +130,10 @@ void Nicky::InitNickyAnimation()
 	m_model->ReadAnimation(L"Skill_04_Ready", L"Nicky/Nicky_Glove_Skill_04_Ready");
 	m_model->ReadAnimation(L"Skill_04_Start", L"Nicky/Nicky_Glove_Skill_04_Start");
 
+	//力累 葛记
+	m_model->ReadAnimation(L"Craft", L"Nicky/Nicky_Craft");
+
+
 	AddComponent(make_shared<ModelAnimator>(m_defaultShader));
 	{
 		GetModelAnimator()->SetModel(m_model);
@@ -171,6 +175,10 @@ void Nicky::InitNickyAnimation()
 	skill4Durations.push_back(3.f);
 	skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_04_Attack"));
 	animator->CreateSequence(L"Skill_4_Sequence", skill4Anims, skill4Durations, false);
+
+	// 力累葛记
+	vector<wstring> craftMotion = { L"Craft" };
+	animator->CreateSequence(L"Craft_Sequence", craftMotion, false);
 }
 
 void Nicky::InitNickyPSM()

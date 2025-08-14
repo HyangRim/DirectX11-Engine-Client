@@ -10,6 +10,7 @@
 enum class SLOTTYPE
 {
     EQUIPMENT,
+    INGREDIENTS,
     INVENTORY
 };
 
