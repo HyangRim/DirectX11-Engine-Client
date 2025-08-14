@@ -1226,7 +1226,7 @@ void LumiaIsland::OnItemBoxSlotClicked(int _slotIndex, SLOTTYPE _slotType)
 				auto item = itemBoxComponent->DeleteItem(_slotIndex);
 				//기존 ItemBox에서 Item삭제. 
 
-				InventoryManager::Get
+				//InventoryManager::GetInstance()->Get
 				//플레이어 인벤토리에 아이템 추가.
 
 				//UI 슬롯 업데이트. 
