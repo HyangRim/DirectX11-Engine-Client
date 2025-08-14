@@ -27,9 +27,15 @@ bool Recipe::CanCraftFromSlots(const vector<shared_ptr<ItemSlot>>& inventorySlot
 
     // 인벤토리에서 아이템 개수 확인
     map<int32, int32> availableItems;
+    int32 emptySlotCount = 0;
+
     for (const auto& slot : inventorySlots)
     {
-        if (!slot->IsEmpty())
+        if (slot->IsEmpty())
+        {
+            emptySlotCount++;
+        }
+        else
         {
             auto item = slot->GetItem();
             if (item)
@@ -40,16 +46,22 @@ bool Recipe::CanCraftFromSlots(const vector<shared_ptr<ItemSlot>>& inventorySlot
     }
 
     // 필요한 재료가 충분한지 확인
+    int32 totalRequiredSlots = 0;
     for (const auto& required : requiredItems)
     {
         if (availableItems[required.first] < required.second)
         {
             return false;
         }
+        totalRequiredSlots += required.second;
     }
 
-    // 빈 슬롯이 있는지 확인 (결과 아이템을 넣을 공간)
-    return FindEmptySlot(inventorySlots) != nullptr;
+    // 조합 후 공간 계산: 사용되는 재료 슬롯 수 - 생성되는 결과 아이템 수 = 늘어나는 빈 공간
+    // 2개 재료 -> 1개 결과물이므로 빈 공간이 1개 늘어남
+    // 따라서 현재 빈 공간이 0개여도 조합 가능
+    int32 slotsAfterCraft = emptySlotCount + (totalRequiredSlots - 1); // 2 - 1 = 1개 공간 증가
+
+    return slotsAfterCraft >= 0; // 음수가 아니면 조합 가능
 }
 
 bool Recipe::ExecuteCraftFromSlots(vector<shared_ptr<ItemSlot>>& inventorySlots) const
@@ -57,13 +69,16 @@ bool Recipe::ExecuteCraftFromSlots(vector<shared_ptr<ItemSlot>>& inventorySlots)
     if (!CanCraftFromSlots(inventorySlots))
         return false;
 
-    // 재료 소모
+    // 재료 소모할 슬롯들을 먼저 찾기
+    vector<shared_ptr<ItemSlot>> slotsToConsume;
     map<int32, int32> toConsume;
+
     for (const auto& ingredient : m_ingredients)
     {
         toConsume[ingredient.itemID] = ingredient.quantity;
     }
 
+    // 사용할 재료 슬롯들 찾기
     for (auto& slot : inventorySlots)
     {
         if (!slot->IsEmpty())
@@ -71,36 +86,44 @@ bool Recipe::ExecuteCraftFromSlots(vector<shared_ptr<ItemSlot>>& inventorySlots)
             auto item = slot->GetItem();
             if (item && toConsume[item->GetItemID()] > 0)
             {
+                slotsToConsume.push_back(slot);
                 toConsume[item->GetItemID()]--;
-                slot->ClearItem();
 
-                // 모든 재료를 소모했는지 확인
-                bool allConsumed = true;
+                // 모든 재료를 찾았는지 확인
+                bool allFound = true;
                 for (const auto& consume : toConsume)
                 {
                     if (consume.second > 0)
                     {
-                        allConsumed = false;
+                        allFound = false;
                         break;
                     }
                 }
-                if (allConsumed) break;
+                if (allFound) break;
             }
         }
     }
+
+    // 재료가 충분하지 않으면 실패
+    if (slotsToConsume.size() < 2)
+        return false;
 
     // 결과 아이템 생성
     auto resultItem = ItemManager::GetInstance()->GetItem(m_resultItemID);
     if (!resultItem)
         return false;
 
-    auto emptySlot = FindEmptySlot(inventorySlots);
-    if (emptySlot)
+    // 첫 번째 재료 슬롯에 결과 아이템 배치
+    slotsToConsume[0]->SetItem(resultItem);
+
+    // 나머지 재료 슬롯들 비우기
+    for (int i = 1; i < slotsToConsume.size(); i++)
     {
-        emptySlot->SetItem(resultItem);
-        // 인벤토리 변화 알림 (InventoryManager를 통해)
-        InventoryManager::GetInstance()->NotifyInventoryChanged();
+        slotsToConsume[i]->ClearItem();
     }
+
+    // 인벤토리 변화 알림 (InventoryManager를 통해)
+    InventoryManager::GetInstance()->NotifyInventoryChanged();
 
     return true;
 }
