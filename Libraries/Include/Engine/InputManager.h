@@ -73,8 +73,7 @@ public:
 	bool GetButtonUp(KEY_TYPE key) { return GetState(key) == KEY_STATE::UP; }
 	
 	const POINT& GetMousePos() { return m_mousePos; }
-
-
+	
 	// 마우스 휠 지원 추가
 	int GetMouseWheelDelta() const { return m_wheelDelta; }
 	bool HasWheelInput() const { return m_wheelDelta != 0; }

@@ -53,6 +53,9 @@ private:
 	void LoadItemBoxImages();
 	void CreateItemBoxPanel();
 	void CheckPickedItemBox();
+
+	void OnItemBoxSlotClicked(int _slotIndex, SLOTTYPE _slotType);
+	void UpdateItemBoxSlots(shared_ptr<GameObject> _itemBoxObject);
 	//=====================UI관련 함수=====================//
 
 
@@ -85,9 +88,12 @@ private:
 
 	//=====================UI관련 변수=====================//
 	shared_ptr<Cursor> m_cursor = nullptr;
-	shared_ptr<GameObject> m_itemBox = nullptr;
 
-	
+	shared_ptr<GameObject> m_itemBox = nullptr;
+	shared_ptr<GameObject> m_currentItemBox = nullptr;
+	vector<shared_ptr<ItemSlot>> m_itemBoxSlots;
+
+
 	//=====================UI관련 변수=====================//
 
 	// 테스트용
@@ -113,9 +119,7 @@ private:
 	atomic<bool> m_objectsCreated{ false };
 
 private:
-
 	shared_ptr<UIManager> m_uiManager;
-
 };
 
 

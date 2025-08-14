@@ -165,7 +165,6 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\Client\ItemBox.h" />
     <ClInclude Include="AABBBoxCollider.h" />
     <ClInclude Include="AnimationState.h" />
     <ClInclude Include="AnimationStateMachine.h" />
@@ -262,7 +261,6 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     <ClInclude Include="Viewport.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Client\ItemBox.cpp" />
     <ClCompile Include="AABBBoxCollider.cpp" />
     <ClCompile Include="AnimationState.cpp" />
     <ClCompile Include="AnimationStateMachine.cpp" />

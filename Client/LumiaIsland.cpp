@@ -32,6 +32,10 @@
 #include "GameHUDPanelUI.h"
 
 #include "ItemManager.h"
+#include "ItemBox.h"
+#include "InventoryManager.h"
+
+#include "Recipe.h"
 #include "RecipeManager.h"
 
 const vector<wstring> charStatIconNames = {
@@ -922,6 +926,7 @@ void LumiaIsland::CreateCemeteryItemBox()
 		obj->GetTransform()->SetLocalPosition(Vec3(96.9, 19.5, 59));
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
 		obj->AddComponent(make_shared<AABBBoxCollider>());
+		obj->AddComponent(make_shared<ItemBox>());
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
 		obj->SetType(OBJECTTYPE::ITEMBOX);
 
@@ -943,6 +948,7 @@ void LumiaIsland::CreateCemeteryItemBox()
 		obj->GetTransform()->SetLocalPosition(Vec3(96.9, 20, 65.94));
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 180.f, 0.f));
 		obj->AddComponent(make_shared<AABBBoxCollider>());
+		obj->AddComponent(make_shared<ItemBox>());
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
 		obj->SetType(OBJECTTYPE::ITEMBOX);
 
@@ -964,6 +970,7 @@ void LumiaIsland::CreateCemeteryItemBox()
 		obj->GetTransform()->SetLocalPosition(Vec3(111.6, 19.5, 59));
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
 		obj->AddComponent(make_shared<AABBBoxCollider>());
+		obj->AddComponent(make_shared<ItemBox>());
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
 		obj->SetType(OBJECTTYPE::ITEMBOX);
 
@@ -985,6 +992,7 @@ void LumiaIsland::CreateCemeteryItemBox()
 		obj->GetTransform()->SetLocalPosition(Vec3(111.6, 20, 65.94));
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 180.f, 0.f));
 		obj->AddComponent(make_shared<AABBBoxCollider>());
+		obj->AddComponent(make_shared<ItemBox>());
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
 		obj->SetType(OBJECTTYPE::ITEMBOX);
 
@@ -1144,8 +1152,37 @@ void LumiaIsland::CreateItemBoxPanel()
 	panel->Create(Vec2(200.f, 200.f), Vec2(221, 117), Vec4(0.f), itemPanelBackGround);
 	m_itemBox->SetLayerIndex(LAYER_UI);
 
-	m_itemBox->GetMeshRenderer()->SetActive(false);
+	m_itemBoxSlots.clear();
 
+	const Vec2 SLOT_SIZE(30.f, 30.f);
+	const Vec2 SLOT_SPACING(35.f, 35.f);
+
+	Vec2 startPos = Vec2(200.f, 200.f) - Vec2(2 * SLOT_SPACING.x * 0.5f, 4 * SLOT_SPACING.y * 0.5f);
+	startPos += Vec2(SLOT_SPACING.x * 0.5f, SLOT_SPACING.y * 0.5f);
+
+	for (int row = 0; row < 2; ++row) {
+		for (int col = 0; col < 4; ++col) {
+			int slotIndex = row * 2 + col;
+
+			auto slotObj = make_shared<GameObject>();
+			slotObj->SetName(L"ItemBoxSlot_" + to_wstring(slotIndex));
+
+			auto itemSlot = make_shared<ItemSlot>(nullptr, false);
+			itemSlot->SetSlotType(SLOTTYPE::INVENTORY);
+			slotObj->AddComponent(itemSlot);
+
+			Vec2 slotPos = startPos + Vec2(col * SLOT_SPACING.x, row * SLOT_SPACING.y);
+			itemSlot->CreateSlot(slotPos, SLOT_SIZE, slotIndex);
+
+			itemSlot->OnSlotClicked += [this](int _slotIndex, SLOTTYPE _slotType) {
+				OnItemBoxSlotClicked(_slotIndex, _slotType);
+			};
+
+			m_itemBoxSlots.push_back(itemSlot);
+			slotObj->GetTransform()->SetParent(m_itemBox->GetTransform());
+		}
+	}
+	m_itemBox->GetMeshRenderer()->SetActive(false);
 	AddUIObject(m_itemBox, true);
 	RegisterUIParent(m_itemBox);
 }
@@ -1154,12 +1191,18 @@ void LumiaIsland::CheckPickedItemBox()
 {
 	if (m_pickedObject != nullptr)
 	{
-		if (m_pickedObject->GetType() == OBJECTTYPE::ITEMBOX)
+		if (m_pickedObject->GetType() == OBJECTTYPE::ITEMBOX && INPUT->GetButtonDown(KEY_TYPE::LBUTTON))
 		{
+			SOUND->PlaySound(L"SFX/OpenSound_Tomb_01.wav", 16, 0.5f);
+			//아이템 박스(m_pickedObject) 데이터 불러옴 -> m_ItemBox에 표시. 
+			//그거 누르면, 사용자 인벤토리에 넣기. 
+			m_currentItemBox = m_pickedObject;
+
+			UpdateItemBoxSlots(m_currentItemBox);
 			m_itemBox->GetMeshRenderer()->SetActive(true);
 			//cout << "아이템박스 클릭됨\n";
 		}
-		else
+		else if(m_pickedObject->GetType() != OBJECTTYPE::ITEMBOX && INPUT->GetButtonDown(KEY_TYPE::LBUTTON))
 		{
 			m_itemBox->GetMeshRenderer()->SetActive(false);
 			//cout << "아이템박스 클릭해제됨\n";
@@ -1170,6 +1213,39 @@ void LumiaIsland::CheckPickedItemBox()
 		m_itemBox->GetMeshRenderer()->SetActive(false);
 		//cout << "선택된 객체가 없음\n";
 	}
+}
+
+void LumiaIsland::OnItemBoxSlotClicked(int _slotIndex, SLOTTYPE _slotType)
+{
+	if (m_currentItemBox && _slotIndex >= 0 && _slotIndex < m_itemBoxSlots.size()) {
+		auto slot = m_itemBoxSlots[_slotIndex];
+		if (slot->GetItem() != nullptr) {
+			auto itemBoxComponent = m_currentItemBox->GetComponent<ItemBox>();
+			if (itemBoxComponent) {
+
+				auto item = itemBoxComponent->DeleteItem(_slotIndex);
+				//기존 ItemBox에서 Item삭제. 
+
+				InventoryManager::Get
+				//플레이어 인벤토리에 아이템 추가.
+
+				//UI 슬롯 업데이트. 
+			}
+		}
+	}
+}
+
+void LumiaIsland::UpdateItemBoxSlots(shared_ptr<GameObject> _itemBoxObject)
+{
+	if (!_itemBoxObject)
+		return;
+
+	auto itemBoxComponent = _itemBoxObject->GetComponent<ItemBox>();
+	if (!itemBoxComponent)
+		return;
+
+	//모든 슬롯을 _itemBoxObject의 것으로 업데이트. 
+
 }
 
 
@@ -1187,7 +1263,6 @@ DWORD __stdcall LumiaIsland::BackgroundLoadingThread(LPVOID _param)
 	try {
 		EnterCriticalSection(&scene->m_loadingCS);
 		ItemManager::GetInstance()->Initialize();
-		RecipeManager::GetInstance()->Initialize();
 		scene->m_uiManager->InitializeUI();
 
 		scene->LoadItemBoxImages();

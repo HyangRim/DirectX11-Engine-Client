@@ -265,9 +265,6 @@
     <ClCompile Include="MonsterStateMachine.cpp">
       <Filter>04. Component\MonsterState</Filter>
     </ClCompile>
-    <ClCompile Include="..\Client\ItemBox.cpp">
-      <Filter>03. GameObject\Item</Filter>
-    </ClCompile>
     <ClCompile Include="Item.cpp">
       <Filter>03. GameObject\Item</Filter>
     </ClCompile>
@@ -551,9 +548,6 @@
     </ClInclude>
     <ClInclude Include="MonsterStateMachine.h">
       <Filter>04. Component\MonsterState</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Client\ItemBox.h">
-      <Filter>03. GameObject\Item</Filter>
     </ClInclude>
     <ClInclude Include="Item.h">
       <Filter>03. GameObject\Item</Filter>

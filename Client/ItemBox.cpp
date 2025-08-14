@@ -1,10 +1,11 @@
 #include "pch.h"
+#include "ItemManager.h"
 #include "ItemBox.h"
+#include "ItemSlot.h"
 #include "Item.h"
 
 ItemBox::ItemBox()
 {
-	SetType(OBJECTTYPE::ITEMBOX);
 }
 
 ItemBox::~ItemBox()
@@ -13,8 +14,6 @@ ItemBox::~ItemBox()
 
 void ItemBox::Start()
 {
-	//m_collider = make_shared<AABBBoxCollider>();
-
 	Super::Start();
 }
 
@@ -27,6 +26,7 @@ void ItemBox::LateUpdate()
 {
 	Super::LateUpdate();
 }
+
 
 shared_ptr<Item> ItemBox::InsertItem(int _index, shared_ptr<Item> _item)
 {

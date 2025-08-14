@@ -23,6 +23,10 @@ public:
 
     void CreateInventoryManager();
 
+    shared_ptr<InventoryManager> GetInventoryManager() {
+        return m_inventoryManager;
+    }
+
 private:
     shared_ptr<Player> m_player;
 

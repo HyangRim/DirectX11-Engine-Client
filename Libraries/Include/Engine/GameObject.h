@@ -89,6 +89,22 @@ public:
 		return static_pointer_cast<T>(GetFixedComponent(_type));
 	}
 
+	template<typename T>
+	shared_ptr<T> GetComponent() {
+		for (auto& component : m_components) {
+			if (component) {
+				auto result = dynamic_pointer_cast<T>(component);
+				if (result) return result;
+			}
+		}
+
+		for (auto& script : m_scripts) {
+			auto result = dynamic_pointer_cast<T>(script);
+			if (result) return result;
+		}
+		return nullptr;
+	}
+
 	vector<shared_ptr<MonoBehaviour>>& GetScripts() { return m_scripts; }
 
 	//Collision ฐüทร

@@ -178,9 +178,6 @@
     <Filter Include="Scripts\Item\Recipe">
       <UniqueIdentifier>{e4e36c2e-585a-479b-9ac5-7b06c5832a91}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scripts\UI\CraftListPanelUI">
-      <UniqueIdentifier>{6054e3db-fd0b-45a3-b96f-c0946d7091d8}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -504,8 +501,8 @@
     <ClCompile Include="RecipeManager.cpp">
       <Filter>Scripts\Item\Recipe</Filter>
     </ClCompile>
-    <ClCompile Include="CraftListPanelUI.cpp">
-      <Filter>Scripts\UI\CraftListPanelUI</Filter>
+    <ClCompile Include="ItemBox.cpp">
+      <Filter>Scripts\Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -837,8 +834,8 @@
     <ClInclude Include="Recipe.h">
       <Filter>Scripts\Item\Recipe</Filter>
     </ClInclude>
-    <ClInclude Include="CraftListPanelUI.h">
-      <Filter>Scripts\UI\CraftListPanelUI</Filter>
+    <ClInclude Include="ItemBox.h">
+      <Filter>Scripts\Item</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
