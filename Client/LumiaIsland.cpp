@@ -1226,7 +1226,7 @@ void LumiaIsland::OnItemBoxSlotClicked(int _slotIndex, SLOTTYPE _slotType)
 				auto item = itemBoxComponent->DeleteItem(_slotIndex);
 				//기존 ItemBox에서 Item삭제. 
 
-				//InventoryManager::GetInstance()->Get
+				//InventoryManager::Get
 				//플레이어 인벤토리에 아이템 추가.
 
 				//UI 슬롯 업데이트. 
@@ -1262,7 +1262,9 @@ DWORD __stdcall LumiaIsland::BackgroundLoadingThread(LPVOID _param)
 	
 	try {
 		EnterCriticalSection(&scene->m_loadingCS);
+		
 		ItemManager::GetInstance()->Initialize();
+		RecipeManager::GetInstance()->Initialize();
 		scene->m_uiManager->InitializeUI();
 
 		scene->LoadItemBoxImages();
@@ -1442,6 +1444,6 @@ void LumiaIsland::ControlPlayerStatus()
 	}
 	if (INPUT->GetButtonDown(KEY_TYPE::D))
 	{
-		cout << "현재 스킬 포이늩 : " << m_player->GetStatus().availableSkillPoints << endl;
+		InventoryManager::GetInstance()->PushItem(ItemManager::GetInstance()->GetItem(L"피아노선"));
 	}
 }
