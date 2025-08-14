@@ -35,6 +35,9 @@
 #include "ItemBox.h"
 #include "InventoryManager.h"
 
+#include "Recipe.h"
+#include "RecipeManager.h"
+
 const vector<wstring> charStatIconNames = {
 	L"AttackPower",
 	L"SkillAmpRatio",
