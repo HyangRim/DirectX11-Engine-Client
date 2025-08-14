@@ -35,8 +35,6 @@ void Button::Update()
 
 bool Button::Picked(POINT _screenPos)
 {
-
-
     return ::PtInRect(&m_rect, _screenPos);
 }
 

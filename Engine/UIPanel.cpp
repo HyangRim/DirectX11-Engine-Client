@@ -87,7 +87,18 @@ void UIPanel::Update()
     //m_position.x = GetGameObject()->GetTransform()->GetPosition().x;
     //m_position.y = GetGameObject()->GetTransform()->GetPosition().y;
 
+    m_rect.left = static_cast<LONG>(m_position.x - m_size.x * 0.5f);
+    m_rect.top = static_cast<LONG>(m_position.y - m_size.y * 0.5f);
+    m_rect.right = static_cast<LONG>(m_position.x + m_size.x * 0.5f);
+    m_rect.bottom = static_cast<LONG>(m_position.y + m_size.y * 0.5f);
+
     UpdateChildPositions();
+}
+
+
+bool UIPanel::Picked(POINT _screenPos)
+{
+    return ::PtInRect(&m_rect, _screenPos);
 }
 
 void UIPanel::Create(Vec2 screenPos, Vec2 size, Vec4 diffuseInfo, shared_ptr<Material> backgroundMaterial)

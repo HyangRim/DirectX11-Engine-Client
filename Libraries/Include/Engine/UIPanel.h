@@ -51,6 +51,7 @@ public:
     const Vec2& GetPosition() const { return m_position; }
     const Vec2& GetSize() const { return m_size; }
     bool IsVisible() const { return m_visible; }
+    bool Picked(POINT _screenPos);
 
     // 패널 생성 함수
     void Create(Vec2 screenPos, Vec2 size, Vec4 diffuseInfo, shared_ptr<Material> backgroundMaterial = nullptr);
@@ -80,6 +81,7 @@ public:
 private:
     Vec2 m_position = Vec2(0.0f, 0.0f);
     Vec2 m_size = Vec2(200.0f, 150.0f);
+    RECT m_rect;
     Vec4 m_backgroundColor = Vec4(1.f);
     bool m_visible = true;
 
@@ -94,9 +96,6 @@ private:
 
 private:
     bool m_isDestroying = false;  // 소멸 중 플래그 추가
-
-
-
 
 
 public:

@@ -324,11 +324,15 @@ shared_ptr<GameObject> SceneObjectManager::PickObjectOrUI()
         const auto& gameObjects = m_uiObjects;
         for (auto& object : gameObjects)
         {
-            if (object->GetButton() == nullptr) continue;
-            if (object->GetButton()->Picked(screenPt))
+            if (object->GetButton() == nullptr && object->GetUIPanel() == nullptr) continue;
+            if (object->GetButton() != nullptr && object->GetButton()->Picked(screenPt))
             {
                 //object->GetButton()->InvokeOnClicked();
-                return nullptr;
+                return object;
+                //return nullptr;
+            }
+            if (object->GetUIPanel() != nullptr && object->GetUIPanel()->Picked(screenPt)) {
+                return object;
             }
         }
     }

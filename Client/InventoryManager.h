@@ -48,7 +48,7 @@ public:
 
     //아이템 추가
     bool PushItem(shared_ptr<Item> inputItem);
-
+    bool IsEmpty();
 
 public:
     // 인벤토리 변화 알림 델리게이트

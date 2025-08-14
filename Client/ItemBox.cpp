@@ -16,6 +16,10 @@ ItemBox::~ItemBox()
 void ItemBox::Start()
 {
 	m_boxInventory[0] = ItemManager::GetInstance()->GetItem(L"¸ÁÄ¡");
+	m_boxInventory[1] = ItemManager::GetInstance()->GetItem(L"¸ÁÄ¡");
+	m_boxInventory[2] = ItemManager::GetInstance()->GetItem(L"¸ÁÄ¡");
+	m_boxInventory[3] = ItemManager::GetInstance()->GetItem(L"¸ÁÄ¡");
+	m_boxInventory[4] = ItemManager::GetInstance()->GetItem(L"¸ÁÄ¡");
 	Super::Start();
 }
 
