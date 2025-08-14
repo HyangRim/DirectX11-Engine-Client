@@ -68,8 +68,10 @@
     <ClInclude Include="GameHUDPanelUI.h" />
     <ClInclude Include="GroupBufferDemo.h" />
     <ClInclude Include="IBasePanelUI.h" />
+    <ClInclude Include="IngredientItem.h" />
     <ClInclude Include="InventoryManager.h" />
     <ClInclude Include="InventoryPanelUI.h" />
+    <ClInclude Include="ItemManager.h" />
     <ClInclude Include="ItemSlot.h" />
     <ClInclude Include="HealthBar.h" />
     <ClInclude Include="Loader.h" />
@@ -174,8 +176,10 @@
     <ClCompile Include="GameHUDPanelUI.cpp" />
     <ClCompile Include="GroupBufferDemo.cpp" />
     <ClCompile Include="IBasePanelUI.cpp" />
+    <ClCompile Include="IngredientItem.cpp" />
     <ClCompile Include="InventoryManager.cpp" />
     <ClCompile Include="InventoryPanelUI.cpp" />
+    <ClCompile Include="ItemManager.cpp" />
     <ClCompile Include="ItemSlot.cpp" />
     <ClCompile Include="HealthBar.cpp" />
     <ClCompile Include="Loader.cpp" />
