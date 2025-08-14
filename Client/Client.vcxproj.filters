@@ -501,6 +501,9 @@
     <ClCompile Include="RecipeManager.cpp">
       <Filter>Scripts\Item\Recipe</Filter>
     </ClCompile>
+    <ClCompile Include="ItemBox.cpp">
+      <Filter>Scripts\Item</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -830,6 +833,9 @@
     </ClInclude>
     <ClInclude Include="Recipe.h">
       <Filter>Scripts\Item\Recipe</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemBox.h">
+      <Filter>Scripts\Item</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

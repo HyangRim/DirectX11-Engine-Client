@@ -1,24 +1,27 @@
 #pragma once
+#include "MonoBehaviour.h"
 
 class Item;
 
 class ItemBox :
-    public GameObject
+    public MonoBehaviour
 {
-    using Super = GameObject;
+    using Super = MonoBehaviour;
 
 public:
     ItemBox();
     virtual ~ItemBox();
 
+
     virtual void Start() override;
     virtual void Update() override;
     virtual void LateUpdate() override;
 
-
 public:
     shared_ptr<Item> InsertItem(int _index, shared_ptr<Item> _item);
     shared_ptr<Item> DeleteItem(int _index);
+
+    bool AddItem(shared_ptr<Item> _item);
 
     array<shared_ptr<Item>, 8>& GetBoxInventory() {
         return m_boxInventory;

@@ -71,6 +71,7 @@
     <ClInclude Include="IngredientItem.h" />
     <ClInclude Include="InventoryManager.h" />
     <ClInclude Include="InventoryPanelUI.h" />
+    <ClInclude Include="ItemBox.h" />
     <ClInclude Include="ItemManager.h" />
     <ClInclude Include="ItemSlot.h" />
     <ClInclude Include="HealthBar.h" />
@@ -181,6 +182,7 @@
     <ClCompile Include="IngredientItem.cpp" />
     <ClCompile Include="InventoryManager.cpp" />
     <ClCompile Include="InventoryPanelUI.cpp" />
+    <ClCompile Include="ItemBox.cpp" />
     <ClCompile Include="ItemManager.cpp" />
     <ClCompile Include="ItemSlot.cpp" />
     <ClCompile Include="HealthBar.cpp" />

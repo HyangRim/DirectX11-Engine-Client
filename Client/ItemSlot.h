@@ -45,6 +45,7 @@ public:
     // 델리게이트 선언 (슬롯 인덱스와 타입을 전달)
     Delegate::Delegate<int, SLOTTYPE> OnSlotClicked;
     Delegate::Delegate<int, SLOTTYPE> OnSlotRightClicked;
+
 private:
    
     void UpdatePanel();
