@@ -123,7 +123,7 @@ void CraftListPanelUI::CreateCraftSlots()
 
         Vec2 slotPos = Vec2(
             startPos.x + (i%slotsX) * (slotSize.x + spacing.x),
-            startPos.y + (i/slotsY) * (slotSize.y + spacing.y)
+            startPos.y + (i/slotsX) * (slotSize.y + spacing.y)
         );
         craftSlot->CreateSlot(slotPos, slotSize, i);
 
