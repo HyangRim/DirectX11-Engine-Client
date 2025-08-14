@@ -23,9 +23,9 @@ public:
 
     void CreateInventoryManager();
 
-    shared_ptr<InventoryManager> GetInventoryManager() {
-        return m_inventoryManager;
-    }
+    shared_ptr<class GameHUDPanelUI> GetGameHUD() { return m_gameHUD; }
+    shared_ptr<class SkillLevelUpPanelUI> GetSkillLevelUpUI() { return m_skillLevelUp; }
+    shared_ptr<class PlayerStatusPanelUI> GetStatusUI() { return m_playerStatus; }
 
 private:
     shared_ptr<Player> m_player;

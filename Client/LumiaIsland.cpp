@@ -135,6 +135,7 @@ void LumiaIsland::Start()
 		CreateCharacterNicky();
 	}
 	m_uiManager = make_shared<UIManager>(m_player, m_selectedCharacterIdx); //플레이가 존재할때 선언
+	m_player->SetUIManager(m_uiManager);
 
 
 	m_loadingThread = CreateThread(nullptr, 0, BackgroundLoadingThread, this, 0, nullptr);

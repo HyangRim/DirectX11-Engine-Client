@@ -54,7 +54,6 @@ void SceneObjectManager::FixedUpdate()
     for (auto& object : objects) {
         object->FixedUpdate();
     }
-
     const auto& uiObjects = m_uiObjects;
     for (auto& object : uiObjects) {
         object->FixedUpdate();
@@ -67,7 +66,6 @@ void SceneObjectManager::LateUpdate()
     for (auto& object : objects) {
         object->LateUpdate();
     }
-
     const auto& uiObjects = m_uiObjects;
     for (auto& object : uiObjects) {
         object->LateUpdate();
@@ -324,6 +322,7 @@ shared_ptr<GameObject> SceneObjectManager::PickObjectOrUI()
         const auto& gameObjects = m_uiObjects;
         for (auto& object : gameObjects)
         {
+            if (object->GetActive() == false) continue;
             if (object->GetButton() == nullptr && object->GetUIPanel() == nullptr) continue;
             if (object->GetButton() != nullptr && object->GetButton()->Picked(screenPt))
             {
@@ -569,14 +568,11 @@ void SceneObjectManager::UpdateQuadTree()
         int insertedCount = 0;
         for (auto& object : m_gameObjects)
         {
-            if (object->GetCollider())
+            // 가시성 검사
+            if (m_quadTree->IsObjectVisible(object, camera))
             {
-                // 가시성 검사
-                if (m_quadTree->IsObjectVisible(object, camera))
-                {
-                    m_quadTree->Insert(object);
-                    insertedCount++;
-                }
+                m_quadTree->Insert(object);
+                insertedCount++;
             }
         }
 

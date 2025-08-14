@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Wolf.h"
+#include "ItemBox.h"
 
 #include "WolfAppearState.h"
 #include "WolfDeathState.h"
@@ -136,10 +137,13 @@ void Wolf::InitWolfComponent()
 	m_collider->SetVisible(false);
 	m_rigidbody = make_shared<Rigidbody>();
 	m_navAgent = make_shared<NavMeshAgent>();
+	m_itembox = make_shared<ItemBox>();
+
 
 	AddComponent(m_collider);
 	AddComponent(m_rigidbody);
 	AddComponent(m_navAgent);
+	AddComponent(m_itembox);
 }
 
 void Wolf::InitWolfAI()

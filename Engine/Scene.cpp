@@ -131,7 +131,8 @@ void Scene::RenderGameCamera(Camera* cam)
     //if (GetQuadTree() == nullptr) return;
     //if (GetQuadTree()->GetInsertedObject().empty()) return;
     //vector<shared_ptr<GameObject>> objects(GetQuadTree()->GetInsertedObject().begin(), GetQuadTree()->GetInsertedObject().end());
-    vector<shared_ptr<GameObject>> combined;
+    static vector<shared_ptr<GameObject>> combined;
+    combined.clear();
     vector<shared_ptr<GameObject>> forward = cam->GetForwardObjects();
     vector<shared_ptr<GameObject>> backward = cam->GetBackwardObjects();
     combined.reserve(forward.size() + backward.size());
