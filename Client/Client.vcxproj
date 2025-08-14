@@ -68,8 +68,10 @@
     <ClInclude Include="GameHUDPanelUI.h" />
     <ClInclude Include="GroupBufferDemo.h" />
     <ClInclude Include="IBasePanelUI.h" />
+    <ClInclude Include="IngredientItem.h" />
     <ClInclude Include="InventoryManager.h" />
     <ClInclude Include="InventoryPanelUI.h" />
+    <ClInclude Include="ItemManager.h" />
     <ClInclude Include="ItemSlot.h" />
     <ClInclude Include="HealthBar.h" />
     <ClInclude Include="Loader.h" />
@@ -102,6 +104,8 @@
     <ClInclude Include="PlayerOutlineEffect.h" />
     <ClInclude Include="PlayerStatusPanelUI.h" />
     <ClInclude Include="RawBufferDemo.h" />
+    <ClInclude Include="Recipe.h" />
+    <ClInclude Include="RecipeManager.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SceneDemo.h" />
     <ClInclude Include="SkillDecalIndicator.h" />
@@ -174,8 +178,10 @@
     <ClCompile Include="GameHUDPanelUI.cpp" />
     <ClCompile Include="GroupBufferDemo.cpp" />
     <ClCompile Include="IBasePanelUI.cpp" />
+    <ClCompile Include="IngredientItem.cpp" />
     <ClCompile Include="InventoryManager.cpp" />
     <ClCompile Include="InventoryPanelUI.cpp" />
+    <ClCompile Include="ItemManager.cpp" />
     <ClCompile Include="ItemSlot.cpp" />
     <ClCompile Include="HealthBar.cpp" />
     <ClCompile Include="Loader.cpp" />
@@ -211,6 +217,8 @@
     <ClCompile Include="PlayerOutlineEffect.cpp" />
     <ClCompile Include="PlayerStatusPanelUI.cpp" />
     <ClCompile Include="RawBufferDemo.cpp" />
+    <ClCompile Include="Recipe.cpp" />
+    <ClCompile Include="RecipeManager.cpp" />
     <ClCompile Include="SceneDemo.cpp" />
     <ClCompile Include="SkillDecalIndicator.cpp" />
     <ClCompile Include="SkillLevelUpPanelUI.cpp" />

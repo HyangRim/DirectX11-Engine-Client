@@ -29,6 +29,9 @@ public:										\
 #define SCENE		GET_SINGLE(SceneManager)
 #define SOUND		GET_SINGLE(SoundManager)
 #define D2DTEXTR	GET_SINGLE(D2DTextRenderer)
+#define ITEM		GET_SINGLE(ItemManger)
+#define RECIPE		GET_SINGLE(RecipeManager)
+
 
 #define CURSCENE	SCENE->GetCurScene()
 #define CUR_SCENE	SCENE->GetCurScene()

@@ -20,8 +20,6 @@ public:
 public:
     void CreateInventorySlots();
     
-    //임시용
-    void CreateTestItems();
  
 
 public:
@@ -36,8 +34,7 @@ protected:
 
 private:
     vector<shared_ptr<ItemSlot>> m_inventorySlots;
-    vector<shared_ptr<Item>> m_testItems; // 테스트용 아이템들
-
+   
 };
 
 

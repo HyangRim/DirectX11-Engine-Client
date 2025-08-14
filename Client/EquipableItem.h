@@ -2,6 +2,7 @@
 #include "Item.h"
 
 enum class EquipmentType {
+    DEFAULT = -1,
     WEAPON = 0,
     CHEST,      // 상의
     HEAD,       // 머리
@@ -44,5 +45,5 @@ public:
 private:
     EquipmentType m_equipType;
     ItemStatus m_status;
-    int32 m_enhanceLevel = 0;
+
 };
