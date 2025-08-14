@@ -6,6 +6,7 @@
 
 ItemBox::ItemBox()
 {
+
 }
 
 ItemBox::~ItemBox()
@@ -14,6 +15,7 @@ ItemBox::~ItemBox()
 
 void ItemBox::Start()
 {
+	m_boxInventory[0] = ItemManager::GetInstance()->GetItem(L"¸ÁÄ¡");
 	Super::Start();
 }
 
@@ -47,4 +49,16 @@ shared_ptr<Item> ItemBox::DeleteItem(int _index)
 	m_boxInventory[_index] = nullptr;
 	return item;
 }
+
+bool ItemBox::PushItem(shared_ptr<Item> _item)
+{
+	for (auto item : m_boxInventory) {
+		if (item == nullptr) {
+			item = _item;
+			return true;
+		}
+	}
+	return false;
+}
+
 
