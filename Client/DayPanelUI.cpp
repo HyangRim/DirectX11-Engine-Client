@@ -96,7 +96,7 @@ void DayPanelUI::CreatePanels()
 	auto sunImageUI = panel->AddImageUI(Vec2(58 / 2.f, 58 / 2.f - 5.f), L"SUN_UI_ICON");
 	shared_ptr<Material> sunIconMaterial = RESOURCES->Get<Material>(L"SUN_UI_ICON")->Clone();
 	sunImageUI->AddImageLayer(
-		5,                              // 레이어 인덱스
+		1,                             // 레이어 인덱스
 		Vec2(0, 0),                     // 로컬 위치 (ImageUI 내에서의 위치)
 		Vec2(24, 24),                   // 이미지 크기 (패널에 맞게 조정)
 		sunIconMaterial,                // 머티리얼

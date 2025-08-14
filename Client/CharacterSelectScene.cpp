@@ -93,6 +93,8 @@ void CharacterSelectScene::Start()
 	CreateScrollableCharacterList();
 	CreateScrollableSkinList();
 
+	CreateSelectedButton();
+
 	CreateTimeProgressBar();
 	CreateCursor();
 
@@ -234,6 +236,26 @@ void CharacterSelectScene::LoadBackGround()
 	backGroundDeco1Desc.diffuse = Vec4(1.f);
 	backGroundDeco1Desc.specular = Vec4(1.0f);
 	RESOURCES->Add(L"CSSceneBackGroundDeco_1", backGroundDeco1);
+
+	shared_ptr<Material> CSScene_BtnPressedMat = make_shared<Material>();
+	SetupUIMaterial(CSScene_BtnPressedMat);
+	auto CSScene_BtnPressedMatTexture = RESOURCES->Load<Texture>(L"CSScene_BtnPressed", L"..\\Resources\\Textures\\UI\\CharacterSelectScene\\Btn_MatchingStart_01.png");
+	CSScene_BtnPressedMat->SetDiffuseMap(CSScene_BtnPressedMatTexture);
+	MaterialDesc& CSScene_BtnPressedMatDesc = CSScene_BtnPressedMat->GetMaterialDesc();
+	CSScene_BtnPressedMatDesc.ambient = Vec4(1.f);
+	CSScene_BtnPressedMatDesc.diffuse = Vec4(1.f);
+	CSScene_BtnPressedMatDesc.specular = Vec4(1.0f);
+	RESOURCES->Add(L"CSScene_BtnPressed", CSScene_BtnPressedMat);
+
+	shared_ptr<Material> CSScene_BtnDisabledMat = make_shared<Material>();
+	SetupUIMaterial(CSScene_BtnDisabledMat);
+	auto CSScene_BtnDisabledMatTexture = RESOURCES->Load<Texture>(L"CSScene_BtnDisabled", L"..\\Resources\\Textures\\UI\\CharacterSelectScene\\Btn_MatchingStart_Disabled_01.png");
+	CSScene_BtnDisabledMat->SetDiffuseMap(CSScene_BtnDisabledMatTexture);
+	MaterialDesc& CSScene_BtnDisabledMatDesc = CSScene_BtnDisabledMat->GetMaterialDesc();
+	CSScene_BtnDisabledMatDesc.ambient = Vec4(1.f);
+	CSScene_BtnDisabledMatDesc.diffuse = Vec4(1.f);
+	CSScene_BtnDisabledMatDesc.specular = Vec4(1.0f);
+	RESOURCES->Add(L"CSScene_BtnDisabled", CSScene_BtnDisabledMat);
 }
 
 void CharacterSelectScene::LoadCharacterListSlotImages()
@@ -419,11 +441,16 @@ void CharacterSelectScene::LoadCharacterFullAndHalfImages()
 	}
 }
 
+void CharacterSelectScene::OnCharacterImageButtonClicked(int charIndex)
+{
+	SOUND->PlaySound(L"SFX/oui_Banner_Click.wav", 2, 1.f);
+	m_selectCharIdx = charIndex;
+}
+
 void CharacterSelectScene::OnCharacterSelectButtonClicked(int charindex)
 {
-	SOUND->PlaySound(L"SFX/oui_mainMenu_click.wav", 2, 0.5f);
-
 	if (charindex > 0 && charindex < 3) {
+		SOUND->PlaySound(L"SFX/oui_matchClick2.wav", 2, 0.5f);
 		SOUND->PlaySound(charcaterSelectVoice[charindex], 2, 0.5f);
 		m_selectCharIdx = charindex - 1;
 
@@ -566,7 +593,8 @@ void CharacterSelectScene::CreateScrollableCharacterList()
 			button->OnClick += [this, button, i]() {
 				UpdateFullImage(button, 0);
 				UpdateSkinList(button, i);
-				OnCharacterSelectButtonClicked(i);
+				OnCharacterImageButtonClicked(i);
+				//OnCharacterSelectButtonClicked(i);
 			};
 			//=======================버튼==============================//
 			
@@ -688,6 +716,66 @@ void CharacterSelectScene::UpdateTimeProgressBar()
 		material->GetShader()->PushHealthBarData(timeRatio, 0);
 	}
 
+}
+
+void CharacterSelectScene::CreateSelectedButton()
+{
+	// 화면 크기 가져오기
+	float width = GRAPHICS->GetViewport().GetWidth();
+	float height = GRAPHICS->GetViewport().GetHeight();
+
+	// UIPanel 생성
+	m_charSelectBtn = make_shared<GameObject>();
+	m_charSelectBtn->SetName(L"CharacterSelectPanel");
+
+	m_charSelectPanel = make_shared<UIPanel>();
+	m_charSelectBtn->AddComponent(m_charSelectPanel);
+	m_charSelectPanel->Create(
+		Vec2(1200.f, 700.f),
+		Vec2(500.f, 120.f),
+		Vec4(0.f),
+		nullptr
+	);
+
+	// 버튼용 Material 준비
+	shared_ptr<Material> normalMaterial = RESOURCES->Get<Material>(L"CSScene_BtnDisabled")->Clone();
+	shared_ptr<Material> hoverMaterial = RESOURCES->Get<Material>(L"CSScene_BtnPressed")->Clone();
+	shared_ptr<Material> pressedMaterial = RESOURCES->Get<Material>(L"CSScene_BtnPressed")->Clone();
+
+	auto gameStartButton = m_charSelectPanel->AddButton(
+		Vec2(0, 0),
+		Vec2(338, 102),
+		normalMaterial,
+		L"GameStartButton"
+	);
+
+	gameStartButton->SetNormalMaterial(normalMaterial);
+	gameStartButton->SetHoveredMaterial(hoverMaterial);
+	gameStartButton->SetPressedMaterial(pressedMaterial);
+
+	gameStartButton->OnClick += [this]() {
+		OnCharacterSelectButtonClicked(m_selectCharIdx);
+	};
+
+	gameStartButton->OnHoverEnter += [this]() {
+		OnCharacterSelectButtonHover();
+	};
+
+	m_charSelectPanel->AddD2DText(
+		Vec2(0.f, 0.f),
+		L"캐릭터 선택 & 시작",
+		22.0f, 
+		Vec4(1.f, 1.f, 1.f, 1.f), 
+		1.0f,
+		Vec4(0, 0, 0, 0), 
+		0.0f,
+		L"GameStartText",
+		TextAlignment::Center 
+	);
+
+	m_charSelectBtn->SetLayerIndex(LAYER_UI);
+	AddUIObject(m_charSelectBtn, true);
+	RegisterUIParent(m_charSelectBtn);
 }
 
 void CharacterSelectScene::UpdateSkinList(shared_ptr<Button> button, int charIndex)
