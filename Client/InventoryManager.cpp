@@ -368,6 +368,28 @@ void InventoryManager::OnSlotRightClicked(int slotIndex)
         m_craftingSlot2.reset();
     }
 }
+bool InventoryManager::PushItem(shared_ptr<Item> inputItem)
+{
+    // 인벤토리의 빈 슬롯 찾기
+    int emptySlotIndex = -1;
+    for (int i = 0; i < m_inventorySlots.size(); i++) {
+        if (m_inventorySlots[i]->IsEmpty()) {
+            emptySlotIndex = i;
+            break;
+        }
+    }
+
+    if (emptySlotIndex == -1)
+        return false;
+
+    m_inventorySlots[emptySlotIndex]->SetItem(inputItem);
+
+    // 인벤토리 변화 알림
+    NotifyInventoryChanged();
+
+    return true;
+}
+
 // 인벤토리 변화 알림 함수
 void InventoryManager::NotifyInventoryChanged()
 {

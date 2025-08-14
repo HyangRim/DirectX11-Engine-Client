@@ -46,6 +46,10 @@ public:
     vector<shared_ptr<Recipe>> GetAvailableRecipes() const;
     void OnSlotRightClicked(int slotIndex); // 우클릭으로 조합 모드 활성화
 
+    //아이템 추가
+    bool PushItem(shared_ptr<Item> inputItem);
+
+
 public:
     // 인벤토리 변화 알림 델리게이트
     Delegate::Delegate<> OnInventoryChanged;
