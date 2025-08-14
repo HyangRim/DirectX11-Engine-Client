@@ -1205,12 +1205,14 @@ void LumiaIsland::CheckPickedItemBox()
 		else if(m_pickedObject->GetType() != OBJECTTYPE::ITEMBOX && INPUT->GetButtonDown(KEY_TYPE::LBUTTON))
 		{
 			m_itemBox->GetMeshRenderer()->SetActive(false);
+			m_currentItemBox = nullptr;
 			//cout << "아이템박스 클릭해제됨\n";
 		}
 	}
 	else
 	{
 		m_itemBox->GetMeshRenderer()->SetActive(false);
+		m_currentItemBox = nullptr;
 		//cout << "선택된 객체가 없음\n";
 	}
 }
@@ -1222,19 +1224,21 @@ void LumiaIsland::OnItemBoxSlotClicked(int _slotIndex, SLOTTYPE _slotType)
 		if (slot->GetItem() != nullptr) {
 			auto itemBoxComponent = m_currentItemBox->GetComponent<ItemBox>();
 			if (itemBoxComponent) {
-
-				auto item = itemBoxComponent->DeleteItem(_slotIndex);
 				//기존 ItemBox에서 Item삭제. 
+				auto item = itemBoxComponent->DeleteItem(_slotIndex);
 
-				//InventoryManager::Get
-				//플레이어 인벤토리에 아이템 추가.
+				//플레이어 인벤토리에 아이템 추가, 내부적으로 (Player)UI 슬롯 업데이트. 
+				InventoryManager::GetInstance()->PushItem(item);
+				//플레이어 인벤토리에 아이템 추가., 
 
 				//UI 슬롯 업데이트. 
+				UpdateItemBoxSlots(m_currentItemBox);
 			}
 		}
 	}
 }
 
+//그 아이템의 
 void LumiaIsland::UpdateItemBoxSlots(shared_ptr<GameObject> _itemBoxObject)
 {
 	if (!_itemBoxObject)
@@ -1245,7 +1249,17 @@ void LumiaIsland::UpdateItemBoxSlots(shared_ptr<GameObject> _itemBoxObject)
 		return;
 
 	//모든 슬롯을 _itemBoxObject의 것으로 업데이트. 
+	auto items = itemBoxComponent->GetBoxInventory();
 
+	for (int idx = 0; idx < m_itemBoxSlots.size(); ++idx) {
+		if (idx < items.size() && items[idx] != nullptr) {
+			m_itemBoxSlots[idx]->SetItem(items[idx]);
+		}
+		else {
+			m_itemBoxSlots[idx]->SetItem(nullptr);
+		}
+	}
+	//cout << "UpdateItemBoxSlots 완료\n";
 }
 
 

@@ -21,7 +21,7 @@ public:
     shared_ptr<Item> InsertItem(int _index, shared_ptr<Item> _item);
     shared_ptr<Item> DeleteItem(int _index);
 
-    bool AddItem(shared_ptr<Item> _item);
+    bool PushItem(shared_ptr<Item> _item);
 
     array<shared_ptr<Item>, 8>& GetBoxInventory() {
         return m_boxInventory;
