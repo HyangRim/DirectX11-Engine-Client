@@ -28,6 +28,7 @@ private:
     void UpdateHealthBarSize(float _healthRatio);
 
 private:
+    friend class Player;
     shared_ptr<UIPanel> m_healthBarPanel;
     shared_ptr<ImageUI> m_healthBarUI;
     shared_ptr<ImageUI> m_manaBarUI;

@@ -28,6 +28,8 @@ private:
 
 	void CreateTimeProgressBar();
 	void UpdateTimeProgressBar();
+
+	void CreateSelectedButton();
 	
 	void UpdateSkinList(shared_ptr<Button> button, int charIndex);
 	void UpdateFullImage(shared_ptr<Button> button, int skinIndex);
@@ -39,6 +41,8 @@ private:
 	void LoadCharacterSkinListSlotImages();
 	void LoadCharacterImages();
 	void LoadCharacterFullAndHalfImages();
+
+	void OnCharacterImageButtonClicked(int charIndex);
 
 	void OnCharacterSelectButtonClicked(int charIndex);
 	void OnCharacterSelectButtonHover();
@@ -61,6 +65,12 @@ private:
 	shared_ptr<UIPanel> m_timeProgressPanel = nullptr;
 	shared_ptr<ImageUI> m_timeProgressUI = nullptr;
 	Vec2 m_progressBarSize = Vec2(1800.f, 25.f); // ¹Ù Å©±â
+
+
+private:
+	shared_ptr<GameObject> m_charSelectBtn = nullptr;
+	shared_ptr<UIPanel> m_charSelectPanel = nullptr;
+
 private:
 	int m_selectCharIdx = 0;
 	float m_selectDuration = 55.f;

@@ -165,6 +165,9 @@ void Player::LevelUp()
 
 	m_status.curExp -= m_status.curExpLimit;
 	SetLevel(m_status.level + 1);
+	wstring levelStr = to_wstring(m_status.level);
+	//Level UI에 변경해주기. 
+	m_healthBar->m_healthBarPanel->GetD2DText(L"LevelText")->SetText(levelStr);
 	m_status.curExpLimit += m_growStatus.ExpLimit;
 	m_status.max_HP += m_growStatus.hp;
 	m_status.hp += m_growStatus.hp;
