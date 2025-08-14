@@ -32,6 +32,7 @@
 #include "GameHUDPanelUI.h"
 
 #include "ItemManager.h"
+#include "RecipeManager.h"
 
 const vector<wstring> charStatIconNames = {
 	L"AttackPower",
@@ -1186,6 +1187,7 @@ DWORD __stdcall LumiaIsland::BackgroundLoadingThread(LPVOID _param)
 	try {
 		EnterCriticalSection(&scene->m_loadingCS);
 		ItemManager::GetInstance()->Initialize();
+		RecipeManager::GetInstance()->Initialize();
 		scene->m_uiManager->InitializeUI();
 
 		scene->LoadItemBoxImages();

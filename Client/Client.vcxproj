@@ -59,6 +59,7 @@
     <ClInclude Include="CameraScript.h" />
     <ClInclude Include="CharacterSelectScene.h" />
     <ClInclude Include="Client_Define.h" />
+    <ClInclude Include="CraftListPanelUI.h" />
     <ClInclude Include="Cursor.h" />
     <ClInclude Include="DayPanelUI.h" />
     <ClInclude Include="Define.h" />
@@ -170,6 +171,7 @@
     <ClCompile Include="ButtonDemo.cpp" />
     <ClCompile Include="CameraScript.cpp" />
     <ClCompile Include="CharacterSelectScene.cpp" />
+    <ClCompile Include="CraftListPanelUI.cpp" />
     <ClCompile Include="Cursor.cpp" />
     <ClCompile Include="DayPanelUI.cpp" />
     <ClCompile Include="EquipableItem.cpp" />

@@ -79,12 +79,14 @@ void ItemSlot::UpdateSlotUI()
     if (m_slotPanel) {
         m_slotPanel->RemoveUIElementSafely(L"Button");
         m_slotPanel->RemoveUIElementSafely(L"ImageUI");
+        m_slotPanel->SetVisible(false);
         m_slotButton.reset();
         m_iconImageUI.reset();
     }
 
     if (m_item)
     {
+      
         UpdatePanel(); // 새로운 아이템 UI 생성
     }
     else
@@ -106,7 +108,7 @@ void ItemSlot::UpdateSlotUI()
 void ItemSlot::UpdatePanel()
 {
     if (!m_item || !m_slotPanel) return;
-
+    m_slotPanel->SetVisible(true);
     // 기존 버튼이 있으면 이벤트 정리
     if (m_slotButton) {
         m_slotButton->OnClick.Reset(); // 모든 이벤트 제거
@@ -147,7 +149,13 @@ void ItemSlot::UpdatePanel()
     m_slotButton->OnClick += [this]() {
         //cout << "슬롯 " << m_slotIndex << " 클릭됨!" << endl;
         OnSlotClicked(m_slotIndex, m_slotType);
-        };
+        //OnSlotRightClicked(m_slotIndex, m_slotType);
+    };
+    m_slotButton->OnRightClick += [this]() {
+        //cout << "슬롯 " << m_slotIndex << " 클릭됨!" << endl;
+        //OnSlotClicked(m_slotIndex, m_slotType);
+        OnSlotRightClicked(m_slotIndex, m_slotType);
+    };
 
     // 새로운 아이템 아이콘 생성
     int32 itemID = m_item->GetItemID();

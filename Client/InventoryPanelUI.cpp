@@ -85,11 +85,17 @@ void InventoryPanelUI::CreateInventorySlots()
 			// ItemSlot 생성
 			shared_ptr<ItemSlot> itemSlot;
 
-			if		(row == 0 && col == 0) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"운명의 수레바퀴"), true);
-			else if (row == 0 && col == 1) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"어사의"), true);
-			else if (row == 0 && col == 2) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"비질란테"), true);
-			else if (row == 0 && col == 3) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"나이팅게일"), true);
+			if		(row == 0 && col == 0) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"망치"), true);
+			else if (row == 0 && col == 1) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"쇠구슬"), true);
+			else if (row == 0 && col == 2) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"운동화"), true);
+			else if (row == 0 && col == 3) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"원석"), true);
 			else if (row == 0 && col == 4) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"델타 레드"), true);
+			
+			else if (row == 1 && col == 0) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"붕대"), true);
+			else if (row == 1 && col == 1) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"깃털"), true);
+			else if (row == 1 && col == 2) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"꽃"), true);
+			else if (row == 1 && col == 3) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"돌멩이"), true);
+			else if (row == 1 && col == 4) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"델타 레드"), true);
 
 			else itemSlot =	make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"돌멩이"), true);
 

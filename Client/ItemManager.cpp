@@ -15,22 +15,22 @@ const vector<int> itemIconID = {
 	130402, 202206, 202306, 202404, 203102, 
 	203411, 204204, 204419, 205101, 205102, 
 	205203, 302103, 401101, 401114, 401117, 
-	401217
+	401217, 205312
 };
 
 const vector<wstring> itemIconTag = {
-	L"목장갑",			L"아이언 너클",		L"디바인 피스트",	L"돌멩이",		L"자전거헬맷",
+	L"목장갑",			L"아이언 너클",		L"디바인 피스트",	L"돌멩이",		L"자전거 헬멧",
 	L"안전모",			L"소방 헬멧",		L"비질란테",		L"셔츠",		L"사제복",
-	L"제사장의 예복",	L"손목시계",		L"고장난시계",		L"철사",		L"스포츠 시계",
+	L"제사장의 예복",	L"손목시계",		L"고장난 시계",		L"철사",		L"스포츠 시계",
 	L"운동화",			L"타키온 브레이스", L"십자가",			L"비파단도",	L"고철",
-	L"마패",			L"건전지",			L"옷감",			L"화약",		L"화학품",
+	L"마패",			L"배터리",			L"옷감",			L"화약",		L"화학품",
 	L"흑연",			L"전자 부품",		L"모터",			L"피아노선",
 	
-	L"망치",			L"쇠구슬",			L"유리 구슬",		L"얼음구슬",	L"이성의 칼",
+	L"망치",			L"쇠구슬",			L"유리구슬",		L"얼음구슬",	L"이성의 칼",
 	L"운명의 수레바퀴", L"덧댄 로브",		L"한복",			L"어사의",		L"붕대", 
 	L"나이팅게일",		L"힐리스",			L"델타 레드",		L"깃털",		L"꽃", 
-	L"운명의 꽃",		L"얼음",			L"못",				L"운석",		L"종이",
-	L"루비"
+	L"운명의 꽃",		L"얼음",			L"못",				L"원석",		L"종이",
+	L"루비",			L"아이테르 깃털"
 };
 
 const vector<ITEMGRADE> itemGrade = {
@@ -46,7 +46,7 @@ const vector<ITEMGRADE> itemGrade = {
 	ITEMGRADE::EPIC,	ITEMGRADE::UNCOMMON,ITEMGRADE::RARE,	ITEMGRADE::EPIC,	ITEMGRADE::COMMON,
 	ITEMGRADE::EPIC,	ITEMGRADE::UNCOMMON,ITEMGRADE::EPIC,	ITEMGRADE::COMMON,	ITEMGRADE::COMMON,
 	ITEMGRADE::UNCOMMON,ITEMGRADE::COMMON,	ITEMGRADE::COMMON,	ITEMGRADE::COMMON,	ITEMGRADE::COMMON,
-	ITEMGRADE::UNCOMMON
+	ITEMGRADE::UNCOMMON,ITEMGRADE::RARE
 };
 
 const vector<ITEMTYPE> itemType = {
@@ -61,7 +61,7 @@ const vector<ITEMTYPE> itemType = {
 	ITEMTYPE::EQUIPABLE,	ITEMTYPE::EQUIPABLE,	ITEMTYPE::EQUIPABLE,	ITEMTYPE::EQUIPABLE,	ITEMTYPE::INGREDIENTS,
 	ITEMTYPE::EQUIPABLE,	ITEMTYPE::EQUIPABLE,	ITEMTYPE::EQUIPABLE,	ITEMTYPE::INGREDIENTS,	ITEMTYPE::INGREDIENTS,
 	ITEMTYPE::INGREDIENTS,	ITEMTYPE::INGREDIENTS,	ITEMTYPE::INGREDIENTS,	ITEMTYPE::INGREDIENTS,	ITEMTYPE::INGREDIENTS,
-	ITEMTYPE::INGREDIENTS,
+	ITEMTYPE::INGREDIENTS,	ITEMTYPE::INGREDIENTS
 };
 
 const vector<EquipmentType> equipableItemType = {
@@ -76,7 +76,7 @@ const vector<EquipmentType> equipableItemType = {
 	EquipmentType::WEAPON,	EquipmentType::CHEST,	EquipmentType::CHEST,	EquipmentType::CHEST,	EquipmentType::DEFAULT,
 	EquipmentType::ARM,		EquipmentType::LEG,		EquipmentType::LEG,		EquipmentType::DEFAULT,	EquipmentType::DEFAULT,
 	EquipmentType::DEFAULT,	EquipmentType::DEFAULT,	EquipmentType::DEFAULT,	EquipmentType::DEFAULT,	EquipmentType::DEFAULT,
-	EquipmentType::DEFAULT,
+	EquipmentType::DEFAULT, EquipmentType::DEFAULT
 };
 
 const vector<ItemStatus> equipableItemStatus = {
@@ -91,7 +91,7 @@ const vector<ItemStatus> equipableItemStatus = {
 	{0}, {0}, {0}, {0}, {0},
 	{0}, {0}, {0}, {0}, {0},
 	{0}, {0}, {0}, {0}, {0},
-	{0}
+	{0}, {0}
 };
 
 ItemManager::~ItemManager()
@@ -153,7 +153,8 @@ void ItemManager::CreatItems()
 			ingredientItem->SetItemType(itemType[i]);
 			ingredientItem->SetItemGrade(itemGrade[i]);
 			
-			m_items[itemIconTag[i]] = ingredientItem;
+			m_itemsContainerByName[itemIconTag[i]] = ingredientItem;
+			m_itemsContainerByID[itemIconID[i]] = ingredientItem;
 		}
 		else if (itemType[i] == ITEMTYPE::EQUIPABLE)
 		{
@@ -164,14 +165,20 @@ void ItemManager::CreatItems()
 			equipableItem->SetItemGrade(itemGrade[i]);
 			equipableItem->SetEquipType(equipableItemType[i]);
 
-			m_items[itemIconTag[i]] = equipableItem;
+			m_itemsContainerByName[itemIconTag[i]] = equipableItem;
+			m_itemsContainerByID[itemIconID[i]] = equipableItem;
 		}
 	}
 }
 
 shared_ptr<Item> ItemManager::GetItem(const wstring& name)
 {
-	return m_items[name];
+	return m_itemsContainerByName[name];
+}
+
+shared_ptr<Item> ItemManager::GetItem(int32 ID)
+{
+	return m_itemsContainerByID[ID];
 }
 
 void ItemManager::LoadItemData()

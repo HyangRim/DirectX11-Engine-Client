@@ -2,10 +2,7 @@
 #include "pch.h"
 #include "InventoryManager.h"
 #include "Player.h"
-
-InventoryManager::InventoryManager() : Super(ComponentType::Custom)
-{
-}
+#include "RecipeManager.h"
 
 InventoryManager::~InventoryManager()
 {
@@ -32,10 +29,12 @@ void InventoryManager::RegisterInventorySlots(const vector<shared_ptr<ItemSlot>>
             // 우클릭 이벤트도 필요하다면
             slot->OnSlotRightClicked.Push([this](int slotIndex, SLOTTYPE slotType) {
                 // 우클릭 처리 로직
-                //OnInventorySlotRightClicked(slotIndex);
-                });
+                OnSlotRightClicked(slotIndex);
+             });
         }
     }
+    // 초기 알림
+    NotifyInventoryChanged();
 }
 
 void InventoryManager::RegisterEquipmentSlots(const vector<shared_ptr<ItemSlot>>& equipmentSlots)
@@ -101,8 +100,8 @@ bool InventoryManager::EquipItem(int inventorySlotIndex)
         inventorySlot->ClearItem();
     }
 
-    string tmp(equipItem->GetName().begin(), equipItem->GetName().end());
-   // cout << "아이템 '" << tmp << "착용 완료!" << endl;
+    // 인벤토리 변화 알림
+    NotifyInventoryChanged();
     return true;
 }
 
@@ -135,9 +134,9 @@ bool InventoryManager::UnequipItem(int equipmentSlotIndex)
     m_inventorySlots[emptySlotIndex]->SetItem(item);
     equipmentSlot->ClearItem();
 
-    wstring name = item->GetName();
-    string tmp(name.begin(), name.end());
-    //cout << "아이템 '" << tmp << "' 해제 완료!" << endl;
+    // 인벤토리 변화 알림
+    NotifyInventoryChanged();
+
     return true;
 }
 
@@ -188,6 +187,9 @@ bool InventoryManager::MoveItem(int fromSlot, int toSlot, SLOTTYPE fromType, SLO
 
     // 아이템 교체
     SwapItems(sourceSlot, targetSlot);
+
+    // 인벤토리 변화 알림
+    NotifyInventoryChanged();
     return true;
 }
 
@@ -306,7 +308,68 @@ void InventoryManager::SwapItems(shared_ptr<ItemSlot> slot1, shared_ptr<ItemSlot
 
 void InventoryManager::Update()
 {
-    Super::Update();
-
+    
     // 추가적인 업데이트 로직이 필요하면 여기에 구현
+}
+
+
+// InventoryManager.cpp에 추가
+bool InventoryManager::TryCraftItems(int slot1Index, int slot2Index)
+{
+    if (slot1Index < 0 || slot1Index >= m_inventorySlots.size() ||
+        slot2Index < 0 || slot2Index >= m_inventorySlots.size())
+        return false;
+
+    auto slot1 = m_inventorySlots[slot1Index];
+    auto slot2 = m_inventorySlots[slot2Index];
+
+    return RecipeManager::GetInstance()->TryCraftWithInventoryManager(slot1, slot2);
+}
+
+vector<shared_ptr<Recipe>> InventoryManager::GetAvailableRecipes() const
+{
+    return  RecipeManager::GetInstance()->GetCraftableRecipesFromSlots(m_inventorySlots);
+}
+
+void InventoryManager::OnSlotRightClicked(int slotIndex)
+{
+    if (slotIndex < 0 || slotIndex >= m_inventorySlots.size())
+        return;
+
+    auto slot = m_inventorySlots[slotIndex];
+    if (!slot || slot->IsEmpty())
+        return;
+
+    if (!m_craftingMode)
+    {
+        // 조합 모드 시작
+        m_craftingMode = true;
+        m_craftingSlot1 = slot;
+        cout << "조합 모드 활성화: 첫 번째 재료 선택됨" << endl;
+    }
+    else
+    {
+        // 두 번째 재료 선택 및 조합 시도
+        m_craftingSlot2 = slot;
+
+        if (RecipeManager::GetInstance()->TryCraftWithInventoryManager(m_craftingSlot1, m_craftingSlot2))
+        {
+            NotifyInventoryChanged();
+            cout << "조합 성공!" << endl;
+        }
+        else
+        {
+            cout << "조합할 수 없는 재료입니다." << endl;
+        }
+
+        // 조합 모드 종료
+        m_craftingMode = false;
+        m_craftingSlot1.reset();
+        m_craftingSlot2.reset();
+    }
+}
+// 인벤토리 변화 알림 함수
+void InventoryManager::NotifyInventoryChanged()
+{
+    OnInventoryChanged(); // 델리게이트 호출
 }

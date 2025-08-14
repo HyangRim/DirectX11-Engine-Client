@@ -34,6 +34,7 @@ private:
     shared_ptr<class DayPanelUI> m_day;
     shared_ptr<class EquipmentPanelUI> m_equipment;
     shared_ptr<class InventoryPanelUI> m_inventory;
+    shared_ptr<class CraftListPanelUI> m_craftList;
 
     shared_ptr<InventoryManager> m_inventoryManager;
 
