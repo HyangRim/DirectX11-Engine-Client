@@ -164,7 +164,7 @@ void NickyQSkill::CalculateSkillDirection()
 // 첫 번째 애니메이션이 재생 중인지 확인하는 함수 추가
 bool NickyQSkill::IsFirstAnimationPlaying()
 {
-	shared_ptr<AnimationState> curAnimState = m_playerObject->GetAnimationStateMachine()->GetCurrentState2(AnimationStateType::Skill_1);
+	shared_ptr<AnimationState> curAnimState = m_playerObject->GetAnimationStateMachine()->GetState(AnimationStateType::Skill_1);
 
 	return static_pointer_cast<NickyAnimQState>(curAnimState)->IsFirstAnimationActive();
 

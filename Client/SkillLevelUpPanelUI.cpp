@@ -17,7 +17,6 @@ SkillLevelUpPanelUI::~SkillLevelUpPanelUI()
 
 void SkillLevelUpPanelUI::Initialize()
 {
-	LoadResources();
 	CreatePanels();
 }
 
@@ -37,33 +36,6 @@ void SkillLevelUpPanelUI::Cleanup()
 	
 }
 
-void SkillLevelUpPanelUI::LoadResources()
-{
-	shared_ptr<Shader> shader = make_shared<Shader>(L"ImageShader.fx");
-
-	// 모든 UI 머티리얼에 동일한 설정 적용
-	auto SetupUIMaterial = [&](shared_ptr<Material> material) {
-		material->SetShader(shader);
-		material->SetRenderQueue(RenderQueue::Transparent);
-		material->SetTransparent(true);  // 모든 UI에 추가
-		material->SetRenderingMode(RenderingMode::Forward);
-		};
-
-	//스킬 레벨업 이미지
-	shared_ptr<Material> btn_SkillLevelUp = make_shared<Material>();
-	SetupUIMaterial(btn_SkillLevelUp);
-
-	wstring tag = L"Btn_LevelUp_MouseOver";
-	wstring path = L"..\\Resources\\Textures\\UI\\status\\" + tag + L".png";
-	auto btn_SkillLevelUpTexture = RESOURCES->Load<Texture>(tag, path);
-
-	btn_SkillLevelUp->SetDiffuseMap(btn_SkillLevelUpTexture);
-	MaterialDesc& btn_SkillLevelUpDesc = btn_SkillLevelUp->GetMaterialDesc();
-	btn_SkillLevelUpDesc.ambient = Vec4(1.f);
-	btn_SkillLevelUpDesc.diffuse = Vec4(1.f);
-	btn_SkillLevelUpDesc.specular = Vec4(1.f);
-	RESOURCES->Add(tag, btn_SkillLevelUp);
-}
 
 void SkillLevelUpPanelUI::CreatePanels()
 {

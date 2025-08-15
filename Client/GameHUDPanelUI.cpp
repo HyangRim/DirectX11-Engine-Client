@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "GameHUDPanelUI.h"
 
+#include "UIResourceManager.h"
+
 #include "Player.h"
 
 const vector<wstring> nickySkillIcons = {
@@ -33,7 +35,6 @@ GameHUDPanelUI::~GameHUDPanelUI()
 
 void GameHUDPanelUI::Initialize()
 {
-	LoadResources();
 	CreatePanels();
 }
 
@@ -53,87 +54,6 @@ void GameHUDPanelUI::Cleanup()
 
 }
 
-void GameHUDPanelUI::LoadResources()
-{
-	shared_ptr<Shader> shader = make_shared<Shader>(L"ImageShader.fx");
-
-	// 모든 UI 머티리얼에 동일한 설정 적용
-	auto SetupUIMaterial = [&](shared_ptr<Material> material) {
-		material->SetShader(shader);
-		material->SetRenderQueue(RenderQueue::Transparent);
-		material->SetTransparent(true);  // 모든 UI에 추가
-		material->SetRenderingMode(RenderingMode::Forward);
-	};
-
-	wstring prefixPath = L"..\\Resources\\Textures\\UI\\SkillIcon\\";
-	vector<wstring> skillTag = { L"P", L"Q", L"W", L"E", L"R" };
-	//니키 스킬 아이콘
-	for (int i = 0; i < nickySkillIcons.size(); i++)
-	{
-		shared_ptr<Material> charSkillIcon = make_shared<Material>();
-		SetupUIMaterial(charSkillIcon);
-
-		wstring tag = L"Nicky" + skillTag[i];
-		wstring path = prefixPath + nickySkillIcons[i] + L".png";
-		auto charSkillIconTexture = RESOURCES->Load<Texture>(tag, path);
-
-		charSkillIcon->SetDiffuseMap(charSkillIconTexture);
-		MaterialDesc& charSkillIconDesc = charSkillIcon->GetMaterialDesc();
-		charSkillIconDesc.ambient = Vec4(1.f);
-		charSkillIconDesc.diffuse = Vec4(1.f);
-		charSkillIconDesc.specular = Vec4(1.f);
-		RESOURCES->Add(tag, charSkillIcon);
-	}
-
-
-	//비앙카 스킬 아이콘
-	for (int i = 0; i < biancaSkillIcons.size(); i++)
-	{
-		shared_ptr<Material> charSkillIcon = make_shared<Material>();
-		SetupUIMaterial(charSkillIcon);
-
-		wstring tag = L"Bianca" + skillTag[i];
-		wstring path = prefixPath + biancaSkillIcons[i] + L".png";
-		auto charSkillIconTexture = RESOURCES->Load<Texture>(tag, path);
-
-		charSkillIcon->SetDiffuseMap(charSkillIconTexture);
-		MaterialDesc& charSkillIconDesc = charSkillIcon->GetMaterialDesc();
-		charSkillIconDesc.ambient = Vec4(1.f);
-		charSkillIconDesc.diffuse = Vec4(1.f);
-		charSkillIconDesc.specular = Vec4(1.f);
-		RESOURCES->Add(tag, charSkillIcon);
-	}
-
-	//hp 이미지
-	shared_ptr<Material> charHpBar = make_shared<Material>();
-	SetupUIMaterial(charHpBar);
-
-	wstring tag = L"HPBar_UI";
-	wstring path = L"..\\Resources\\Textures\\UI\\status\\" + tag + L".png";
-	auto charHpBarTexture = RESOURCES->Load<Texture>(tag, path);
-
-	charHpBar->SetDiffuseMap(charHpBarTexture);
-	MaterialDesc& charHpBarDesc = charHpBar->GetMaterialDesc();
-	charHpBarDesc.ambient = Vec4(1.f);
-	charHpBarDesc.diffuse = Vec4(1.f);
-	charHpBarDesc.specular = Vec4(1.f);
-	RESOURCES->Add(tag, charHpBar);
-
-	//sp 이미지
-	shared_ptr<Material> charSpBar = make_shared<Material>();
-	SetupUIMaterial(charSpBar);
-
-	tag = L"SPBar_UI";
-	path = L"..\\Resources\\Textures\\UI\\status\\" + tag + L".png";
-	auto charSpBarTexture = RESOURCES->Load<Texture>(tag, path);
-
-	charSpBar->SetDiffuseMap(charSpBarTexture);
-	MaterialDesc& charSpBarDesc = charSpBar->GetMaterialDesc();
-	charSpBarDesc.ambient = Vec4(1.f);
-	charSpBarDesc.diffuse = Vec4(1.f);
-	charSpBarDesc.specular = Vec4(1.f);
-	RESOURCES->Add(tag, charSpBar);
-}
 
 void GameHUDPanelUI::CreatePanels()
 {
@@ -248,9 +168,10 @@ void GameHUDPanelUI::CreatePanels()
 	Vec3 pos = charLevelPanel->GetGameObject()->GetTransform()->GetPosition();
 	charLevelPanel->GetGameObject()->GetTransform()->SetPosition(Vec3(pos.x, pos.y, pos.z - 0.01));
 
+
 	charLevelPanel->AddD2DText(
 		Vec2(15.f, 15.f),
-		L"20",
+		to_wstring(m_player->GetStatus().level),
 		12.f,
 		Vec4(1.f),
 		1.f,

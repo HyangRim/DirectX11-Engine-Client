@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "TimePanelUI.h"
+#include "UIResourceManager.h"
 
 TimePanelUI::TimePanelUI()
 {
@@ -17,7 +18,6 @@ void TimePanelUI::Update()
 
 void TimePanelUI::Initialize()
 {
-	LoadResources();
 	CreatePanels();
 }
 
@@ -58,37 +58,6 @@ void TimePanelUI::UpdateTime()
 	}
 }
 
-void TimePanelUI::LoadResources()
-{
-	shared_ptr<Shader> shader = make_shared<Shader>(L"ImageShader.fx");
-
-	// 모든 UI 머티리얼에 동일한 설정 적용
-	auto SetupUIMaterial = [&](shared_ptr<Material> material) {
-		material->SetShader(shader);
-		material->SetRenderQueue(RenderQueue::Transparent);
-		material->SetTransparent(true);  // 모든 UI에 추가
-		material->SetRenderingMode(RenderingMode::Forward);
-		};
-
-	wstring prefixPath = L"..\\Resources\\Textures\\UI\\time\\";
-
-	{
-		shared_ptr<Material> TimeUIImage = make_shared<Material>();
-		SetupUIMaterial(TimeUIImage);
-
-		wstring path = prefixPath + L"Time_UI_Bg.png";
-		auto TimeUITexture = RESOURCES->Load<Texture>(L"Time_UI_Image", path);
-
-		TimeUIImage->SetDiffuseMap(TimeUITexture);
-		MaterialDesc& TimeUIDesc = TimeUIImage->GetMaterialDesc();
-		TimeUIDesc.ambient = Vec4(1.f);
-		TimeUIDesc.diffuse = Vec4(1.f);
-		TimeUIDesc.specular = Vec4(1.0f);
-		RESOURCES->Add(L"Time_UI_BG", TimeUIImage);
-	}
-
-	
-}
 
 
 void TimePanelUI::CreatePanels()

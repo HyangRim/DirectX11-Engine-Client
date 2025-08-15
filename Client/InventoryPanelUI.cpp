@@ -18,7 +18,6 @@ InventoryPanelUI::~InventoryPanelUI()
 
 void InventoryPanelUI::Initialize()
 {
-	//LoadResources();
 	CreatePanels();
 }
 
@@ -37,10 +36,7 @@ void InventoryPanelUI::Cleanup()
 
 }
 
-void InventoryPanelUI::LoadResources()
-{
 
-}
 
 void InventoryPanelUI::CreatePanels()
 {

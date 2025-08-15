@@ -12,7 +12,6 @@ public:
     virtual void Cleanup() = 0;
 
 protected:
-    virtual void LoadResources() = 0;
     virtual void CreatePanels() = 0;
 
     virtual void RegisterUIObject(shared_ptr<GameObject> uiObject) = 0;

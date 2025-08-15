@@ -36,6 +36,7 @@ bool NickyRunState::CanTransitionTo(PlayerStateType newState)
     case PlayerStateType::Skill_2:
     case PlayerStateType::Skill_3:
     case PlayerStateType::Skill_4:
+    case PlayerStateType::Craft:
         return true;
     case PlayerStateType::Run:
         return false;  // 자기 자신으로는 전환 불가

@@ -68,6 +68,8 @@ bool NickyAnimWaitState::CanTransitionTo(AnimationStateType nextState)
     case AnimationStateType::Skill_4:
     case AnimationStateType::Charging:
     case AnimationStateType::Run:
+    case AnimationStateType::Craft:
+
         return true;
     case AnimationStateType::Wait:
         return false;  // 자기 자신으로는 전환 불가

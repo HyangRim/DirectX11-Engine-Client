@@ -61,6 +61,7 @@ bool BiancaAnimRunState::CanTransitionTo(AnimationStateType nextState)
     case AnimationStateType::Skill_2:
     case AnimationStateType::Skill_3:
     case AnimationStateType::Skill_4:
+    case AnimationStateType::Craft:
         return true;
     case AnimationStateType::Run:
         return false;  // 자기 자신으로는 전환 불가

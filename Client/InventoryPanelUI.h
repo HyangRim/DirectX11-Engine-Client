@@ -23,10 +23,9 @@ public:
  
 
 public:
-    vector<shared_ptr<ItemSlot>>& GetInventroySlots() { return m_inventorySlots; }
+    vector<shared_ptr<ItemSlot>>& GetInventorySlots() { return m_inventorySlots; }
 
 protected:
-    virtual void LoadResources();
     virtual void CreatePanels();
 
     virtual void RegisterUIObject(shared_ptr<GameObject> uiObject);

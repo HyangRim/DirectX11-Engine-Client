@@ -33,7 +33,9 @@
     <ClInclude Include="AlphaWalkState.h" />
     <ClInclude Include="BaseSkill.h" />
     <ClInclude Include="Bianca.h" />
+    <ClInclude Include="BiancaAnimCraftState.h" />
     <ClInclude Include="BiancaCamera.h" />
+    <ClInclude Include="BiancaCraftState.h" />
     <ClInclude Include="BiancaESkill.h" />
     <ClInclude Include="BiancaESkillCircle.h" />
     <ClInclude Include="BiancaAnimEState.h" />
@@ -59,6 +61,7 @@
     <ClInclude Include="CameraScript.h" />
     <ClInclude Include="CharacterSelectScene.h" />
     <ClInclude Include="Client_Define.h" />
+    <ClInclude Include="CraftGagePanelUI.h" />
     <ClInclude Include="CraftListPanelUI.h" />
     <ClInclude Include="Cursor.h" />
     <ClInclude Include="DayPanelUI.h" />
@@ -81,6 +84,8 @@
     <ClInclude Include="Main.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Nicky.h" />
+    <ClInclude Include="NickyAnimCraftState.h" />
+    <ClInclude Include="NickyCraftState.h" />
     <ClInclude Include="NickyERange.h" />
     <ClInclude Include="NickyESkill.h" />
     <ClInclude Include="NickyAnimEState.h" />
@@ -118,6 +123,7 @@
     <ClInclude Include="TextureBufferDemo.h" />
     <ClInclude Include="TimePanelUI.h" />
     <ClInclude Include="UIManager.h" />
+    <ClInclude Include="UIResourceManager.h" />
     <ClInclude Include="UITestDemo.h" />
     <ClInclude Include="ViewportDemo.h" />
     <ClInclude Include="Wolf.h" />
@@ -147,7 +153,9 @@
     <ClCompile Include="AlphaWalkState.cpp" />
     <ClCompile Include="BaseSkill.cpp" />
     <ClCompile Include="Bianca.cpp" />
+    <ClCompile Include="BiancaAnimCraftState.cpp" />
     <ClCompile Include="BiancaCamera.cpp" />
+    <ClCompile Include="BiancaCraftState.cpp" />
     <ClCompile Include="BiancaESkill.cpp" />
     <ClCompile Include="BiancaESkillCircle.cpp" />
     <ClCompile Include="BiancaAnimEState.cpp" />
@@ -172,6 +180,7 @@
     <ClCompile Include="ButtonDemo.cpp" />
     <ClCompile Include="CameraScript.cpp" />
     <ClCompile Include="CharacterSelectScene.cpp" />
+    <ClCompile Include="CraftGagePanelUI.cpp" />
     <ClCompile Include="CraftListPanelUI.cpp" />
     <ClCompile Include="Cursor.cpp" />
     <ClCompile Include="DayPanelUI.cpp" />
@@ -193,6 +202,8 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Nicky.cpp" />
+    <ClCompile Include="NickyAnimCraftState.cpp" />
+    <ClCompile Include="NickyCraftState.cpp" />
     <ClCompile Include="NickyERange.cpp" />
     <ClCompile Include="NickyESkill.cpp" />
     <ClCompile Include="NickyAnimEState.cpp" />
@@ -232,6 +243,7 @@
     <ClCompile Include="TextureBufferDemo.cpp" />
     <ClCompile Include="TimePanelUI.cpp" />
     <ClCompile Include="UIManager.cpp" />
+    <ClCompile Include="UIResourceManager.cpp" />
     <ClCompile Include="UITestDemo.cpp" />
     <ClCompile Include="ViewportDemo.cpp" />
     <ClCompile Include="Wolf.cpp" />

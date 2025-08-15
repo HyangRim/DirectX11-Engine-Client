@@ -130,9 +130,10 @@ AnimationStateType AnimationStateMachine::GetCurrentState() const
     return m_currentState ? m_currentState->GetType() : AnimationStateType::Wait;
 }
 
-shared_ptr<AnimationState> AnimationStateMachine::GetCurrentState2(AnimationStateType type)
+
+shared_ptr<AnimationState> AnimationStateMachine::GetState(AnimationStateType type)
 {
-    return m_states[type];
+    return  m_states[type];
 }
 
 bool AnimationStateMachine::IsInState(AnimationStateType state) const
@@ -172,8 +173,17 @@ void AnimationStateMachine::HandleSpecialStateTransitions()
             ChangeState(AnimationStateType::Wait);
         }
     }
-    // W 스킬 완료 후 Wait 상태로 전환
+    // R 스킬 완료 후 Wait 상태로 전환
     else if (GetCurrentState() == AnimationStateType::Skill_4)
+    {
+        if (m_currentState->CanTransitionTo(AnimationStateType::Wait))
+        {
+            ChangeState(AnimationStateType::Wait);
+        }
+    }
+
+    // R 스킬 완료 후 Wait 상태로 전환
+    else if (GetCurrentState() == AnimationStateType::Craft)
     {
         if (m_currentState->CanTransitionTo(AnimationStateType::Wait))
         {

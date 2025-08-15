@@ -153,7 +153,11 @@ void PlayerStateMachine::ProcessInput()
         //cout << "R 스킬 중 이동 금지\n";
         return;
     }
-
+    if ((GetCurrentState() == PlayerStateType::Craft))
+    {
+        //cout << "W 스킬 중 이동 금지\n";
+        return;
+    }
 
 
 
@@ -307,6 +311,23 @@ void PlayerStateMachine::ProcessInput()
             OnSkillUsed(3, nullptr);  // 3: R 스킬 인덱스 
         }
     }
+    // PlayerStateMachine.cpp - Z키 처리
+    if (INPUT->GetButtonDown(KEY_TYPE::Z))
+    {
+        bool craftSuccess = false;
+        OnTryCraftFirst(craftSuccess);  // Client에게 "첫 번째 조합 시도해줘" 요청
+       
+        if (!craftSuccess) return;
+
+        // 애니메이션 전환
+        auto navMeshAgent = GetGameObject()
+            ->GetFixedComponent<NavMeshAgent>(ComponentType::NavMeshAgent);
+        if (navMeshAgent)
+            navMeshAgent->Stop();
+
+        m_animationStateMachine->ChangeState(AnimationStateType::Craft);
+        ChangeState(PlayerStateType::Craft);     
+    }  
 }
 
 Ray PlayerStateMachine::CreateRayFromMouse(POINT mousePos, shared_ptr<Camera> camera)
@@ -391,6 +412,16 @@ void PlayerStateMachine::HandleSpecialStateTransitions()
     }
     // R 스킬 완료 후 Wait 상태로 전환
     else if (GetCurrentState() == PlayerStateType::Skill_4)
+    {
+        if (m_currentState->CanTransitionTo(PlayerStateType::Wait))
+        {
+            ChangeState(PlayerStateType::Wait);
+            m_animationStateMachine->ChangeState(AnimationStateType::Wait);
+        }
+    }
+
+    // Craft 완료 후 Wait 상태로 전환
+    else if (GetCurrentState() == PlayerStateType::Craft)
     {
         if (m_currentState->CanTransitionTo(PlayerStateType::Wait))
         {

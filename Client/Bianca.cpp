@@ -7,6 +7,7 @@
 #include "BiancaAnimWState.h"
 #include "BiancaAnimEState.h"
 #include "BiancaAnimRState.h"
+#include "BiancaAnimCraftState.h"
 
 #include "BiancaWaitState.h"
 #include "BiancaRunState.h"
@@ -14,6 +15,7 @@
 #include "BiancaWState.h"
 #include "BiancaEState.h"
 #include "BiancaRState.h"
+#include "BiancaCraftState.h"
 
 #include "FogOfWar.h"
 
@@ -110,6 +112,7 @@ void Bianca::InitBiancaAnimation()
 	m_model->ReadAnimation(L"Skill_3_3", L"Bianca2/Bianca_skill3-3");
 	m_model->ReadAnimation(L"Skill_4_1", L"Bianca2/Bianca_skill4");
 	m_model->ReadAnimation(L"Skill_4_2", L"Bianca2/Bianca_skill4-2");
+	m_model->ReadAnimation(L"Craft", L"Bianca2/Bianca_craftMetal");
 
 	AddComponent(make_shared<ModelAnimator>(m_defaultShader));
 	{
@@ -119,6 +122,7 @@ void Bianca::InitBiancaAnimation()
 
 	//FSM 추가. 
 	AddComponent(make_shared<AnimationStateMachine>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Craft,	make_shared<BiancaAnimCraftState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait,		make_shared<BiancaAnimWaitState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Run,		make_shared<BiancaAnimRunState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1,	make_shared<BiancaAnimQState>());
@@ -143,6 +147,11 @@ void Bianca::InitBiancaAnimation()
 	skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_4_1"));
 	skill4Durations.push_back(animator->GetAnimationDuration(L"Skill_4_2"));
 	animator->CreateSequence(L"Skill_4_Sequence", skill4Anims, skill4Durations, false);
+
+	// W 스킬 시퀀스
+	vector<wstring> craftMotion = { L"Craft" };
+	animator->CreateSequence(L"Craft_Sequence", craftMotion, false);
+
 }
 
 void Bianca::InitBiancaPSM()
@@ -154,12 +163,14 @@ void Bianca::InitBiancaPSM()
 
 	m_playerStateMachine->SetPlayerInterface(m_playerInterface);
 
+	m_playerStateMachine->RegisterState(PlayerStateType::Craft,		make_shared<BiancaCraftState>(GetModelAnimator()));
 	m_playerStateMachine->RegisterState(PlayerStateType::Run,		make_shared<BiancaRunState>());
 	m_playerStateMachine->RegisterState(PlayerStateType::Wait,		make_shared<BiancaWaitState>());																				
 	m_playerStateMachine->RegisterState(PlayerStateType::Skill_1,	make_shared<BiancaQState>(GetModelAnimator()));
 	m_playerStateMachine->RegisterState(PlayerStateType::Skill_2,	make_shared<BiancaWState>(GetModelAnimator()));
 	m_playerStateMachine->RegisterState(PlayerStateType::Skill_3,	make_shared<BiancaEState>(GetModelAnimator()));
 	m_playerStateMachine->RegisterState(PlayerStateType::Skill_4,	make_shared<BiancaRState>(GetModelAnimator()));
+
 }
 
 void Bianca::InitBiancaComponent()

@@ -3,6 +3,7 @@
 #include "InventoryManager.h"
 #include "Player.h"
 #include "RecipeManager.h"
+#include "PlayerStateMachine.h"
 
 InventoryManager::~InventoryManager()
 {
@@ -29,11 +30,11 @@ void InventoryManager::RegisterInventorySlots(const vector<shared_ptr<ItemSlot>>
             // 우클릭 이벤트도 필요하다면
             slot->OnSlotRightClicked.Push([this](int slotIndex, SLOTTYPE slotType) {
                 // 우클릭 처리 로직
-                OnSlotRightClicked(slotIndex);
+                //OnSlotRightClicked(slotIndex);
              });
         }
     }
-    // 초기 알림
+    //초기알림
     NotifyInventoryChanged();
 }
 

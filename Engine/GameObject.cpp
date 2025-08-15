@@ -377,13 +377,13 @@ void GameObject::ClearReferences()
 		m_alphaChanged = false;
 
 #ifdef _DEBUG
-		std::cout << "GameObject::ClearReferences 완료" << std::endl;
+		//std::cout << "GameObject::ClearReferences 완료" << std::endl;
 #endif
 
 	}
 	catch (...) {
 #ifdef _DEBUG
-		std::cout << "GameObject::ClearReferences에서 예외 발생" << std::endl;
+		//std::cout << "GameObject::ClearReferences에서 예외 발생" << std::endl;
 #endif
 	}
 }

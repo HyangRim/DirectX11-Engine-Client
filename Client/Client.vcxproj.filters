@@ -178,6 +178,15 @@
     <Filter Include="Scripts\Item\Recipe">
       <UniqueIdentifier>{e4e36c2e-585a-479b-9ac5-7b06c5832a91}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\UI\CraftListPanelUI">
+      <UniqueIdentifier>{7f68b67a-fa11-4b7e-8f82-11f958a83e4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\UI\CraftGagePanelUI">
+      <UniqueIdentifier>{7e1c8c72-bb04-46ef-92d3-144999db52c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\UI\UIResourceManager">
+      <UniqueIdentifier>{08af5a1e-3942-4930-822b-e14968a926d7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -503,6 +512,27 @@
     </ClCompile>
     <ClCompile Include="ItemBox.cpp">
       <Filter>Scripts\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="CraftListPanelUI.cpp">
+      <Filter>Scripts\UI\CraftListPanelUI</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyAnimCraftState.cpp">
+      <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyCraftState.cpp">
+      <Filter>Scripts\Player\Nicky\NickyLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaAnimCraftState.cpp">
+      <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaCraftState.cpp">
+      <Filter>Scripts\Player\Bianca\BiancaLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="CraftGagePanelUI.cpp">
+      <Filter>Scripts\UI\CraftGagePanelUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIResourceManager.cpp">
+      <Filter>Scripts\UI\UIResourceManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -836,6 +866,27 @@
     </ClInclude>
     <ClInclude Include="ItemBox.h">
       <Filter>Scripts\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="CraftListPanelUI.h">
+      <Filter>Scripts\UI\CraftListPanelUI</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyAnimCraftState.h">
+      <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyCraftState.h">
+      <Filter>Scripts\Player\Nicky\NickyLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaAnimCraftState.h">
+      <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaCraftState.h">
+      <Filter>Scripts\Player\Bianca\BiancaLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="CraftGagePanelUI.h">
+      <Filter>Scripts\UI\CraftGagePanelUI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIResourceManager.h">
+      <Filter>Scripts\UI\UIResourceManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

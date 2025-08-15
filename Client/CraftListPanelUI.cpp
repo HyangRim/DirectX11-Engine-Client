@@ -6,9 +6,16 @@
 #include "RecipeManager.h"
 #include "ItemManager.h"
 #include "ItemSlot.h"
+#include "PlayerStateMachine.h"
 
-CraftListPanelUI::CraftListPanelUI(shared_ptr<Player> player)
+#include "NickyCraftState.h"
+#include "BiancaCraftState.h"
+
+#include "CraftGagePanelUI.h"
+
+CraftListPanelUI::CraftListPanelUI(shared_ptr<Player> player, shared_ptr<CraftGagePanelUI> gagePanel)
     : m_player(player)
+    , m_gagePanel(gagePanel)
 {
 }
 
@@ -18,7 +25,6 @@ CraftListPanelUI::~CraftListPanelUI()
 
 void CraftListPanelUI::Initialize()
 {
-    LoadResources();
     CreatePanels();
 
     // 인벤토리 변화 이벤트 등록
@@ -58,10 +64,7 @@ void CraftListPanelUI::Cleanup()
     ClearCraftSlots();
 }
 
-void CraftListPanelUI::LoadResources()
-{
-    // 필요한 UI 리소스 로드 (이미 ItemManager에서 로드되어 있을 것)
-}
+
 
 void CraftListPanelUI::CreatePanels()
 {
@@ -157,20 +160,51 @@ void CraftListPanelUI::OnCraftSlotClicked(int slotIndex)
     auto recipe = m_craftableRecipes[slotIndex];
     if (!recipe) return;
 
-    
-    // 인벤토리에서 직접 제작 실행
-    auto inventoryManager = InventoryManager::GetInstance();
-    auto& inventorySlots = inventoryManager->GetInventorySlots();
+    // 결과 아이템의 등급 확인
+    auto resultItem = ItemManager::GetInstance()->GetItem(recipe->GetResultItemID());
+    if (!resultItem) return;
 
-    if (recipe->ExecuteCraftFromSlots(inventorySlots))
+    ITEMGRADE itemGrade = resultItem->GetItemGrade();
+
+    // 플레이어 Craft 상태로 전환 (아직 제작 실행하지 않음)
+    if (m_player)
     {
-        // 제작 성공 후 목록 즉시 업데이트
-       // UpdateCraftableItems();
+        // Player의 StateMachine과 AnimationStateMachine 가져오기
+        auto playerStateMachine = m_player->GetPlayerStateMachine();
+        auto animStateMachine = m_player->GetAnimationStateMachine();
+
+        if (playerStateMachine && animStateMachine)
+        {
+            // 현재 이동 중이면 멈추기
+            auto navMeshAgent = m_player->GetNavMeshAgent();
+            if (navMeshAgent)
+                navMeshAgent->Stop();
+            playerStateMachine->GetState(PlayerStateType::Craft)->SetRecipeIndex(slotIndex);
+            animStateMachine->GetState(AnimationStateType::Craft)->SetExpectedDuration(GetCraftTimeByGrade(itemGrade));
+            // Craft 상태로 전환
+            animStateMachine->ChangeState(AnimationStateType::Craft);
+            playerStateMachine->ChangeState(PlayerStateType::Craft);       
+        }
     }
-  
+
+    m_gagePanel->SetVisible(true);
+    m_gagePanel->SetItem(resultItem);
 }
 
 void CraftListPanelUI::RegisterUIObject(shared_ptr<GameObject> uiObject)
 {
     // 필요시 추가 UI 오브젝트 등록
 }
+
+float CraftListPanelUI::GetCraftTimeByGrade(ITEMGRADE grade)
+{
+    switch (grade) {
+    case ITEMGRADE::COMMON:    return 1.0f; 
+    case ITEMGRADE::UNCOMMON:  return 1.5f; 
+    case ITEMGRADE::RARE:      return 2.0f; 
+    case ITEMGRADE::EPIC:      return 3.0f; 
+    case ITEMGRADE::LEGENDARY: return 3.0f; 
+    default:                   return 5.0f; 
+    }
+}
+

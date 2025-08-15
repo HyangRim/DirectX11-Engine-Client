@@ -1,15 +1,17 @@
 #pragma once
 #include "IBasePanelUI.h"
+#include "Item.h"
 
 class Player;
 class Recipe;
 class ItemSlot;
+class CraftGagePanelUI;
 
 class CraftListPanelUI :
     public IBasePanelUI
 {
 public:
-    CraftListPanelUI(shared_ptr<Player> player);
+    CraftListPanelUI(shared_ptr<Player> player, shared_ptr<CraftGagePanelUI> gagePanel);
     virtual ~CraftListPanelUI();
 
     virtual void Initialize();
@@ -22,9 +24,9 @@ private:
     void CreateCraftSlots();
     void ClearCraftSlots();
     void OnCraftSlotClicked(int slotIndex);
+    float GetCraftTimeByGrade(ITEMGRADE grade);
 
 protected:
-    virtual void LoadResources();
     virtual void CreatePanels();
 
     virtual void RegisterUIObject(shared_ptr<GameObject> uiObject);
@@ -40,6 +42,7 @@ private:
     // UI ฐüทร
     shared_ptr<UIPanel> m_scrollPanel;
 
+    shared_ptr<CraftGagePanelUI> m_gagePanel;
     
 };
 

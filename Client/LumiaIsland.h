@@ -33,6 +33,9 @@ public:
 private:
 	void CreateMainCamera();
 	void CreateUICamera();
+	void CreateDefaultLight();
+	void SelectCharacter();
+	void CreateAndSetUIManager();
 
 	//땅, 인테리어, 환경 생성. 
 	void CreateCemeteryBase();
@@ -59,20 +62,15 @@ private:
 	//=====================UI관련 함수=====================//
 
 
-
-	Vec4 ColorNormalize(Vec4 input);	//RGBA ( 0 ~ 255 ) 넣으면 -> ( 0 ~ 1 )
-
 private:
 	//멀티 스레드 로딩용 함수.
 	static DWORD WINAPI BackgroundLoadingThread(LPVOID _param);
 	void ProcessMainThreadTasks();
-	void CreateDefaultLight();
-
+	
 private:
 	//테스트용. 
 	void CreateTestDecal();
 	void ControlPlayerStatus();
-	void CreateTestMesh();
 	void CreateTestDummy();
 
 

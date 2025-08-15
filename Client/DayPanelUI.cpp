@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "DayPanelUI.h"
+#include "UIResourceManager.h"
 
 DayPanelUI::DayPanelUI()
 {
@@ -17,7 +18,7 @@ void DayPanelUI::Update()
 
 void DayPanelUI::Initialize()
 {
-	LoadResources();
+
 	CreatePanels();
 }
 
@@ -33,50 +34,6 @@ void DayPanelUI::Cleanup()
 }
 
 
-void DayPanelUI::LoadResources()
-{
-	shared_ptr<Shader> shader = make_shared<Shader>(L"ImageShader.fx");
-
-	// 모든 UI 머티리얼에 동일한 설정 적용
-	auto SetupUIMaterial = [&](shared_ptr<Material> material) {
-		material->SetShader(shader);
-		material->SetRenderQueue(RenderQueue::Transparent);
-		material->SetTransparent(true);  // 모든 UI에 추가
-		material->SetRenderingMode(RenderingMode::Forward);
-		};
-
-	wstring prefixPath = L"..\\Resources\\Textures\\UI\\time\\";
-	//=====================날짜관련 함수=====================//
-	{
-		shared_ptr<Material> TimeUIImage = make_shared<Material>();
-		SetupUIMaterial(TimeUIImage);
-
-		wstring path = prefixPath + L"Img_HUD_Union.png";
-		auto TimeUITexture = RESOURCES->Load<Texture>(L"DAY_UI_Image", path);
-
-		TimeUIImage->SetDiffuseMap(TimeUITexture);
-		MaterialDesc& TimeUIDesc = TimeUIImage->GetMaterialDesc();
-		TimeUIDesc.ambient = Vec4(1.f);
-		TimeUIDesc.diffuse = Vec4(1.f);
-		TimeUIDesc.specular = Vec4(1.0f);
-		RESOURCES->Add(L"DAY_UI_BG", TimeUIImage);
-	}
-	//Ico_DaySun.png
-
-	{
-		shared_ptr<Material> sunIcon = make_shared<Material>();
-		SetupUIMaterial(sunIcon);
-		auto sunIconTexture = RESOURCES->Load<Texture>(L"SUN_ICON", prefixPath + L"Ico_DaySun.png"); // 실제 파일명으로 변경
-		sunIcon->SetDiffuseMap(sunIconTexture);
-		MaterialDesc& sunIconDesc = sunIcon->GetMaterialDesc();
-		sunIconDesc.ambient = Vec4(1.f);
-		sunIconDesc.diffuse = Vec4(1.f);
-		sunIconDesc.specular = Vec4(1.0f);
-		RESOURCES->Add(L"SUN_UI_ICON", sunIcon);
-	}
-
-
-}
 
 
 void DayPanelUI::CreatePanels()

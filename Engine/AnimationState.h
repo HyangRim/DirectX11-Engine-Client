@@ -16,7 +16,8 @@ enum class AnimationStateType
     Cooldown,
     Death,
     Dying, //죽은 상태 무한 반복. 
-    Appear
+    Appear,
+    Craft
 };
 
 class ModelAnimator;
@@ -34,6 +35,8 @@ public:
     virtual bool CanTransitionTo(AnimationStateType nextState) = 0;
 
     AnimationStateType GetType() const { return m_type; }
+
+    void SetExpectedDuration(float duration) { m_expectedDuration = duration; }
 
 protected:
     AnimationStateType m_type;

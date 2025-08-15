@@ -15,7 +15,7 @@ public:
     void UpdateTime();
 
 protected:
-    virtual void LoadResources();
+
     virtual void CreatePanels();
 
     virtual void RegisterUIObject(shared_ptr<GameObject> uiObject);

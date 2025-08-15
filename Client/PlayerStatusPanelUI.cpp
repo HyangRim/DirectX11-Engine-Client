@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "PlayerStatusPanelUI.h"
 
+#include "UIResourceManager.h"
+
 #include "Player.h"
 
 const vector<wstring> charStatIconNames = {
@@ -28,7 +30,6 @@ PlayerStatusPanelUI::~PlayerStatusPanelUI()
 
 void PlayerStatusPanelUI::Initialize()
 {
-	LoadResources();
 	CreatePanels();
 }
 
@@ -48,48 +49,6 @@ void PlayerStatusPanelUI::Cleanup()
 
 }
 
-void PlayerStatusPanelUI::LoadResources()
-{
-	shared_ptr<Shader> shader = make_shared<Shader>(L"ImageShader.fx");
-
-	// 모든 UI 머티리얼에 동일한 설정 적용
-	auto SetupUIMaterial = [&](shared_ptr<Material> material) {
-		material->SetShader(shader);
-		material->SetRenderQueue(RenderQueue::Transparent);
-		material->SetTransparent(true);  // 모든 UI에 추가
-		material->SetRenderingMode(RenderingMode::Forward);
-		};
-
-	wstring prefixTag = L"Ico_ChaStat_";
-	wstring prefixPath = L"..\\Resources\\Textures\\UI\\CharStatIcon\\";
-
-	vector<Vec4> statIconColor;
-	statIconColor.push_back(ColorNormalize(Vec4(218, 187, 102, 255)));
-	statIconColor.push_back(ColorNormalize(Vec4(211, 160, 221, 255)));
-	statIconColor.push_back(ColorNormalize(Vec4(209, 120, 66, 255)));
-	statIconColor.push_back(ColorNormalize(Vec4(124, 175, 203, 255)));
-	statIconColor.push_back(ColorNormalize(Vec4(171, 162, 118, 255)));
-	statIconColor.push_back(ColorNormalize(Vec4(200, 200, 200, 255)));
-	statIconColor.push_back(ColorNormalize(Vec4(236, 96, 113, 255)));
-	statIconColor.push_back(ColorNormalize(Vec4(200, 200, 200, 255)));
-
-	for (int i = 0; i < charStatIconNames.size(); i++)
-	{
-		shared_ptr<Material> charLobbyImage = make_shared<Material>();
-		SetupUIMaterial(charLobbyImage);
-
-		wstring tag = prefixTag + charStatIconNames[i];
-		wstring path = prefixPath + tag + L".png";
-		auto charLobbyTexture = RESOURCES->Load<Texture>(tag, path);
-
-		charLobbyImage->SetDiffuseMap(charLobbyTexture);
-		MaterialDesc& charLobbyDesc = charLobbyImage->GetMaterialDesc();
-		charLobbyDesc.ambient = Vec4(1.f);
-		charLobbyDesc.diffuse = statIconColor[i];
-		charLobbyDesc.specular = Vec4(1.0f);
-		RESOURCES->Add(tag, charLobbyImage);
-	}
-}
 
 void PlayerStatusPanelUI::CreatePanels()
 {
@@ -119,6 +78,14 @@ void PlayerStatusPanelUI::CreatePanels()
 		Vec4 color;                      // 텍스트 색상
 		wstring name;                    // 텍스트 이름
 	};
+	// 소숫점 1자리로 제한하는 함수
+	auto FormatFloat = [](float value, int precision = 1) -> wstring {
+		std::wstringstream ss;
+		ss << std::fixed << std::setprecision(precision) << value;
+		return ss.str();
+		};
+
+	FormatFloat(playerStatus.hitSpeed, 1);
 
 	// 스탯 텍스트 설정 배열
 	vector<StatTextConfig> statConfigs = {
@@ -126,10 +93,10 @@ void PlayerStatusPanelUI::CreatePanels()
 		{1, 0, [&]() { return to_wstring((int)playerStatus.hitAttack); },			ColorNormalize(Vec4(211, 160, 221, 255)), L"SkillAmpRatio"},
 		{0, 1, [&]() { return to_wstring((int)playerStatus.hitAttack); },			ColorNormalize(Vec4(209, 120, 66 , 255)), L"IncreaseBasicAttackDamageRatio"},
 		{1, 1, [&]() { return to_wstring((int)playerStatus.defense); },				ColorNormalize(Vec4(124, 175, 203, 255)), L"Defense"},
-		{0, 2, [&]() { return to_wstring(playerStatus.hitSpeed); },					ColorNormalize(Vec4(171, 162, 118, 255)), L"AttackSpeedRatio"},
+		{0, 2, [&]() { return FormatFloat(playerStatus.hitSpeed, 1); },				ColorNormalize(Vec4(171, 162, 118, 255)), L"AttackSpeedRatio"},
 		{1, 2, [&]() { return to_wstring((int)playerStatus.cooldownReduction); },	ColorNormalize(Vec4(200, 200, 200, 255)), L"CooldownReduction"},
 		{0, 3, [&]() { return to_wstring((int)playerStatus.hitAttack); },			ColorNormalize(Vec4(236, 96 , 113, 255)), L"CriticalStrikeChance"},
-		{1, 3, [&]() { return to_wstring(playerStatus.moveSpeed); },				ColorNormalize(Vec4(200, 200, 200, 255)), L"MoveSpeedRatio"}
+		{1, 3, [&]() { return FormatFloat(playerStatus.moveSpeed, 1); },			ColorNormalize(Vec4(200, 200, 200, 255)), L"MoveSpeedRatio"}
 	};
 
 	// 스탯 텍스트 생성

@@ -11,6 +11,7 @@ enum class PlayerStateType
     Skill_2,
     Skill_3,
     Skill_4,
+    Craft,
     Die
 };
 class IPlayer;
@@ -32,12 +33,13 @@ public:
     virtual bool IsReleasing() const { return false; }     // 릴리즈 중인지 확인
     virtual bool IsMovable() const { return true; }        // 이동 가능한지 확인
 
-
-
     PlayerStateType GetType() const { return m_type; }
 
+    void SetRecipeIndex(int index) { m_recipeIndex = index; }
+    
 protected:
     PlayerStateType m_type;
+    int m_recipeIndex = 0;
 };
 
 
@@ -67,7 +69,9 @@ public:
     // 상태 등록 함수 (외부에서 상태 등록 가능)
     void RegisterState(PlayerStateType type, shared_ptr<PlayerState> state);
 
-    PlayerStateType GetCurrentState() const;
+    PlayerStateType GetCurrentState() const; //타입만 넘겨줌
+    shared_ptr<PlayerState> GetCurState() { return m_currentState; } //state 포인터를 넘겨줌
+    shared_ptr<PlayerState> GetState(PlayerStateType type) { return m_states[type]; }
 
     void HandleSpecialStateTransitions();
 
@@ -101,6 +105,10 @@ public:
     /*using SkillUsedDelegate = Delegate::Delegate<int>;
 
     SkillUsedDelegate OnSkillUsed;*/
+
+public:
+   
+    Delegate::Delegate<bool&> OnTryCraftFirst;
 
     // 델리게이트에 타겟 정보 추가
     using SkillUsedDelegate = Delegate::Delegate<int, shared_ptr<GameObject>>;

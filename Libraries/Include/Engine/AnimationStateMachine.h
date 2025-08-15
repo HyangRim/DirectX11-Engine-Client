@@ -21,7 +21,8 @@ public:
 
     // 상태 조회
     AnimationStateType GetCurrentState() const;
-    shared_ptr<AnimationState> GetCurrentState2(AnimationStateType type);
+    shared_ptr<AnimationState> GetState(AnimationStateType type);
+
     bool IsInState(AnimationStateType state) const;
 
     // 입력 처리

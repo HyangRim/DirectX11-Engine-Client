@@ -73,6 +73,7 @@ public:
 public:
     void WearEquipment(shared_ptr<EquipableItem> _item);
     void TakeOffEquipment(int _index);
+    void StartCraftAnimation();
 
     void LevelUp();
     virtual void Birth() = 0;

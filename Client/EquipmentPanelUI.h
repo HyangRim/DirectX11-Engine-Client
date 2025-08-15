@@ -22,7 +22,7 @@ public:
     vector<shared_ptr<ItemSlot>>& GetEquipmentSlots() { return m_equipmentSlots; }
 
 protected:
-    virtual void LoadResources();
+
     virtual void CreatePanels();
 
     virtual void RegisterUIObject(shared_ptr<GameObject> uiObject);

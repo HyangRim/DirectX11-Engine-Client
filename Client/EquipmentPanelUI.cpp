@@ -19,7 +19,6 @@ void EquipmentPanelUI::Update()
 
 void EquipmentPanelUI::Initialize()
 {
-	LoadResources();
 	CreatePanels();
 }
 
@@ -35,64 +34,7 @@ void EquipmentPanelUI::Cleanup()
 }
 
 
-void EquipmentPanelUI::LoadResources()
-{
-	shared_ptr<Shader> shader = make_shared<Shader>(L"ImageShader.fx");
 
-	// 모든 UI 머티리얼에 동일한 설정 적용
-	auto SetupUIMaterial = [&](shared_ptr<Material> material) {
-		material->SetShader(shader);
-		material->SetRenderQueue(RenderQueue::Transparent);
-		material->SetTransparent(true);  // 모든 UI에 추가
-		material->SetRenderingMode(RenderingMode::Forward);
-		};
-
-	wstring prefixTag = L"Ico_Status_";
-	vector<wstring> slotTag = { L"Weapon", L"Armor", L"Head", L"Arm", L"Leg" };
-	wstring prefixPath = L"..\\Resources\\Textures\\UI\\CharEquipmentIcon\\";
-
-	for (int i = 0; i < slotTag.size(); i++)
-	{
-		shared_ptr<Material> charEquipIcon = make_shared<Material>();
-		SetupUIMaterial(charEquipIcon);
-
-		wstring tag = prefixTag + slotTag[i];
-		wstring path = prefixPath + tag + L".png";
-		auto charEquipTexture = RESOURCES->Load<Texture>(tag, path);
-
-		charEquipIcon->SetDiffuseMap(charEquipTexture);
-		MaterialDesc& charEquipDesc = charEquipIcon->GetMaterialDesc();
-		charEquipDesc.ambient = Vec4(1.f);
-		charEquipDesc.diffuse = Vec4(1.f);
-		charEquipDesc.specular = Vec4(1.0f);
-		RESOURCES->Add(tag, charEquipIcon);
-	}
-
-
-
-
-
-	prefixPath = L"..\\Resources\\Textures\\UI_Btn\\";
-	wstring prefixBtnTag = L"Img_Item_Slot_";
-	vector<wstring> gradeTag = { L"Common", L"Uncommon", L"Rare", L"Epic", L"Legendary" };
-
-	for (int i = 0; i < 5; i++)
-	{
-		shared_ptr<Material> btnImg = make_shared<Material>();
-		SetupUIMaterial(btnImg);
-
-		wstring tag = prefixBtnTag + gradeTag[i];
-		wstring path = prefixPath + tag + L".png";
-		auto btnImgTexture = RESOURCES->Load<Texture>(tag, path);
-
-		btnImg->SetDiffuseMap(btnImgTexture);
-		MaterialDesc& btnImgDesc = btnImg->GetMaterialDesc();
-		btnImgDesc.ambient = Vec4(1.f);
-		btnImgDesc.diffuse = Vec4(1.f);
-		btnImgDesc.specular = Vec4(1.f);
-		RESOURCES->Add(tag, btnImg);
-	}
-}
 
 
 void EquipmentPanelUI::CreatePanels()

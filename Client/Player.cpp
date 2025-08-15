@@ -7,6 +7,7 @@
 #include "PlayerStatusPanelUI.h"
 #include "UIManager.h"
 #include "HealthBar.h"
+#include "PlayerStateMachine.h"
 
 Player::Player()
 {
@@ -42,7 +43,7 @@ void Player::Update()
 
 	if (m_healingCoolTime >= 0.25f) {
 		SetHP(m_status.hp + m_status.healing);
-		SetCurExp(m_status.curExp + 20);
+		//SetCurExp(m_status.curExp + 20);
 		m_healingCoolTime = 0.f;
 	}
 
@@ -154,6 +155,24 @@ void Player::TakeOffEquipment(int _index)
 	m_inventory[emptyInventoryIDX] = move(m_curEquipment[_index]);
 	m_curEquipment[_index] = nullptr;
 	SOUND->PlaySound(L"SFX/PickUpItem.wav", 5, 0.5f);
+}
+
+void Player::StartCraftAnimation()
+{
+	// 이동 중지
+	auto navMeshAgent = GetComponent<NavMeshAgent>();
+	if (navMeshAgent)
+		navMeshAgent->Stop();
+
+	// 애니메이션 상태 전환
+	auto animStateMachine = GetComponent<AnimationStateMachine>();
+	if (animStateMachine)
+		animStateMachine->ChangeState(AnimationStateType::Craft);
+
+	// 플레이어 상태 전환
+	auto playerStateMachine = GetComponent<PlayerStateMachine>();
+	if (playerStateMachine)
+		playerStateMachine->ChangeState(PlayerStateType::Craft);
 }
 
 void Player::LevelUp()

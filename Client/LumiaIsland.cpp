@@ -11,6 +11,7 @@
 #include "CameraScript.h"
 
 #include "AnimationStateMachine.h"
+#include "PlayerStateMachine.h"
 #include "SkillDecalIndicator.h"
 
 #include "Player.h"
@@ -38,32 +39,10 @@
 #include "Recipe.h"
 #include "RecipeManager.h"
 
-const vector<wstring> charStatIconNames = {
-	L"AttackPower",
-	L"SkillAmpRatio",
-	L"IncreaseBasicAttackDamageRatio",
-	L"Defense",
-	L"AttackSpeedRatio",
-	L"CooldownReduction",
-	L"CriticalStrikeChance",
-	L"MoveSpeedRatio"
-};
+#include "CraftGagePanelUI.h"
 
-const vector<wstring> nickySkillIcons = {
-	L"SkillIcon_1033100",
-	L"SkillIcon_1033200",
-	L"SkillIcon_1033300",
-	L"SkillIcon_1033400",
-	L"SkillIcon_1033500"
-};
+#include "UIResourceManager.h"
 
-const vector<wstring> biancaSkillIcons = {
-	L"SkillIcon_1042100",
-	L"SkillIcon_1042200",
-	L"SkillIcon_1042300",
-	L"SkillIcon_1042400",
-	L"SkillIcon_1042500"
-};
 
 
 LumiaIsland::LumiaIsland()
@@ -84,9 +63,10 @@ LumiaIsland::~LumiaIsland()
 
 void LumiaIsland::Start()
 {
-	
-
 	TIME->ResetDeltaTime();
+
+	// UI 리소스 매니저 초기화 (가장 먼저)
+	UIResourceManager::GetInstance()->LoadAllUIResources();
 
 
 	InitializeCriticalSection(&m_loadingCS);
@@ -99,44 +79,9 @@ void LumiaIsland::Start()
 	
 	CreateMainCamera();
 	CreateUICamera();
-
-	//Default Light
-
-	{
-		// Light
-		auto light = make_shared<GameObject>();
-		light->AddComponent(make_shared<Light>());
-
-		LightDesc lightDesc;
-		lightDesc.ambient = Vec4(0.4f);
-		lightDesc.diffuse = Vec4(1.f);
-		lightDesc.specular = Vec4(0.1f);
-		Vec3 lightDirection = Vec3(1.f, -1.f, 1.f); // Y를 음수로 (아래쪽을 향하도록)
-		lightDirection.Normalize();
-		lightDesc.direction = lightDirection;
-		//light->GetLight()->SetLightDesc(lightDesc);
-		light->GetTransform()->SetPosition(Vec3(0.f, 150.f, 0.f));
-		Vec3 normalizedDir = Vec3(1.f, -1.f, 1.f);
-		normalizedDir.Normalize();
-		lightDesc.direction = normalizedDir;
-		//light->GetTransform()->SetRotation(lightDesc.direction);
-		//light->GetTransform()->SetPosition(Vec3(0.f, 150.f, 0.f));
-
-		static_pointer_cast<Light>(light->GetFixedComponent(ComponentType::Light))->SetLightDesc(lightDesc);
-		Add(light);
-	}
-
-	cout << "LumiaIsland SelectedCharIndex : " << m_selectedCharacterIdx << endl;
-	m_selectedCharacterIdx = 1;
-	if (m_selectedCharacterIdx == 0) {
-		CreateCharacterBianca();
-	}
-	else if (m_selectedCharacterIdx == 1) {
-		CreateCharacterNicky();
-	}
-	m_uiManager = make_shared<UIManager>(m_player, m_selectedCharacterIdx); //플레이가 존재할때 선언
-	m_player->SetUIManager(m_uiManager);
-
+	CreateDefaultLight();
+	
+	SelectCharacter();
 
 	m_loadingThread = CreateThread(nullptr, 0, BackgroundLoadingThread, this, 0, nullptr);
 
@@ -145,12 +90,9 @@ void LumiaIsland::Start()
 	CreateCemeteryInterior();
 	CreateCemeteryEnvironment();
 
-	
 	m_cameraScript->SetTarget(m_player);
-	//CreateCharacterNicky();
 	CreateCemeteryItemBox();
 	CreateTestDummy();
-	//CreateTestDecal();
 
 	//// NavMesh 생성 추가
 	CreateNavMesh();
@@ -162,13 +104,48 @@ void LumiaIsland::Start()
 
 	
 
-	//CreateTestMesh();
-
 	TIME->ResetDeltaTime();
 	SOUND->StopAll();
 	SOUND->PlayBGM(L"BSER_AreaBGM_CEMETERY.wav", 0.5f);
 	CreateCursor();
 	Super::Start();
+
+	m_player->GetPlayerStateMachine()->OnTryCraftFirst.Push([this](bool& success) {
+		auto inventoryMgr = InventoryManager::GetInstance();
+		auto recipes = inventoryMgr->GetAvailableRecipes();
+
+		if (!recipes.empty())
+		{
+			auto& slots = inventoryMgr->GetInventorySlots();
+
+			auto GetCraftTimeByGrade = [](ITEMGRADE grade) -> float {
+				switch (grade) {
+				case ITEMGRADE::COMMON:    return 1.0f;
+				case ITEMGRADE::UNCOMMON:  return 1.5f;
+				case ITEMGRADE::RARE:      return 2.0f;
+				case ITEMGRADE::EPIC:      return 3.0f;
+				case ITEMGRADE::LEGENDARY: return 3.0f;
+				default:                   return 5.0f;
+				}
+				};
+
+			// 결과 아이템의 등급 확인
+			auto resultItem = ItemManager::GetInstance()->GetItem(recipes[0]->GetResultItemID());
+			if (!resultItem) return;
+
+			ITEMGRADE itemGrade = resultItem->GetItemGrade();
+
+
+			m_player->GetPlayerStateMachine()->GetState(PlayerStateType::Craft)->SetRecipeIndex(0);
+			m_player->GetAnimationStateMachine()->GetState(AnimationStateType::Craft)->SetExpectedDuration(GetCraftTimeByGrade(itemGrade));
+
+			m_uiManager->GetCraftGageUI()->SetVisible(true);
+			m_uiManager->GetCraftGageUI()->SetItem(resultItem);
+			success = true;
+		}
+		else
+			success = false;
+	});
 }
 
 void LumiaIsland::Update()
@@ -232,6 +209,55 @@ void LumiaIsland::CreateUICamera()
 	camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, false);
 	//CURSCENE->Add(camera);
 	Add(camera);
+}
+
+void LumiaIsland::CreateDefaultLight()
+{
+	//Default Light	
+	// Light
+	auto light = make_shared<GameObject>();
+	light->AddComponent(make_shared<Light>());
+
+	LightDesc lightDesc;
+	lightDesc.ambient = Vec4(0.4f);
+	lightDesc.diffuse = Vec4(1.f);
+	lightDesc.specular = Vec4(0.1f);
+	Vec3 lightDirection = Vec3(1.f, -1.f, 1.f); // Y를 음수로 (아래쪽을 향하도록)
+	lightDirection.Normalize();
+	lightDesc.direction = lightDirection;
+	//light->GetLight()->SetLightDesc(lightDesc);
+	light->GetTransform()->SetPosition(Vec3(0.f, 150.f, 0.f));
+	Vec3 normalizedDir = Vec3(1.f, -1.f, 1.f);
+	normalizedDir.Normalize();
+	lightDesc.direction = normalizedDir;
+	//light->GetTransform()->SetRotation(lightDesc.direction);
+	//light->GetTransform()->SetPosition(Vec3(0.f, 150.f, 0.f));
+
+	static_pointer_cast<Light>(light->GetFixedComponent(ComponentType::Light))->SetLightDesc(lightDesc);
+	Add(light);
+}
+
+void LumiaIsland::SelectCharacter()
+{
+	//테스트용 임시 강제 설정
+	m_selectedCharacterIdx = 1;
+
+
+	if (m_selectedCharacterIdx == 0) {
+		CreateCharacterBianca();
+	}
+	else if (m_selectedCharacterIdx == 1) {
+		CreateCharacterNicky();
+	}
+
+	//UI Manager는 항상 Player가 있어야됨
+	CreateAndSetUIManager();
+}
+
+void LumiaIsland::CreateAndSetUIManager()
+{
+	m_uiManager = make_shared<UIManager>(m_player, m_selectedCharacterIdx); //플레이가 존재할때 선언
+	m_player->SetUIManager(m_uiManager);
 }
 
 void LumiaIsland::CreateCemeteryBase()
@@ -1273,10 +1299,6 @@ void LumiaIsland::UpdateItemBoxSlots(shared_ptr<GameObject> _itemBoxObject)
 
 
 
-Vec4 LumiaIsland::ColorNormalize(Vec4 input)
-{
-	return input / 255.f;
-}
 
 DWORD __stdcall LumiaIsland::BackgroundLoadingThread(LPVOID _param)
 {
@@ -1285,7 +1307,8 @@ DWORD __stdcall LumiaIsland::BackgroundLoadingThread(LPVOID _param)
 	
 	try {
 		EnterCriticalSection(&scene->m_loadingCS);
-		
+
+
 		ItemManager::GetInstance()->Initialize();
 		RecipeManager::GetInstance()->Initialize();
 		scene->m_uiManager->InitializeUI();
@@ -1332,9 +1355,7 @@ void LumiaIsland::ProcessMainThreadTasks()
 	LeaveCriticalSection(&m_mainThreadTasksCS);
 }
 
-void LumiaIsland::CreateDefaultLight()
-{
-}
+
 
 void LumiaIsland::CreateTestDecal()
 {
@@ -1357,44 +1378,6 @@ void LumiaIsland::CreateTestDecal()
 	CURSCENE->Add(testDecalObj);
 }
 
-void LumiaIsland::CreateTestMesh()
-{
-	// Animation
-	shared_ptr<Model> m1 = make_shared<Model>();
-
-	m1->ReadModel(L"Nicky/NickyESkill_Mesh");
-	m1->ReadMaterial(L"Nicky/NickyESkill_Mesh");
-
-	shared_ptr<GameObject> test;
-
-	for (int32 i = 0; i < 1; i++)
-	{
-
-		test = make_shared<GameObject>();
-		test->SetName(to_wstring(i));
-
-		test->GetTransform()->SetPosition(Vec3(15, 30, 5));
-		test->GetTransform()->SetScale(Vec3(0.01f, 0.01f, 0.01f));
-		test->GetTransform()->SetLocalRotation(Vec3(90.f, 0.f, 0.f));
-
-		test->AddComponent(make_shared<SphereCollider>());
-		test->AddComponent(make_shared<Rigidbody>());
-		test->GetCollider()->SetOffset(Vec3(0.f, 1.f, 0.f));
-		test->GetRigidbody()->SetStatic(true);
-		test->SetType(OBJECTTYPE::MAP);
-
-		test->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
-		{
-			test->GetModelRenderer()->SetModel(m1);
-			test->GetModelRenderer()->SetPass(1);
-		}
-
-		test->AddComponent(make_shared<NavMesh>());
-
-
-		CURSCENE->Add(test);
-	}
-}
 
 void LumiaIsland::CreateTestDummy()
 {

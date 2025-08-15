@@ -9,6 +9,7 @@
 #include "EquipmentPanelUI.h"
 #include "InventoryPanelUI.h"
 #include "CraftListPanelUI.h"
+#include "CraftGagePanelUI.h"
 
 UIManager::UIManager(shared_ptr<Player> player, int selectedCharIdx)
 	:Super(ComponentType::Custom)
@@ -21,7 +22,12 @@ UIManager::UIManager(shared_ptr<Player> player, int selectedCharIdx)
 	m_day = make_shared<DayPanelUI>();
 	m_equipment = make_shared<EquipmentPanelUI>();
 	m_inventory = make_shared<InventoryPanelUI>();
-	m_craftList = make_shared<CraftListPanelUI>(player);
+
+
+	//craftList에서 craftGage를 제어하는 부분이 있음 순서 중요
+	m_craftGage = make_shared<CraftGagePanelUI>(player);
+	m_craftList = make_shared<CraftListPanelUI>(player, m_craftGage);
+	
 }
 
 UIManager::~UIManager()
@@ -39,6 +45,7 @@ void UIManager::Update()
 	m_equipment->Update();
 	m_inventory->Update();
 	m_craftList->Update();
+	m_craftGage->Update();
 }
 
 void UIManager::InitializeUI()
@@ -54,6 +61,7 @@ void UIManager::InitializeUI()
 	CreateInventoryManager();
 
 	m_craftList->Initialize();
+	m_craftGage->Initialize();
 }
 
 void UIManager::UpdateUI()
@@ -65,7 +73,7 @@ void UIManager::CreateInventoryManager()
 {
 
 	// 슬롯들 등록
-	InventoryManager::GetInstance()->RegisterInventorySlots(m_inventory->GetInventroySlots());
+	InventoryManager::GetInstance()->RegisterInventorySlots(m_inventory->GetInventorySlots());
 	InventoryManager::GetInstance()->RegisterEquipmentSlots(m_equipment->GetEquipmentSlots());
 	InventoryManager::GetInstance()->SetPlayer(m_player);
 }
