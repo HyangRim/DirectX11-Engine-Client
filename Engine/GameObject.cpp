@@ -27,6 +27,7 @@
 #include "NavMesh.h"
 #include "NavMeshAgent.h"
 #include "ScrollView.h"
+#include "SliderUI.h"
 #include "PlayerStateMachine.h"
 #include "MonsterStateMachine.h"
 
@@ -257,6 +258,12 @@ shared_ptr<ScrollView> GameObject::GetScrollView()
 {
 	shared_ptr<Component> component = GetFixedComponent(ComponentType::ScrollView);
 	return static_pointer_cast<ScrollView>(component);
+}
+
+shared_ptr<SliderUI> GameObject::GetSliderUI()
+{
+	shared_ptr<Component> component = GetFixedComponent(ComponentType::SLIDER);
+	return static_pointer_cast<SliderUI>(component);
 }
 
 shared_ptr<PlayerStateMachine> GameObject::GetPlayerStateMachine()

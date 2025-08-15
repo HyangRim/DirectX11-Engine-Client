@@ -9,6 +9,7 @@ class Texture;
 class Button;
 class Text;
 class ImageUI;
+class SliderUI;
 
 class UIPanel : public Component
 {
@@ -38,6 +39,8 @@ public:
         TextAlignment alignment = TextAlignment::Left);
     // ImageUI 추가 함수
     shared_ptr<ImageUI> AddImageUI(Vec2 localPos, const wstring& name = L"ImageUI");
+    shared_ptr<SliderUI> AddSliderUI(Vec2 localPos, Vec2 size, shared_ptr<Material> trackMaterial, shared_ptr<Material> handleMaterial, float minValue = 0.0f, float maxValue = 1.0f, const wstring& name = L"Slider");
+
 
     // UI 요소 관리
     void RemoveUIElement(const wstring& name);
@@ -45,6 +48,7 @@ public:
     shared_ptr<Button> GetButton(const wstring& name);
     shared_ptr<Text> GetText(const wstring& name);
     shared_ptr<ImageUI> GetImageUI(const wstring& name);
+    shared_ptr<SliderUI> GetSliderUI(const wstring& name);
     
 
     // Getter 함수들
