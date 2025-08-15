@@ -98,6 +98,7 @@ void Monster::Damaged(DamageInfo _damage)
 
 	if (_damage.stunTime > 0.f) {
 		m_isStun = max(m_isStun, _damage.stunTime);
+		SetType(OBJECTTYPE::ITEMBOX);
 	}
 
 	SetHP(monsterHP);

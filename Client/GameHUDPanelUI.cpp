@@ -40,8 +40,6 @@ void GameHUDPanelUI::Initialize()
 void GameHUDPanelUI::Update()
 {
 	UpdateSkillCoolDown();
-	UpdateStatBar();
-	UpdatePlayerLevel();
 }
 
 void GameHUDPanelUI::SetVisible(bool visible)
@@ -298,7 +296,7 @@ void GameHUDPanelUI::RegisterUIObject(shared_ptr<GameObject> uiObject)
 void GameHUDPanelUI::UpdateSkillCoolDown()
 {
 	vector<shared_ptr<D2DText>> skillCoolDownTextUI;
-	vector<wstring> skillNames = { L"QSkillCoolDown", L"WSkillCoolDown", L"ESkillCoolDown", L"RSkillCoolDown" };
+	static vector<wstring> skillNames = { L"QSkillCoolDown", L"WSkillCoolDown", L"ESkillCoolDown", L"RSkillCoolDown" };
 
 	for (const auto& skillName : skillNames) {
 		skillCoolDownTextUI.push_back(m_panel->GetUIPanel()->GetD2DText(skillName));

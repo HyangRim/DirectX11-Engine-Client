@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Alpha.h"
+#include "ItemBox.h"
 
 #include "AlphaAnimAppearState.h"
 #include "AlphaAnimDeathState.h"
@@ -155,10 +156,12 @@ void Alpha::InitAlphaComponent()
 	m_collider->SetVisible(false);
 	m_rigidbody = make_shared<Rigidbody>();
 	m_navAgent = make_shared<NavMeshAgent>();
+	m_itembox = make_shared<ItemBox>();
 
 	AddComponent(m_collider);
 	AddComponent(m_rigidbody);
 	AddComponent(m_navAgent);
+	AddComponent(m_itembox);
 	
 }
 

@@ -25,6 +25,7 @@ enum class ComponentType : uint8 {
 	TextButton,
 	Image,
 	ScrollView,
+	SLIDER,
 	NavMesh,
 	NavMeshAgent,
 	AnimationStateMachine,

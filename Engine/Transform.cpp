@@ -129,33 +129,7 @@ void Transform::SetScale(const Vec3& _Scale)
 void Transform::SetRotation(const Vec3& _Rotation)
 {
 	if (HasParent()) {
-		//// Y-X-Z 순서로 회전 행렬 생성 (UpdateTransform()과 동일)
-		//XMMATRIX rotY = XMMatrixRotationY(XMConvertToRadians(_Rotation.y));
-		//XMMATRIX rotX = XMMatrixRotationX(XMConvertToRadians(_Rotation.x));
-		//XMMATRIX rotZ = XMMatrixRotationZ(XMConvertToRadians(_Rotation.z));
-
-		//XMMATRIX worldRotMatrix = rotY * rotX * rotZ;
-		//XMVECTOR worldQuatVec = XMQuaternionRotationMatrix(worldRotMatrix);
-
-		//// 부모 회전도 동일한 순서
-		//Vec3 parentRot = m_parent->GetRotation();
-		//XMMATRIX parentRotY = XMMatrixRotationY(XMConvertToRadians(parentRot.y));
-		//XMMATRIX parentRotX = XMMatrixRotationX(XMConvertToRadians(parentRot.x));
-		//XMMATRIX parentRotZ = XMMatrixRotationZ(XMConvertToRadians(parentRot.z));
-
-		//XMMATRIX parentRotMatrix = parentRotY * parentRotX * parentRotZ;
-		//XMVECTOR parentQuatVec = XMQuaternionRotationMatrix(parentRotMatrix);
-
-		//XMVECTOR parentInverseVec = XMQuaternionInverse(parentQuatVec);
-		//XMVECTOR localQuatVec = XMQuaternionMultiply(worldQuatVec, parentInverseVec);
-
-		//Quaternion localQuat;
-		//XMStoreFloat4(&localQuat, localQuatVec);
-
-		//Vec3 localRotation = ToEulerAngles(localQuat);
-		//SetLocalRotation(localRotation);
-
-				// 목표 world rotation을 쿼터니언으로 변환
+		// 목표 world rotation을 쿼터니언으로 변환
 		Quaternion worldQuat = Quaternion::CreateFromYawPitchRoll(
 			XMConvertToRadians(_Rotation.y),
 			XMConvertToRadians(_Rotation.x),

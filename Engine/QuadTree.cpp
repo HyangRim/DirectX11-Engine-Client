@@ -628,7 +628,7 @@ bool QuadTree::IsObjectVisible(shared_ptr<GameObject> _object, shared_ptr<Camera
 	float right = localPos.Dot(cameraRight);
 	float up = localPos.Dot(cameraUp);
 
-	if (forward <= 0.05f) return false; // 너무 가까운 객체 제외
+	//if (forward <= 0.05f) return false; // 너무 가까운 객체 제외
 
 	// FOV 기반 시야각 검사
 	float fov = XMConvertToDegrees(_camera->GetFOV());

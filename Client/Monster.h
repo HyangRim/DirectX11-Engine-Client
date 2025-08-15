@@ -4,6 +4,7 @@
 
 class Player;
 class Item;
+class ItemBox;
 class AI;
 
 struct MonsterStatus {
@@ -66,6 +67,7 @@ protected:
     shared_ptr<Shader> m_defaultShader;
     shared_ptr<MonsterStateMachine> m_monsterStateMachine;
     shared_ptr<AnimationStateMachine> m_animationStateMachine;
+    shared_ptr<ItemBox> m_itembox;
 
     MonsterStatus m_monsterStatus;
   

@@ -10,6 +10,7 @@
 #include "Text.h"
 #include "GameObject.h"
 #include "ImageUI.h"
+#include "SliderUI.h"
 #include "SceneManager.h"
 #include "Scene.h"
 #include "SceneObjectManager.h"
@@ -87,7 +88,18 @@ void UIPanel::Update()
     //m_position.x = GetGameObject()->GetTransform()->GetPosition().x;
     //m_position.y = GetGameObject()->GetTransform()->GetPosition().y;
 
+    m_rect.left = static_cast<LONG>(m_position.x - m_size.x * 0.5f);
+    m_rect.top = static_cast<LONG>(m_position.y - m_size.y * 0.5f);
+    m_rect.right = static_cast<LONG>(m_position.x + m_size.x * 0.5f);
+    m_rect.bottom = static_cast<LONG>(m_position.y + m_size.y * 0.5f);
+
     UpdateChildPositions();
+}
+
+
+bool UIPanel::Picked(POINT _screenPos)
+{
+    return ::PtInRect(&m_rect, _screenPos);
 }
 
 void UIPanel::Create(Vec2 screenPos, Vec2 size, Vec4 diffuseInfo, shared_ptr<Material> backgroundMaterial)
@@ -380,6 +392,28 @@ shared_ptr<ImageUI> UIPanel::AddImageUI(Vec2 localPos, const wstring& name)
     return imageUIComponent;
 }
 
+shared_ptr<SliderUI> UIPanel::AddSliderUI(Vec2 localPos, Vec2 size, shared_ptr<Material> trackMaterial, shared_ptr<Material> handleMaterial, float minValue, float maxValue, const wstring& name)
+{
+    auto sliderObj = make_shared<GameObject>();
+    sliderObj->SetName(name);
+
+    auto sliderComponent = make_shared<SliderUI>();
+    sliderObj->AddComponent(sliderComponent);
+
+    Vec2 worldPos = LocalToWorldPosition(localPos);
+    sliderComponent->Create(worldPos, size, trackMaterial, handleMaterial, minValue, maxValue);
+    sliderComponent->SetLocalPosition(localPos);
+
+    // 자식 요소로 등록
+    m_childElements.push_back(sliderObj);
+    m_namedElements[name] = sliderObj;
+
+    CURSCENE->AddUIObject(sliderObj, false);
+    CURSCENE->RegisterUIChild(sliderObj);
+
+    return sliderComponent;
+}
+
 void UIPanel::RemoveUIElement(const wstring& name)
 {
     auto it = m_namedElements.find(name);
@@ -443,6 +477,17 @@ shared_ptr<ImageUI> UIPanel::GetImageUI(const wstring& name)
     if (it != m_namedElements.end()) {
         if (auto child = it->second.lock()) {
             return child->GetImageUI();
+        }
+    }
+    return nullptr;
+}
+
+shared_ptr<SliderUI> UIPanel::GetSliderUI(const wstring& name)
+{
+    auto it = m_namedElements.find(name);
+    if (it != m_namedElements.end()) {
+        if (auto child = it->second.lock()) {
+            return child->GetSliderUI();
         }
     }
     return nullptr;

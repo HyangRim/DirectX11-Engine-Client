@@ -26,6 +26,7 @@ class AnimationStateMachine;
 class NavMesh;
 class NavMeshAgent;
 class ScrollView;
+class SliderUI;
 class PlayerStateMachine;
 class MonsterStateMachine;
 
@@ -74,6 +75,7 @@ public:
 	shared_ptr<NavMesh> GetNavMesh();
 	shared_ptr<NavMeshAgent> GetNavMeshAgent();
 	shared_ptr<ScrollView> GetScrollView();
+	shared_ptr<SliderUI> GetSliderUI();
 	shared_ptr<PlayerStateMachine> GetPlayerStateMachine();
 	shared_ptr<MonsterStateMachine> GetMonsterStateMachine();
 	

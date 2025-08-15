@@ -135,6 +135,7 @@ void LumiaIsland::Start()
 		CreateCharacterNicky();
 	}
 	m_uiManager = make_shared<UIManager>(m_player, m_selectedCharacterIdx); //플레이가 존재할때 선언
+	m_player->SetUIManager(m_uiManager);
 
 
 	m_loadingThread = CreateThread(nullptr, 0, BackgroundLoadingThread, this, 0, nullptr);
@@ -1154,10 +1155,10 @@ void LumiaIsland::CreateItemBoxPanel()
 
 	m_itemBoxSlots.clear();
 
-	const Vec2 SLOT_SIZE(30.f, 30.f);
-	const Vec2 SLOT_SPACING(35.f, 35.f);
+	const Vec2 SLOT_SIZE(44.f, 26.f);
+	const Vec2 SLOT_SPACING(8.25f, 8.5f);
 
-	Vec2 startPos = Vec2(200.f, 200.f) - Vec2(2 * SLOT_SPACING.x * 0.5f, 4 * SLOT_SPACING.y * 0.5f);
+	Vec2 startPos = Vec2(126.f, 205.f) - Vec2(2 * SLOT_SPACING.x * 0.5f, 4 * SLOT_SPACING.y * 0.5f);
 	startPos += Vec2(SLOT_SPACING.x * 0.5f, SLOT_SPACING.y * 0.5f);
 
 	for (int row = 0; row < 2; ++row) {
@@ -1171,49 +1172,54 @@ void LumiaIsland::CreateItemBoxPanel()
 			itemSlot->SetSlotType(SLOTTYPE::INVENTORY);
 			slotObj->AddComponent(itemSlot);
 
-			Vec2 slotPos = startPos + Vec2(col * SLOT_SPACING.x, row * SLOT_SPACING.y);
+			Vec2 slotPos = Vec2(
+				startPos.x + col * (SLOT_SIZE.x + SLOT_SPACING.x),
+				startPos.y + row * (SLOT_SIZE.y + SLOT_SPACING.y)
+			);
 			itemSlot->CreateSlot(slotPos, SLOT_SIZE, slotIndex);
 
 			itemSlot->OnSlotClicked += [this](int _slotIndex, SLOTTYPE _slotType) {
 				OnItemBoxSlotClicked(_slotIndex, _slotType);
 			};
-
-			m_itemBoxSlots.push_back(itemSlot);
 			slotObj->GetTransform()->SetParent(m_itemBox->GetTransform());
+			m_itemBoxSlots.push_back(itemSlot);	
 		}
 	}
-	m_itemBox->GetMeshRenderer()->SetActive(false);
+	m_itemBox->SetActive(false);
 	AddUIObject(m_itemBox, true);
 	RegisterUIParent(m_itemBox);
 }
 
 void LumiaIsland::CheckPickedItemBox()
 {
-	if (m_pickedObject != nullptr)
-	{
-		if (m_pickedObject->GetType() == OBJECTTYPE::ITEMBOX && INPUT->GetButtonDown(KEY_TYPE::LBUTTON))
-		{
-			SOUND->PlaySound(L"SFX/OpenSound_Tomb_01.wav", 16, 0.5f);
-			//아이템 박스(m_pickedObject) 데이터 불러옴 -> m_ItemBox에 표시. 
-			//그거 누르면, 사용자 인벤토리에 넣기. 
-			m_currentItemBox = m_pickedObject;
+	//이번 프레임에 마우스로 누른 경우에만 함수 내부 실행. 
+	if (!INPUT->GetButtonDown(KEY_TYPE::LBUTTON))
+		return;
 
+	if (m_pickedObject != nullptr) {
+		if (m_pickedObject->GetType() == OBJECTTYPE::ITEMBOX && m_currentItemBox != m_pickedObject) {
+			SOUND->PlaySound(L"SFX/OpenSound_Tomb_01.wav", 16, 0.5f);
+			m_currentItemBox = m_pickedObject;
+			m_itemBox->SetActive(true);
 			UpdateItemBoxSlots(m_currentItemBox);
-			m_itemBox->GetMeshRenderer()->SetActive(true);
-			//cout << "아이템박스 클릭됨\n";
 		}
-		else if(m_pickedObject->GetType() != OBJECTTYPE::ITEMBOX && INPUT->GetButtonDown(KEY_TYPE::LBUTTON))
-		{
-			m_itemBox->GetMeshRenderer()->SetActive(false);
+		else if (m_pickedObject->GetType() == OBJECTTYPE::ITEMBOX && m_currentItemBox == m_pickedObject) {
+			m_itemBox->SetActive(false);
+			for (auto item : m_itemBoxSlots) {
+				item->ClearItem();
+			}
 			m_currentItemBox = nullptr;
-			//cout << "아이템박스 클릭해제됨\n";
+			cout << "아이템박스 클릭해제됨3\n";
 		}
 	}
-	else
-	{
-		m_itemBox->GetMeshRenderer()->SetActive(false);
+	else if (m_pickedObject == nullptr) {
+		m_itemBox->SetActive(false);
+		for (auto item : m_itemBoxSlots) {
+			item->ClearItem();
+		}
+
 		m_currentItemBox = nullptr;
-		//cout << "선택된 객체가 없음\n";
+		cout << "아이템박스 클릭해제됨2\n";
 	}
 }
 
@@ -1224,13 +1230,16 @@ void LumiaIsland::OnItemBoxSlotClicked(int _slotIndex, SLOTTYPE _slotType)
 		if (slot->GetItem() != nullptr) {
 			auto itemBoxComponent = m_currentItemBox->GetComponent<ItemBox>();
 			if (itemBoxComponent) {
-				//기존 ItemBox에서 Item삭제. 
-				auto item = itemBoxComponent->DeleteItem(_slotIndex);
+				bool isempty = InventoryManager::GetInstance()->IsEmpty();
 
-				//플레이어 인벤토리에 아이템 추가, 내부적으로 (Player)UI 슬롯 업데이트. 
-				InventoryManager::GetInstance()->PushItem(item);
-				//플레이어 인벤토리에 아이템 추가., 
-
+				if (isempty) {
+					auto item = itemBoxComponent->DeleteItem(_slotIndex);
+					InventoryManager::GetInstance()->PushItem(item);
+					SOUND->PlaySound(L"SFX/equipmentinstall_underrare.wav", 15, 0.5f);
+				}
+				else {
+					return;
+				}
 				//UI 슬롯 업데이트. 
 				UpdateItemBoxSlots(m_currentItemBox);
 			}

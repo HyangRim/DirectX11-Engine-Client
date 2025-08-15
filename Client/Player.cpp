@@ -3,6 +3,9 @@
 #include "BaseSkill.h"
 #include "Item.h"
 #include "EquipableItem.h"
+#include "GameHUDPanelUI.h"
+#include "PlayerStatusPanelUI.h"
+#include "UIManager.h"
 #include "HealthBar.h"
 
 Player::Player()
@@ -181,6 +184,11 @@ void Player::LevelUp()
 	m_status.defense += m_growStatus.defense;
 	m_status.healing += m_growStatus.healing;
 	m_status.healing_Stamina += m_growStatus.healing_Stamina;
+
+	if (auto manager = m_uiManager.lock()) {
+		manager->GetGameHUD()->UpdateStatBar();
+		manager->GetStatusUI()->UpdatePlayerStatus();
+	}
 	SOUND->PlaySound(L"SFX/effect_levelup.wav", 5, 0.5f);
 }
 
@@ -229,6 +237,51 @@ void Player::Damaged(int _damage)
 	SetHP(playerHP);
 }
 
+void Player::SetLevel(int _value)
+{
+	m_status.level = _value; 
+	if (m_status.level > 20) m_status.level = 20;
+
+	if (auto manager = m_uiManager.lock()) {
+		manager->GetGameHUD()->UpdatePlayerLevel();
+	}
+}
+
+void Player::SetCurExp(int _value)
+{
+	m_status.curExp = _value; 
+	LevelUp();
+
+	if (auto manager = m_uiManager.lock()) {
+		manager->GetGameHUD()->UpdateStatBar();
+	}
+}
+
+void Player::SetHP(int32 _value)
+{
+	if (_value > m_status.max_HP)
+		m_status.hp = m_status.max_HP;
+	else
+		m_status.hp = _value;
+
+	if (auto manager = m_uiManager.lock()) {
+		manager->GetGameHUD()->UpdateStatBar();
+	}
+	
+}
+
+void Player::SetStamina(int32 _value)
+{
+	if (_value > m_status.max_Stamina)
+		m_status.stamina = m_status.max_Stamina;
+	else
+		m_status.stamina = _value;
+
+	if (auto manager = m_uiManager.lock()) {
+		manager->GetGameHUD()->UpdateStatBar();
+	}
+}
+
 void Player::ApplyEquipStatus(const ItemStatus& _Equipstatus)
 {
 	float hpRatio = static_cast<float>(m_status.hp) / static_cast<float>(m_status.max_HP);
@@ -245,6 +298,11 @@ void Player::ApplyEquipStatus(const ItemStatus& _Equipstatus)
 
 	m_status.hp = static_cast<int>(m_status.max_HP * hpRatio);
 	m_status.stamina = m_status.max_Stamina * staminaRatio;
+
+	if (auto manager = m_uiManager.lock()) {
+		manager->GetGameHUD()->UpdateStatBar();
+		manager->GetStatusUI()->UpdatePlayerStatus();
+	}
 
 	SOUND->PlaySound(L"SFX/equipmentinstall_underrare.wav", 5, 0.5f);
 }
@@ -265,5 +323,10 @@ void Player::ReleaseEquipStatus(const ItemStatus& _Equipstatus)
 
 	m_status.hp = m_status.max_HP * hpRatio;
 	m_status.stamina = m_status.max_Stamina * staminaRatio;
+
+	if (auto manager = m_uiManager.lock()) {
+		manager->GetGameHUD()->UpdateStatBar();
+		manager->GetStatusUI()->UpdatePlayerStatus();
+	}
 }
 

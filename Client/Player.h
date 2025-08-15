@@ -8,6 +8,7 @@ class EquipableItem;
 class BaseSkill;
 class PlayerStateMachine;
 class PlayerInterface;
+class UIManager;
 class HealthBar;
 
 struct DamageInfo;
@@ -88,23 +89,13 @@ public:
     void Damaged(DamageInfo _damage);
     void Damaged(int _damage);
 
-    void SetLevel(int _value) { m_status.level = _value; if (m_status.level > 20) m_status.level = 20; }
+    void SetLevel(int _value);
     void SetCurExpLimit(int _value) { m_status.curExpLimit = _value; }
-    void SetCurExp(int _value) { m_status.curExp = _value; LevelUp(); }
+    void SetCurExp(int _value);
     void SetMaxHP(int32 _value) { m_status.max_HP = _value; }
-    void SetHP(int32 _value) {
-        if (_value > m_status.max_HP)
-            m_status.hp = m_status.max_HP;
-        else
-            m_status.hp = _value;
-    }
+    void SetHP(int32 _value);
     void SetMaxStamina(int32 _value) { m_status.max_Stamina = _value; }
-    void SetStamina(int32 _value) {
-        if (_value > m_status.max_Stamina)
-            m_status.stamina = m_status.max_Stamina;
-        else
-            m_status.stamina = _value;
-    }
+    void SetStamina(int32 _value);
 
     void SetHitAttack(float _value) { m_status.hitAttack = _value; }
     void SetHitRange(float _value) { m_status.hitRange = _value; }
@@ -114,6 +105,8 @@ public:
     void SetMoveSpeed(float _value) { m_status.moveSpeed = _value; }
     void SetHealing(float _value) { m_status.healing = _value; }
     void SetHealingStamina(float _value) { m_status.healing_Stamina = _value; }
+
+    void SetUIManager(weak_ptr<UIManager> _manager) { m_uiManager = _manager; }
 
 
 public:
@@ -160,6 +153,7 @@ private:
     float m_isStun = 0.f;
     float m_healingCoolTime = 0.f;
 
+    weak_ptr<UIManager> m_uiManager;
 
 public:
     ISkill* GetSkill(int index) const

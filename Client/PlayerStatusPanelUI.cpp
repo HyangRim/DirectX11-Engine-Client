@@ -34,7 +34,7 @@ void PlayerStatusPanelUI::Initialize()
 
 void PlayerStatusPanelUI::Update()
 {
-	UpdatePlayerStatus();
+	//UpdatePlayerStatus();
 }
 
 void PlayerStatusPanelUI::SetVisible(bool visible)

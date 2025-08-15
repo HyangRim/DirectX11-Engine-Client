@@ -390,6 +390,17 @@ bool InventoryManager::PushItem(shared_ptr<Item> inputItem)
     return true;
 }
 
+bool InventoryManager::IsEmpty()
+{
+    for (int i = 0; i < m_inventorySlots.size(); i++) {
+        if (m_inventorySlots[i]->IsEmpty()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
 // 인벤토리 변화 알림 함수
 void InventoryManager::NotifyInventoryChanged()
 {
