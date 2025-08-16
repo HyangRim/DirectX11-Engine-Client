@@ -39,7 +39,7 @@ public:
         TextAlignment alignment = TextAlignment::Left);
     // ImageUI 추가 함수
     shared_ptr<ImageUI> AddImageUI(Vec2 localPos, const wstring& name = L"ImageUI");
-    shared_ptr<SliderUI> AddSliderUI(Vec2 localPos, Vec2 size, shared_ptr<Material> trackMaterial, shared_ptr<Material> handleMaterial, float minValue = 0.0f, float maxValue = 1.0f, const wstring& name = L"Slider");
+    shared_ptr<SliderUI> AddSliderUI(Vec2 localPos, Vec2 size, shared_ptr<Material> trackMaterial, shared_ptr<Material> fillMaterial, shared_ptr<Material> handleMaterial, float minValue = 0.0f, float maxValue = 1.0f, const wstring& name = L"Slider");
 
 
     // UI 요소 관리

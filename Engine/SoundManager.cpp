@@ -93,6 +93,22 @@ int SoundManager::VolumeDown(const int _eID, float _volume)
 	return 0;
 }
 
+void SoundManager::SetBGMVolume(float _volume)
+{
+	m_BGMvolume = _volume;
+	m_Channels[0]->setVolume(_volume);
+}
+
+
+void SoundManager::SetSFXVolume(float _volume)
+{
+	m_SFXvolume = _volume;
+	
+	for (int idx = 1; idx < 32; ++idx) {
+		m_Channels[idx]->setVolume(_volume);
+	}
+}
+
 int SoundManager::Pause(const int _eID)
 {
 	m_pause = !m_Channels[_eID]->getPaused(&m_pause);

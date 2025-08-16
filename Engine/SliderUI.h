@@ -21,8 +21,11 @@ public:
 public:
 
     // 슬라이더 생성
-    void Create(Vec2 localPos, Vec2 size, shared_ptr<Material> trackMaterial,
+    void Create(Vec2 localPos, Vec2 size, shared_ptr<Material> trackMaterial, shared_ptr<Material> fillMaterial, 
         shared_ptr<Material> handleMaterial, float minValue = 0.0f, float maxValue = 1.0f);
+
+
+    void SetVisible(bool visible);
 
     // 값 설정/가져오기
     void SetValue(float value);
@@ -45,6 +48,7 @@ public:
 private:
     void HandleInput();
     void UpdateHandlePosition();
+    void UpdateFillPosition();
     float ScreenToValue(float screenPos);
     float ValueToScreen(float value);
     bool IsPointInTrack(POINT point);
@@ -54,11 +58,12 @@ private:
     // 슬라이더 설정
     float m_minValue = 0.0f;
     float m_maxValue = 1.0f;
-    float m_currentValue = 0.0f;
+    float m_currentValue = 1.0f;
     SliderDirection m_direction = SliderDirection::HORIZONTAL;
 
     // UI 요소들
     Vec2 m_localPosition = Vec2::Zero;
+    Vec2 m_worldPosition = Vec2::Zero;
     Vec2 m_trackSize = Vec2::Zero;
     Vec2 m_handleSize = Vec2(20.0f, 20.0f);
 
@@ -72,6 +77,7 @@ private:
     // 렌더링 요소들
     shared_ptr<GameObject> m_trackObject = nullptr;
     shared_ptr<GameObject> m_handleObject = nullptr;
+    shared_ptr<GameObject> m_fillObject = nullptr;
 
     // 피킹용 RECT
     RECT m_trackRect;

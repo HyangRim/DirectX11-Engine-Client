@@ -9,16 +9,6 @@ SliderUI::SliderUI() : Super(ComponentType::SLIDER)
 SliderUI::~SliderUI()
 {
     m_isDestroying = true;
-
-    // Scene의 지연 삭제 시스템 사용
-    if (CURSCENE && !CURSCENE->IsDestroying()) {
-        if (m_trackObject) {
-            CURSCENE->GetObjectManager()->MarkUIObjectForDestroy(m_trackObject);
-        }
-        if (m_handleObject) {
-            CURSCENE->GetObjectManager()->MarkUIObjectForDestroy(m_handleObject);
-        }
-    }
 }
 
 void SliderUI::Init()
@@ -42,13 +32,15 @@ void SliderUI::Update()
     HandleInput();
 }
 
-void SliderUI::Create(Vec2 localPos, Vec2 size, shared_ptr<Material> trackMaterial, shared_ptr<Material> handleMaterial, float minValue, float maxValue)
+void SliderUI::Create(Vec2 localPos, Vec2 size, shared_ptr<Material> trackMaterial, shared_ptr<Material> fillMaterial, shared_ptr<Material> handleMaterial, float minValue, float maxValue)
 {
-    m_localPosition = localPos;
+    // 이 파라미터는 UIPanel이 LocalToWorldPosition(...) 결과를 넘기고 있기 때문에
+    // 여기서는 world position으로 저장한다.
+    m_worldPosition = localPos;
     m_trackSize = size;
     m_minValue = minValue;
     m_maxValue = maxValue;
-    m_currentValue = minValue;
+    m_currentValue = 1.f;
 
     float height = GRAPHICS->GetViewport().GetHeight();
     float width = GRAPHICS->GetViewport().GetWidth();
@@ -64,10 +56,18 @@ void SliderUI::Create(Vec2 localPos, Vec2 size, shared_ptr<Material> trackMateri
     m_trackObject->GetMeshRenderer()->SetMaterial(trackMaterial);
     m_trackObject->GetMeshRenderer()->SetPass(0);
 
-    float trackX = m_localPosition.x - width / 2.0f;
-    float trackY = height / 2.0f - m_localPosition.y;
+    float trackX = m_worldPosition.x - width / 2.0f;
+    float trackY = height / 2.0f - m_worldPosition.y;
     m_trackObject->GetTransform()->SetPosition(Vec3(trackX, trackY, m_zTrackPos));
     m_trackObject->GetTransform()->SetScale(Vec3(m_trackSize.x, m_trackSize.y, 1));
+
+    m_fillObject = make_shared<GameObject>();
+    m_fillObject->SetName(L"SliderFill");
+    m_fillObject->SetLayerIndex(LAYER_UI);
+    m_fillObject->AddComponent(make_shared<MeshRenderer>());
+    m_fillObject->GetMeshRenderer()->SetMesh(mesh);
+    m_fillObject->GetMeshRenderer()->SetMaterial(fillMaterial);
+    m_fillObject->GetMeshRenderer()->SetPass(0);
 
     // Handle GameObject 생성
     m_handleObject = make_shared<GameObject>();
@@ -79,6 +79,7 @@ void SliderUI::Create(Vec2 localPos, Vec2 size, shared_ptr<Material> trackMateri
     m_handleObject->GetMeshRenderer()->SetMaterial(handleMaterial);
     m_handleObject->GetMeshRenderer()->SetPass(0);
     m_handleObject->GetTransform()->SetScale(Vec3(m_handleSize.x, m_handleSize.y, 1));
+    m_handleObject->GetTransform()->SetPosition(Vec3(trackX, trackY, m_zHandlePos));
 
     // Scene에 UI 객체로 등록
     if (CURSCENE) {
@@ -89,17 +90,28 @@ void SliderUI::Create(Vec2 localPos, Vec2 size, shared_ptr<Material> trackMateri
         CURSCENE->RegisterUIChild(m_handleObject);
     }
 
-    // 피킹용 RECT 초기화
-    m_trackRect.left = static_cast<LONG>(m_localPosition.x - m_trackSize.x / 2);
-    m_trackRect.right = static_cast<LONG>(m_localPosition.x + m_trackSize.x / 2);
-    m_trackRect.top = static_cast<LONG>(m_localPosition.y - m_trackSize.y / 2);
-    m_trackRect.bottom = static_cast<LONG>(m_localPosition.y + m_trackSize.y / 2);
+    // 피킹용 RECT 초기화 (screen-space, origin = top-left)
+    m_trackRect.left = static_cast<LONG>(m_worldPosition.x - m_trackSize.x / 2);
+    m_trackRect.right = static_cast<LONG>(m_worldPosition.x + m_trackSize.x / 2);
+    m_trackRect.top = static_cast<LONG>(m_worldPosition.y - m_trackSize.y / 2);
+    m_trackRect.bottom = static_cast<LONG>(m_worldPosition.y + m_trackSize.y / 2);
 
     UpdateHandlePosition();
+    UpdateFillPosition();
 
     m_isEnabled = true;
     m_visible = true;
     m_isDragging = false;
+}
+
+void SliderUI::SetVisible(bool visible)
+{
+    m_visible = visible;
+    GetGameObject()->SetActive(visible);
+
+    m_trackObject->SetActive(visible);
+    m_handleObject->SetActive(visible);
+    m_fillObject->SetActive(visible);
 }
 
 void SliderUI::SetValue(float value)
@@ -109,6 +121,7 @@ void SliderUI::SetValue(float value)
     if (fabs(clampedValue - m_currentValue) > 0.0001f) {
         m_currentValue = clampedValue;
         UpdateHandlePosition();
+        UpdateFillPosition();
         OnValueChanged(m_currentValue);
     }
 }
@@ -133,22 +146,24 @@ void SliderUI::UpdatePosition(const Vec2& parentWorldPos)
     float height = GRAPHICS->GetViewport().GetHeight();
     float width = GRAPHICS->GetViewport().GetWidth();
 
-    // 트랙 위치 업데이트
+    // 트랙 위치 업데이트 (world position 기준)
     if (m_trackObject) {
         float x = newWorldPos.x - width / 2.0f;
         float y = height / 2.0f - newWorldPos.y;
         m_trackObject->GetTransform()->SetPosition(Vec3(x, y, m_zTrackPos));
     }
 
-    // 로컬 위치 업데이트 후 핸들 위치 재계산
-    m_localPosition = newWorldPos;
-    UpdateHandlePosition();
+    // **중요**: m_localPosition을 newWorldPos로 덮어쓰지 않는다.
+    m_worldPosition = newWorldPos;
 
-    // 트랙 피킹 RECT 업데이트
-    m_trackRect.left = static_cast<LONG>(m_localPosition.x - m_trackSize.x / 2);
-    m_trackRect.right = static_cast<LONG>(m_localPosition.x + m_trackSize.x / 2);
-    m_trackRect.top = static_cast<LONG>(m_localPosition.y - m_trackSize.y / 2);
-    m_trackRect.bottom = static_cast<LONG>(m_localPosition.y + m_trackSize.y / 2);
+    UpdateHandlePosition();
+    UpdateFillPosition();
+
+    // 트랙 피킹 RECT 업데이트 (screen-space)
+    m_trackRect.left = static_cast<LONG>(m_worldPosition.x - m_trackSize.x / 2);
+    m_trackRect.right = static_cast<LONG>(m_worldPosition.x + m_trackSize.x / 2);
+    m_trackRect.top = static_cast<LONG>(m_worldPosition.y - m_trackSize.y / 2);
+    m_trackRect.bottom = static_cast<LONG>(m_worldPosition.y + m_trackSize.y / 2);
 }
 
 void SliderUI::HandleInput()
@@ -212,49 +227,60 @@ void SliderUI::UpdateHandlePosition()
 {
     if (!m_handleObject) return;
 
-    float screenPos = ValueToScreen(m_currentValue);
+    float screenPos = ValueToScreen(m_currentValue); // screen-space scalar
     float height = GRAPHICS->GetViewport().GetHeight();
     float width = GRAPHICS->GetViewport().GetWidth();
 
-    float x, y;
-
+    float x_screen, y_screen; // screen-space (0,0 = top-left)
     if (m_direction == SliderDirection::HORIZONTAL) {
-        x = screenPos - width / 2.0f;
-        y = height / 2.0f - m_localPosition.y;
+        x_screen = screenPos;
+        y_screen = m_worldPosition.y;
     }
     else {
-        x = m_localPosition.x - width / 2.0f;
-        y = height / 2.0f - screenPos;
+        x_screen = m_worldPosition.x;
+        y_screen = screenPos;
     }
+
+    // 엔진 Transform 좌표로 변환 (center-origin)
+    float x = x_screen - width / 2.0f;
+    float y = height / 2.0f - y_screen;
 
     m_handleObject->GetTransform()->SetPosition(Vec3(x, y, m_zHandlePos));
 
-    // 피킹용 RECT 업데이트
-    if (m_direction == SliderDirection::HORIZONTAL) {
-        m_handleRect.left = static_cast<LONG>(screenPos - m_handleSize.x / 2);
-        m_handleRect.right = static_cast<LONG>(screenPos + m_handleSize.x / 2);
-        m_handleRect.top = static_cast<LONG>(m_localPosition.y - m_handleSize.y / 2);
-        m_handleRect.bottom = static_cast<LONG>(m_localPosition.y + m_handleSize.y / 2);
+    // 피킹용 RECT 업데이트 (screen-space 기준)
+    m_handleRect.left = static_cast<LONG>(x_screen - m_handleSize.x / 2);
+    m_handleRect.right = static_cast<LONG>(x_screen + m_handleSize.x / 2);
+    m_handleRect.top = static_cast<LONG>(y_screen - m_handleSize.y / 2);
+    m_handleRect.bottom = static_cast<LONG>(y_screen + m_handleSize.y / 2);
+}
+
+void SliderUI::UpdateFillPosition()
+{
+    if (!m_fillObject) return;
+    if (m_direction == SliderDirection::HORIZONTAL)
+    {
+        float percent = (m_currentValue - m_minValue) / (m_maxValue - m_minValue);
+        m_fillObject->GetTransform()->SetScale(Vec3(m_trackSize.x * percent, m_trackSize.y, 1));
     }
-    else {
-        m_handleRect.left = static_cast<LONG>(m_localPosition.x - m_handleSize.x / 2);
-        m_handleRect.right = static_cast<LONG>(m_localPosition.x + m_handleSize.x / 2);
-        m_handleRect.top = static_cast<LONG>(screenPos - m_handleSize.y / 2);
-        m_handleRect.bottom = static_cast<LONG>(screenPos + m_handleSize.y / 2);
+    else
+    {
+        float percent = (m_currentValue - m_minValue) / (m_maxValue - m_minValue);
+        m_fillObject->GetTransform()->SetScale(Vec3(m_trackSize.x, m_trackSize.y * percent, 1));
     }
 }
+
 
 float SliderUI::ScreenToValue(float screenPos)
 {
     float trackStart, trackEnd;
 
     if (m_direction == SliderDirection::HORIZONTAL) {
-        trackStart = m_localPosition.x - m_trackSize.x / 2.0f;
-        trackEnd = m_localPosition.x + m_trackSize.x / 2.0f;
+        trackStart = m_worldPosition.x - m_trackSize.x / 2.0f;
+        trackEnd = m_worldPosition.x + m_trackSize.x / 2.0f;
     }
     else {
-        trackStart = m_localPosition.y - m_trackSize.y / 2.0f;
-        trackEnd = m_localPosition.y + m_trackSize.y / 2.0f;
+        trackStart = m_worldPosition.y - m_trackSize.y / 2.0f;
+        trackEnd = m_worldPosition.y + m_trackSize.y / 2.0f;
     }
 
     // 클램프
@@ -275,12 +301,12 @@ float SliderUI::ValueToScreen(float value)
     float trackStart, trackEnd;
 
     if (m_direction == SliderDirection::HORIZONTAL) {
-        trackStart = m_localPosition.x - m_trackSize.x / 2.0f;
-        trackEnd = m_localPosition.x + m_trackSize.x / 2.0f;
+        trackStart = m_worldPosition.x - m_trackSize.x / 2.0f;
+        trackEnd = m_worldPosition.x + m_trackSize.x / 2.0f;
     }
     else {
-        trackStart = m_localPosition.y - m_trackSize.y / 2.0f;
-        trackEnd = m_localPosition.y + m_trackSize.y / 2.0f;
+        trackStart = m_worldPosition.y - m_trackSize.y / 2.0f;
+        trackEnd = m_worldPosition.y + m_trackSize.y / 2.0f;
     }
 
     float t = (value - m_minValue) / (m_maxValue - m_minValue);

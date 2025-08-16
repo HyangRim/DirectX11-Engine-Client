@@ -21,6 +21,9 @@ public:
 	int VolumeUp(const int _eID, float _volume);
 	int VolumeDown(const int _eID, float _volume);
 
+	void SetBGMVolume(float _volume);
+	void SetSFXVolume(float _volume);
+
 	int Pause(const int _eID);
 
 
@@ -29,7 +32,8 @@ private:
 
 private:
 	float m_volume;
-	float m_BGMvolume;
+	float m_BGMvolume = 1.f;
+	float m_SFXvolume = 1.f;
 	bool m_bool;
 	bool m_pause;
 private:

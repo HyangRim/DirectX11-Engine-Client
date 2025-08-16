@@ -25,6 +25,7 @@ void StartScene::Start()
 
 	//CreateTestPanel();
 	CreateLobbyBackGround();
+	CreateSoundPanel();
 	CreateCursor();
 
 
@@ -189,12 +190,161 @@ void StartScene::CreateLobbyBackGround()
 		RESOURCES->Get<Material>(L"StartBtnDeco_2"), 1);
 
 
+	//사운드 버튼 추가. 
+	{
+		// 패널에 버튼 추가
+		auto soundbutton = m_backPanel->GetUIPanel()->AddButton(
+			Vec2(185.f, 267.f),
+			Vec2(162, 48),
+			normalMaterial,  // 기본 Material을 Normal로 설정
+			L"SoundButton"
+		);
+
+		// 상태별 Material 설정
+		soundbutton->SetNormalMaterial(normalMaterial->Clone());
+		soundbutton->SetHoveredMaterial(hoverMaterial->Clone());
+		soundbutton->SetPressedMaterial(hoverMaterial->Clone());
+
+		// Delegate 이벤트도 추가 
+		soundbutton->OnClick += [this]() {
+			//std::cout << "Delegate: Start Button Clicked!" << std::endl;
+			//OnStartButtonClicked();
+			OnSoundButtonClicked();
+			EnableSoundPanel();
+			};
+
+		soundbutton->OnHoverEnter += [this]() {
+			std::cout << "Start Button Hovered!" << std::endl;
+			OnButtonHover();
+		};
+
+		auto imageSoundUI = m_backPanel->GetUIPanel()->AddImageUI(Vec2(0, 0), L"MainImageUI");
+		// ImageUI에 이미지 레이어들 추가
+		imageSoundUI->AddImageLayer(0, Vec2(62, 200), Vec2(124, 42),
+			RESOURCES->Get<Material>(L"StartBtnDeco_1")->Clone(), 1);
+
+		// ImageUI에 이미지 레이어들 추가
+		imageSoundUI->AddImageLayer(1, Vec2(42, 260), Vec2(169, 169),
+			RESOURCES->Get<Material>(L"StartBtnDeco_3")->Clone(), 1);
+
+		// ImageUI에 이미지 레이어들 추가
+		imageSoundUI->AddImageLayer(2, Vec2(42, 260), Vec2(82, 93),
+			RESOURCES->Get<Material>(L"StartBtnDeco_4")->Clone(), 1);
+
+		// ImageUI에 이미지 레이어들 추가
+		imageSoundUI->AddImageLayer(3, Vec2(220, 270), Vec2(441, 59),
+			RESOURCES->Get<Material>(L"StartBtnDeco_2")->Clone(), 1);
+
+
+
+		m_backPanel->GetUIPanel()->AddText(
+			Vec2(175.f, 260.f),
+			L"사운드 설정",
+			22.f,
+			Color(1.f, 1.f, 1.f, 1.f),
+			1.f,
+			Color(0.f, 0.f, 0.f, 0.f),
+			0.0f,
+			L"GameSoundText"
+		);
+
+	}
+
+
 	m_backPanel->SetLayerIndex(LAYER_UI);
 	//CURSCENE->AddUIObject(m_backPanel, true);  // true = 부모
 	//CURSCENE->RegisterUIParent(m_backPanel);
 
 	AddUIObject(m_backPanel, true);  // CURSCENE 대신 AddUIObject 사용
 	RegisterUIParent(m_backPanel);   // CURSCENE 대신 RegisterUIParent 사용
+}
+
+void StartScene::CreateSoundPanel()
+{
+	float width = GRAPHICS->GetViewport().GetWidth();
+	float height = GRAPHICS->GetViewport().GetHeight();
+
+
+	m_soundBackPanel = make_shared<GameObject>();
+	m_soundBackPanel->SetName(L"Sound_BackPanel");
+	m_soundBackPanel->AddComponent(make_shared<UIPanel>());
+	m_soundBackPanel->GetUIPanel()
+		->Create(
+			Vec2(width / 2.f, height / 2.f),
+			Vec2(width, height),
+			Vec4(0.f),
+			RESOURCES->Get<Material>(L"default")
+			//nullptr
+		);
+	m_soundBackPanel->SetLayerIndex(LAYER_UI);
+
+	AddUIObject(m_soundBackPanel, true);  // CURSCENE 대신 AddUIObject 사용
+	RegisterUIParent(m_soundBackPanel);   // CURSCENE 대신 RegisterUIParent 사용
+
+	m_soundPanel = make_shared<GameObject>();
+	m_soundPanel->SetName(L"Sound_Panel");
+
+	// UIPanel 컴포넌트 추가
+	m_soundPanel->AddComponent(make_shared<UIPanel>());
+	m_soundPanel->GetUIPanel()
+		->Create(
+			Vec2(width / 2.f, height / 2.f),
+			Vec2(width / 2.f, height / 2.f),
+			Vec4(1.f, 1.f, 1.f, 1.f),
+			RESOURCES->Get<Material>(L"GrayImage")
+			//nullptr
+		);
+
+	m_soundPanel->SetLayerIndex(LAYER_UI);
+
+	auto backgroundBar = RESOURCES->Get<Material>(L"DarkBar");
+	auto greenBar = RESOURCES->Get<Material>(L"GreenBar");
+	
+	m_soundPanel->GetUIPanel()->AddD2DText(Vec2(70, 100), L"BGM 음량", 24.0f,
+		Vec4(1, 1, 1, 1), 1.0f, Vec4(0, 0, 0, 1), 2.f,
+		L"BGM_Volume_Text", TextAlignment::Left);
+
+
+	m_BGMSlider = m_soundPanel->GetUIPanel()->AddSliderUI(Vec2(400, 100), Vec2(500, 30), backgroundBar->Clone(), greenBar->Clone(), greenBar->Clone(), 0.f, 1.f, L"BGMSlider");
+	m_BGMSlider->OnValueChanged += [this](float) {
+		OnBGMSliderMove();
+		};
+
+	m_soundPanel->GetUIPanel()->AddD2DText(Vec2(70, 200), L"SFX 음량", 24.0f,
+		Vec4(1, 1, 1, 1), 1.0f, Vec4(0, 0, 0, 1), 2.f,
+		L"SFX_Volume_Text", TextAlignment::Left);
+
+	m_SFXSlider = m_soundPanel->GetUIPanel()->AddSliderUI(Vec2(400, 200), Vec2(500, 30), backgroundBar->Clone(), greenBar->Clone(), greenBar->Clone(), 0.f, 1.f, L"SFXSlider");
+	m_SFXSlider->OnValueChanged += [this](float) {
+		OnSFXSliderMove();
+		};
+	
+	m_soundPanel->GetUIPanel()->AddButton(Vec2(500, 250), Vec2(144, 61), backgroundBar->Clone());
+
+	// 버튼용 Material 준비
+	shared_ptr<Material> normalMaterial = RESOURCES->Get<Material>(L"CSScene_BtnDisabled")->Clone();
+	shared_ptr<Material> hoverMaterial = RESOURCES->Get<Material>(L"CSScene_BtnPressed")->Clone();
+	shared_ptr<Material> pressedMaterial = RESOURCES->Get<Material>(L"CSScene_BtnPressed")->Clone();
+
+
+	auto DisableSoundPanelBtn = m_soundPanel->GetUIPanel()->AddButton(Vec2(500, 250), Vec2(144, 61), normalMaterial, L"DisableButton");
+
+	DisableSoundPanelBtn->SetNormalMaterial(normalMaterial);
+	DisableSoundPanelBtn->SetHoveredMaterial(hoverMaterial);
+	DisableSoundPanelBtn->SetPressedMaterial(pressedMaterial);
+
+	DisableSoundPanelBtn->OnClick += [this]() {
+		SOUND->PlaySound(L"SFX/oui_Banner_Click.wav", 2, 0.5f);
+		DisableSoundPanel();
+		};
+
+	DisableSoundPanelBtn->OnHoverEnter += [this]() {
+		OnButtonHover();
+		};
+	m_soundPanel->GetUIPanel()->SetVisible(false);
+
+	AddUIObject(m_soundPanel, true);  // CURSCENE 대신 AddUIObject 사용
+	RegisterUIParent(m_soundPanel);   // CURSCENE 대신 RegisterUIParent 사용
 }
 
 void StartScene::CreateCursor()
@@ -215,6 +365,7 @@ void StartScene::LoadStartSceneImages()
 {
 	LoadBtnImages();
 	LoadLobbyImages();
+	LoadSliderImages();
 }
 
 void StartScene::LoadBtnImages()
@@ -286,6 +437,57 @@ void StartScene::LoadBtnImages()
 	startBtnDeco4Desc.diffuse = Vec4(1.f);
 	startBtnDeco4Desc.specular = Vec4(1.0f);
 	RESOURCES->Add(L"StartBtnDeco_4", startBtnDeco4);
+
+	shared_ptr<Material> CSScene_BtnPressedMat = make_shared<Material>();
+	SetupUIMaterial(CSScene_BtnPressedMat);
+	auto CSScene_BtnPressedMatTexture = RESOURCES->Load<Texture>(L"CSScene_BtnPressed", L"..\\Resources\\Textures\\UI\\CharacterSelectScene\\Btn_MatchingStart_01.png");
+	CSScene_BtnPressedMat->SetDiffuseMap(CSScene_BtnPressedMatTexture);
+	MaterialDesc& CSScene_BtnPressedMatDesc = CSScene_BtnPressedMat->GetMaterialDesc();
+	CSScene_BtnPressedMatDesc.ambient = Vec4(1.f);
+	CSScene_BtnPressedMatDesc.diffuse = Vec4(1.f);
+	CSScene_BtnPressedMatDesc.specular = Vec4(1.0f);
+	RESOURCES->Add(L"CSScene_BtnPressed", CSScene_BtnPressedMat);
+
+	shared_ptr<Material> CSScene_BtnDisabledMat = make_shared<Material>();
+	SetupUIMaterial(CSScene_BtnDisabledMat);
+	auto CSScene_BtnDisabledMatTexture = RESOURCES->Load<Texture>(L"CSScene_BtnDisabled", L"..\\Resources\\Textures\\UI\\CharacterSelectScene\\Btn_MatchingStart_Disabled_01.png");
+	CSScene_BtnDisabledMat->SetDiffuseMap(CSScene_BtnDisabledMatTexture);
+	MaterialDesc& CSScene_BtnDisabledMatDesc = CSScene_BtnDisabledMat->GetMaterialDesc();
+	CSScene_BtnDisabledMatDesc.ambient = Vec4(1.f);
+	CSScene_BtnDisabledMatDesc.diffuse = Vec4(1.f);
+	CSScene_BtnDisabledMatDesc.specular = Vec4(1.0f);
+	RESOURCES->Add(L"CSScene_BtnDisabled", CSScene_BtnDisabledMat);
+}
+
+void StartScene::LoadSliderImages()
+{
+	// 모든 UI 머티리얼에 동일한 설정 적용
+	auto SetupUIMaterial = [&](shared_ptr<Material> material) {
+		material->SetShader(m_imageShader);
+		material->SetRenderQueue(RenderQueue::Transparent);
+		material->SetTransparent(true);  // 모든 UI에 추가
+		material->SetRenderingMode(RenderingMode::Forward);
+	};
+
+	shared_ptr<Material> barBackground = make_shared<Material>();
+	SetupUIMaterial(barBackground);
+	auto barBackground_tex = RESOURCES->Load<Texture>(L"DarkBar", L"..\\Resources\\Textures\\UI\\status\\EmptyBar_UI.png");
+	barBackground->SetDiffuseMap(barBackground_tex);
+	MaterialDesc& barBackgroundDesc = barBackground->GetMaterialDesc();
+	barBackgroundDesc.ambient = Vec4(1.f);
+	barBackgroundDesc.diffuse = Vec4(1.f);
+	barBackgroundDesc.specular = Vec4(1.0f);
+	RESOURCES->Add(L"DarkBar", barBackground);
+
+	shared_ptr<Material> barGreen = make_shared<Material>();
+	SetupUIMaterial(barGreen);
+	auto bargreen_tex = RESOURCES->Load<Texture>(L"GreenBar", L"..\\Resources\\Textures\\UI\\StatusBar\\Gauge\\Img_Main_Gage_01.png");
+	barGreen->SetDiffuseMap(bargreen_tex);
+	MaterialDesc& barGreenDesc = barGreen->GetMaterialDesc();
+	barGreenDesc.ambient = Vec4(1.f);
+	barGreenDesc.diffuse = Vec4(1.f);
+	barGreenDesc.specular = Vec4(1.0f);
+	RESOURCES->Add(L"GreenBar", barGreen);
 }
 
 void StartScene::LoadLobbyImages()
@@ -307,6 +509,17 @@ void StartScene::LoadLobbyImages()
 	backGroundDesc.diffuse = Vec4(1.f);
 	backGroundDesc.specular = Vec4(1.0f);
 	RESOURCES->Add(L"LobbyImage", backGround);
+
+
+	shared_ptr<Material> SoundGround = make_shared<Material>();
+	SetupUIMaterial(SoundGround);
+	auto grayTexture = RESOURCES->Load<Texture>(L"GrayBackGround", L"..\\Resources\\Textures\\UI\\time\\Nightshade2.png");
+	SoundGround->SetDiffuseMap(grayTexture);
+	MaterialDesc& SoundGroundDesc = SoundGround->GetMaterialDesc();
+	SoundGroundDesc.ambient = Vec4(1.f);
+	SoundGroundDesc.diffuse = Vec4(1.f);
+	SoundGroundDesc.specular = Vec4(1.0f);
+	RESOURCES->Add(L"GrayImage", SoundGround);
 }
 
 
@@ -319,7 +532,36 @@ void StartScene::OnStartButtonClicked()
 	SCENE->ChangeScene(characterSelectScene);
 }
 
+void StartScene::OnSoundButtonClicked()
+{
+	SOUND->PlaySound(L"SFX/oui_Banner_Click.wav", 2, 0.5f);
+}
+
+void StartScene::EnableSoundPanel()
+{
+	m_soundPanel->GetUIPanel()->SetVisible(true);
+	cout << "SoundPanel Enable\n";
+}
+
+void StartScene::DisableSoundPanel()
+{
+	m_soundPanel->GetUIPanel()->SetVisible(false);
+	cout << "SoundPanel Disable\n";
+}
+
+void StartScene::OnBGMSliderMove()
+{
+	//cout << m_BGMSlider->GetValue() << "\n";
+	SOUND->SetBGMVolume(m_BGMSlider->GetValue());
+}
+
+void StartScene::OnSFXSliderMove()
+{
+	SOUND->SetSFXVolume(m_SFXSlider->GetValue());
+}
+
 void StartScene::OnButtonHover()
 {
 	SOUND->PlaySound(L"SFX/oui_mainMenu_hover.wav", 2, 0.5f);
+
 }

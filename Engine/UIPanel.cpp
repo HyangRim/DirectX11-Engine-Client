@@ -236,6 +236,8 @@ void UIPanel::SetVisible(bool visible)
                 child->GetD2DText()->SetVisible(visible);
             else if (child->GetImageUI())
                 child->GetImageUI()->SetVisible(visible);
+            else if (child->GetSliderUI())
+                child->GetSliderUI()->SetVisible(visible);
         }
     }
 }
@@ -392,7 +394,7 @@ shared_ptr<ImageUI> UIPanel::AddImageUI(Vec2 localPos, const wstring& name)
     return imageUIComponent;
 }
 
-shared_ptr<SliderUI> UIPanel::AddSliderUI(Vec2 localPos, Vec2 size, shared_ptr<Material> trackMaterial, shared_ptr<Material> handleMaterial, float minValue, float maxValue, const wstring& name)
+shared_ptr<SliderUI> UIPanel::AddSliderUI(Vec2 localPos, Vec2 size, shared_ptr<Material> trackMaterial, shared_ptr<Material> fillMaterial, shared_ptr<Material> handleMaterial, float minValue, float maxValue, const wstring& name)
 {
     auto sliderObj = make_shared<GameObject>();
     sliderObj->SetName(name);
@@ -401,7 +403,7 @@ shared_ptr<SliderUI> UIPanel::AddSliderUI(Vec2 localPos, Vec2 size, shared_ptr<M
     sliderObj->AddComponent(sliderComponent);
 
     Vec2 worldPos = LocalToWorldPosition(localPos);
-    sliderComponent->Create(worldPos, size, trackMaterial, handleMaterial, minValue, maxValue);
+    sliderComponent->Create(worldPos, size, trackMaterial, fillMaterial, handleMaterial, minValue, maxValue);
     sliderComponent->SetLocalPosition(localPos);
 
     // 자식 요소로 등록

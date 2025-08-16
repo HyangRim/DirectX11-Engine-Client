@@ -30,6 +30,7 @@
 #include "ImageUI.h"
 #include "Text.h"
 #include "UIPanel.h"
+#include "SliderUI.h"
 #include "Billboard.h"
 #include "SnowBillboard.h"
 #include "ParticleSystem.h"
