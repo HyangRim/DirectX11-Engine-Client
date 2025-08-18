@@ -113,15 +113,15 @@ void MonsterStateMachine::HandleSpecialStateTransitions()
             m_animationStateMachine->ChangeState(AnimationStateType::Dying);
         }
     }
-    else if (GetCurrentState() == MonsterStateType::Attack)
-    {
-        // CanTransitionTo로 전환 가능 여부 체크
-        // 어차피 LogicState에서 완료를 판정했으므로 전환해도 무방
-        if (m_currentState && m_currentState->CanTransitionTo(MonsterStateType::Wait))
-        {
-            cout << "Attack 상태 완료 조건 만족 - Wait로 전환" << endl;
-            ChangeState(MonsterStateType::Wait);
-            m_animationStateMachine->ChangeState(AnimationStateType::Wait);
-        }
-    }
+    //else if (GetCurrentState() == MonsterStateType::Attack)
+    //{
+    //    // CanTransitionTo로 전환 가능 여부 체크
+    //    // 어차피 LogicState에서 완료를 판정했으므로 전환해도 무방
+    //    if (m_currentState && m_currentState->CanTransitionTo(MonsterStateType::Wait))
+    //    {
+    //        cout << "Attack 상태 완료 조건 만족 - Wait로 전환" << endl;
+    //        ChangeState(MonsterStateType::Wait);
+    //        m_animationStateMachine->ChangeState(AnimationStateType::Wait);
+    //    }
+    //}
 }

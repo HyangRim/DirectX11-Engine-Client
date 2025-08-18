@@ -84,6 +84,7 @@
     <ClInclude Include="LumiaIsland.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="Monster.h" />
+    <ClInclude Include="MonsterBehaviour.h" />
     <ClInclude Include="Nicky.h" />
     <ClInclude Include="NickyAnimCraftState.h" />
     <ClInclude Include="NickyCraftState.h" />
@@ -138,9 +139,11 @@
     <ClInclude Include="WolfAnimWaitState.h" />
     <ClInclude Include="WolfAppearState.h" />
     <ClInclude Include="WolfAttackState.h" />
+    <ClInclude Include="WolfBaseAttack.h" />
     <ClInclude Include="WolfDeathState.h" />
     <ClInclude Include="WolfDyingState.h" />
     <ClInclude Include="WolfRunState.h" />
+    <ClInclude Include="WolfTrace.h" />
     <ClInclude Include="WolfTraceState.h" />
     <ClInclude Include="WolfWaitState.h" />
   </ItemGroup>
@@ -208,6 +211,7 @@
     <ClCompile Include="LumiaIsland.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Monster.cpp" />
+    <ClCompile Include="MonsterBehaviour.cpp" />
     <ClCompile Include="Nicky.cpp" />
     <ClCompile Include="NickyAnimCraftState.cpp" />
     <ClCompile Include="NickyCraftState.cpp" />
@@ -264,9 +268,11 @@
     <ClCompile Include="WolfAnimWaitState.cpp" />
     <ClCompile Include="WolfAppearState.cpp" />
     <ClCompile Include="WolfAttackState.cpp" />
+    <ClCompile Include="WolfBaseAttack.cpp" />
     <ClCompile Include="WolfDeathState.cpp" />
     <ClCompile Include="WolfDyingState.cpp" />
     <ClCompile Include="WolfRunState.cpp" />
+    <ClCompile Include="WolfTrace.cpp" />
     <ClCompile Include="WolfTraceState.cpp" />
     <ClCompile Include="WolfWaitState.cpp" />
   </ItemGroup>

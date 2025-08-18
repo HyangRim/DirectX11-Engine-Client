@@ -11,5 +11,11 @@ public:
 
     virtual void Init() override;
     virtual void Update() override;
+
+    virtual void SetActive(bool _active) { m_active = _active; }
+    virtual bool IsActive() { return m_active; }
+
+private:
+    bool m_active = true;
 };
 

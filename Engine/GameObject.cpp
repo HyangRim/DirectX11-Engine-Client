@@ -75,8 +75,10 @@ void GameObject::Update()
 	}
 
 	for (shared_ptr<MonoBehaviour>& script : m_scripts) {
-		if (script)
+		if (script && script->IsActive())
+		{
 			script->Update();
+		}
 	}
 }
 
@@ -284,6 +286,14 @@ void GameObject::AddComponent(shared_ptr<Component> _component)
 	//enable_shared_from_this 안쓰고, this로 그냥 넘겨주면. 
 	//레퍼런스 카운트를 이중으로 관리해서 안됨. 
 	_component->SetGameObject(shared_from_this());
+
+	// MonoBehaviour인지 먼저 확인
+	auto script = dynamic_pointer_cast<MonoBehaviour>(_component);
+	if (script) {
+		// MonoBehaviour 스크립트
+		m_scripts.push_back(script);
+		return;
+	}
 
 	uint8 index = static_cast<uint8>(_component->GetType());
 

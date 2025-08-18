@@ -18,7 +18,13 @@
 #include "WolfAnimTraceState.h"
 #include "WolfAnimAttackState.h"
 
+#include "WolfBaseAttack.h"
+#include "WolfTrace.h"
+
+
 #include "MonsterStateMachine.h"
+
+
 
 #include "SkillObject.h"
 #include "Player.h"
@@ -84,6 +90,9 @@ void Wolf::OnCollisionEnter(shared_ptr<GameObject> _other)
 	if (chaseTarget) {
 		static_pointer_cast<WolfTraceState>(m_monsterStateMachine->GetState(MonsterStateType::Trace))->SetOtherObject(chaseTarget);
 		static_pointer_cast<WolfAttackState>(m_monsterStateMachine->GetState(MonsterStateType::Attack))->SetOtherObject(chaseTarget);
+		
+		GetComponent<WolfBaseAttack>()->SetTarget(chaseTarget);
+		
 		m_monsterStateMachine->ChangeState(MonsterStateType::Trace);
 		m_animationStateMachine->ChangeState(AnimationStateType::Trace);
 	}
@@ -182,17 +191,29 @@ void Wolf::InitWolfComponent()
 	m_collider = make_shared<SphereCollider>();
 	m_collider->SetOffset(Vec3(0, 1, 0));
 	m_collider->SetOffsetScale(Vec3(200.f, 200.f, 200.f));
+	m_collider->SetVisible(true);
 
-	m_collider->SetVisible(false);
+	//m_collider->SetVisible(false);
 	m_rigidbody = make_shared<Rigidbody>();
 	m_navAgent = make_shared<NavMeshAgent>();
 	m_itembox = make_shared<ItemBox>();
+
+	//행동 스크립트? 컴포넌트?
+	auto attackScript = make_shared<WolfBaseAttack>();
+	attackScript->SetOwner(shared_from_this());
+	AddComponent(attackScript);
+
+	auto traceScript = make_shared<WolfTrace>();
+	traceScript->SetOwner(shared_from_this());
+	AddComponent(traceScript);
 
 
 	AddComponent(m_collider);
 	AddComponent(m_rigidbody);
 	AddComponent(m_navAgent);
 	AddComponent(m_itembox);
+
+	
 }
 
 void Wolf::InitWolfAI()

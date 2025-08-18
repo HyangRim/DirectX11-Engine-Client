@@ -187,6 +187,15 @@
     <Filter Include="Scripts\UI\UIResourceManager">
       <UniqueIdentifier>{08af5a1e-3942-4930-822b-e14968a926d7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Monster\Wolf\WolfBaseAttack">
+      <UniqueIdentifier>{1301110f-62c4-4e6c-9f85-2b7d0888bc6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Monster\MonsterBehaviour">
+      <UniqueIdentifier>{46f5fbe8-9055-41c5-9153-246bedfbb133}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Monster\Wolf\WolfTrace">
+      <UniqueIdentifier>{decc66f7-bf49-4418-8b24-8b8641d557f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -551,6 +560,15 @@
     </ClCompile>
     <ClCompile Include="SkillObject.cpp">
       <Filter>Scripts\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="WolfBaseAttack.cpp">
+      <Filter>Scripts\Monster\Wolf\WolfBaseAttack</Filter>
+    </ClCompile>
+    <ClCompile Include="MonsterBehaviour.cpp">
+      <Filter>Scripts\Monster\MonsterBehaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="WolfTrace.cpp">
+      <Filter>Scripts\Monster\Wolf\WolfTrace</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -923,6 +941,15 @@
     </ClInclude>
     <ClInclude Include="SkillObject.h">
       <Filter>Scripts\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfBaseAttack.h">
+      <Filter>Scripts\Monster\Wolf\WolfBaseAttack</Filter>
+    </ClInclude>
+    <ClInclude Include="MonsterBehaviour.h">
+      <Filter>Scripts\Monster\MonsterBehaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfTrace.h">
+      <Filter>Scripts\Monster\Wolf\WolfTrace</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
