@@ -128,14 +128,18 @@
     <ClInclude Include="ViewportDemo.h" />
     <ClInclude Include="Wolf.h" />
     <ClInclude Include="WolfAnimAppearState.h" />
+    <ClInclude Include="WolfAnimAttackState.h" />
     <ClInclude Include="WolfAnimDeathState.h" />
     <ClInclude Include="WolfAnimDyingState.h" />
     <ClInclude Include="WolfAnimRunState.h" />
+    <ClInclude Include="WolfAnimTraceState.h" />
     <ClInclude Include="WolfAnimWaitState.h" />
     <ClInclude Include="WolfAppearState.h" />
+    <ClInclude Include="WolfAttackState.h" />
     <ClInclude Include="WolfDeathState.h" />
     <ClInclude Include="WolfDyingState.h" />
     <ClInclude Include="WolfRunState.h" />
+    <ClInclude Include="WolfTraceState.h" />
     <ClInclude Include="WolfWaitState.h" />
   </ItemGroup>
   <ItemGroup>
@@ -248,14 +252,18 @@
     <ClCompile Include="ViewportDemo.cpp" />
     <ClCompile Include="Wolf.cpp" />
     <ClCompile Include="WolfAnimAppearState.cpp" />
+    <ClCompile Include="WolfAnimAttackState.cpp" />
     <ClCompile Include="WolfAnimDeathState.cpp" />
     <ClCompile Include="WolfAnimDyingState.cpp" />
     <ClCompile Include="WolfAnimRunState.cpp" />
+    <ClCompile Include="WolfAnimTraceState.cpp" />
     <ClCompile Include="WolfAnimWaitState.cpp" />
     <ClCompile Include="WolfAppearState.cpp" />
+    <ClCompile Include="WolfAttackState.cpp" />
     <ClCompile Include="WolfDeathState.cpp" />
     <ClCompile Include="WolfDyingState.cpp" />
     <ClCompile Include="WolfRunState.cpp" />
+    <ClCompile Include="WolfTraceState.cpp" />
     <ClCompile Include="WolfWaitState.cpp" />
   </ItemGroup>
   <ItemGroup>

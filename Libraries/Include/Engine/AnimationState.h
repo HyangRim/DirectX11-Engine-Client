@@ -17,7 +17,8 @@ enum class AnimationStateType
     Death,
     Dying, //죽은 상태 무한 반복. 
     Appear,
-    Craft
+    Craft,
+    Trace,
 };
 
 class ModelAnimator;

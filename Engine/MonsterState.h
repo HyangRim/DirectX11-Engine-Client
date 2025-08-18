@@ -6,7 +6,9 @@ enum class MonsterStateType
     Appear,
     Move,
     Death,
-    Dying
+    Dying,
+    Attack,
+    Trace
 };
 
 class MonsterState

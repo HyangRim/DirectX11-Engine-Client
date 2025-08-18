@@ -37,6 +37,7 @@ bool WolfWaitState::CanTransitionTo(MonsterStateType newState)
     case MonsterStateType::Move:
     case MonsterStateType::Death:
     case MonsterStateType::Dying:
+    case MonsterStateType::Trace:
         return true;
     default:
         return false;
