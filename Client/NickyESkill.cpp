@@ -45,7 +45,7 @@ NickyESkill::NickyESkill(shared_ptr<Player> _player)
 			m_skillRange->GetModelRenderer()->SetPass(1);
 		}
 
-		
+		m_skillRange->SetOwner(_player);
 		m_skillRange->GetTransform()->SetParent(m_playerObject->GetTransform());
 		CURSCENE->Add(m_skillRange);
 	}
@@ -121,7 +121,7 @@ void NickyESkill::UpdateColliderPosition()
 		rotationMatrix *= Matrix::CreateRotationZ(XMConvertToRadians(playerRot.z));
 
 		// 기본 오프셋 (0, 1, -3)을 회전시킴
-		Vec3 baseOffset = Vec3(0.f, 1.f, -3.f);
+		Vec3 baseOffset = Vec3(0.f, 1.f, -10.f);
 		Vec3 rotatedOffset = Vec3::Transform(baseOffset, rotationMatrix);
 
 		// Collider의 오프셋 업데이트

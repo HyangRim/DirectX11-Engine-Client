@@ -14,6 +14,7 @@ public:
     void ChangeState(MonsterStateType newState);
     bool CanChangeState(MonsterStateType newState);
     MonsterStateType GetCurrentState() const;
+    shared_ptr<MonsterState> GetState(MonsterStateType type) { return m_states[type]; }
 
     void RegisterState(MonsterStateType type, shared_ptr<MonsterState> state);
 

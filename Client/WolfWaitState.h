@@ -1,5 +1,7 @@
 #pragma once
 #include "MonsterState.h"
+
+
 class WolfWaitState :
     public MonsterState
 {

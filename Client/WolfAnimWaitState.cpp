@@ -63,6 +63,7 @@ bool WolfAnimWaitState::CanTransitionTo(AnimationStateType _nextState)
     case AnimationStateType::Run:
     case AnimationStateType::Dying:
     case AnimationStateType::Death:
+    case AnimationStateType::Trace:
         return true;
     case AnimationStateType::Wait:
         return false;  // 자기 자신으로는 전환 불가

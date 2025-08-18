@@ -12,12 +12,12 @@ void WolfAnimTraceState::Enter(shared_ptr<ModelAnimator> _animator)
         return;
     _animator->SetAnimationSpeed(m_playSpeed);
     // Wait 애니메이션 재생
-    _animator->SetAnimationByTag(L"Wait", false);
+    _animator->SetAnimationByTag(L"Run", false);
 
     m_idleTime = 0.0f;
     m_isAnimationStarted = true;
 
-    cout << "늑대 Wait  애니메이션 재생 시작" << endl;
+    cout << "늑대 Run 애니메이션 재생 시작" << endl;
 }
 
 void WolfAnimTraceState::Update(shared_ptr<ModelAnimator> _animator)
@@ -32,7 +32,7 @@ void WolfAnimTraceState::Update(shared_ptr<ModelAnimator> _animator)
     if (m_isAnimationStarted)
     {
         wstring currentAnimTag = _animator->GetCurrentAnimationTag();
-        if (currentAnimTag == L"Wait")
+        if (currentAnimTag == L"Run")
         {
             // Wait 애니메이션이 정상적으로 재생 중
             // 필요시 추가 로직 구현
@@ -45,7 +45,7 @@ void WolfAnimTraceState::Exit(shared_ptr<ModelAnimator> _animator)
     if (!_animator)
         return;
 
-    cout << "늑대 Wait 상태 종료 " << endl;
+    cout << "늑대 Run 상태 종료 " << endl;
 
     // 상태 종료 시 정리
     m_idleTime = 0.0f;

@@ -118,6 +118,7 @@
     <ClInclude Include="SceneDemo.h" />
     <ClInclude Include="SkillDecalIndicator.h" />
     <ClInclude Include="SkillLevelUpPanelUI.h" />
+    <ClInclude Include="SkillObject.h" />
     <ClInclude Include="SnowBillboardDemo.h" />
     <ClInclude Include="StartScene.h" />
     <ClInclude Include="StructuredDemo.h" />
@@ -243,6 +244,7 @@
     <ClCompile Include="SceneDemo.cpp" />
     <ClCompile Include="SkillDecalIndicator.cpp" />
     <ClCompile Include="SkillLevelUpPanelUI.cpp" />
+    <ClCompile Include="SkillObject.cpp" />
     <ClCompile Include="SnowBillboardDemo.cpp" />
     <ClCompile Include="StartScene.cpp" />
     <ClCompile Include="StructuredDemo.cpp" />

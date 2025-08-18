@@ -537,6 +537,21 @@
     <ClCompile Include="AlphaSkill.cpp">
       <Filter>Scripts\Monster\Alpha</Filter>
     </ClCompile>
+    <ClCompile Include="WolfAnimAttackState.cpp">
+      <Filter>Scripts\Monster\Wolf\AnimState</Filter>
+    </ClCompile>
+    <ClCompile Include="WolfAnimTraceState.cpp">
+      <Filter>Scripts\Monster\Wolf\AnimState</Filter>
+    </ClCompile>
+    <ClCompile Include="WolfAttackState.cpp">
+      <Filter>Scripts\Monster\Wolf\LogicState</Filter>
+    </ClCompile>
+    <ClCompile Include="WolfTraceState.cpp">
+      <Filter>Scripts\Monster\Wolf\LogicState</Filter>
+    </ClCompile>
+    <ClCompile Include="SkillObject.cpp">
+      <Filter>Scripts\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -893,6 +908,21 @@
     </ClInclude>
     <ClInclude Include="AlphaSkill.h">
       <Filter>Scripts\Monster\Alpha</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfAnimAttackState.h">
+      <Filter>Scripts\Monster\Wolf\AnimState</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfAnimTraceState.h">
+      <Filter>Scripts\Monster\Wolf\AnimState</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfAttackState.h">
+      <Filter>Scripts\Monster\Wolf\LogicState</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfTraceState.h">
+      <Filter>Scripts\Monster\Wolf\LogicState</Filter>
+    </ClInclude>
+    <ClInclude Include="SkillObject.h">
+      <Filter>Scripts\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

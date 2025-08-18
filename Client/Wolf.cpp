@@ -7,14 +7,21 @@
 #include "WolfDyingState.h"
 #include "WolfRunState.h"
 #include "WolfWaitState.h"
+#include "WolfTraceState.h"
+#include "WolfAttackState.h"
 
 #include "WolfAnimAppearState.h"
 #include "WolfAnimDeathState.h"
 #include "WolfAnimDyingState.h"
 #include "WolfAnimRunState.h"
 #include "WolfAnimWaitState.h"
+#include "WolfAnimTraceState.h"
+#include "WolfAnimAttackState.h"
 
 #include "MonsterStateMachine.h"
+
+#include "SkillObject.h"
+#include "Player.h"
 
 Wolf::Wolf(shared_ptr<Shader> _shader)
 	: Super(_shader)
@@ -61,6 +68,26 @@ void Wolf::OnCollision(shared_ptr<GameObject> _other)
 
 void Wolf::OnCollisionEnter(shared_ptr<GameObject> _other)
 {
+	shared_ptr<GameObject> chaseTarget = nullptr;
+	// 만약 _other가 Player라면 (직접 충돌)
+	if (dynamic_pointer_cast<Player>(_other)) {
+		chaseTarget = _other;
+	}
+	// 만약 _other가 스킬 오브젝트라면, owner를 찾아서 Player를 추적
+	else if (auto skillObj = dynamic_pointer_cast<SkillObject>(_other)) {
+		if (skillObj->GetOwner()) {
+			chaseTarget = skillObj->GetOwner();
+		}
+	}
+
+	// 기타 예외 (추가 오브젝트 타입들은 필요시 확장)
+	if (chaseTarget) {
+		static_pointer_cast<WolfTraceState>(m_monsterStateMachine->GetState(MonsterStateType::Trace))->SetOtherObject(chaseTarget);
+		static_pointer_cast<WolfAttackState>(m_monsterStateMachine->GetState(MonsterStateType::Attack))->SetOtherObject(chaseTarget);
+		m_monsterStateMachine->ChangeState(MonsterStateType::Trace);
+		m_animationStateMachine->ChangeState(AnimationStateType::Trace);
+	}
+
 }
 
 void Wolf::OnCollisionExit(shared_ptr<GameObject> _other)
@@ -83,8 +110,8 @@ void Wolf::InitWolfAnimation()
 {
 	m_model->ReadAnimation(L"Appear", L"wolf/wolf_appear_anim");
 	m_model->ReadAnimation(L"AppearWait", L"wolf/wolf_appearwait_anim");
-	/*m_model->ReadAnimation(L"Atk1", L"wolf/wolf_atk1_anim");
-	m_model->ReadAnimation(L"Atk2", L"wolf/wolf_atk2_anim");*/
+	m_model->ReadAnimation(L"Atk1", L"wolf/wolf_atk1_anim");
+	m_model->ReadAnimation(L"Atk2", L"wolf/wolf_atk2_anim");
 	m_model->ReadAnimation(L"Death", L"wolf/wolf_death_anim");
 	m_model->ReadAnimation(L"Dying", L"wolf/wolf_dying_anim");
 	m_model->ReadAnimation(L"Run", L"wolf/wolf_run_anim");
@@ -103,9 +130,10 @@ void Wolf::InitWolfAnimation()
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait,			make_shared<WolfAnimWaitState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Appear,		make_shared<WolfAnimAppearState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Move,			make_shared<WolfAnimRunState>());
-	//GetAnimationStateMachine()->RegisterState(AnimationStateType::BaseAttack,	make_shared<WolfAttack1State>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::BaseAttack,	make_shared<WolfAnimAttackState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Death,		make_shared<WolfAnimDeathState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Dying,		make_shared<WolfAnimDyingState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Trace,		make_shared<WolfAnimTraceState>());
 
 	auto animator = GetModelAnimator();
 
@@ -127,13 +155,34 @@ void Wolf::InitWolfAnimation()
 	vector<float> dyingAnimsDurations;
 	dyingAnimsDurations.push_back(animator->GetAnimationDuration(L"Dying"));
 	animator->CreateSequence(L"Wolf_dying_Sequence", dyingAnims, dyingAnimsDurations, true);
+
+	// Wolf 달리기
+	vector<wstring> runAnims = { L"Run" };
+	vector<float> runAnimsDurations;
+	runAnimsDurations.push_back(animator->GetAnimationDuration(L"Run"));
+	animator->CreateSequence(L"Wolf_Run_Sequence", runAnims, runAnimsDurations, true);
+
+
+	// Wolf 공격모션 1
+	vector<wstring> atk1Anims = { L"Atk1" };
+	vector<float> atk1AnimsDurations;
+	atk1AnimsDurations.push_back(animator->GetAnimationDuration(L"Atk1"));
+	animator->CreateSequence(L"Wolf_Atk1_Sequence", atk1Anims, atk1AnimsDurations, false);
+
+	// Wolf 공격모션 2
+	vector<wstring> atk2Anims = { L"Atk2" };
+	vector<float> atk2AnimsDurations;
+	atk2AnimsDurations.push_back(animator->GetAnimationDuration(L"Atk2"));
+	animator->CreateSequence(L"Wolf_Atk2_Sequence", atk2Anims, atk2AnimsDurations, false);
+
 }
 
 void Wolf::InitWolfComponent()
 {
 	m_collider = make_shared<SphereCollider>();
 	m_collider->SetOffset(Vec3(0, 1, 0));
-	m_collider->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	m_collider->SetOffsetScale(Vec3(200.f, 200.f, 200.f));
+
 	m_collider->SetVisible(false);
 	m_rigidbody = make_shared<Rigidbody>();
 	m_navAgent = make_shared<NavMeshAgent>();
@@ -174,6 +223,10 @@ void Wolf::InitWolfMSM()
 	m_monsterStateMachine->RegisterState(MonsterStateType::Move, make_shared<WolfRunState>());
 	m_monsterStateMachine->RegisterState(MonsterStateType::Death, make_shared<WolfDeathState>());
 	m_monsterStateMachine->RegisterState(MonsterStateType::Dying, make_shared<WolfDyingState>());
+	m_monsterStateMachine->RegisterState(MonsterStateType::Trace, make_shared<WolfTraceState>(shared_from_this()));
+	m_monsterStateMachine->RegisterState(MonsterStateType::Attack, make_shared<WolfAttackState>(shared_from_this()));
+
+
 }
 
 void Wolf::InitWolfStats()

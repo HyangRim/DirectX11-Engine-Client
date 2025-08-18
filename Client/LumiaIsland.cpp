@@ -99,7 +99,7 @@ void LumiaIsland::Start()
 
 
 	////Monster Ãß°¡.
-	//CreateMonsterWolf(Vec3(15, 18, 16));
+	CreateMonsterWolf(Vec3(15, 18, 16));
 	//CreateMonsterAlpha(Vec3(20, 18, 16));
 
 	
@@ -1106,7 +1106,7 @@ void LumiaIsland::CreateMonsterWolf(Vec3 _pos)
 	shared_ptr<Wolf> wolf = make_shared<Wolf>(m_defaultshader);
 
 	wolf->GetTransform()->SetPosition(_pos);
-	wolf->GetTransform()->SetScale(Vec3(1.f));
+	wolf->GetTransform()->SetScale(Vec3(2.f));
 	CURSCENE->Add(wolf);
 
 }

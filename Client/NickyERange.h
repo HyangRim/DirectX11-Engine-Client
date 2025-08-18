@@ -1,10 +1,10 @@
 #pragma once
-#include "GameObject.h"
+#include "SkillObject.h"
 
 class Player;
 
 class NickyERange
-	: public GameObject
+	: public SkillObject
 {
 	using Super = GameObject;
 public:
@@ -17,8 +17,11 @@ public:
 
 	virtual void OnCollisionEnter(shared_ptr<GameObject> _other) override;
 
+
 private:
 	float m_timer = 0.f;
 	float m_lifeTime = 1.5f;
+
+	friend class NickyESkill;
 };
 
