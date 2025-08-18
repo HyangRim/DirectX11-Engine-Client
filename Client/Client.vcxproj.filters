@@ -534,6 +534,9 @@
     <ClCompile Include="UIResourceManager.cpp">
       <Filter>Scripts\UI\UIResourceManager</Filter>
     </ClCompile>
+    <ClCompile Include="AlphaSkill.cpp">
+      <Filter>Scripts\Monster\Alpha</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -887,6 +890,9 @@
     </ClInclude>
     <ClInclude Include="UIResourceManager.h">
       <Filter>Scripts\UI\UIResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaSkill.h">
+      <Filter>Scripts\Monster\Alpha</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
