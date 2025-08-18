@@ -534,17 +534,8 @@
     <ClCompile Include="UIResourceManager.cpp">
       <Filter>Scripts\UI\UIResourceManager</Filter>
     </ClCompile>
-    <ClCompile Include="WolfAttackState.cpp">
-      <Filter>Scripts\Monster\Wolf\LogicState</Filter>
-    </ClCompile>
-    <ClCompile Include="WolfAnimAttackState.cpp">
-      <Filter>Scripts\Monster\Wolf\AnimState</Filter>
-    </ClCompile>
-    <ClCompile Include="WolfTraceState.cpp">
-      <Filter>Scripts\Monster\Wolf\LogicState</Filter>
-    </ClCompile>
-    <ClCompile Include="WolfAnimTraceState.cpp">
-      <Filter>Scripts\Monster\Wolf\AnimState</Filter>
+    <ClCompile Include="AlphaSkill.cpp">
+      <Filter>Scripts\Monster\Alpha</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -900,17 +891,8 @@
     <ClInclude Include="UIResourceManager.h">
       <Filter>Scripts\UI\UIResourceManager</Filter>
     </ClInclude>
-    <ClInclude Include="WolfAttackState.h">
-      <Filter>Scripts\Monster\Wolf\LogicState</Filter>
-    </ClInclude>
-    <ClInclude Include="WolfAnimAttackState.h">
-      <Filter>Scripts\Monster\Wolf\AnimState</Filter>
-    </ClInclude>
-    <ClInclude Include="WolfTraceState.h">
-      <Filter>Scripts\Monster\Wolf\LogicState</Filter>
-    </ClInclude>
-    <ClInclude Include="WolfAnimTraceState.h">
-      <Filter>Scripts\Monster\Wolf\AnimState</Filter>
+    <ClInclude Include="AlphaSkill.h">
+      <Filter>Scripts\Monster\Alpha</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

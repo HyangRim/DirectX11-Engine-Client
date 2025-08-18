@@ -29,6 +29,7 @@
     <ClInclude Include="AlphaDyingState.h" />
     <ClInclude Include="AlphaAnimWaitState.h" />
     <ClInclude Include="AlphaAnimWalkState.h" />
+    <ClInclude Include="AlphaSkill.h" />
     <ClInclude Include="AlphaWaitState.h" />
     <ClInclude Include="AlphaWalkState.h" />
     <ClInclude Include="BaseSkill.h" />
@@ -153,6 +154,7 @@
     <ClCompile Include="AlphaDyingState.cpp" />
     <ClCompile Include="AlphaAnimWaitState.cpp" />
     <ClCompile Include="AlphaAnimWalkState.cpp" />
+    <ClCompile Include="AlphaSkill.cpp" />
     <ClCompile Include="AlphaWaitState.cpp" />
     <ClCompile Include="AlphaWalkState.cpp" />
     <ClCompile Include="BaseSkill.cpp" />

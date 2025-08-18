@@ -84,16 +84,16 @@ void Alpha::InitAlphaAnimation()
 {
 	//Appear Wait
 	m_model->ReadAnimation(L"Appear", L"alpha/alpha_appear_anim");
-	//m_model->ReadAnimation(L"Atk1", L"alpha/alpha_atk1_anim");
-	//m_model->ReadAnimation(L"Atk2", L"alpha/alpha_atk2_anim");
+	m_model->ReadAnimation(L"Atk1", L"alpha/alpha_atk1_anim");
+	m_model->ReadAnimation(L"Atk2", L"alpha/alpha_atk2_anim");
 	m_model->ReadAnimation(L"Death", L"alpha/alpha_death_anim");
 	m_model->ReadAnimation(L"Dying", L"alpha/alpha_dying_anim");
 	m_model->ReadAnimation(L"Run", L"alpha/alpha_walk_anim");
 	m_model->ReadAnimation(L"Wait", L"alpha/alpha_wait_anim");
 
-	//m_model->ReadAnimation(L"Skill1atk", L"alpha/alpha_skill1atk_anim");
-	//m_model->ReadAnimation(L"Skill1ready", L"alpha/alpha_skill1ready_anim");
-	//m_model->ReadAnimation(L"Skill2", L"alpha/alpha_skill2_anim");
+	m_model->ReadAnimation(L"Skill1atk", L"alpha/alpha_skill1atk_anim");
+	m_model->ReadAnimation(L"Skill1ready", L"alpha/alpha_skill1ready_anim");
+	m_model->ReadAnimation(L"Skill2", L"alpha/alpha_skill2_anim");
 
 	AddComponent(make_shared<ModelAnimator>(m_defaultShader));
 	{
