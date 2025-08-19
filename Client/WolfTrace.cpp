@@ -4,6 +4,7 @@
 #include "NavMeshAgent.h"
 
 #include "MonsterStateMachine.h"
+#include "NickyBaseAttack.h"
 
 
 

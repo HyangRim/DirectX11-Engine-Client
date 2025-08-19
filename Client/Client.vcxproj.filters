@@ -196,6 +196,15 @@
     <Filter Include="Scripts\Monster\Wolf\WolfTrace">
       <UniqueIdentifier>{decc66f7-bf49-4418-8b24-8b8641d557f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Player\PlayerMonoBehaviour">
+      <UniqueIdentifier>{1d172e1d-6783-4b23-820e-83a1e5a2c455}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Player\Nicky\NickyBaseAttack">
+      <UniqueIdentifier>{804c9484-13d1-4496-b69d-d0f334ea37d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Player\Bianca\BiancaBaseAttack">
+      <UniqueIdentifier>{fdab606e-41fb-44d5-9b3e-13e3e060d1dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -569,6 +578,27 @@
     </ClCompile>
     <ClCompile Include="WolfTrace.cpp">
       <Filter>Scripts\Monster\Wolf\WolfTrace</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerMonoBehaviour.cpp">
+      <Filter>Scripts\Player\PlayerMonoBehaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyBaseAttack.cpp">
+      <Filter>Scripts\Player\Nicky\NickyBaseAttack</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyAnimBaseAttackState.cpp">
+      <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyBaseAttackState.cpp">
+      <Filter>Scripts\Player\Nicky\NickyLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaBaseAttack.cpp">
+      <Filter>Scripts\Player\Bianca\BiancaBaseAttack</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaAnimBaseAttackState.cpp">
+      <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
+    </ClCompile>
+    <ClCompile Include="BiancaBaseAttackState.cpp">
+      <Filter>Scripts\Player\Bianca\BiancaLogic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -950,6 +980,27 @@
     </ClInclude>
     <ClInclude Include="WolfTrace.h">
       <Filter>Scripts\Monster\Wolf\WolfTrace</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerMonoBehaviour.h">
+      <Filter>Scripts\Player\PlayerMonoBehaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyBaseAttack.h">
+      <Filter>Scripts\Player\Nicky\NickyBaseAttack</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyAnimBaseAttackState.h">
+      <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyBaseAttackState.h">
+      <Filter>Scripts\Player\Nicky\NickyLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaBaseAttack.h">
+      <Filter>Scripts\Player\Bianca\BiancaBaseAttack</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaAnimBaseAttackState.h">
+      <Filter>Scripts\Player\Bianca\BiancaAnims</Filter>
+    </ClInclude>
+    <ClInclude Include="BiancaBaseAttackState.h">
+      <Filter>Scripts\Player\Bianca\BiancaLogic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

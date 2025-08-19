@@ -38,6 +38,7 @@ bool NickyWaitState::CanTransitionTo(PlayerStateType newState)
     case PlayerStateType::Skill_4:
     case PlayerStateType::Run:
     case PlayerStateType::Craft:
+    case PlayerStateType::BaseAttack:
         return true;
     case PlayerStateType::Wait:
         return false;  // 자기 자신으로는 전환 불가

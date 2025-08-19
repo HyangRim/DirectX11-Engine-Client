@@ -12,7 +12,8 @@ enum class PlayerStateType
     Skill_3,
     Skill_4,
     Craft,
-    Die
+    Die,
+    BaseAttack
 };
 class IPlayer;
 
@@ -37,8 +38,12 @@ public:
 
     void SetRecipeIndex(int index) { m_recipeIndex = index; }
     
+    void SetTarget(shared_ptr<GameObject> _target) { m_target = _target; }
+    shared_ptr<GameObject> GetTarget() { return m_target; }
+
 protected:
     PlayerStateType m_type;
+    shared_ptr<GameObject> m_target;
     int m_recipeIndex = 0;
 };
 
@@ -89,6 +94,16 @@ private:
     int m_chargingInfo;
     int m_isMovableOnSkill; //스킬 시전 중 우클릭으로 움직일 수 없는 스킬 Q,W,E,R -> 8, 4, 2, 1
     int m_isNeedTarget; //타겟이 필요한 스킬 목록 Q,W,E,R -> 8, 4, 2, 1
+
+
+private:
+    shared_ptr<GameObject> m_attackTarget; // 공격 대상 저장
+    bool m_isMovingToAttack = false; // 공격을 위해 이동 중인지
+
+public:
+    void SetAttackTarget(shared_ptr<GameObject> target);
+    void MoveToAttackTarget(Vec3 targetPos, float attackRange);
+    void StartBaseAttack();
 
 
 private:

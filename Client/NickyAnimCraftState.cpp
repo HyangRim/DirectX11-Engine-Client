@@ -16,7 +16,8 @@ void NickyAnimCraftState::Enter(shared_ptr<ModelAnimator> animator)
     animator->SetAnimationSpeed(m_playSpeed);
     //m_expectedDuration = animator->GetAnimationDuration(L"Craft") / m_playSpeed;
     // 스킬 시퀀스 재생
-    animator->PlaySequence(L"Craft_Sequence");
+    //animator->PlaySequence(L"Craft_Sequence");
+    animator->SetAnimationByTag(L"Craft", false);
 
     m_skillTime = 0.0f;
     m_isAnimationStarted = true;
@@ -37,7 +38,7 @@ void NickyAnimCraftState::Update(shared_ptr<ModelAnimator> animator)
     {
         m_isSkillComplete = true;
         // 시퀀스 정지
-        animator->StopSequence();
+        //animator->StopSequence();
         wcout << L"Craft 시간 기반 완료!" << endl;
     }
 }

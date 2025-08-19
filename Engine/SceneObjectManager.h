@@ -30,6 +30,8 @@ public:
 
     //피킹 관련 함수
     shared_ptr<class GameObject> PickObjectOrUI();
+    shared_ptr<GameObject> PickObjectForAttack(shared_ptr<GameObject> _player);
+    bool IsAttackableTarget(shared_ptr<GameObject> target);
     Ray CreateRayFromScreen(const Vec2& screenPos, shared_ptr<Camera> camera);
 
 

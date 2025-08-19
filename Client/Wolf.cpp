@@ -208,12 +208,11 @@ void Wolf::InitWolfComponent()
 	AddComponent(traceScript);
 
 
+
 	AddComponent(m_collider);
 	AddComponent(m_rigidbody);
 	AddComponent(m_navAgent);
-	AddComponent(m_itembox);
-
-	
+	AddComponent(m_itembox);	
 }
 
 void Wolf::InitWolfAI()

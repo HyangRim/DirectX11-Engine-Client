@@ -66,6 +66,30 @@ void PlayerStateMachine::Update()
 
         HandleSpecialStateTransitions();
     }
+
+    //// 공격을 위한 이동이 완료되었는지 체크
+    //if (m_isMovingToAttack && m_attackTarget)
+    //{
+    //    auto navMeshAgent = GetGameObject()->GetNavMeshAgent();
+
+    //    if (navMeshAgent->HasReachedDestination())
+    //    {
+    //        // 이동 완료, 공격 범위 내에 있는지 재확인
+    //        Vec3 playerPos = GetGameObject()->GetTransform()->GetPosition();
+    //        Vec3 targetPos = m_attackTarget->GetTransform()->GetPosition();
+    //        float distance = Vec3::Distance(playerPos, targetPos);
+
+    //        if (distance <= 3.0f) // 공격 범위
+    //        {
+    //            StartBaseAttack();
+    //        }
+    //        else
+    //        {
+    //            // 타겟이 이동했을 수도 있으므로 다시 추적
+    //            MoveToAttackTarget(targetPos, 3.0f);
+    //        }
+    //    }
+    //}
 }
 
 void PlayerStateMachine::OnDestroy()
@@ -174,45 +198,84 @@ void PlayerStateMachine::ProcessInput()
     // 우클릭 처리
     if (INPUT->GetButtonDown(KEY_TYPE::RBUTTON))
     {
-        // 마우스 위치 유효성 검사
-        POINT mousePos = INPUT->GetMousePos();
-        if (mousePos.x < 0 || mousePos.y < 0) return;
+        // 우클릭으로 공격 대상 피킹
+        auto attackTarget = CURSCENE->GetObjectManager()->PickObjectForAttack(GetGameObject());
 
-        auto camera = CURSCENE->GetMainCamera();
-        if (!camera) return;
-
-        auto cameraComp = camera->GetCamera();
-        if (!cameraComp) return;
-
-        Ray ray = CreateRayFromMouse(mousePos, cameraComp);
-
-        // NavMesh 찾기 및 Ray cast
-        bool foundDestination = false;
-        for (auto& obj : CURSCENE->GetObjects())
+        if (attackTarget)
         {
-            auto navMesh = obj->GetFixedComponent<NavMesh>(ComponentType::NavMesh);
-            if (navMesh)
-            {
-                Vec3 hitPoint;
-                if (navMesh->RaycastNavMesh(ray, hitPoint))
-                {
-                    navMeshAgent->SetDestination(hitPoint);
-                    foundDestination = true;
+            //wstring name = attackTarget->GetName();
+            //string n(name.begin(), name.end());
+            //cout << "AttackTarget Name : " << n << endl;
 
-                    // 이동 명령이 성공하면 즉시 Run 상태로 전환
-                    if (CanChangeState(PlayerStateType::Run))
+
+            //// 공격 대상이 있는 경우
+            //SetAttackTarget(attackTarget);
+
+            //// NavMesh로 대상 근처로 이동
+            //Vec3 targetPos = attackTarget->GetTransform()->GetPosition();
+            //Vec3 playerPos = GetGameObject()->GetTransform()->GetPosition();
+
+            //// 공격 범위 계산
+            //float attackRange = 3.0f; // 니키의 평타 사거리
+            //float distanceToTarget = Vec3::Distance(playerPos, targetPos);
+
+            //if (distanceToTarget <= attackRange)
+            //{
+            //    // 이미 공격 범위 내에 있으면 즉시 평타
+            //    StartBaseAttack();
+            //}
+            //else
+            //{
+            //    // 공격 범위 밖이면 가까이 이동 후 평타
+            //    MoveToAttackTarget(targetPos, attackRange);
+            //}
+            m_states[PlayerStateType::BaseAttack]->SetTarget(attackTarget);
+            ChangeState(PlayerStateType::BaseAttack);
+            //m_animationStateMachine->ChangeState(AnimationStateType::BaseAttack);
+        }
+        else
+        {
+            m_states[PlayerStateType::BaseAttack]->SetTarget(nullptr);
+            // 마우스 위치 유효성 검사
+            POINT mousePos = INPUT->GetMousePos();
+            if (mousePos.x < 0 || mousePos.y < 0) return;
+
+            auto camera = CURSCENE->GetMainCamera();
+            if (!camera) return;
+
+            auto cameraComp = camera->GetCamera();
+            if (!cameraComp) return;
+
+            Ray ray = CreateRayFromMouse(mousePos, cameraComp);
+
+            // NavMesh 찾기 및 Ray cast
+            bool foundDestination = false;
+            for (auto& obj : CURSCENE->GetObjects())
+            {
+                auto navMesh = obj->GetFixedComponent<NavMesh>(ComponentType::NavMesh);
+                if (navMesh)
+                {
+                    Vec3 hitPoint;
+                    if (navMesh->RaycastNavMesh(ray, hitPoint))
                     {
-                        ChangeState(PlayerStateType::Run);
-                        m_animationStateMachine->ChangeState(AnimationStateType::Run);
+                        navMeshAgent->SetDestination(hitPoint);
+                        foundDestination = true;
+
+                        // 이동 명령이 성공하면 즉시 Run 상태로 전환
+                        if (CanChangeState(PlayerStateType::Run))
+                        {
+                            ChangeState(PlayerStateType::Run);
+                            m_animationStateMachine->ChangeState(AnimationStateType::Run);
+                        }
+                        break;
                     }
-                    break;
                 }
             }
-        }
 
-        if (!foundDestination)
-        {
-            cout << "No valid destination found on NavMesh" << endl;
+            if (!foundDestination)
+            {
+                cout << "No valid destination found on NavMesh" << endl;
+            }
         }
     }
 
@@ -565,4 +628,45 @@ bool PlayerStateMachine::IsSkillOnCooldown(int skillIndex)
     bool isOnCooldown = false;
     OnSkillCooldownCheck(skillIndex, isOnCooldown);
     return isOnCooldown;
+}
+
+void PlayerStateMachine::SetAttackTarget(shared_ptr<GameObject> target)
+{
+    m_attackTarget = target;
+    m_isMovingToAttack = true;
+}
+
+void PlayerStateMachine::MoveToAttackTarget(Vec3 targetPos, float attackRange)
+{
+    auto navMeshAgent = GetGameObject()->GetNavMeshAgent();
+    if (!navMeshAgent) return;
+
+    // 타겟 주변의 공격 가능한 위치 계산
+    Vec3 playerPos = GetGameObject()->GetTransform()->GetPosition();
+    Vec3 direction = playerPos - targetPos;
+    direction.Normalize();
+
+    // 공격 범위보다 약간 가까운 거리로 설정
+    Vec3 attackPosition = targetPos + direction * (attackRange - 0.5f);
+
+    navMeshAgent->SetDestination(attackPosition);
+
+    // Run 상태로 전환
+    if (CanChangeState(PlayerStateType::Run))
+    {
+        ChangeState(PlayerStateType::Run);
+        m_animationStateMachine->ChangeState(AnimationStateType::Run);
+    }
+}
+
+void PlayerStateMachine::StartBaseAttack()
+{
+    auto navMeshAgent = GetGameObject()->GetNavMeshAgent();
+    if (navMeshAgent) navMeshAgent->Stop();
+
+    // 평타 상태로 전환
+    ChangeState(PlayerStateType::BaseAttack);
+    m_animationStateMachine->ChangeState(AnimationStateType::BaseAttack);
+
+    m_isMovingToAttack = false;
 }

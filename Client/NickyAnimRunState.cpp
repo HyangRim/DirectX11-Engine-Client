@@ -3,7 +3,7 @@
 #include "ModelAnimator.h"
 
 NickyAnimRunState::NickyAnimRunState()
-    : AnimationState(AnimationStateType::Move)
+    : AnimationState(AnimationStateType::Run)
 {
 }
 

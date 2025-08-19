@@ -607,3 +607,69 @@ shared_ptr<GameObject> SceneObjectManager::GetUICamera()
     }
     return nullptr;
 }
+
+// SceneObjectManager.cpp에 구현
+shared_ptr<GameObject> SceneObjectManager::PickObjectForAttack(shared_ptr<GameObject> _player)
+{
+    if (INPUT->GetButtonDown(KEY_TYPE::RBUTTON) == false)
+        return nullptr;
+
+    POINT screenPt = INPUT->GetMousePos();
+
+    // 기존 피킹 로직 재사용 (UI 검사 제외)
+    shared_ptr<Camera> camera = GetMainCamera()->GetCamera();
+    Ray ray = CreateRayFromScreen(Vec2(screenPt.x, screenPt.y), camera);
+
+    // 쿼드트리를 이용한 후보 객체 수집
+    vector<shared_ptr<GameObject>> candidates = m_quadTree->Query(ray, camera);
+    vector<shared_ptr<GameObject>> validCandidates;
+
+    // 음수 좌표 필터링
+    for (auto& obj : candidates)
+    {
+        RECT objBounds = m_quadTree->GetObjectScreenBounds(obj, camera);
+        int screenCenterX = (objBounds.left + objBounds.right) / 2;
+        int screenCenterY = (objBounds.top + objBounds.bottom) / 2;
+
+        if (screenCenterX < 0 || screenCenterY < 0) continue;
+        validCandidates.push_back(obj);
+    }
+
+    // Ray 교차 검사로 가장 가까운 공격 가능한 대상 찾기
+    float minDistance = FLT_MAX;
+    shared_ptr<GameObject> pickedTarget;
+
+    for (auto& gameObject : validCandidates)
+    {
+        if (camera->IsCulled(gameObject->GetLayerIndex())) continue;
+        if (gameObject->GetCollider() == nullptr) continue;
+
+        // 자기 자신 제외
+        if (gameObject == /* 현재 플레이어 객체 */_player) continue;
+
+        // 공격 가능한 대상인지 체크 (예: 몬스터, 다른 플레이어 등)
+        if (!IsAttackableTarget(gameObject)) continue;
+
+        float distance = 0.f;
+        if (gameObject->GetCollider()->Intersects(ray, OUT distance) == false) continue;
+
+        if (distance < minDistance)
+        {
+            minDistance = distance;
+            pickedTarget = gameObject;
+        }
+    }
+
+    return pickedTarget;
+}
+
+// 공격 가능한 대상인지 판단하는 헬퍼 함수
+bool SceneObjectManager::IsAttackableTarget(shared_ptr<GameObject> target)
+{
+    // 구현 예시: 특정 태그나 컴포넌트를 가진 객체만 공격 가능
+    // return target->HasTag("Enemy") || target->HasTag("Player");
+
+    // 또는 특정 컴포넌트 존재 여부로 판단
+    return target->GetMonsterStateMachine() != nullptr ||
+        target->GetPlayerStateMachine() != nullptr;
+}
