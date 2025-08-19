@@ -14,6 +14,8 @@
 #include "AlphaWaitState.h"
 #include "AlphaWalkState.h"
 
+#include "AlphaSkill.h"
+
 #include "MonsterStateMachine.h"
 
 Alpha::Alpha(shared_ptr<Shader> _shader)
@@ -157,6 +159,8 @@ void Alpha::InitAlphaComponent()
 	m_rigidbody = make_shared<Rigidbody>();
 	m_navAgent = make_shared<NavMeshAgent>();
 	m_itembox = make_shared<ItemBox>();
+
+	//m_skill = make_shared<AlphaSkill>(shared_from_this());
 
 	AddComponent(m_collider);
 	AddComponent(m_rigidbody);

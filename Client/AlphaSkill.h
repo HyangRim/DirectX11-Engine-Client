@@ -1,17 +1,18 @@
 #pragma once
+#include "MonsterBehaviour.h"
 
 class BiancaESkillCircle;
 class Alpha;
-class AlphaSkill
+class AlphaSkill : MonsterBehaviour
 {
 public:
 	AlphaSkill(shared_ptr<Alpha> _alpha);
-	~AlphaSkill();
+	virtual ~AlphaSkill();
 
 public:
-	void Start();
+	virtual void Start() override;
+	virtual void Update() override;
 	void Play();
-	void Update();
 
 private:
 	shared_ptr<BiancaESkillCircle> m_circleObjects[5];

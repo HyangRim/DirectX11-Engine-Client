@@ -241,7 +241,7 @@ void Player::Damaged(int _damage)
 	PlayerStatus info = GetStatus();
 
 	int32 baseAttack = _damage * 100;
-	int32 baseDefense = info.defense; +100;
+	int32 baseDefense = info.defense + 100;
 
 	int32 finalDamage = baseAttack / baseDefense;
 
