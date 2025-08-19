@@ -65,7 +65,7 @@ void AlphaSkill::Update()
 				m_circleObjects[idx]->DamageFlag(false);
 				auto objects = m_circleObjects[idx]->GetCollisionObjects();
 
-				for (auto object : objects) {
+				for (auto& object : objects) {
 					allobjects.insert(object);
 				}
 			}

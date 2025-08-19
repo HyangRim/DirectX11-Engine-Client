@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Monster.h"
+class AlphaSkill;
 class Alpha :
     public Monster
 {
@@ -30,5 +32,8 @@ private:
     
     void InitAlphaAI();
     void InitAlphaStats();
+
+private:
+    shared_ptr<AlphaSkill> m_skill;
 
 };
