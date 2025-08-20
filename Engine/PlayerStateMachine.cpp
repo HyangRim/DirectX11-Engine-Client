@@ -29,11 +29,16 @@ PlayerStateMachine::PlayerStateMachine(shared_ptr<AnimationStateMachine> animati
     , m_isMovableOnSkill(isMovableOnSkill)
     , m_isNeedTarget(isNeedTarget)
 {
+    // 이벤트 구독
+    EVENT->Subscribe(EventType::PLAYER_STATE_CHANGE_REQUEST,
+        [this](shared_ptr<EventData> eventData) {
+            HandleStateChangeRequest(eventData);
+        });
 }
 
 PlayerStateMachine::~PlayerStateMachine()
 {
-    
+   
 }
 
 void PlayerStateMachine::Init()
@@ -104,21 +109,30 @@ void PlayerStateMachine::OnDestroy()
 
 void PlayerStateMachine::ChangeState(PlayerStateType newState)
 {
-    if (!CanChangeState(newState))
-        return;
+    //=======================이벤트 매니저 이전 ===========================//
+    //if (!CanChangeState(newState))
+    //    return;
 
-    // 현재 상태 종료
-    if (m_currentState)
-    {
-        m_currentState->Exit();
-    }
+    //// 현재 상태 종료
+    //if (m_currentState)
+    //{
+    //    m_currentState->Exit();
+    //}
 
-    // 새 상태 시작
-    m_currentState = m_states[newState];
-    if (m_currentState)
-    {
-        m_currentState->Enter();
-    }
+    //// 새 상태 시작
+    //m_currentState = m_states[newState];
+    //if (m_currentState)
+    //{
+    //    m_currentState->Enter();
+    //}
+    //=======================이벤트 매니저 이전 ===========================//
+
+    auto eventData = make_shared<PlayerStateChangeEventData>(
+        EventType::PLAYER_STATE_CHANGE_REQUEST,
+        GetGameObject(),
+        newState);
+
+    EVENT->QueueEvent(eventData);
 }
 
 bool PlayerStateMachine::CanChangeState(PlayerStateType newState)
@@ -195,45 +209,21 @@ void PlayerStateMachine::ProcessInput()
         return;
     }
 
+    m_baseAttackDelayDuration += DT;
     // 우클릭 처리
     if (INPUT->GetButtonDown(KEY_TYPE::RBUTTON))
     {
         // 우클릭으로 공격 대상 피킹
         auto attackTarget = CURSCENE->GetObjectManager()->PickObjectForAttack(GetGameObject());
 
-        if (attackTarget)
+        cout << "BaseAttackDelay : " << m_baseAttackDelayDuration << endl;
+        if (attackTarget && m_baseAttackDelay <= m_baseAttackDelayDuration)
         {
-            //wstring name = attackTarget->GetName();
-            //string n(name.begin(), name.end());
-            //cout << "AttackTarget Name : " << n << endl;
-
-
-            //// 공격 대상이 있는 경우
-            //SetAttackTarget(attackTarget);
-
-            //// NavMesh로 대상 근처로 이동
-            //Vec3 targetPos = attackTarget->GetTransform()->GetPosition();
-            //Vec3 playerPos = GetGameObject()->GetTransform()->GetPosition();
-
-            //// 공격 범위 계산
-            //float attackRange = 3.0f; // 니키의 평타 사거리
-            //float distanceToTarget = Vec3::Distance(playerPos, targetPos);
-
-            //if (distanceToTarget <= attackRange)
-            //{
-            //    // 이미 공격 범위 내에 있으면 즉시 평타
-            //    StartBaseAttack();
-            //}
-            //else
-            //{
-            //    // 공격 범위 밖이면 가까이 이동 후 평타
-            //    MoveToAttackTarget(targetPos, attackRange);
-            //}
+            m_baseAttackDelayDuration = 0.f;
             m_states[PlayerStateType::BaseAttack]->SetTarget(attackTarget);
             ChangeState(PlayerStateType::BaseAttack);
-            //m_animationStateMachine->ChangeState(AnimationStateType::BaseAttack);
         }
-        else
+        else if (attackTarget == nullptr)
         {
             m_states[PlayerStateType::BaseAttack]->SetTarget(nullptr);
             // 마우스 위치 유효성 검사
@@ -669,4 +659,43 @@ void PlayerStateMachine::StartBaseAttack()
     m_animationStateMachine->ChangeState(AnimationStateType::BaseAttack);
 
     m_isMovingToAttack = false;
+}
+
+
+void PlayerStateMachine::HandleStateChangeRequest(shared_ptr<EventData> eventData)
+{
+    auto stateChangeData = static_pointer_cast<PlayerStateChangeEventData>(eventData);
+
+    if (stateChangeData->m_target != GetGameObject())
+        return;
+
+    ChangeStateImmediate(stateChangeData->m_newState);
+}
+
+void PlayerStateMachine::ChangeStateImmediate(PlayerStateType newState)
+{
+    if (!CanChangeState(newState))
+        return;
+
+    PlayerStateType oldState = GetCurrentState();
+
+    if (m_currentState)
+    {
+        m_currentState->Exit();
+    }
+
+    m_currentState = m_states[newState];
+    if (m_currentState)
+    {
+        m_currentState->Enter();
+    }
+
+    // 상태 변경 완료 이벤트
+    auto completedEventData = make_shared<StateEventData>(
+        EventType::PLAYER_STATE_CHANGED,
+        GetGameObject(),
+        static_cast<int>(oldState),
+        static_cast<int>(newState)
+    );
+    EVENT->TriggerEvent(completedEventData);
 }

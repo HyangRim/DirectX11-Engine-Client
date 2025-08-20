@@ -38,6 +38,10 @@ private:
     void HandleSpecialStateTransitions();  // Ãß°¡
    
 private:
+    void HandleStateChangeRequest(shared_ptr<EventData> eventData);
+    void ChangeStateImmediate(AnimationStateType newState);
+
+private:
     unordered_map<AnimationStateType, shared_ptr<AnimationState>> m_states;
     shared_ptr<AnimationState> m_currentState;
     shared_ptr<ModelAnimator> m_animator;

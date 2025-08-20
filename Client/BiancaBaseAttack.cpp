@@ -3,6 +3,9 @@
 
 #include "PlayerStateMachine.h"
 
+#include "Player.h"
+#include "Monster.h"
+
 BiancaBaseAttack::BiancaBaseAttack()
 {
 
@@ -21,6 +24,8 @@ void BiancaBaseAttack::Update()
 	Vec3 playerPos = m_owner->GetTransform()->GetPosition();
 
 	float distance = Vec3::Distance(targetPos, playerPos);
+
+	CalcDir(targetPos, playerPos);
 
 	//if (m_updateTimer >= m_pathUpdateInterval && distance > m_attackRange)
 	//{
@@ -60,6 +65,8 @@ void BiancaBaseAttack::Update()
 
 		if (m_updateTimer >= m_attackDuration || m_owner->GetAnimationStateMachine()->GetCurrentState() != AnimationStateType::BaseAttack)
 		{
+			static_pointer_cast<Monster>(m_owner)->Damaged(static_pointer_cast<Player>(m_owner)->GetStatus().hitAttack);
+
 			m_updateTimer = 0.f;
 			m_owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::BaseAttack);
 		}

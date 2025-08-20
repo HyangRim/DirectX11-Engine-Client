@@ -1,8 +1,12 @@
 #include "pch.h"
 #include "WolfDeathState.h"
 
-WolfDeathState::WolfDeathState()
+#include "Monster.h"
+#include "GameObject.h"
+
+WolfDeathState::WolfDeathState(shared_ptr<GameObject> wolf)
 	:Super(MonsterStateType::Death)
+	,m_wolf(wolf)
 {
 
 }
@@ -12,7 +16,7 @@ void WolfDeathState::Enter()
 	m_animTime = 0.f;
 	m_isAnimationStarted = true;
 	m_isDeathComplete = false;
-	cout << "알파 Death State 진입\n";
+	cout << "늑대 Death State 진입\n";
 }
 
 void WolfDeathState::Update()
@@ -33,7 +37,7 @@ void WolfDeathState::Exit()
 	m_animTime = 0.f;
 	m_isAnimationStarted = false;
 	m_isDeathComplete = false;
-	cout << "알파 Death State 종료\n";
+	cout << "늑대 Death State 종료\n";
 }
 
 bool WolfDeathState::CanTransitionTo(MonsterStateType newState)

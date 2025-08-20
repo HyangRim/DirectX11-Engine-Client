@@ -99,6 +99,8 @@ private:
 private:
     shared_ptr<GameObject> m_attackTarget; // 공격 대상 저장
     bool m_isMovingToAttack = false; // 공격을 위해 이동 중인지
+    float m_baseAttackDelay = (38.f / 25.f) / 2.f;
+    float m_baseAttackDelayDuration = 0.f;
 
 public:
     void SetAttackTarget(shared_ptr<GameObject> target);
@@ -130,5 +132,11 @@ public:
     using SkillCooldownCheckDelegate = Delegate::Delegate<int, bool&>; // (skillIndex, OUT isOnCooldown)
     SkillUsedDelegate OnSkillUsed;
     SkillCooldownCheckDelegate OnSkillCooldownCheck;
+
+
+
+private:
+    void HandleStateChangeRequest(shared_ptr<EventData> eventData);
+    void ChangeStateImmediate(PlayerStateType newState);
 };
 

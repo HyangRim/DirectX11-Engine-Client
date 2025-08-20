@@ -271,6 +271,9 @@
     <ClCompile Include="SliderUI.cpp">
       <Filter>06. UI &amp; Effect\UI</Filter>
     </ClCompile>
+    <ClCompile Include="EventManager.cpp">
+      <Filter>02. Managers\Event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Types.h">
@@ -558,6 +561,12 @@
     <ClInclude Include="SliderUI.h">
       <Filter>06. UI &amp; Effect\UI</Filter>
     </ClInclude>
+    <ClInclude Include="EventManager.h">
+      <Filter>02. Managers\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="EventClass.h">
+      <Filter>02. Managers\Event</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Engine">
@@ -637,6 +646,9 @@
     </Filter>
     <Filter Include="03. GameObject\Item">
       <UniqueIdentifier>{9412bb29-60cb-4eb7-b97b-77675bc38af2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Managers\Event">
+      <UniqueIdentifier>{ffa335f7-b3ec-43d7-bae8-903cbce2c1cd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

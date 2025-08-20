@@ -2,6 +2,8 @@
 #include "Component.h";
 #include "MonsterState.h"
 
+class AnimationStateMachine;
+
 class MonsterStateMachine : public Component
 {
 public:
@@ -21,6 +23,10 @@ public:
     void ProcessInput();
 
     void HandleSpecialStateTransitions();
+
+private:
+    void HandleStateChangeRequest(shared_ptr<EventData> eventData);
+    void ChangeStateImmediate(MonsterStateType newState);
 
 private:
     unordered_map<MonsterStateType, shared_ptr<MonsterState>> m_states;

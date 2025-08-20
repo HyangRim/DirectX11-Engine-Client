@@ -42,7 +42,7 @@ void WolfAnimAttackState::Enter(shared_ptr<ModelAnimator> _animator)
   /*  m_animTime = 0.0f;
     m_isAnimationStarted = true;
     m_isAppearComplete = false;*/
-
+    SOUND->PlaySound(L"Wolf/wolfAttack.wav", 2, 0.5f);
     cout << "늑대 Attack 애니메이션 시작." << endl;
 }
 
@@ -106,6 +106,7 @@ bool WolfAnimAttackState::CanTransitionTo(AnimationStateType _nextState)
     case AnimationStateType::Wait:
     case AnimationStateType::Trace:
     case AnimationStateType::BaseAttack:
+    case AnimationStateType::Death:
         return true;
     default:
         return false;

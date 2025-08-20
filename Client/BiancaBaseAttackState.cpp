@@ -24,6 +24,8 @@ void BiancaBaseAttackState::Enter()
 		attackScript->StartBaseAttack();
 		attackScript->SetTarget(m_target);
 	}
+
+	m_target->OnCollisionEnter(m_player);
 }
 
 void BiancaBaseAttackState::Update()

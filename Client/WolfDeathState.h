@@ -1,11 +1,14 @@
 #pragma once
 #include "MonsterState.h"
+
+class Monster;
+
 class WolfDeathState :
     public MonsterState
 {
     using Super = MonsterState;
 public:
-    WolfDeathState();
+    WolfDeathState(shared_ptr<GameObject> wolf);
     virtual ~WolfDeathState() = default;
 
     virtual void Enter();
@@ -15,6 +18,7 @@ public:
 
 
 private:
+    shared_ptr<GameObject> m_wolf;
     bool m_isAnimationStarted;
     float m_animTime;
     bool m_isDeathComplete = false;

@@ -142,6 +142,8 @@ void Game::Update()
 
 	GUI->Update();
 
+	EVENT->Update();
+
 	SCENE->Update();
 
 	//_desc.app->Update();

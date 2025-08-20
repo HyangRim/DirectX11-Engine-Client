@@ -89,6 +89,11 @@ void NickyESkill::Update()
 		m_duration = 0.f;
 		m_bskillStart = false;
 	}
+	else
+	{
+		m_skillRange->SetActive(true);	
+		m_bskillStart = true;
+	}
 }
 
 void NickyESkill::PlayAttackSound()

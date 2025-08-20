@@ -31,6 +31,7 @@ public:										\
 #define D2DTEXTR	GET_SINGLE(D2DTextRenderer)
 #define ITEM		GET_SINGLE(ItemManger)
 #define RECIPE		GET_SINGLE(RecipeManager)
+#define EVENT		GET_SINGLE(EventManager)
 
 
 #define CURSCENE	SCENE->GetCurScene()

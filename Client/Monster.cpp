@@ -80,6 +80,8 @@ void Monster::Damaged(DamageInfo _damage)
 
 	MonsterStatus info = GetMonsterStatus();
 
+	cout << "몬스터 현재 체력 : " << info.hp << endl;
+
 	int32 baseAttack = _damage.damage * 100;
 	int32 baseDefense = 100;
 
@@ -100,6 +102,35 @@ void Monster::Damaged(DamageInfo _damage)
 		m_isStun = max(m_isStun, _damage.stunTime);
 		SetType(OBJECTTYPE::ITEMBOX);
 	}
+
+	SetHP(monsterHP);
+}
+
+void Monster::Damaged(int _damage)
+{
+	MonsterStatus info = GetMonsterStatus();
+	cout << "몬스터 현재 체력 : " << info.hp << endl;
+
+	int32 baseAttack = _damage * 100;
+	int32 baseDefense = 100;
+
+	int32 finalDamage = baseAttack / baseDefense;
+
+	int32 monsterHP = info.hp;
+	monsterHP -= finalDamage;
+
+
+
+	if (monsterHP <= 0) {
+		//사망 애니메이션으로. 
+		//GetMonsterStateMachine()->ChangeState(MonsterStateType::Death);
+		m_isStun = true;
+	}
+
+	/*if (_damage.stunTime > 0.f) {
+		m_isStun = max(m_isStun, _damage.stunTime);
+		SetType(OBJECTTYPE::ITEMBOX);
+	}*/
 
 	SetHP(monsterHP);
 }

@@ -7,6 +7,7 @@
 #include "Player.h"
 
 #include "WolfBaseAttack.h"
+#include "Monster.h"
 
 WolfAttackState::WolfAttackState(shared_ptr<GameObject> wolf)
 	:Super(MonsterStateType::Attack)
@@ -32,9 +33,19 @@ void WolfAttackState::Enter()
 
 void WolfAttackState::Update()
 {
+	if (static_pointer_cast<Monster>(m_wolf)->GetMonsterStatus().hp <= 0)
+	{
+		m_isAttackComplete = true;
+		m_wolf->GetMonsterStateMachine()->ChangeState(MonsterStateType::Death);
+		m_wolf->GetAnimationStateMachine()->ChangeState(AnimationStateType::Death);
+
+		static_pointer_cast<Monster>(m_wolf)->SetDead(true);
+		return;
+	}
+
+
 	m_animTime += DT;
 
-	
 	if (!m_isAttackComplete && m_animTime >= (36.f / 25.f) )
 	{
 		Vec3 otherObjPos = m_otherObj->GetTransform()->GetPosition();
@@ -53,8 +64,7 @@ void WolfAttackState::Update()
 			m_isAttackComplete = true;
 			
 			return;
-		}
-		
+		}	
 	}
 }
 

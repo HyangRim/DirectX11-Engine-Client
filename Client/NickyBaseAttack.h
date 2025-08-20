@@ -20,6 +20,7 @@ public:
     bool IsInAttackRange();
 
 private:
+    bool m_motionChange = true;
     float m_attackRange = 4.f;
     float m_pathUpdateInterval = 0.1f;
     float m_updateTimer = 0.0f;

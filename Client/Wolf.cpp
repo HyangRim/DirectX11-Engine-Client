@@ -96,7 +96,6 @@ void Wolf::OnCollisionEnter(shared_ptr<GameObject> _other)
 		m_monsterStateMachine->ChangeState(MonsterStateType::Trace);
 		m_animationStateMachine->ChangeState(AnimationStateType::Trace);
 	}
-
 }
 
 void Wolf::OnCollisionExit(shared_ptr<GameObject> _other)
@@ -241,7 +240,7 @@ void Wolf::InitWolfMSM()
 	m_monsterStateMachine->RegisterState(MonsterStateType::Wait, make_shared<WolfWaitState>());
 	m_monsterStateMachine->RegisterState(MonsterStateType::Appear, make_shared<WolfAppearState>());
 	m_monsterStateMachine->RegisterState(MonsterStateType::Move, make_shared<WolfRunState>());
-	m_monsterStateMachine->RegisterState(MonsterStateType::Death, make_shared<WolfDeathState>());
+	m_monsterStateMachine->RegisterState(MonsterStateType::Death, make_shared<WolfDeathState>(shared_from_this()));
 	m_monsterStateMachine->RegisterState(MonsterStateType::Dying, make_shared<WolfDyingState>());
 	m_monsterStateMachine->RegisterState(MonsterStateType::Trace, make_shared<WolfTraceState>(shared_from_this()));
 	m_monsterStateMachine->RegisterState(MonsterStateType::Attack, make_shared<WolfAttackState>(shared_from_this()));
@@ -251,5 +250,6 @@ void Wolf::InitWolfMSM()
 
 void Wolf::InitWolfStats()
 {
-
+	m_monsterStatus.hp = 50;
+	
 }

@@ -6,6 +6,11 @@ MonsterStateMachine::MonsterStateMachine(shared_ptr<AnimationStateMachine> anima
 	: Component(ComponentType::MonsterStateMachine)
     , m_animationStateMachine(animationStateMachine)
 {
+    // 이벤트 구독
+    EVENT->Subscribe(EventType::MONSTER_STATE_CHANGE_REQUEST,
+        [this](shared_ptr<EventData> eventData) {
+            HandleStateChangeRequest(eventData);
+        });
 }
 
 MonsterStateMachine::~MonsterStateMachine()
@@ -34,21 +39,29 @@ void MonsterStateMachine::Update()
 
 void MonsterStateMachine::ChangeState(MonsterStateType newState)
 {
-    if (!CanChangeState(newState))
-        return;
+    //if (!CanChangeState(newState))
+    //    return;
 
-    // 현재 상태 종료
-    if (m_currentState)
-    {
-        m_currentState->Exit();
-    }
+    //// 현재 상태 종료
+    //if (m_currentState)
+    //{
+    //    m_currentState->Exit();
+    //}
 
-    // 새 상태 시작
-    m_currentState = m_states[newState];
-    if (m_currentState)
-    {
-        m_currentState->Enter();
-    }
+    //// 새 상태 시작
+    //m_currentState = m_states[newState];
+    //if (m_currentState)
+    //{
+    //    m_currentState->Enter();
+    //}
+
+
+    auto eventData = make_shared<MonsterStateChangeEventData>(
+        EventType::MONSTER_STATE_CHANGE_REQUEST,
+        GetGameObject(),
+        newState);
+
+    EVENT->QueueEvent(eventData);
 }
 
 bool MonsterStateMachine::CanChangeState(MonsterStateType newState)
@@ -124,4 +137,44 @@ void MonsterStateMachine::HandleSpecialStateTransitions()
     //        m_animationStateMachine->ChangeState(AnimationStateType::Wait);
     //    }
     //}
+}
+
+
+
+void MonsterStateMachine::HandleStateChangeRequest(shared_ptr<EventData> eventData)
+{
+    auto stateChangeData = static_pointer_cast<MonsterStateChangeEventData>(eventData);
+
+    if (stateChangeData->m_target != GetGameObject())
+        return;
+
+    ChangeStateImmediate(stateChangeData->m_newState);
+}
+
+void MonsterStateMachine::ChangeStateImmediate(MonsterStateType newState)
+{
+    if (!CanChangeState(newState))
+        return;
+
+    MonsterStateType oldState = GetCurrentState();
+
+    if (m_currentState)
+    {
+        m_currentState->Exit();
+    }
+
+    m_currentState = m_states[newState];
+    if (m_currentState)
+    {
+        m_currentState->Enter();
+    }
+
+    // 상태 변경 완료 이벤트
+    auto completedEventData = make_shared<StateEventData>(
+        EventType::MONSTER_STATE_CHANGED,
+        GetGameObject(),
+        static_cast<int>(oldState),
+        static_cast<int>(newState)
+    );
+    EVENT->TriggerEvent(completedEventData);
 }

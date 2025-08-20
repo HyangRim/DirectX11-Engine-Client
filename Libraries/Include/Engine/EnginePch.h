@@ -96,6 +96,8 @@ using namespace Microsoft::WRL;
 #include "RenderManager.h"
 #include "SceneManager.h"
 #include "D2DTextRenderer.h"
+#include "EventManager.h"
+#include "EventClass.h"
 
 
 // Engine

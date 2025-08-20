@@ -3,6 +3,7 @@
 
 #include "NickyBaseAttack.h"
 #include "Player.h"
+#include "Monster.h"
 
 NickyBaseAttackState::NickyBaseAttackState(shared_ptr<ModelAnimator> modelAnimator, shared_ptr<GameObject> _player)
 	:Super(PlayerStateType::BaseAttack)
@@ -24,17 +25,24 @@ void NickyBaseAttackState::Enter()
 		attackScript->StartBaseAttack();
 		attackScript->SetTarget(m_target);
 	}
+
+	m_target->OnCollisionEnter(m_player);
 }
 
 void NickyBaseAttackState::Update()
 {
 	m_baseAttackTime += DT;
 
-	if (m_player->GetComponent<NickyBaseAttack>()->GetTarget() == nullptr)
+	if (m_player->GetComponent<NickyBaseAttack>()->GetTarget() == nullptr || 
+		(m_target && static_pointer_cast<Monster>(m_target)->IsDead()))
 	{
 		m_isBaseAttackComplete = true;
+		m_player->GetPlayerStateMachine()->ChangeState(PlayerStateType::Wait);
+		m_player->GetAnimationStateMachine()->ChangeState(AnimationStateType::Wait);
+
 		return;
 	}
+	
 
 	if (!m_isBaseAttackComplete && m_baseAttackTime >= (38.f / 25.f) / 2.f)
 	{
