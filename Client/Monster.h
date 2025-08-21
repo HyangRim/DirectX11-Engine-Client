@@ -4,6 +4,7 @@
 
 class Player;
 class Item;
+class HealthBar;
 class ItemBox;
 class AI;
 
@@ -76,6 +77,7 @@ protected:
     MonsterStatus m_monsterStatus;
   
     shared_ptr<Player> m_targetPlayer;
+    shared_ptr<HealthBar> m_healthBar;
 
     shared_ptr<AI> m_curAI;
     unordered_map<wstring, shared_ptr<AI>> m_AIMap;

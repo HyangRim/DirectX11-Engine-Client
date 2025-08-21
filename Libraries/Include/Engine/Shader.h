@@ -87,7 +87,7 @@ public:
 	void PushOutlineData(const OutlineDesc& _desc);
 	void PushDecalData(const DecalBufferData& _desc); 
 	void PushScrollViewClippingData(const Vec4& clippingRect, bool enableClipping);
-	void PushHealthBarData(float _healthRatio, float _manaRatio);
+	void PushHealthBarData(float _healthRatio, float _manaRatio, int _type = 0);
 	void SetDecalTexture(shared_ptr<Texture> _texture);
 	void SetDepthTexture(shared_ptr<Texture> _depthtexture);
 

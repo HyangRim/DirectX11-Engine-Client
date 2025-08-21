@@ -4,6 +4,7 @@
 #include "Item.h"
 #include "Player.h"
 #include "MonsterStateMachine.h"
+#include "HealthBar.h"
 #include "MonsterState.h"
 
 Monster::Monster(shared_ptr<Shader> _shader)
@@ -21,6 +22,10 @@ Monster::~Monster()
 void Monster::Start()
 {
 	Super::Start();
+
+	m_healthBar = make_shared<HealthBar>();
+	AddComponent(m_healthBar);
+	m_healthBar->Create();
 }
 
 void Monster::Update()
@@ -38,6 +43,11 @@ void Monster::Update()
 
 	if (m_curAI != nullptr) {
 		m_curAI->Update();
+	}
+
+
+	if (m_healthBar) {
+		m_healthBar->UpdateHealthBar(m_monsterStatus.hp, m_monsterStatus.maxHp, 0, 0);
 	}
 }
 
@@ -94,6 +104,7 @@ void Monster::Damaged(DamageInfo _damage)
 
 	if (monsterHP <= 0) {
 		//사망 애니메이션으로. 
+		m_healthBar->SetVisible(false);
 		GetMonsterStateMachine()->ChangeState(MonsterStateType::Death);
 		m_isStun = true;
 	}
@@ -124,6 +135,8 @@ void Monster::Damaged(int _damage)
 	if (monsterHP <= 0) {
 		//사망 애니메이션으로. 
 		//GetMonsterStateMachine()->ChangeState(MonsterStateType::Death);
+		m_healthBar->SetVisible(false);
+		SetType(OBJECTTYPE::ITEMBOX);
 		m_isStun = true;
 	}
 

@@ -21,7 +21,8 @@ cbuffer HealthBarBuffer
 {
     float HealthRatio;
     float ManaRatio;
-    float2 HealthPadding;
+    int type; // 0은 일반, 1은 몬스터(MP안보임)
+    int HealthPadding;
 };
 
 SamplerState ImageSampler

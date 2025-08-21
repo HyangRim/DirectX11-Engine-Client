@@ -167,7 +167,13 @@ void HealthBar::UpdateHealthBar(int _curHP, int _maxHP, int _curMP, int _maxMP)
 	manaRatio = max(0.f, min(manaRatio, 1.f));
 
 	if (auto material = m_healthBarUI->GetLayers()[1].material) {
-		material->GetShader()->PushHealthBarData(healthRatio, manaRatio);
+		if (GetGameObject()->GetType() == OBJECTTYPE::MONSTER) {
+			material->GetShader()->PushHealthBarData(healthRatio, manaRatio, 1);
+		}
+		else {
+			material->GetShader()->PushHealthBarData(healthRatio, manaRatio, 0);
+		}
+		//material->GetShader()->PushHealthBarData(healthRatio, manaRatio);
 	}
 }
 
@@ -180,10 +186,15 @@ void HealthBar::SetVisible(bool _visible)
 
 void HealthBar::UpdateHealthBarPosition()
 {
+	healthUpdateTime += DT;
+
 	Vec3 targetPos = GetTransform()->GetPosition();
 
-	if (Vec3::Distance(targetPos, m_lastTargetPos) < 0.03f)
+	if (Vec3::Distance(targetPos, m_lastTargetPos) < 0.03f && healthUpdateTime < 0.016f)
 		return;
+
+	if (healthUpdateTime > 0.016f)
+		healthUpdateTime = 0.f;
 
 	m_lastTargetPos = targetPos;
 

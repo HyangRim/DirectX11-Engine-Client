@@ -29,6 +29,8 @@ private:
 
 private:
     friend class Player;
+
+    float healthUpdateTime = 0.f;
     shared_ptr<UIPanel> m_healthBarPanel;
     shared_ptr<ImageUI> m_healthBarUI;
     shared_ptr<ImageUI> m_manaBarUI;
