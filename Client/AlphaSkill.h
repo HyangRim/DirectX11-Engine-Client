@@ -6,7 +6,7 @@ class Alpha;
 class AlphaSkill : MonsterBehaviour
 {
 public:
-	AlphaSkill(shared_ptr<Alpha> _alpha);
+	AlphaSkill(shared_ptr<GameObject> _alpha);
 	virtual ~AlphaSkill();
 
 public:
@@ -16,7 +16,7 @@ public:
 
 private:
 	shared_ptr<BiancaESkillCircle> m_circleObjects[5];
-	shared_ptr<Alpha> m_alpha;
+	shared_ptr<GameObject> m_alpha;
 
 	float m_skillElapsedTime = 0.f;
 	float m_skillDuration = 2.25f;

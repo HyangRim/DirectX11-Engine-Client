@@ -22,6 +22,10 @@ void FogOfWar::Init()
 
 }
 
+void FogOfWar::Start()
+{
+}
+
 void FogOfWar::Update()
 {
 

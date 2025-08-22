@@ -33,6 +33,7 @@ private:
     float m_attackRange = 1.2f;
     float m_traceRange = 10.0f;
     float m_giveUpRange = 50.0f;
+    float m_skillCoolTime = 0.f;
 
 };
 

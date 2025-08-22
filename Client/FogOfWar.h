@@ -30,6 +30,7 @@ public:
 	virtual ~FogOfWar();
 
 	virtual void Init() override;
+	virtual void Start() override;
 	virtual void Update() override;
 
 	// 핵심 가시성 함수들

@@ -27,6 +27,7 @@ void AlphaBaseAttack::Update()
 
     // 공격 타이머 갱신
     m_attackTimer += DT;
+    m_skillCoolTime -= DT;
     float distance = Vec3::Distance(wolfPos, otherObjPos);
 
     if (!m_isAttackComplete && m_attackTimer >= m_attackDuration)

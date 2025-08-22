@@ -627,6 +627,9 @@
     <ClCompile Include="AlphaTraceState.cpp">
       <Filter>Scripts\Monster\Alpha\LogicState</Filter>
     </ClCompile>
+    <ClCompile Include="AlphaAnimSkillState.cpp">
+      <Filter>Scripts\Monster\Alpha\AnimState</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -1046,6 +1049,9 @@
     </ClInclude>
     <ClInclude Include="AlphaTraceState.h">
       <Filter>Scripts\Monster\Alpha\LogicState</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaAnimSkillState.h">
+      <Filter>Scripts\Monster\Alpha\AnimState</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

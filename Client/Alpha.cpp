@@ -232,6 +232,8 @@ void Alpha::InitAlphaComponent()
 	traceScript->SetOwner(shared_from_this());
 	AddComponent(traceScript);
 
+	auto skillScript = make_shared<AlphaSkill>(shared_from_this());
+
 	AddComponent(m_collider);
 	AddComponent(m_rigidbody);
 	AddComponent(m_navAgent);

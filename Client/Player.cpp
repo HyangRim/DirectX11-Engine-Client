@@ -8,6 +8,7 @@
 #include "UIManager.h"
 #include "HealthBar.h"
 #include "PlayerStateMachine.h"
+#include "FogOfWar.h"
 
 Player::Player()
 {
@@ -33,6 +34,8 @@ void Player::Start()
 	m_healthBar = make_shared<HealthBar>();
 	AddComponent(m_healthBar);
 	m_healthBar->Create();
+
+	//GetComponent<FogOfWar>()->UpdateFOWSystem();
 	
 }
 

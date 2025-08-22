@@ -23,6 +23,7 @@
     <ClInclude Include="Alpha.h" />
     <ClInclude Include="AlphaAnimAppearState.h" />
     <ClInclude Include="AlphaAnimAttackState.h" />
+    <ClInclude Include="AlphaAnimSkillState.h" />
     <ClInclude Include="AlphaAnimTraceState.h" />
     <ClInclude Include="AlphaAppearState.h" />
     <ClInclude Include="AlphaAnimDeathState.h" />
@@ -165,6 +166,7 @@
     <ClCompile Include="Alpha.cpp" />
     <ClCompile Include="AlphaAnimAppearState.cpp" />
     <ClCompile Include="AlphaAnimAttackState.cpp" />
+    <ClCompile Include="AlphaAnimSkillState.cpp" />
     <ClCompile Include="AlphaAnimTraceState.cpp" />
     <ClCompile Include="AlphaAppearState.cpp" />
     <ClCompile Include="AlphaAnimDeathState.cpp" />
