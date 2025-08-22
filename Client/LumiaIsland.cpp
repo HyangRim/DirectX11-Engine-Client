@@ -100,7 +100,7 @@ void LumiaIsland::Start()
 
 	////Monster Ãß°¡.
 	CreateMonsterWolf(Vec3(15, 18, 16));
-	//CreateMonsterAlpha(Vec3(20, 18, 16));
+	CreateMonsterAlpha(Vec3(20, 18, 16));
 
 	
 
@@ -1116,7 +1116,7 @@ void LumiaIsland::CreateMonsterAlpha(Vec3 _pos)
 	shared_ptr<Alpha> alpha = make_shared<Alpha>(m_defaultshader);
 
 	alpha->GetTransform()->SetPosition(_pos);
-	alpha->GetTransform()->SetScale(Vec3(1.f));
+	alpha->GetTransform()->SetScale(Vec3(2.f));
 	CURSCENE->Add(alpha);
 }
 
@@ -1229,13 +1229,13 @@ void LumiaIsland::CheckPickedItemBox()
 		return;
 
 	if (m_pickedObject != nullptr) {
-		if (m_pickedObject->GetType() == OBJECTTYPE::ITEMBOX && m_currentItemBox != m_pickedObject) {
+		if ((m_pickedObject->GetType() == OBJECTTYPE::ITEMBOX || m_pickedObject->GetType() == OBJECTTYPE::DIEMONSTER) && m_currentItemBox != m_pickedObject) {
 			SOUND->PlaySound(L"SFX/OpenSound_Tomb_01.wav", 16, 0.5f);
 			m_currentItemBox = m_pickedObject;
 			m_itemBox->SetActive(true);
 			UpdateItemBoxSlots(m_currentItemBox);
 		}
-		else if (m_pickedObject->GetType() == OBJECTTYPE::ITEMBOX && m_currentItemBox == m_pickedObject) {
+		else if ((m_pickedObject->GetType() == OBJECTTYPE::ITEMBOX || m_pickedObject->GetType() == OBJECTTYPE::DIEMONSTER) && m_currentItemBox == m_pickedObject) {
 			m_itemBox->SetActive(false);
 			for (auto item : m_itemBoxSlots) {
 				item->ClearItem();

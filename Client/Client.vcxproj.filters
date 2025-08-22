@@ -205,6 +205,15 @@
     <Filter Include="Scripts\Player\Bianca\BiancaBaseAttack">
       <UniqueIdentifier>{fdab606e-41fb-44d5-9b3e-13e3e060d1dc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Monster\Alpha\AlphaTrace">
+      <UniqueIdentifier>{588b2f7b-61c0-4f16-a75f-f13121388214}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Monster\Alpha\AlphaBaseAttack">
+      <UniqueIdentifier>{294b68d3-bb72-4d71-a38d-4a95e85a1188}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Monster\Alpha\AlphaSkill">
+      <UniqueIdentifier>{3b937e8d-2c31-4ad3-86f5-510ff4209d07}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -552,9 +561,6 @@
     <ClCompile Include="UIResourceManager.cpp">
       <Filter>Scripts\UI\UIResourceManager</Filter>
     </ClCompile>
-    <ClCompile Include="AlphaSkill.cpp">
-      <Filter>Scripts\Monster\Alpha</Filter>
-    </ClCompile>
     <ClCompile Include="WolfAnimAttackState.cpp">
       <Filter>Scripts\Monster\Wolf\AnimState</Filter>
     </ClCompile>
@@ -599,6 +605,30 @@
     </ClCompile>
     <ClCompile Include="BiancaBaseAttackState.cpp">
       <Filter>Scripts\Player\Bianca\BiancaLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaTrace.cpp">
+      <Filter>Scripts\Monster\Alpha\AlphaTrace</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaSkill.cpp">
+      <Filter>Scripts\Monster\Alpha\AlphaSkill</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaBaseAttack.cpp">
+      <Filter>Scripts\Monster\Alpha\AlphaBaseAttack</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaAnimAttackState.cpp">
+      <Filter>Scripts\Monster\Alpha\AnimState</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaAnimTraceState.cpp">
+      <Filter>Scripts\Monster\Alpha\AnimState</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaAttackState.cpp">
+      <Filter>Scripts\Monster\Alpha\LogicState</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaTraceState.cpp">
+      <Filter>Scripts\Monster\Alpha\LogicState</Filter>
+    </ClCompile>
+    <ClCompile Include="AlphaAnimSkillState.cpp">
+      <Filter>Scripts\Monster\Alpha\AnimState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -954,9 +984,6 @@
     <ClInclude Include="UIResourceManager.h">
       <Filter>Scripts\UI\UIResourceManager</Filter>
     </ClInclude>
-    <ClInclude Include="AlphaSkill.h">
-      <Filter>Scripts\Monster\Alpha</Filter>
-    </ClInclude>
     <ClInclude Include="WolfAnimAttackState.h">
       <Filter>Scripts\Monster\Wolf\AnimState</Filter>
     </ClInclude>
@@ -1001,6 +1028,30 @@
     </ClInclude>
     <ClInclude Include="BiancaBaseAttackState.h">
       <Filter>Scripts\Player\Bianca\BiancaLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaTrace.h">
+      <Filter>Scripts\Monster\Alpha\AlphaTrace</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaSkill.h">
+      <Filter>Scripts\Monster\Alpha\AlphaSkill</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaBaseAttack.h">
+      <Filter>Scripts\Monster\Alpha\AlphaBaseAttack</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaAnimAttackState.h">
+      <Filter>Scripts\Monster\Alpha\AnimState</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaAnimTraceState.h">
+      <Filter>Scripts\Monster\Alpha\AnimState</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaAttackState.h">
+      <Filter>Scripts\Monster\Alpha\LogicState</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaTraceState.h">
+      <Filter>Scripts\Monster\Alpha\LogicState</Filter>
+    </ClInclude>
+    <ClInclude Include="AlphaAnimSkillState.h">
+      <Filter>Scripts\Monster\Alpha\AnimState</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -12,7 +12,7 @@ void AlphaWalkState::Enter()
 	m_animTime = 0.f;
 	m_isAnimationStarted = true;
 
-	cout << "알파 Wait State 진입\n";
+	cout << "알파 걷기 State 진입\n";
 }
 
 void AlphaWalkState::Update()
@@ -25,12 +25,25 @@ void AlphaWalkState::Exit()
 	m_animTime = 0.f;
 	m_isAnimationStarted = false;
 
-	cout << "알파 Wait State 종료\n";
+	cout << "알파 걷기 State 종료\n";
 }
 
 bool AlphaWalkState::CanTransitionTo(MonsterStateType newState)
 {
-	if (newState == MonsterStateType::Wait)
+	switch (newState)
+	{
+	case MonsterStateType::Wait:
+		return true; // 자기 자신으로는 전환 불가
+	case MonsterStateType::Move:
+		return false;
+	case MonsterStateType::Death:
+	case MonsterStateType::Dying:
 		return true;
-	return false;
+	case MonsterStateType::Appear:
+		return false;
+	case MonsterStateType::Trace:
+		return true;
+	default:
+		return false;
+	}
 }

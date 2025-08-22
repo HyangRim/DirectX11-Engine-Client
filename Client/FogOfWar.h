@@ -30,6 +30,7 @@ public:
 	virtual ~FogOfWar();
 
 	virtual void Init() override;
+	virtual void Start() override;
 	virtual void Update() override;
 
 	// 핵심 가시성 함수들
@@ -49,10 +50,10 @@ private:
 
 private:
 	//원 설정.
-	float m_sightRange = 8.f;
+	float m_sightRange = 12.f;
 	float m_darkness = 0.7f;
 	float m_fadeDistance = 3.0f;
-	float m_smoothness = 2.0f;
+	float m_smoothness = 3.0f;
 
 	float m_curTime = 0.f;
 	float m_updateTime = 0.05f;

@@ -74,4 +74,5 @@ void BaseSkill::SkillLevelUp()
 	m_curSkillLevel += 1;
 	if (m_curSkillLevel > m_maxSkillLevel)
 		m_curSkillLevel = m_maxSkillLevel;
+	SOUND->PlaySound(L"SFX/SkillUp.wav", 12, 0.5f);
 }

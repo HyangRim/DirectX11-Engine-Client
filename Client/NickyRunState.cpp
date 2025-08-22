@@ -15,11 +15,25 @@ NickyRunState::~NickyRunState()
 void NickyRunState::Enter()
 {
     cout << "NickyRunStateÁøÀÔ\n";
+    m_stepSoundTime = 0.f;
+    leftStep = false;
 }
 
 void NickyRunState::Update()
 {
+    m_stepSoundTime += DT;
 
+    if (m_stepSoundTime > 0.27f) {
+        if (leftStep) {
+            SOUND->PlaySound(L"SFX/footstepAsphalt_s1.wav", 14, 0.5f);
+            leftStep = false;
+        }
+        else {
+            SOUND->PlaySound(L"SFX/footstepAsphalt_s2.wav", 14, 0.5f);
+            leftStep = true;
+        }
+        m_stepSoundTime = 0.f;
+    }
 }
 
 void NickyRunState::Exit()

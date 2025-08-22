@@ -2,7 +2,7 @@
 #include "AlphaAnimWalkState.h"
 
 AlphaAnimWalkState::AlphaAnimWalkState()
-    : AnimationState(AnimationStateType::Move)
+    : AnimationState(AnimationStateType::Run)
 {
 }
 
@@ -30,14 +30,13 @@ void AlphaAnimWalkState::Update(shared_ptr<ModelAnimator> _animator)
         return;
 
     m_animTime += DT;
-
     // 이동 애니메이션이 정상적으로 재생되고 있는지 확인
     if (m_isAnimationStarted)
     {
         wstring currentAnimTag = _animator->GetCurrentAnimationTag();
         if (currentAnimTag == L"Run")
         {
-            // Run 애니메이션이 정상적으로 재생 중
+
         }
     }
 }
@@ -57,7 +56,6 @@ bool AlphaAnimWalkState::CanTransitionTo(AnimationStateType _nextState)
 {
     switch (_nextState)
     {
-    case AnimationStateType::Move:
     case AnimationStateType::Wait:
     case AnimationStateType::BaseAttack:
     case AnimationStateType::Death:

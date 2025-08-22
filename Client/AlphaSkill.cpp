@@ -4,7 +4,7 @@
 #include "Player.h"
 #include "BiancaESkillCircle.h"
 
-AlphaSkill::AlphaSkill(shared_ptr<Alpha> _alpha) : m_alpha(_alpha)
+AlphaSkill::AlphaSkill(shared_ptr<GameObject> _alpha) : m_alpha(_alpha)
 {
 }
 

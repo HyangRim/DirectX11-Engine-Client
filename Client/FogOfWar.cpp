@@ -6,6 +6,7 @@
 #include "QuadTree.h"
 #include "Renderer.h"
 #include "Material.h"
+#include "HealthBar.h"
 
 FogOfWar::FogOfWar()
 {
@@ -19,6 +20,10 @@ void FogOfWar::Init()
 {
 	Super::Init();
 
+}
+
+void FogOfWar::Start()
+{
 }
 
 void FogOfWar::Update()
@@ -41,6 +46,7 @@ bool FogOfWar::ShouldRenderObject(shared_ptr<GameObject> _object)
 
 	if (IsMapObject(_object))return true;
 	if (_object == GetGameObject()) return true;
+	if (_object->GetType() == OBJECTTYPE::ITEMBOX) return true;
 
 	Vec3 playerPos = GetTransform()->GetPosition();
 	Vec3 objPos = _object->GetTransform()->GetPosition();
@@ -69,34 +75,31 @@ void FogOfWar::UpdateShadersWithFOWData(FogOfWarData& _fowData)
 	Vec3 playerPos = _fowData.playerWorldPos;
 	float maxRange = _fowData.sightRange * 1.2f;
 
-	/*for (auto& obj : objects) {
-		if (CURSCENE->GetQuadTree()->IsObjectVisible(obj, camera)) {
-			Vec3 objPos = obj->GetTransform()->GetPosition();
-			float distance = Vec3::Distance(playerPos, objPos);
-			
-			if (distance <= maxRange) {
-				auto renderer = obj->GetRenderer();
-				if (renderer) {
-					auto material = renderer->GetMaterial();
-					if (material) {
-						auto shader = material->GetShader();
-
-						if (shader && shader->IsFOWShader()) {
-							shader->PushFOWData(_fowData);
-						}
-					}
-				}
-			}
-		}
-	}*/
 	for (auto& obj : objects) {
 		if (CURSCENE->GetQuadTree()->IsObjectVisible(obj, camera)) {
 			Vec3 objPos = obj->GetTransform()->GetPosition();
 			float distance = Vec3::Distance(playerPos, objPos);
 
+			auto healthBar = obj->GetComponent<HealthBar>();
+
 			if (distance <= maxRange) {
 				RENDER->SetFOWData(_fowData);
 			}
+
+			if (distance < maxRange - 2.6f) {
+				if (healthBar != nullptr && obj->GetType() == OBJECTTYPE::MONSTER) {
+					healthBar->SetVisible(true);
+				}
+				else if (healthBar != nullptr && obj->GetType() == OBJECTTYPE::DIEMONSTER) {
+					healthBar->SetVisible(false);
+				}
+			}
+			else {
+				if (healthBar != nullptr) {
+					healthBar->SetVisible(false);
+				}
+			}
+			
 		}
 	}
 }
