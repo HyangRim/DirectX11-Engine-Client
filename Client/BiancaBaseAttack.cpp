@@ -65,7 +65,7 @@ void BiancaBaseAttack::Update()
 
 		if (m_updateTimer >= m_attackDuration || m_owner->GetAnimationStateMachine()->GetCurrentState() != AnimationStateType::BaseAttack)
 		{
-			static_pointer_cast<Monster>(m_owner)->Damaged(static_pointer_cast<Player>(m_owner)->GetStatus().hitAttack);
+			static_pointer_cast<Monster>(m_owner)->Damaged(m_owner, static_pointer_cast<Player>(m_owner)->GetStatus().hitAttack);
 
 			m_updateTimer = 0.f;
 			m_owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::BaseAttack);

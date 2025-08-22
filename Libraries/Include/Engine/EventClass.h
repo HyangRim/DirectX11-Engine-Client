@@ -20,6 +20,7 @@ enum class EventType : uint32
     // 몬스터 관련
     MONSTER_DAMAGED,
     MONSTER_DEATH,
+    MONSTER_EXP_REWARD,
     MONSTER_SPAWN,
     MONSTER_AGGRO_START,
     MONSTER_AGGRO_END,
@@ -145,3 +146,16 @@ public:
     MonsterStateType m_newState;
 };
 
+// 경험치 보상 이벤트 데이터
+class ExpRewardEventData : public EventData
+{
+public:
+    ExpRewardEventData(shared_ptr<GameObject> killer, int expAmount, shared_ptr<GameObject> killedMonster = nullptr)
+        : EventData(EventType::MONSTER_EXP_REWARD), m_killer(killer), m_expAmount(expAmount), m_killedMonster(killedMonster)
+    {
+    }
+
+    shared_ptr<GameObject> m_killer;
+    int m_expAmount;
+    shared_ptr<GameObject> m_killedMonster;
+};

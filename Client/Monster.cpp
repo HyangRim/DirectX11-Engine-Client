@@ -117,7 +117,7 @@ void Monster::Damaged(DamageInfo _damage)
 	SetHP(monsterHP);
 }
 
-void Monster::Damaged(int _damage)
+void Monster::Damaged(shared_ptr<GameObject> _attacker, int _damage)
 {
 	MonsterStatus info = GetMonsterStatus();
 	cout << "몬스터 현재 체력 : " << info.hp << endl;
@@ -130,12 +130,11 @@ void Monster::Damaged(int _damage)
 	int32 monsterHP = info.hp;
 	monsterHP -= finalDamage;
 
-
-
 	if (monsterHP <= 0) {
 		//사망 애니메이션으로. 
 		//GetMonsterStateMachine()->ChangeState(MonsterStateType::Death);
 		m_healthBar->SetVisible(false);
+		Death(_attacker);
 		SetType(OBJECTTYPE::ITEMBOX);
 		m_isStun = true;
 	}
@@ -148,3 +147,23 @@ void Monster::Damaged(int _damage)
 	SetHP(monsterHP);
 }
 
+
+void Monster::Death(shared_ptr<GameObject> killer)
+{
+	// 사망 처리...
+
+	// 경험치 보상 이벤트 발생
+	int expReward = CalculateExpReward(); // 몬스터별 경험치 계산
+	auto expEvent = make_shared<ExpRewardEventData>(killer, expReward, shared_from_this());
+	//EVENT->TriggerEvent(expEvent);
+	EVENT->QueueEvent(expEvent);
+
+	//// 몬스터 사망 이벤트도 발생
+	//auto deathEvent = make_shared<StateEventData>(EventType::MONSTER_DEATH, shared_from_this(), 0, 0);
+	//EVENT->TriggerEvent(deathEvent);
+}
+
+float Monster::CalculateExpReward()
+{
+	return 1000.f;
+}

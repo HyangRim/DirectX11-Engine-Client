@@ -55,10 +55,14 @@ public:
     void ChangeState(wstring&& _key);
 
     void Damaged(DamageInfo _damage);
-    void Damaged(int _damage);
+    void Damaged(shared_ptr<GameObject> _attacker, int _damage);
 
     void SetDead(bool _dead) { m_isDead = _dead; }
     bool IsDead() { return m_isDead; }
+
+    void Death(shared_ptr<GameObject> killer);
+
+    float CalculateExpReward();
 
 protected:
     //아이템 보유 가능. 죽을 시 열어볼 수 있음. 

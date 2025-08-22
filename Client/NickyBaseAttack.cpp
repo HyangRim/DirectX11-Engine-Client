@@ -50,7 +50,7 @@ void NickyBaseAttack::Update()
 
 		if (m_updateTimer >= m_attackDuration || m_owner->GetAnimationStateMachine()->GetCurrentState() != AnimationStateType::BaseAttack)
 		{
-			static_pointer_cast<Monster>(m_target)->Damaged(static_pointer_cast<Player>(m_owner)->GetStatus().hitAttack);
+			static_pointer_cast<Monster>(m_target)->Damaged(m_owner, static_pointer_cast<Player>(m_owner)->GetStatus().hitAttack);
 
 
 			m_updateTimer = 0.f;

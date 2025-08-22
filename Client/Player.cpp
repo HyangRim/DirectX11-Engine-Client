@@ -36,7 +36,14 @@ void Player::Start()
 	m_healthBar->Create();
 
 	//GetComponent<FogOfWar>()->UpdateFOWSystem();
-	
+	 // 경험치 보상 이벤트 구독
+	EVENT->Subscribe(EventType::MONSTER_EXP_REWARD, [this](shared_ptr<EventData> eventData) {
+		auto expData = dynamic_pointer_cast<ExpRewardEventData>(eventData);
+		if (expData && expData->m_killer.get() == this) {
+			// 자신이 처치한 몬스터일 때만 경험치 획득
+			SetCurExp(m_status.curExp + expData->m_expAmount);
+		}
+	});
 }
 
 void Player::Update()
@@ -188,24 +195,36 @@ void Player::LevelUp()
 
 	AddSkillPoint(1);
 
-	m_status.curExp -= m_status.curExpLimit;
-	SetLevel(m_status.level + 1);
+	//총 레벨업해야되는 값 ( 예를들어 경험치가 들어왔는데 최대 exp를 훨씬 초과하는 경우. ex) 2레벨업, 3레벨업 씩 해야되는경우
+	int shouldLevelUpValue = 0;
+	while (m_status.curExp >= m_status.curExpLimit)
+	{
+		m_status.curExp -= m_status.curExpLimit;
+		m_status.curExpLimit += m_growStatus.ExpLimit;
+		shouldLevelUpValue++;
+	}
+
+	//m_status.curExp -= m_status.curExpLimit;
+	SetLevel(m_status.level + shouldLevelUpValue);
+
 	wstring levelStr = to_wstring(m_status.level);
 	//Level UI에 변경해주기. 
 	m_healthBar->m_healthBarPanel->GetD2DText(L"LevelText")->SetText(levelStr);
-	m_status.curExpLimit += m_growStatus.ExpLimit;
-	m_status.max_HP += m_growStatus.hp;
-	m_status.hp += m_growStatus.hp;
 
-	m_status.max_Stamina += m_growStatus.stamina;
-	m_status.stamina += m_growStatus.stamina;
+	
+	//m_status.curExpLimit += m_growStatus.ExpLimit;
+	m_status.max_HP				+= m_growStatus.hp * shouldLevelUpValue;
+	m_status.hp					+= m_growStatus.hp * shouldLevelUpValue;
 
-	m_status.hitAttack += m_growStatus.HitAttack;
+	m_status.max_Stamina		+= m_growStatus.stamina * shouldLevelUpValue;
+	m_status.stamina			+= m_growStatus.stamina * shouldLevelUpValue;
 
-	m_status.hitSpeed += m_growStatus.hitSpeed;
-	m_status.defense += m_growStatus.defense;
-	m_status.healing += m_growStatus.healing;
-	m_status.healing_Stamina += m_growStatus.healing_Stamina;
+	m_status.hitAttack			+= m_growStatus.HitAttack * shouldLevelUpValue;
+
+	m_status.hitSpeed			+= m_growStatus.hitSpeed * shouldLevelUpValue;
+	m_status.defense			+= m_growStatus.defense * shouldLevelUpValue;
+	m_status.healing			+= m_growStatus.healing * shouldLevelUpValue;
+	m_status.healing_Stamina	+= m_growStatus.healing_Stamina * shouldLevelUpValue;
 
 	if (auto manager = m_uiManager.lock()) {
 		manager->GetGameHUD()->UpdateStatBar();
