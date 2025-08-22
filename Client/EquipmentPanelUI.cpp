@@ -64,7 +64,8 @@ void EquipmentPanelUI::CreateEquipmentSlots()
 	Vec2 slotSize = Vec2(34, 22);
 	Vec2 spacing = Vec2(0, 1);
 
-	Vec2 startPos = Vec2(380.f - (38 / 2.f) + 19, (768 - 57) - (115 / 2.f) + 13); // 패널 내 시작 위치
+	//Vec2 startPos = Vec2(380.f - (38 / 2.f) + 19, (768 - 57) - (115 / 2.f) + 13); // 패널 내 시작 위치
+	Vec2 startPos = Vec2(17 + 1, 11 + 1);
 	Vec2 panelSize = Vec2(38, 115);
 
 	for (int row = 0; row < slotsY; row++)

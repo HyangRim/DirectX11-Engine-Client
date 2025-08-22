@@ -2,402 +2,141 @@
 #include "Button.h"
 #include "MeshRenderer.h"
 #include "Material.h"
-#include "ImageUI.h"
 
-Button::Button() : Super(ComponentType::Button)
-{
-}
+Button::Button() : Super(ComponentType::Button) {}
 
-Button::~Button()
-{
-}
+Button::~Button() {}
 
 void Button::Update()
 {
     Super::Update();
 
-    // Scene이 소멸 중이면 업데이트 중단
-    if (CURSCENE->IsDestroying()) {
-        return;
-    }
+    if (CURSCENE->IsDestroying()) return;
 
-    // GameObject 유효성 검사
     auto go = GetGameObject();
-    if (!go) {
-        return;
-    }
+    if (!go || !m_isEnabled) return;
 
-    if (m_isEnabled)
-    {
-        UpdateState();
-    }
+    UpdateState();
 }
 
-bool Button::Picked(POINT _screenPos)
+bool Button::Picked(POINT screenPos) const
 {
-    return ::PtInRect(&m_rect, _screenPos);
+    return ::PtInRect(&m_rect, screenPos);
 }
 
 void Button::SetVisible(bool visible)
 {
+    if (m_visible == visible) return;
+
     m_visible = visible;
     GetGameObject()->SetActive(visible);
 }
 
-void Button::Create(Vec2 _localPos, Vec2 _size, shared_ptr<class Material> _material, uint32 _pass)
+void Button::Create(Vec2 localPos, Vec2 size, shared_ptr<Material> material, uint32 pass)
 {
     auto go = m_gameObject.lock();
+    if (!go || !material) return;
 
-    m_size = _size * RESOLUTION_CONSTANT;
-    m_defaultMaterial = _material;
+    // 크기와 머티리얼 설정
+    m_size = size * RESOLUTION_CONSTANT;
+    m_defaultMaterial = material;
+    m_pass = pass;
 
-    // Normal 상태의 기본 Material로 설정
-    SetMaterial(ButtonState::Normal, _material);
+    SetMaterial(ButtonState::Normal, material);
 
-    float height = GRAPHICS->GetViewport().GetHeight();
-    float width = GRAPHICS->GetViewport().GetWidth();
+    // Transform 설정 (좌표 변환 최적화)
+    SetupTransform(go, localPos, size);
 
-    float x = _localPos.x - width / 2;
-    float y = height / 2 - _localPos.y;
+    // 렌더링 컴포넌트 설정
+    SetupRendering(go, material, pass);
 
-    Vec3 position = Vec3(x, y, m_zPos);
+    // Picking 영역 설정
+    UpdatePickingRect(localPos);
 
-    go->GetTransform()->SetPosition(position);
-    go->GetTransform()->SetScale(Vec3(_size.x * RESOLUTION_CONSTANT, _size.y * RESOLUTION_CONSTANT, 1));
-
-    go->SetLayerIndex(LAYER_UI);
-
-    if (go->GetMeshRenderer() == nullptr) {
-        go->AddComponent(make_shared<MeshRenderer>());
-    }
-
-    go->GetMeshRenderer()->SetMaterial(_material);
-
-    auto mesh = RESOURCES->Get<Mesh>(L"Quad");
-    go->GetMeshRenderer()->SetMesh(mesh);
-    go->GetMeshRenderer()->SetPass(_pass);
-
-
-
-    m_materialSize = _material->GetDiffuseMap()->GetSize();
-
-    //Picking;
-    m_rect.left = static_cast<LONG>(_localPos.x - _size.x / 2.f);
-    m_rect.right = static_cast<LONG>(_localPos.x + _size.x / 2.f);
-    m_rect.top = static_cast<LONG>(_localPos.y - _size.y / 2.f);
-    m_rect.bottom = static_cast<LONG>(_localPos.y + _size.y / 2.f);
-
-    // 초기 상태 설정
+    // 초기 상태
     ChangeState(ButtonState::Normal);
 }
 
-
-//[](){} 람다로 넣어주면 문제가 생길 수 있음
-//포인터 타입을 만약 넣어준다. 나중에 메모리가 해제되면 망할 수 있다. 
-//스마트 포인터를 사용하면, 누구라도 한 명이라도 기억하지 않으면
-//캡쳐 하는 바람에 영영 해제가 안되고 메모리 누수가 일어날 수 있음. 
-void Button::AddOnClickedEvent(std::function<void(void)> _func)
+void Button::AddOnClickedEvent(std::function<void(void)> func)
 {
-    m_onClicked = _func;
+    m_onClicked = std::move(func);
 }
 
 void Button::InvokeOnClicked()
 {
-   /* if (m_onClicked)
-        m_onClicked();*/
-
     OnClick();
 }
 
-// Button.cpp에 새로운 함수들 추가
 void Button::UpdatePosition(const Vec2& parentWorldPos)
 {
     auto go = m_gameObject.lock();
     if (!go) return;
 
-    // 부모의 월드 위치 + 로컬 위치로 새 월드 위치 계산
-    Vec2 newWorldPos;
-    newWorldPos.x = parentWorldPos.x + m_localPosition.x;
-    newWorldPos.y = parentWorldPos.y + m_localPosition.y;
+    // 새 월드 위치 계산
+    Vec2 newWorldPos = CalculateWorldPosition(parentWorldPos);
 
-    // 화면 좌표를 월드 좌표로 변환
-    float height = GRAPHICS->GetViewport().GetHeight();
-    float width = GRAPHICS->GetViewport().GetWidth();
+    // Transform 위치 업데이트
+    auto worldTransform = ScreenToWorldCoords(newWorldPos);
+    go->GetTransform()->SetPosition(Vec3(worldTransform.x, worldTransform.y, m_zPos));
 
-    float x = newWorldPos.x - width / 2;
-    float y = height / 2 - newWorldPos.y;
-
-    
-    go->GetTransform()->SetPosition(Vec3(x, y, m_zPos));
-
-    // Picking RECT도 업데이트
+    // Picking RECT 업데이트
     UpdatePickingRect(newWorldPos);
 }
 
 void Button::UpdatePickingRect(const Vec2& screenPos)
 {
-    m_rect.left = static_cast<LONG>(screenPos.x - m_size.x / 2.f);
-    m_rect.right = static_cast<LONG>(screenPos.x + m_size.x / 2.f);
-    m_rect.top = static_cast<LONG>(screenPos.y - m_size.y / 2.f);
-    m_rect.bottom = static_cast<LONG>(screenPos.y + m_size.y / 2.f);
+    Vec2 halfSize = m_size * 0.5f;
+    m_rect = {
+        static_cast<LONG>(screenPos.x - halfSize.x),
+        static_cast<LONG>(screenPos.y - halfSize.y),
+        static_cast<LONG>(screenPos.x + halfSize.x),
+        static_cast<LONG>(screenPos.y + halfSize.y)
+    };
 }
 
-
-void Button::SetMaterial(ButtonState state, shared_ptr<class Material> material)
+void Button::SetMaterial(ButtonState state, shared_ptr<Material> material)
 {
+    if (!material) return;
+
     m_stateMaterials[state] = material;
 
-    // 현재 상태와 같다면 즉시 적용
-    if (m_currentState == state)
-    {
+    if (m_currentState == state) {
         ApplyCurrentMaterial();
     }
 }
 
 void Button::SetEnabled(bool enabled)
 {
-    if (m_isEnabled != enabled)
-    {
-        m_isEnabled = enabled;
+    if (m_isEnabled == enabled) return;
 
-        if (!enabled)
-        {
-            ChangeState(ButtonState::Disabled);
-        }
-        else
-        {
-            ChangeState(ButtonState::Normal);
-        }
-    }
+    m_isEnabled = enabled;
+    ChangeState(enabled ? ButtonState::Normal : ButtonState::Disabled);
 }
 
 void Button::UpdateState()
 {
-    //if (!m_isEnabled)
-    //    return;
+    // 입력 상태 수집 (구조체로 최적화)
+    MouseInputState input = GetMouseInputState();
 
-    //POINT mousePos = INPUT->GetMousePos();
-    //bool isMouseInside = Picked(mousePos);
-    //bool isMousePressed = INPUT->GetButton(KEY_TYPE::LBUTTON);
-    //bool isMouseClicked = INPUT->GetButtonDown(KEY_TYPE::LBUTTON);
+    // 상태 전환 로직 처리
+    ButtonState newState = ProcessStateTransition(input);
 
-    //ButtonState newState = m_currentState;
-
-    //// 마우스가 버튼 안에 있는 경우
-    //if (isMouseInside)
-    //{
-    //    // 마우스가 처음 들어온 경우
-    //    if (!m_isMouseInside)
-    //    {
-    //        OnHoverEnter();
-    //    }
-
-    //    // 마우스가 눌려진 상태
-    //    if (isMousePressed)
-    //    {
-    //        newState = ButtonState::Pressed;
-    //    }
-    //    else
-    //    {
-    //        newState = ButtonState::Hovered;
-    //    }
-
-    //    // 클릭된 경우
-    //    if (isMouseClicked)
-    //    {
-    //        OnClick();
-    //    }
-    //}
-    //else
-    //{
-    //    // 마우스가 버튼 밖으로 나간 경우
-    //    if (m_isMouseInside)
-    //    {
-    //        OnHoverExit();
-    //    }
-
-    //    newState = ButtonState::Normal;
-    //}
-
-    //// 상태 업데이트
-    //m_isMouseInside = isMouseInside;
-    //m_wasMousePressed = isMousePressed;
-
-    //// 상태 변경
-    //if (newState != m_currentState)
-    //{
-    //    ChangeState(newState);
-    //}
-    ////=======================================================================================//
-    //if (!m_isEnabled)
-    //    return;
-
-    //POINT mousePos = INPUT->GetMousePos();
-    //bool isMouseInside = Picked(mousePos);
-    //bool isMousePressed = INPUT->GetButton(KEY_TYPE::LBUTTON);
-    //bool isMouseDown = INPUT->GetButtonDown(KEY_TYPE::LBUTTON);
-    //bool isMouseUp = INPUT->GetButtonUp(KEY_TYPE::LBUTTON);
-
-    //ButtonState newState = m_currentState;
-
-    //// 마우스가 버튼 안에 있는 경우
-    //if (isMouseInside)
-    //{
-    //    // 마우스가 처음 들어온 경우
-    //    if (!m_isMouseInside)
-    //    {
-    //        OnHoverEnter();
-    //    }
-
-    //    // 버튼 안에서 마우스를 누르기 시작한 경우
-    //    if (isMouseDown)
-    //    {
-    //        m_clickStartedInside = true;
-    //    }
-
-    //    // 마우스가 눌려진 상태
-    //    if (isMousePressed)
-    //    {
-    //        newState = ButtonState::Pressed;
-    //    }
-    //    else
-    //    {
-    //        newState = ButtonState::Hovered;
-    //    }
-
-    //    // 클릭 판정: 버튼 안에서 누르기 시작했고, 버튼 안에서 떼는 경우
-    //    if (isMouseUp && m_clickStartedInside)
-    //    {
-    //        OnClick();
-    //        m_clickStartedInside = false; // 클릭 완료 후 리셋
-    //    }
-    //}
-    //else
-    //{
-    //    // 마우스가 버튼 밖으로 나간 경우
-    //    if (m_isMouseInside)
-    //    {
-    //        OnHoverExit();
-    //    }
-
-    //    newState = ButtonState::Normal;
-
-    //    // 버튼 밖에서 마우스를 떼면 클릭 시작 플래그 리셋
-    //    if (isMouseUp)
-    //    {
-    //        m_clickStartedInside = false;
-    //    }
-    //}
-
-    //// 상태 업데이트
-    //m_isMouseInside = isMouseInside;
-    //m_wasMousePressed = isMousePressed;
-
-    //// 상태 변경
-    //if (newState != m_currentState)
-    //{
-    //    ChangeState(newState);
-    //}
-
-    ////==============================================================================================//
-
-    if (!m_isEnabled)
-    return;
-
-    POINT mousePos = INPUT->GetMousePos();
-    bool isMouseInside = Picked(mousePos);
-
-    // 좌클릭 관련
-    bool isMousePressed = INPUT->GetButton(KEY_TYPE::LBUTTON);
-    bool isMouseDown = INPUT->GetButtonDown(KEY_TYPE::LBUTTON);
-    bool isMouseUp = INPUT->GetButtonUp(KEY_TYPE::LBUTTON);
-
-    // 우클릭 관련 추가
-    bool isRightMousePressed = INPUT->GetButton(KEY_TYPE::RBUTTON);
-    bool isRightMouseDown = INPUT->GetButtonDown(KEY_TYPE::RBUTTON);
-    bool isRightMouseUp = INPUT->GetButtonUp(KEY_TYPE::RBUTTON);
-
-    ButtonState newState = m_currentState;
-
-    // 마우스가 버튼 안에 있는 경우
-    if (isMouseInside)
-    {
-        // 마우스가 처음 들어온 경우
-        if (!m_isMouseInside)
-        {
-            OnHoverEnter();
-        }
-
-        // 좌클릭 - 버튼 안에서 마우스를 누르기 시작한 경우
-        if (isMouseDown)
-        {
-            m_clickStartedInside = true;
-        }
-
-        // 우클릭 - 버튼 안에서 우마우스를 누르기 시작한 경우
-        if (isRightMouseDown)
-        {
-            m_rightClickStartedInside = true;
-        }
-
-        // 마우스가 눌려진 상태 (좌클릭 또는 우클릭)
-        if (isMousePressed || isRightMousePressed)
-        {
-            newState = ButtonState::Pressed;
-        }
-        else
-        {
-            newState = ButtonState::Hovered;
-        }
-
-        // 좌클릭 판정: 버튼 안에서 누르기 시작했고, 버튼 안에서 떼는 경우
-        if (isMouseUp && m_clickStartedInside)
-        {
-            OnClick();
-            m_clickStartedInside = false;
-        }
-
-        // 우클릭 판정: 버튼 안에서 누르기 시작했고, 버튼 안에서 떼는 경우
-        if (isRightMouseUp && m_rightClickStartedInside)
-        {
-            OnRightClick();
-            m_rightClickStartedInside = false;
-        }
-    }
-    else
-    {
-        // 마우스가 버튼 밖으로 나간 경우
-        if (m_isMouseInside)
-        {
-            OnHoverExit();
-        }
-        newState = ButtonState::Normal;
-
-        // 버튼 밖에서 마우스를 떼면 클릭 시작 플래그들 리셋
-        if (isMouseUp)
-        {
-            m_clickStartedInside = false;
-        }
-        if (isRightMouseUp)
-        {
-            m_rightClickStartedInside = false;
-        }
-    }
+    // 이벤트 처리
+    ProcessMouseEvents(input);
 
     // 상태 업데이트
-    m_isMouseInside = isMouseInside;
-    m_wasMousePressed = isMousePressed;
-    m_wasRightMousePressed = isRightMousePressed;  // 우마우스 상태 업데이트
+    UpdateInternalState(input);
 
-    // 상태 변경
-    if (newState != m_currentState)
-    {
+    // 상태 변경 적용
+    if (newState != m_currentState) {
         ChangeState(newState);
     }
 }
 
 void Button::ChangeState(ButtonState newState)
 {
+    if (m_currentState == newState) return;
+
     m_previousState = m_currentState;
     m_currentState = newState;
 
@@ -405,10 +144,9 @@ void Button::ChangeState(ButtonState newState)
     OnStateChanged(newState);
 }
 
-// 우클릭 이벤트 함수들 추가
-void Button::AddOnRightClickedEvent(std::function<void(void)> _func)
+void Button::AddOnRightClickedEvent(std::function<void(void)> func)
 {
-    m_onRightClicked = _func;
+    m_onRightClicked = std::move(func);
 }
 
 void Button::InvokeOnRightClicked()
@@ -418,42 +156,141 @@ void Button::InvokeOnRightClicked()
 
 void Button::ApplyCurrentMaterial()
 {
-    // Scene 소멸 중이면 Material 변경 금지
-    if (CURSCENE->IsDestroying()) {
-        return;
-    }
+    if (CURSCENE->IsDestroying()) return;
 
     auto go = GetGameObject();
-    if (!go) {
-        std::wcout << L"Button::ApplyCurrentMaterial - GameObject가 유효하지 않습니다!" << std::endl;
-        return;
+    if (!go) return;
+
+    auto meshRenderer = go->GetMeshRenderer();
+    if (!meshRenderer) return;
+
+    // 현재 상태에 맞는 머티리얼 찾기
+    shared_ptr<Material> materialToApply = FindMaterialForState(m_currentState);
+
+    if (materialToApply) {
+        meshRenderer->SetMaterial(materialToApply);
+    }
+}
+
+// === Private Helper Methods ===
+
+Vec2 Button::CalculateWorldPosition(const Vec2& parentWorldPos) const
+{
+    return Vec2(
+        parentWorldPos.x + m_localPosition.x,
+        parentWorldPos.y + m_localPosition.y
+    );
+}
+
+Vec2 Button::ScreenToWorldCoords(const Vec2& screenPos) const
+{
+    float height = GRAPHICS->GetViewport().GetHeight();
+    float width = GRAPHICS->GetViewport().GetWidth();
+
+    return Vec2(
+        screenPos.x - width * 0.5f,
+        height * 0.5f - screenPos.y
+    );
+}
+
+Button::MouseInputState Button::GetMouseInputState() const
+{
+    POINT mousePos = INPUT->GetMousePos();
+
+    MouseInputState returnValue;
+
+    returnValue.mouseInside = Picked(mousePos);
+    returnValue.leftPressed = INPUT->GetButton(KEY_TYPE::LBUTTON);
+    returnValue.leftDown = INPUT->GetButtonDown(KEY_TYPE::LBUTTON);
+    returnValue.leftUp = INPUT->GetButtonUp(KEY_TYPE::LBUTTON);
+    returnValue.rightPressed = INPUT->GetButton(KEY_TYPE::RBUTTON);
+    returnValue.rightDown = INPUT->GetButtonDown(KEY_TYPE::RBUTTON);
+    returnValue.rightUp = INPUT->GetButtonUp(KEY_TYPE::RBUTTON);
+
+    return returnValue;
+}
+
+ButtonState Button::ProcessStateTransition(const MouseInputState& input) const
+{
+    if (input.mouseInside) {
+        if (input.leftPressed || input.rightPressed) {
+            return ButtonState::Pressed;
+        }
+        return ButtonState::Hovered;
+    }
+    return ButtonState::Normal;
+}
+
+void Button::ProcessMouseEvents(const MouseInputState& input)
+{
+    // Hover 이벤트
+    if (input.mouseInside && !m_isMouseInside) {
+        OnHoverEnter();
+    }
+    else if (!input.mouseInside && m_isMouseInside) {
+        OnHoverExit();
     }
 
+    if (input.mouseInside) {
+        // 클릭 시작 플래그 설정
+        if (input.leftDown) m_clickStartedInside = true;
+        if (input.rightDown) m_rightClickStartedInside = true;
+
+        // 클릭 완료 이벤트
+        if (input.leftUp && m_clickStartedInside) {
+            OnClick();
+            m_clickStartedInside = false;
+        }
+        if (input.rightUp && m_rightClickStartedInside) {
+            OnRightClick();
+            m_rightClickStartedInside = false;
+        }
+    }
+    else {
+        // 버튼 밖에서 마우스 업 시 플래그 리셋
+        if (input.leftUp) m_clickStartedInside = false;
+        if (input.rightUp) m_rightClickStartedInside = false;
+    }
+}
+
+void Button::UpdateInternalState(const MouseInputState& input)
+{
+    m_isMouseInside = input.mouseInside;
+    m_wasMousePressed = input.leftPressed;
+    m_wasRightMousePressed = input.rightPressed;
+}
+
+void Button::SetupTransform(shared_ptr<GameObject> go, const Vec2& localPos, const Vec2& size)
+{
+    auto worldCoords = ScreenToWorldCoords(localPos);
+    Vec3 position(worldCoords.x, worldCoords.y, m_zPos);
+    Vec3 scale(size.x * RESOLUTION_CONSTANT, size.y * RESOLUTION_CONSTANT, 1.0f);
+
+    go->GetTransform()->SetPosition(position);
+    go->GetTransform()->SetScale(scale);
+    go->SetLayerIndex(LAYER_UI);
+}
+
+void Button::SetupRendering(shared_ptr<GameObject> go, shared_ptr<Material> material, uint32 pass)
+{
     if (!go->GetMeshRenderer()) {
-        std::wcout << L"Button::ApplyCurrentMaterial - MeshRenderer가 없습니다!" << std::endl;
-        return;
+        go->AddComponent(make_shared<MeshRenderer>());
     }
 
-    shared_ptr<Material> materialToApply = nullptr;
+    auto meshRenderer = go->GetMeshRenderer();
+    meshRenderer->SetMaterial(material);
+    meshRenderer->SetMesh(RESOURCES->Get<Mesh>(L"Quad"));
+    meshRenderer->SetPass(pass);
 
-    // 현재 상태에 맞는 Material 찾기
-    auto it = m_stateMaterials.find(m_currentState);
-    if (it != m_stateMaterials.end() && it->second != nullptr)
-    {
-        materialToApply = it->second;
+    // 머티리얼 크기 캐싱
+    if (auto diffuseMap = material->GetDiffuseMap()) {
+        m_materialSize = diffuseMap->GetSize();
     }
-    else
-    {
-        // 해당 상태의 Material이 없으면 기본 Material 사용
-        materialToApply = m_defaultMaterial;
-    }
+}
 
-    if (materialToApply)
-    {
-        go->GetMeshRenderer()->SetMaterial(materialToApply);
-    }
-    else
-    {
-        std::cout << "Button::ApplyCurrentMaterial - 적용할 Material이 없습니다!" << std::endl;
-    }
+shared_ptr<Material> Button::FindMaterialForState(ButtonState state) const
+{
+    auto it = m_stateMaterials.find(state);
+    return (it != m_stateMaterials.end() && it->second) ?
+        it->second : m_defaultMaterial;
 }

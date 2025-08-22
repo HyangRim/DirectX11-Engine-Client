@@ -93,8 +93,7 @@ public:
 
     void SetLocalPosition(const Vec2& localPos) { m_localPosition = localPos; }
     const Vec2& GetLocalPosition() const { return m_localPosition; }
-    void UpdatePositionFromParent();  // 부모로부터 위치 업데이트
-
+ 
 private:
     void CreatePanelBackground();
     void UpdateChildPositions();
