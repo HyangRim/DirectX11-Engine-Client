@@ -102,6 +102,8 @@ bool AlphaAnimAttackState::CanTransitionTo(AnimationStateType _nextState)
     case AnimationStateType::Trace:
     case AnimationStateType::BaseAttack:
     case AnimationStateType::Death:
+    case AnimationStateType::Run:
+    case AnimationStateType::Move:
         return true;
     default:
         return false;

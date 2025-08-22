@@ -50,6 +50,12 @@ void AlphaTrace::Update()
             }
         }
     }
+    else {
+        auto animSM = m_owner->GetAnimationStateMachine();
+        if (animSM) {
+            animSM->ChangeState(AnimationStateType::Trace);
+        }
+    }
 }
 
 void AlphaTrace::StartTrace()

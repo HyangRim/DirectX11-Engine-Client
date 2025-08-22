@@ -50,9 +50,11 @@ bool AlphaTraceState::CanTransitionTo(MonsterStateType newState)
     {
     case MonsterStateType::Attack:
     case MonsterStateType::Death:
-    case MonsterStateType::Trace:
     case MonsterStateType::Wait:
         return true;
+
+    case MonsterStateType::Trace:
+        return false;
     default:
         return false;
     }

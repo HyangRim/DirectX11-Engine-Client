@@ -2,7 +2,7 @@
 #include "WolfAnimRunState.h"
 
 WolfAnimRunState::WolfAnimRunState()
-    : AnimationState(AnimationStateType::Move)
+    : AnimationState(AnimationStateType::Run)
 {
 }
 

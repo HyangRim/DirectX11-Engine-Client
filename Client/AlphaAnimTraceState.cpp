@@ -34,6 +34,7 @@ void AlphaAnimTraceState::Update(shared_ptr<ModelAnimator> _animator)
         wstring currentAnimTag = _animator->GetCurrentAnimationTag();
         if (currentAnimTag == L"Run")
         {
+            //cout << "Run애니메이션 재생중...\n";
             // Wait 애니메이션이 정상적으로 재생 중
             // 필요시 추가 로직 구현
         }

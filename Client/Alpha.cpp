@@ -170,9 +170,7 @@ void Alpha::InitAlphaAnimation()
 	vector<wstring> runAnims = { L"Run" };
 	vector<float> runAnimsDurations;
 	runAnimsDurations.push_back(animator->GetAnimationDuration(L"Run"));
-	animator->CreateSequence(L"Alpha_Run_Sequence", runAnims, runAnimsDurations, true);
-
-
+	animator->CreateSequence(L"Run", runAnims, runAnimsDurations, true);
 
 	// 알파 공격모션 1
 	vector<wstring> atk1Anims = { L"Atk1" };

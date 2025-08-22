@@ -38,7 +38,7 @@ void AlphaBaseAttack::Update()
             cout << "알파 Attack State 완료!" << endl;
             m_isAttackComplete = true;
         }
-        else if (distance >= 10.f)
+        else if (distance >= 7.5f)
         {
             m_isAttackComplete = true;
             m_owner->GetMonsterStateMachine()->ChangeState(MonsterStateType::Trace);
