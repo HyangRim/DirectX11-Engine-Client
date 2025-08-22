@@ -66,6 +66,9 @@ void AnimationStateMachine::Update()
 
 void AnimationStateMachine::PrintCurState()
 {
+    if (GetGameObject()->GetName().compare(L"Alpha") != 0)
+        return;
+
     if (INPUT->GetButtonDown(KEY_TYPE::A))
     {
         switch (m_currentState->GetType())
@@ -87,6 +90,9 @@ void AnimationStateMachine::PrintCurState()
             break;
         case AnimationStateType::Wait:
             cout << "AnimationCurState : Wait 상태\n";
+            break;
+        case AnimationStateType::Trace:
+            cout << "AnimationCurState : Trace 상태\n";
             break;
         } 
     }

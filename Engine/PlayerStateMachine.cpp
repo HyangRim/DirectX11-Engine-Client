@@ -62,7 +62,7 @@ void PlayerStateMachine::Start()
 
 void PlayerStateMachine::Update()
 {
-    PrintCurState();
+    //PrintCurState();
     ProcessInput();
    
     if (m_currentState)

@@ -39,12 +39,14 @@ void AlphaBaseAttack::Update()
             cout << "알파 Attack State 완료!" << endl;
             m_isAttackComplete = true;
         }
-        else if (distance >= 7.5f)
+        else if (distance >= 10.f)
         {
-            m_isAttackComplete = true;
-            m_owner->GetMonsterStateMachine()->ChangeState(MonsterStateType::Trace);
-            m_owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::Trace);
+            cout << "공격범위 벗어남 추적으로 변경\n";
+            m_isAttackComplete = true; 
 
+            m_owner->GetMonsterStateMachine()->ChangeState(MonsterStateType::Trace);   
+            m_owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::Trace);
+                
             return;
         }
         else

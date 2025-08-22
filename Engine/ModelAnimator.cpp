@@ -62,6 +62,16 @@ void ModelAnimator::UpdateCurrentAnimation()
 
     if (!currentAnim) return;
 
+    if (GetGameObject()->GetName().compare(L"Alpha") == 0)
+    {
+        wstring name = currentAnim->m_name;
+
+        string n(name.begin(), name.end());
+
+        if (INPUT->GetButtonDown(KEY_TYPE::S))
+            cout << "현재 애니메이션 : " << n << endl;
+    }
+
     float timePerFrame = 1.0f / (currentAnim->m_frameRate * desc.m_curr.m_speed);
     if (desc.m_curr.m_sumTime >= timePerFrame)
     {

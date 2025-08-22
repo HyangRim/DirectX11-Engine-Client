@@ -27,7 +27,7 @@ public:
 private:
     void HandleStateChangeRequest(shared_ptr<EventData> eventData);
     void ChangeStateImmediate(MonsterStateType newState);
-
+    void PrintCurState();
 private:
     unordered_map<MonsterStateType, shared_ptr<MonsterState>> m_states;
     shared_ptr<MonsterState> m_currentState;

@@ -206,8 +206,8 @@ void Alpha::InitAlphaMSM()
 	m_monsterStateMachine->RegisterState(MonsterStateType::Move,	make_shared<AlphaWalkState>());
 	m_monsterStateMachine->RegisterState(MonsterStateType::Death,	make_shared<AlphaDeathState>());
 	m_monsterStateMachine->RegisterState(MonsterStateType::Dying,	make_shared<AlphaDyingState>());
-	m_monsterStateMachine->RegisterState(MonsterStateType::Trace, make_shared<AlphaTraceState>(shared_from_this()));
-	m_monsterStateMachine->RegisterState(MonsterStateType::Attack, make_shared<AlphaAttackState>(shared_from_this()));
+	m_monsterStateMachine->RegisterState(MonsterStateType::Trace,	make_shared<AlphaTraceState>(shared_from_this()));
+	m_monsterStateMachine->RegisterState(MonsterStateType::Attack,	make_shared<AlphaAttackState>(shared_from_this()));
 
 }
 

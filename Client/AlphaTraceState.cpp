@@ -24,7 +24,7 @@ void AlphaTraceState::Enter()
         attackScript->StartTrace();
     }
 
-    cout << "늑대 Trace State 진입\n";
+    cout << "알파 Trace State 진입\n";
 }
 
 void AlphaTraceState::Update()

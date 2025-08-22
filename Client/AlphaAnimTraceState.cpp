@@ -12,7 +12,9 @@ void AlphaAnimTraceState::Enter(shared_ptr<ModelAnimator> _animator)
         return;
     _animator->SetAnimationSpeed(m_playSpeed);
     // Wait 애니메이션 재생
-    _animator->SetAnimationByTag(L"Run", false);
+    //_animator->SetAnimationByTag(L"Run", false);
+
+    _animator->PlaySequence(L"Run");
 
     m_idleTime = 0.0f;
     m_isAnimationStarted = true;
@@ -63,8 +65,9 @@ bool AlphaAnimTraceState::CanTransitionTo(AnimationStateType _nextState)
     case AnimationStateType::BaseAttack:
     case AnimationStateType::Run:
     case AnimationStateType::Dying:
-    case AnimationStateType::Death:
+    case AnimationStateType::Death:   
         return true;
+    case AnimationStateType::Trace:
     case AnimationStateType::Wait:
         return false;  // 자기 자신으로는 전환 불가
     default:

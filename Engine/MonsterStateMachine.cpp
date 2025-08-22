@@ -29,11 +29,37 @@ void MonsterStateMachine::Start()
 void MonsterStateMachine::Update()
 {
     ProcessInput();
-
+    PrintCurState();
     if (m_currentState)
     {
         m_currentState->Update();
         HandleSpecialStateTransitions();
+    }
+}
+
+
+void MonsterStateMachine::PrintCurState()
+{
+    if (GetGameObject()->GetName().compare(L"Alpha") != 0)
+        return;
+
+    if (INPUT->GetButtonDown(KEY_TYPE::A))
+    {
+        switch (m_currentState->GetType())
+        {
+        case MonsterStateType::Move:
+            cout << "MonsterCurState : Run 상태\n";
+            break;
+        case MonsterStateType::Wait:
+            cout << "MonsterCurState : Wait 상태\n";
+            break;
+        case MonsterStateType::Trace:
+            cout << "MonsterCurState : Trace 상태\n";
+            break;
+        case MonsterStateType::Attack:
+            cout << "MonsterCurState : 기본공격 상태\n";
+            break;
+        }
     }
 }
 

@@ -12,8 +12,8 @@ void WolfAnimTraceState::Enter(shared_ptr<ModelAnimator> _animator)
         return;
     _animator->SetAnimationSpeed(m_playSpeed);
     // Wait 애니메이션 재생
-    _animator->SetAnimationByTag(L"Run", false);
-
+    //_animator->SetAnimationByTag(L"Run", false);
+    _animator->PlaySequence(L"Wolf_Run_Sequence");
     m_idleTime = 0.0f;
     m_isAnimationStarted = true;
 

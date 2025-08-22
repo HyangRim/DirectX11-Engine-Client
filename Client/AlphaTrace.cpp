@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "NavMeshAgent.h"
 #include "MonsterStateMachine.h"
+#include "AnimationStateMachine.h"
 
 AlphaTrace::AlphaTrace()
 {
@@ -37,6 +38,7 @@ void AlphaTrace::Update()
 
     if (distance < m_attackRange)
     {
+        cout << "알파 공격 사거리 진입\n";
         // ex) 상태머신의 상태 바꾸기
         // 혹은 콜백/Delegate로 공격동작 시작 호출
         auto msm = m_owner->GetMonsterStateMachine();
@@ -50,12 +52,13 @@ void AlphaTrace::Update()
             }
         }
     }
-    else {
+   /* else {
+        cout << "알파 거리 멀어짐\n";
         auto animSM = m_owner->GetAnimationStateMachine();
         if (animSM) {
             animSM->ChangeState(AnimationStateType::Trace);
         }
-    }
+    }*/
 }
 
 void AlphaTrace::StartTrace()
