@@ -1174,6 +1174,7 @@ void LumiaIsland::CreateItemBoxPanel()
 
 	auto panel = make_shared<UIPanel>();
 	m_itemBox->AddComponent(panel);
+	panel->SetDraggable(true);
 
 	shared_ptr<Material> itemPanelBackGround = RESOURCES->Get<Material>(L"ItemBoxPanel")->Clone();
 	panel->Create(Vec2(200.f, 200.f), Vec2(221, 117), Vec4(0.f), itemPanelBackGround);
@@ -1181,11 +1182,15 @@ void LumiaIsland::CreateItemBoxPanel()
 
 	m_itemBoxSlots.clear();
 
-	const Vec2 SLOT_SIZE(44.f, 26.f);
+	/*const Vec2 SLOT_SIZE(44.f, 26.f);
 	const Vec2 SLOT_SPACING(8.25f, 8.5f);
 
 	Vec2 startPos = Vec2(126.f, 205.f) - Vec2(2 * SLOT_SPACING.x * 0.5f, 4 * SLOT_SPACING.y * 0.5f);
-	startPos += Vec2(SLOT_SPACING.x * 0.5f, SLOT_SPACING.y * 0.5f);
+	startPos += Vec2(SLOT_SPACING.x * 0.5f, SLOT_SPACING.y * 0.5f);*/
+
+	const Vec2 SLOT_SIZE(45, 25);
+	const Vec2 SLOT_SPACING(7, 8);
+	Vec2 startPos = Vec2(33, 52);
 
 	for (int row = 0; row < 2; ++row) {
 		for (int col = 0; col < 4; ++col) {
@@ -1195,6 +1200,7 @@ void LumiaIsland::CreateItemBoxPanel()
 			slotObj->SetName(L"ItemBoxSlot_" + to_wstring(slotIndex));
 
 			auto itemSlot = make_shared<ItemSlot>(nullptr, false);
+			itemSlot->SetParentPanel(m_itemBox);
 			itemSlot->SetSlotType(SLOTTYPE::INVENTORY);
 			slotObj->AddComponent(itemSlot);
 

@@ -80,6 +80,7 @@ void EquipmentPanelUI::CreateEquipmentSlots()
 				startPos.x + col * (slotSize.x + spacing.x),
 				startPos.y + row * (slotSize.y + spacing.y)
 			);
+			itemSlot->SetParentPanel(m_panel);
 			itemSlot->CreateSlot(slotPos, slotSize, slotIndex);
 
 			m_equipmentSlots.push_back(itemSlot);

@@ -111,6 +111,7 @@ void StartScene::CreateLobbyBackGround()
 
 	// UIPanel 컴포넌트 추가
 	m_backPanel->AddComponent(make_shared<UIPanel>());
+	
 	m_backPanel->GetUIPanel()
 		->Create(
 			Vec2(width / 2.f,  height / 2.f),
@@ -119,6 +120,7 @@ void StartScene::CreateLobbyBackGround()
 			RESOURCES->Get<Material>(L"LobbyImage")
 			//nullptr
 		);
+	
 	// Panel Z값 명시적 설정
 	//m_backPanel->GetTransform()->SetPosition(Vec3(0, 0, 0.9f));  // 가장 뒤쪽
 	// 버튼 생성 - Normal과 Hover Material 준비

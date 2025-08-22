@@ -43,23 +43,37 @@ public:
 
     virtual void Update() override;
 
+    //부모 패널 세팅
+    void SetParentPanel(shared_ptr<GameObject> _parent) { m_parentPanel = _parent; }
+
+    //로컬 좌표 세팅
+    void SetLocalPosition(const Vec2& localPos) { m_localPosition = localPos; }
+    const Vec2& GetLocalPosition() const { return m_localPosition; }
+
     // 델리게이트 선언 (슬롯 인덱스와 타입을 전달)
     Delegate::Delegate<int, SLOTTYPE> OnSlotClicked;
     Delegate::Delegate<int, SLOTTYPE> OnSlotRightClicked;
 
+
+    void UpdatePositionFromParent();
+
 private:
-   
     void UpdatePanel();
     void HidePanel();
-
     void UpdateEquipmentSlot();
+  
 
 private:
+    Vec2 m_localPosition = Vec2::Zero;
+
     SLOTTYPE m_slotType;
     shared_ptr<Item> m_item;
     int m_slotIndex = -1;
     bool m_isNeedToShowSlotIndex = false;
     bool m_isSelected = false;
+
+    //이 아이템슬롯을 담는 더 상위 Panel 참고
+    shared_ptr<GameObject> m_parentPanel;
 
     // UI 컴포넌트들
     shared_ptr<UIPanel> m_slotPanel;

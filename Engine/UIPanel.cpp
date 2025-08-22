@@ -71,22 +71,8 @@ void UIPanel::Update()
         }
     }
 
-    //// 자식 요소들의 가시성 업데이트 (weak_ptr 사용)
-    //for (auto it = m_childElements.begin(); it != m_childElements.end();) {
-    //    if (auto child = it->lock()) {
-    //        // 패널이 보이지 않으면 자식들도 숨김
-    //        // 실제로는 Transform의 활성화/비활성화로 처리
-    //        ++it;
-    //    }
-    //    else {
-    //        // 만료된 weak_ptr 제거
-    //        it = m_childElements.erase(it);
-    //    }
-    //}
-
-
-    //m_position.x = GetGameObject()->GetTransform()->GetPosition().x;
-    //m_position.y = GetGameObject()->GetTransform()->GetPosition().y;
+    // 드래그 처리 추가
+    HandleDragInput();
 
     m_rect.left = static_cast<LONG>(m_position.x - m_size.x * 0.5f);
     m_rect.top = static_cast<LONG>(m_position.y - m_size.y * 0.5f);
@@ -249,11 +235,11 @@ shared_ptr<UIPanel> UIPanel::AddPanel(Vec2 localPos, Vec2 size, shared_ptr<Mater
 
     auto childPanelComponent = make_shared<UIPanel>();
     childPanelObj->AddComponent(childPanelComponent);
-
+ 
     // 월드 좌표로 변환하여 버튼 생성
     Vec2 worldPos = LocalToWorldPosition(localPos);
     childPanelComponent->Create(worldPos, size, Vec4(0.f,0.f,0.f,1.f), material);
-
+    childPanelComponent->SetLocalPosition(localPos);
     // 로컬 위치 저장
     //buttonComponent->SetLocalPosition(localPos);
 
@@ -529,8 +515,6 @@ void UIPanel::CreatePanelBackground()
    // m_backgroundMesh->CreateQuad();
     m_backgroundMesh = RESOURCES->Get<Mesh>(L"Quad");
 
-
-
     auto go = GetGameObject();
     go->GetMeshRenderer()->SetMesh(m_backgroundMesh);
     //go->GetMeshRenderer()->SetPass(1);
@@ -542,6 +526,7 @@ void UIPanel::UpdateChildPositions()
     // weak_ptr을 사용하여 안전하게 접근
     Vec2 panelLeftTop = Vec2(m_position.x - m_size.x / 2.f
         , m_position.y - m_size.y / 2.f);
+
 
     for (auto it = m_childElements.begin(); it != m_childElements.end();) {
         if (auto child = it->lock()) {
@@ -559,6 +544,9 @@ void UIPanel::UpdateChildPositions()
             else if (auto d2dText = child->GetD2DText()) {
                 d2dText->UpdatePosition(panelLeftTop);
             }
+            else if (auto uiPanel = child->GetUIPanel()) {
+                uiPanel->UpdatePosition(panelLeftTop);
+            }
 
             ++it;
         }
@@ -567,6 +555,24 @@ void UIPanel::UpdateChildPositions()
             it = m_childElements.erase(it);
         }
     }
+}
+
+void UIPanel::UpdatePosition(const Vec2& parentWorldPos)
+{
+    auto go = m_gameObject.lock();
+    if (!go) return;
+
+    Vec2 newWorldPos;
+    newWorldPos.x = parentWorldPos.x + m_localPosition.x;
+    newWorldPos.y = parentWorldPos.y + m_localPosition.y;
+
+    float height = GRAPHICS->GetViewport().GetHeight();
+    float width = GRAPHICS->GetViewport().GetWidth();
+
+    float x = newWorldPos.x - width / 2;
+    float y = height / 2 - newWorldPos.y;
+
+    go->GetTransform()->SetPosition(Vec3(x, y, go->GetTransform()->GetPosition().z));
 }
 
 Vec2 UIPanel::LocalToWorldPosition(const Vec2& localPos)
@@ -637,4 +643,72 @@ void UIPanel::SetBackgroundMaterial(shared_ptr<Material> material)
     m_backgroundMaterial = material;
     GetGameObject()->GetMeshRenderer()->SetMaterial(m_backgroundMaterial);
     GetGameObject()->GetMeshRenderer()->SetPass(1);
+}
+
+void UIPanel::HandleDragInput()
+{
+    if (!m_isDraggable) return;
+
+    POINT mousePos = INPUT->GetMousePos();
+    Vec2 currentMousePos = Vec2(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
+
+    // 마우스 왼쪽 버튼이 눌렸을 때
+    if (INPUT->GetButtonDown(KEY_TYPE::LBUTTON))
+    {
+        // 패널 영역 내에서 클릭했는지 확인
+        if (Picked(mousePos))
+        {
+            StartDrag(currentMousePos);
+        }
+    }
+    // 드래그 중일 때
+    else if (INPUT->GetButton(KEY_TYPE::LBUTTON) && m_isDragging)
+    {
+        UpdateDrag(currentMousePos);
+    }
+    // 마우스 버튼을 뗐을 때
+    else if (INPUT->GetButtonUp(KEY_TYPE::LBUTTON) && m_isDragging)
+    {
+        EndDrag();
+    }
+}
+
+void UIPanel::StartDrag(Vec2 mousePos)
+{
+    m_isDragging = true;
+    m_dragStartPos = mousePos;
+    m_panelStartPos = m_position;
+}
+
+void UIPanel::UpdateDrag(Vec2 mousePos)
+{
+    if (!m_isDragging) return;
+
+    // 마우스 이동량 계산
+    Vec2 mouseDelta = mousePos - m_dragStartPos;
+
+    // 새로운 패널 위치 계산
+    Vec2 newPosition = m_panelStartPos + mouseDelta;
+
+    // 화면 경계 제한 (선택사항)
+    float viewportWidth = GRAPHICS->GetViewport().GetWidth();
+    float viewportHeight = GRAPHICS->GetViewport().GetHeight();
+
+    // 패널이 화면 밖으로 나가지 않도록 제한
+    float halfWidth = m_size.x * 0.5f;
+    float halfHeight = m_size.y * 0.5f;
+
+    newPosition.x = max(halfWidth, min(viewportWidth - halfWidth, newPosition.x));
+    newPosition.y = max(halfHeight, min(viewportHeight - halfHeight, newPosition.y));
+
+    // 위치 업데이트
+    SetPosition(newPosition);
+    m_position = newPosition;
+
+    UpdateChildPositions();
+}
+
+void UIPanel::EndDrag()
+{
+    m_isDragging = false;
 }

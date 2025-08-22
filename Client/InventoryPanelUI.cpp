@@ -69,7 +69,8 @@ void InventoryPanelUI::CreateInventorySlots()
 	int slotsY = 2;
 	Vec2 slotSize = Vec2(46, 28);
 	Vec2 spacing = Vec2(5, 5);
-	Vec2 startPos = Vec2(960.f - (252 / 2.f) + 23, (768 - 57) - (62 / 2.f) + 14); // 패널 내 시작 위치
+	//Vec2 startPos = Vec2(960.f - (252 / 2.f) + 23, (768 - 57) - (62 / 2.f) + 14); // 패널 내 시작 위치
+	Vec2 startPos = Vec2(46 + 2, 14 + 2);
 	Vec2 panelSize = Vec2(252, 62);
 
 	for (int row = 0; row < slotsY; row++)
@@ -100,6 +101,7 @@ void InventoryPanelUI::CreateInventorySlots()
 				startPos.x + col * (slotSize.x + spacing.x),
 				startPos.y + row * (slotSize.y + spacing.y)
 			);
+			itemSlot->SetParentPanel(m_panel);
 			itemSlot->CreateSlot(slotPos, slotSize, slotIndex);
 
 			m_inventorySlots.push_back(itemSlot);

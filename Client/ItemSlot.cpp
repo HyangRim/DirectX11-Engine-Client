@@ -21,19 +21,21 @@ void ItemSlot::CreateSlot(Vec2 localPos, Vec2 size, int slotIndex)
     m_slotSize = size;
 
     // 기본 슬롯 패널 생성
-    m_slotObject = make_shared<GameObject>();
-    m_slotObject->SetName(L"ItemSlot_" + to_wstring(slotIndex));
+    //m_slotObject = make_shared<GameObject>();
+    //m_slotObject->SetName(L"ItemSlot_" + to_wstring(slotIndex));
 
-    m_slotObject->AddComponent(make_shared<UIPanel>()); 
+    //m_slotObject->AddComponent(make_shared<UIPanel>()); 
 
-    m_slotPanel = m_slotObject->GetUIPanel();
+    //m_slotPanel = m_slotObject->GetUIPanel();
+
+    m_slotPanel = m_parentPanel->GetUIPanel()->AddPanel(localPos, size, nullptr, L"SlotPanel" + to_wstring(slotIndex));
 
    /* if(m_slotType == SLOTTYPE::INVENTORY)
          m_slotPanel->Create(localPos, size, Vec4(0.f, 0.f, 0.f, 0.5f), nullptr);
     else
          m_slotPanel->Create(localPos, size, Vec4(0.f), RESOURCES->Get<Material>(L"Img_Item_Slot_Common")->Clone());*/
 
-    m_slotPanel->Create(localPos, size, Vec4(0.f, 0.f, 0.f, 0.5f), nullptr);
+    //m_slotPanel->Create(localPos, size, Vec4(0.f, 0.f, 0.f, 0.5f), nullptr);
 
     if (m_isNeedToShowSlotIndex)
     {
@@ -50,13 +52,31 @@ void ItemSlot::CreateSlot(Vec2 localPos, Vec2 size, int slotIndex)
         );
     }
 
-    Vec3 panelPos = m_slotPanel->GetGameObject()->GetTransform()->GetPosition();
-    panelPos.z -= 0.01;
-    m_slotPanel->GetGameObject()->GetTransform()->SetPosition(panelPos);
+    //Vec3 panelPos = m_slotPanel->GetGameObject()->GetTransform()->GetPosition();
+    //panelPos.z -= 0.01;
+    //m_slotPanel->GetGameObject()->GetTransform()->SetPosition(panelPos);
 
-    // Scene에 추가
-    CURSCENE->AddUIObject(m_slotObject, true);
-    CURSCENE->RegisterUIChild(m_slotObject);
+    //// Scene에 추가
+    //CURSCENE->AddUIObject(m_slotObject, true);
+    //CURSCENE->RegisterUIChild(m_slotObject);
+
+    // ★ 중요: 부모 UIPanel의 자식으로 Transform 설정
+    //if (m_parentPanel) {
+    //    //m_slotObject->GetTransform()->SetParent(m_parentPanel->GetTransform());
+
+    //    // 부모 UIPanel의 자식 컨테이너에도 등록
+    //    auto& childElements = const_cast<vector<weak_ptr<GameObject>>&>(m_parentPanel->GetUIPanel()->GetChildElements());
+    //    childElements.push_back(m_slotObject);
+
+    //    // Scene에는 자식으로 등록
+    //    CURSCENE->AddUIObject(m_slotObject, false);  // false = 자식
+    //    CURSCENE->RegisterUIChild(m_slotObject);
+    //}
+    //else {
+    //    // 기존 방식
+    //    CURSCENE->AddUIObject(m_slotObject, true);
+    //    CURSCENE->RegisterUIChild(m_slotObject);
+    //}
 
     UpdateSlotUI();
 }
@@ -214,14 +234,7 @@ void ItemSlot::Update()
 {
     Super::Update();
 
-    // 우클릭 처리
-    if (INPUT->GetButtonDown(KEY_TYPE::RBUTTON))
-    {
-        if (m_slotButton && m_slotButton->Picked(INPUT->GetMousePos()))
-        {
-            
-        }
-    }
+    UpdatePositionFromParent();
 }
 
 void ItemSlot::SetSelected(bool selected)
@@ -230,4 +243,13 @@ void ItemSlot::SetSelected(bool selected)
     {
         m_isSelected = selected;
     }
+}
+
+void ItemSlot::UpdatePositionFromParent()
+{
+    if (!m_parentPanel || !m_slotPanel) return;
+
+    // 부모 패널의 월드 위치를 기반으로 새로운 위치 계산
+    Vec2 newWorldPos = m_parentPanel->GetUIPanel()->LocalToWorldPosition(m_localPosition);
+    m_slotPanel->SetPosition(newWorldPos);
 }

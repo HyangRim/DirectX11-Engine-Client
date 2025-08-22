@@ -73,6 +73,7 @@ void CraftListPanelUI::CreatePanels()
 
     auto panel = make_shared<UIPanel>();
     m_panel->AddComponent(panel);
+ 
 
     // 제작 목록 패널 위치와 크기 설정 (화면 왼쪽)
     Vec2 panelPos = Vec2(150.f, 400.f);
@@ -109,7 +110,8 @@ void CraftListPanelUI::CreateCraftSlots()
     Vec2 panelSize = m_panel->GetUIPanel()->GetSize();
     Vec2 slotSize = Vec2(46, 28);
     Vec2 spacing = Vec2(5, 5);
-    Vec2 startPos = Vec2(960.f - (252 / 2.f) + 23, (768 - 57 - 75) - (62 / 2.f) + 14); // 패널 내 시작 위치
+    //Vec2 startPos = Vec2(960.f - (252 / 2.f) + 23, (768 - 57 - 75) - (62 / 2.f) + 14); // 패널 내 시작 위치
+    Vec2 startPos = Vec2(23, 14);
 
     for (int i = 0; i < m_craftableRecipes.size(); i++)
     {
@@ -128,6 +130,7 @@ void CraftListPanelUI::CreateCraftSlots()
             startPos.x + (i%slotsX) * (slotSize.x + spacing.x),
             startPos.y + (i/slotsX) * (slotSize.y + spacing.y)
         );
+        craftSlot->SetParentPanel(m_panel);
         craftSlot->CreateSlot(slotPos, slotSize, i);
 
         // 클릭 이벤트 등록
