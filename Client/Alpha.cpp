@@ -7,16 +7,25 @@
 #include "AlphaAnimDyingState.h"
 #include "AlphaAnimWaitState.h"
 #include "AlphaAnimWalkState.h"
+#include "AlphaAnimTraceState.h"
+#include "AlphaAnimAttackState.h"
 
 #include "AlphaAppearState.h"
 #include "AlphaDeathState.h"
 #include "AlphaDyingState.h"
 #include "AlphaWaitState.h"
 #include "AlphaWalkState.h"
+#include "AlphaTraceState.h"
+#include "AlphaAttackState.h"
 
+#include "AlphaTrace.h"
+#include "AlphaBaseAttack.h"
 #include "AlphaSkill.h"
 
 #include "MonsterStateMachine.h"
+
+#include "SkillObject.h"
+#include "Player.h"
 
 Alpha::Alpha(shared_ptr<Shader> _shader)
 	: Super(_shader)
@@ -68,6 +77,28 @@ void Alpha::OnCollision(shared_ptr<GameObject> _other)
 
 void Alpha::OnCollisionEnter(shared_ptr<GameObject> _other)
 {
+	shared_ptr<GameObject> chaseTarget = nullptr;
+	// 만약 _other가 Player라면 (직접 충돌)
+	if (dynamic_pointer_cast<Player>(_other)) {
+		chaseTarget = _other;
+	}
+	// 만약 _other가 스킬 오브젝트라면, owner를 찾아서 Player를 추적
+	else if (auto skillObj = dynamic_pointer_cast<SkillObject>(_other)) {
+		if (skillObj->GetOwner()) {
+			chaseTarget = skillObj->GetOwner();
+		}
+	}
+
+	// 기타 예외 (추가 오브젝트 타입들은 필요시 확장)
+	if (chaseTarget) {
+		static_pointer_cast<AlphaTraceState>(m_monsterStateMachine->GetState(MonsterStateType::Trace))->SetOtherObject(chaseTarget);
+		static_pointer_cast<AlphaAttackState>(m_monsterStateMachine->GetState(MonsterStateType::Attack))->SetOtherObject(chaseTarget);
+
+		GetComponent<AlphaBaseAttack>()->SetTarget(chaseTarget);
+
+		m_monsterStateMachine->ChangeState(MonsterStateType::Trace);
+		m_animationStateMachine->ChangeState(AnimationStateType::Trace);
+	}
 }
 
 void Alpha::OnCollisionExit(shared_ptr<GameObject> _other)
@@ -110,6 +141,8 @@ void Alpha::InitAlphaAnimation()
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Move, make_shared<AlphaAnimWalkState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Death, make_shared<AlphaAnimDeathState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Dying, make_shared<AlphaAnimDyingState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Trace, make_shared<AlphaAnimTraceState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::BaseAttack, make_shared<AlphaAnimAttackState>());
 
 	auto animator = GetModelAnimator();
 
@@ -133,6 +166,33 @@ void Alpha::InitAlphaAnimation()
 	animator->CreateSequence(L"Dying", dying, dyingDuration, true);
 
 
+	// 알파 달리기. 
+	vector<wstring> runAnims = { L"Run" };
+	vector<float> runAnimsDurations;
+	runAnimsDurations.push_back(animator->GetAnimationDuration(L"Run"));
+	animator->CreateSequence(L"Alpha_Run_Sequence", runAnims, runAnimsDurations, true);
+
+
+
+	// 알파 공격모션 1
+	vector<wstring> atk1Anims = { L"Atk1" };
+	vector<float> atk1AnimsDurations;
+	atk1AnimsDurations.push_back(animator->GetAnimationDuration(L"Atk1"));
+	animator->CreateSequence(L"Alpha_Atk1_Sequence", atk1Anims, atk1AnimsDurations, false);
+
+	// 알파 공격모션 2
+	vector<wstring> atk2Anims = { L"Atk2" };
+	vector<float> atk2AnimsDurations;
+	atk2AnimsDurations.push_back(animator->GetAnimationDuration(L"Atk2"));
+	animator->CreateSequence(L"Alpha_Atk2_Sequence", atk2Anims, atk2AnimsDurations, false);
+
+
+	// 알파 스킬모션
+	vector<wstring> skillAnims = { L"Skill2"};
+	vector<float> skillAnimsDurations;
+	skillAnimsDurations.push_back(animator->GetAnimationDuration(L"Skill2"));
+	animator->CreateSequence(L"Alpha_Skill_Sequence", skillAnims, skillAnimsDurations, false);
+
 	//// 알파 등장 시퀀스. 
 	//vector<wstring> skill1 = { L"Skill1ready", L"Skill1atk" };
 	//animator->CreateSequence(L"Alpha_Skill1_Sequence", skill1, false);
@@ -148,6 +208,9 @@ void Alpha::InitAlphaMSM()
 	m_monsterStateMachine->RegisterState(MonsterStateType::Move,	make_shared<AlphaWalkState>());
 	m_monsterStateMachine->RegisterState(MonsterStateType::Death,	make_shared<AlphaDeathState>());
 	m_monsterStateMachine->RegisterState(MonsterStateType::Dying,	make_shared<AlphaDyingState>());
+	m_monsterStateMachine->RegisterState(MonsterStateType::Trace, make_shared<AlphaTraceState>(shared_from_this()));
+	m_monsterStateMachine->RegisterState(MonsterStateType::Attack, make_shared<AlphaAttackState>(shared_from_this()));
+
 }
 
 void Alpha::InitAlphaComponent()
@@ -161,6 +224,15 @@ void Alpha::InitAlphaComponent()
 	m_itembox = make_shared<ItemBox>();
 
 	//m_skill = make_shared<AlphaSkill>(shared_from_this());
+
+	//행동 스크립트? 컴포넌트?
+	auto attackScript = make_shared<AlphaBaseAttack>();
+	attackScript->SetOwner(shared_from_this());
+	AddComponent(attackScript);
+
+	auto traceScript = make_shared<AlphaTrace>();
+	traceScript->SetOwner(shared_from_this());
+	AddComponent(traceScript);
 
 	AddComponent(m_collider);
 	AddComponent(m_rigidbody);

@@ -9,7 +9,7 @@
 #include "WolfTrace.h"
 
 WolfTraceState::WolfTraceState(shared_ptr<GameObject> wolf)
-    :Super(MonsterStateType::Wait)
+    :Super(MonsterStateType::Trace)
     ,m_wolf(wolf)
 {
 

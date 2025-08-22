@@ -3,7 +3,7 @@
 #include "ModelAnimator.h"
 
 WolfAnimAttackState::WolfAnimAttackState()
-    : AnimationState(AnimationStateType::Appear)
+    : AnimationState(AnimationStateType::BaseAttack)
 {
 }
 

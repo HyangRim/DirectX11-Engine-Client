@@ -241,7 +241,7 @@ void Nicky::InitNickyComponent()
 	AddComponent(m_rigidbody);
 	AddComponent(m_navAgent);
 	AddComponent(m_playerStateMachine);
-	//AddComponent(make_shared<FogOfWar>());
+	AddComponent(make_shared<FogOfWar>());
 
 	////PlayerStateMachine 객체가 준비된 이후에 Delegate 등록
 	//m_playerStateMachine->OnSkillUsed += [this](int skillIndex) {

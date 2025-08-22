@@ -19,7 +19,19 @@ void BiancaRunState::Enter()
 
 void BiancaRunState::Update()
 {
+    m_stepSoundTime += DT;
 
+    if (m_stepSoundTime > 0.32f) {
+        if (leftStep) {
+            SOUND->PlaySound(L"SFX/footstepAsphalt_s1.wav", 14, 0.5f);
+            leftStep = false;
+        }
+        else {
+            SOUND->PlaySound(L"SFX/footstepAsphalt_s2.wav", 14, 0.5f);
+            leftStep = true;
+        }
+        m_stepSoundTime = 0.f;
+    }
 }
 
 void BiancaRunState::Exit()
