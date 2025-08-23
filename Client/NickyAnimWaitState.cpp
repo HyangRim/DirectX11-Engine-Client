@@ -58,6 +58,13 @@ void NickyAnimWaitState::Exit(shared_ptr<ModelAnimator> animator)
 
 bool NickyAnimWaitState::CanTransitionTo(AnimationStateType nextState)
 {
+    cout << "다음타입 : " << (int)nextState << endl;
+
+    if (nextState == AnimationStateType::Run)
+    {
+        int a = 0;
+    }
+
     // Wait 상태에서는 대부분의 상태로 전환 가능
     switch (nextState)
     {
@@ -69,7 +76,6 @@ bool NickyAnimWaitState::CanTransitionTo(AnimationStateType nextState)
     case AnimationStateType::Charging:
     case AnimationStateType::Run:
     case AnimationStateType::Craft:
-
         return true;
     case AnimationStateType::Wait:
         return false;  // 자기 자신으로는 전환 불가

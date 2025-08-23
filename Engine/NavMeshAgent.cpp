@@ -45,7 +45,7 @@ void NavMeshAgent::Update()
     if (m_state == NavMeshAgentState::Moving)
     {
         UpdateMovement();
-        //UpdateAnimation();
+        UpdateAnimation();
     }
 }
 
@@ -74,7 +74,7 @@ void NavMeshAgent::Stop()
     m_state = NavMeshAgentState::Idle;
     m_path.clear();
     m_currentPathIndex = 0;
-   // UpdateAnimation();
+    //UpdateAnimation();
 }
 
 void NavMeshAgent::UpdateMovement()

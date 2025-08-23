@@ -309,6 +309,12 @@ void ModelAnimator::StopSequence()
 
 void ModelAnimator::ResetToWaitAnimation()
 {
+    if (GetGameObject()->GetName().compare(L"Nicky") == 0)
+    {
+        int a = 0;
+    }
+
+
     auto waitIt = m_tagToIndex.find(L"Wait");
     if (waitIt != m_tagToIndex.end())
     {

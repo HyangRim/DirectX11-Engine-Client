@@ -107,37 +107,37 @@ void AnimationStateMachine::PrintCurState()
 void AnimationStateMachine::ChangeState(AnimationStateType newState)
 {
     // ============== 이벤트 매니저 이전 ================ //
-    //if (!CanChangeState(newState))
-    //    return;
+    if (!CanChangeState(newState))
+        return;
 
-    //if (m_animator == nullptr) {
-    //    auto gameObject = GetGameObject();
-    //    if (gameObject)
-    //    {
-    //        m_animator = gameObject->GetModelAnimator();
-    //    }
-    //}
+    if (m_animator == nullptr) {
+        auto gameObject = GetGameObject();
+        if (gameObject)
+        {
+            m_animator = gameObject->GetModelAnimator();
+        }
+    }
 
-    //// 현재 상태 종료
-    //if (m_currentState)
-    //{
-    //    m_currentState->Exit(m_animator);
-    //}
+    // 현재 상태 종료
+    if (m_currentState)
+    {
+        m_currentState->Exit(m_animator);
+    }
 
-    //// 새 상태 시작
-    //m_currentState = m_states[newState];
-    //if (m_currentState)
-    //{
-    //    m_currentState->Enter(m_animator);
-    //}
+    // 새 상태 시작
+    m_currentState = m_states[newState];
+    if (m_currentState)
+    {
+        m_currentState->Enter(m_animator);
+    }
     // ============== 이벤트 매니저 이전 ================ //
 
-    auto eventData = make_shared<AnimationStateChangeEventData>(
+   /* auto eventData = make_shared<AnimationStateChangeEventData>(
         EventType::ANIMATION_STATE_CHANGE_REQUEST,
         GetGameObject(),
         newState);
 
-    EVENT->QueueEvent(eventData);
+    EVENT->QueueEvent(eventData);*/
 }
 
 bool AnimationStateMachine::CanChangeState(AnimationStateType newState)

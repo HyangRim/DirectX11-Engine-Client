@@ -110,29 +110,29 @@ void PlayerStateMachine::OnDestroy()
 void PlayerStateMachine::ChangeState(PlayerStateType newState)
 {
     //=======================이벤트 매니저 이전 ===========================//
-    //if (!CanChangeState(newState))
-    //    return;
+    if (!CanChangeState(newState))
+        return;
 
-    //// 현재 상태 종료
-    //if (m_currentState)
-    //{
-    //    m_currentState->Exit();
-    //}
+    // 현재 상태 종료
+    if (m_currentState)
+    {
+        m_currentState->Exit();
+    }
 
-    //// 새 상태 시작
-    //m_currentState = m_states[newState];
-    //if (m_currentState)
-    //{
-    //    m_currentState->Enter();
-    //}
+    // 새 상태 시작
+    m_currentState = m_states[newState];
+    if (m_currentState)
+    {
+        m_currentState->Enter();
+    }
     //=======================이벤트 매니저 이전 ===========================//
 
-    auto eventData = make_shared<PlayerStateChangeEventData>(
+   /* auto eventData = make_shared<PlayerStateChangeEventData>(
         EventType::PLAYER_STATE_CHANGE_REQUEST,
         GetGameObject(),
         newState);
 
-    EVENT->QueueEvent(eventData);
+    EVENT->QueueEvent(eventData);*/
 }
 
 bool PlayerStateMachine::CanChangeState(PlayerStateType newState)
