@@ -19,6 +19,12 @@ private:
     float m_elapsedTime = 0.f;
     shared_ptr<GameObject> m_coffin;
     shared_ptr<Shader> m_shader;
+    shared_ptr<Player> m_player;
+
+private:
+
+    float m_skillDuration = (101.f / 25.f) / 2.f;
+    float m_skillTimer = 0.f;
 
 
 private:

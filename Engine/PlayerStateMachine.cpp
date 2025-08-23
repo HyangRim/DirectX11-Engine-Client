@@ -62,7 +62,7 @@ void PlayerStateMachine::Start()
 
 void PlayerStateMachine::Update()
 {
-    //PrintCurState();
+    PrintCurState();
     ProcessInput();
    
     if (m_currentState)
@@ -196,6 +196,11 @@ void PlayerStateMachine::ProcessInput()
         //cout << "W 스킬 중 이동 금지\n";
         return;
     }
+    if (((GetCurrentState() == PlayerStateType::Counter)))
+    {
+        cout << "카운터 공격 중 이동금지\n";
+        return;
+    }
 
 
 
@@ -216,7 +221,7 @@ void PlayerStateMachine::ProcessInput()
         // 우클릭으로 공격 대상 피킹
         auto attackTarget = CURSCENE->GetObjectManager()->PickObjectForAttack(GetGameObject());
 
-        cout << "BaseAttackDelay : " << m_baseAttackDelayDuration << endl;
+        //cout << "BaseAttackDelay : " << m_baseAttackDelayDuration << endl;
         if (attackTarget && m_baseAttackDelay <= m_baseAttackDelayDuration)
         {
             m_baseAttackDelayDuration = 0.f;
@@ -272,6 +277,7 @@ void PlayerStateMachine::ProcessInput()
     // NavMeshAgent 상태 지속적 모니터링 (이동 완료 감지용)
     if (navMeshAgent->HasReachedDestination() && IsInState(PlayerStateType::Run))
     {
+
         ChangeState(PlayerStateType::Wait);
         m_animationStateMachine->ChangeState(AnimationStateType::Wait);
     }
@@ -444,11 +450,11 @@ void PlayerStateMachine::HandleSpecialStateTransitions()
     // W 스킬 완료 후 Wait 상태로 전환
     else if (GetCurrentState() == PlayerStateType::Skill_2)
     {
-        if (m_currentState->CanTransitionTo(PlayerStateType::Wait))
+        /*if (m_currentState->CanTransitionTo(PlayerStateType::Wait))
         {
             ChangeState(PlayerStateType::Wait);
             m_animationStateMachine->ChangeState(AnimationStateType::Wait);
-        }
+        }*/
     }
     // E 스킬 완료 후 Wait 상태로 전환
     else if (GetCurrentState() == PlayerStateType::Skill_3)
@@ -482,6 +488,19 @@ void PlayerStateMachine::HandleSpecialStateTransitions()
             m_animationStateMachine->ChangeState(AnimationStateType::Wait);
         }
     }
+
+    else if (GetCurrentState() == PlayerStateType::Counter)
+    {
+        if (m_currentState->CanTransitionTo(PlayerStateType::Wait))
+        {
+            cout << "Counter 상태 완료 - Wait로 전환" << endl;
+            auto gameObject = GetGameObject();
+            auto navMeshAgent = gameObject->GetFixedComponent<NavMeshAgent>(ComponentType::NavMeshAgent);
+            navMeshAgent->Stop();
+            ChangeState(PlayerStateType::Wait);
+            m_animationStateMachine->ChangeState(AnimationStateType::Wait);
+        }
+    }
 }
 
 void PlayerStateMachine::PrintCurState()
@@ -507,6 +526,12 @@ void PlayerStateMachine::PrintCurState()
             break;
         case PlayerStateType::Wait:
             cout << "PlayerCurstate : Wait 상태\n";
+            break;
+        case PlayerStateType::Counter:
+            cout << "PlayerCurstate : Counter 상태\n";
+            break;
+        case PlayerStateType::BaseAttack:
+            cout << "PlayerCurstate : BaseAttack 상태\n";
             break;
         }
     }

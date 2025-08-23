@@ -85,6 +85,7 @@ void NickyAnimRState::Exit(shared_ptr<ModelAnimator> animator)
         if (i == 2) continue;
         m_sequenceDurations[i] *= m_playSpeed;
     }
+    animator->SetSequenceAnimationDurations(L"Skill_4_Sequence", m_sequenceDurations);
 
     m_cachedAnimator.reset();
 }

@@ -12,6 +12,7 @@
 #include "NickyAnimWaitState.h"
 #include "NickyAnimCraftState.h"
 #include "NickyAnimBaseAttackState.h"
+#include "NickyAnimCounterState.h"
 
 #include "NickyQState.h"
 #include "NickyWState.h"
@@ -21,7 +22,7 @@
 #include "NickyWaitState.h"
 #include "NickyCraftState.h"
 #include "NickyBaseAttackState.h"
-
+#include "NickyCounterState.h"
 
 #include "FogOfWar.h"
 
@@ -37,6 +38,7 @@
 #include "PlayerInterface.h"
 
 #include "NickyBaseAttack.h"
+#include "NickyCounter.h"
 
 Nicky::Nicky(shared_ptr<Shader> _defaultShader)
 {
@@ -67,6 +69,9 @@ void Nicky::Update()
 {
 	Super::Update();
 
+	if (m_isAttacked)
+		cout << "현재 공격받은 상태\n";
+
 	if (isStun()) {
 		GetNavMeshAgent()->Stop();
 		return;
@@ -85,14 +90,17 @@ void Nicky::FixedUpdate()
 
 void Nicky::OnCollision(shared_ptr<GameObject> _other)
 {
+
 }
 
 void Nicky::OnCollisionEnter(shared_ptr<GameObject> _other)
 {
+	//SetIsAttacked(true);
 }
 
 void Nicky::OnCollisionExit(shared_ptr<GameObject> _other)
 {
+	//SetIsAttacked(false);
 }
 
 void Nicky::InitNickyModel()
@@ -128,6 +136,8 @@ void Nicky::InitNickyAnimation()
 	m_model->ReadAnimation(L"Skill_02_Guard", L"Nicky/Nicky_Glove_Skill_02_Guard");
 	m_model->ReadAnimation(L"Skill_02_Loop", L"Nicky/Nicky_Glove_Skill_02_Loop");
 
+	m_model->ReadAnimation(L"Skill_02_Counter", L"Nicky/Nicky_Glove_Skill_02_Counter");
+
 	//E
 	m_model->ReadAnimation(L"Skill_03", L"Nicky/Nicky_Glove_Skill_03");
 
@@ -155,6 +165,7 @@ void Nicky::InitNickyAnimation()
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1,		make_shared<NickyAnimQState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Craft,		make_shared<NickyAnimCraftState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::BaseAttack,	make_shared<NickyAnimBaseAttackState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Counter,		make_shared<NickyAnimCounterState>());
 
 
 	auto animator = GetModelAnimator();
@@ -169,8 +180,16 @@ void Nicky::InitNickyAnimation()
 	animator->CreateSequence(L"Skill_1_Sequence", skill1Anims, skill1Durations, false);
 
 	// W 스킬 시퀀스 (Skill_02_Guard -> Skill_02_Loop)
-	vector<wstring> skill2Anims = { L"Skill_02_Guard" };
-	animator->CreateSequence(L"Skill_2_Sequence", skill2Anims, false);
+	vector<wstring> skill2Anims = { L"Skill_02_Guard", L"Skill_02_Loop"};
+	vector<float> skill2Durations;
+	skill2Durations.push_back(animator->GetAnimationDuration(L"Skill_02_Guard"));
+	skill2Durations.push_back(animator->GetAnimationDuration(L"Skill_02_Loop"));
+	animator->CreateSequence(L"Skill_2_Sequence", skill2Anims, skill2Durations, false);
+
+	//W 스킬 카운터
+	vector<wstring> skillCounterAnims = { L"Skill_02_Counter" };
+	animator->CreateSequence(L"Skill_2_Counter_Sequence", skillCounterAnims, false);
+
 
 	// E 스킬 시퀀스 (Skill_03 단일)
 	vector<wstring> skill3Anims = { L"Skill_03" };
@@ -188,6 +207,11 @@ void Nicky::InitNickyAnimation()
 	// 제작모션
 	vector<wstring> craftMotion = { L"Craft" };
 	animator->CreateSequence(L"Craft_Sequence", craftMotion, false);
+
+	//달리기
+	vector<wstring> runMotion = { L"Run" };
+	animator->CreateSequence(L"Run_Sequence", runMotion, true);
+
 }
 
 void Nicky::InitNickyPSM()
@@ -203,11 +227,13 @@ void Nicky::InitNickyPSM()
 	m_playerStateMachine->RegisterState(PlayerStateType::Wait,			make_shared<NickyWaitState>());
 
 	m_playerStateMachine->RegisterState(PlayerStateType::Skill_1,		make_shared<NickyQState>(GetModelAnimator()));
-	m_playerStateMachine->RegisterState(PlayerStateType::Skill_2,		make_shared<NickyWState>(GetModelAnimator()));
+	m_playerStateMachine->RegisterState(PlayerStateType::Skill_2,		make_shared<NickyWState>(GetModelAnimator(), shared_from_this()));
 	m_playerStateMachine->RegisterState(PlayerStateType::Skill_3,		make_shared<NickyEState>(GetModelAnimator()));
 	m_playerStateMachine->RegisterState(PlayerStateType::Skill_4,		make_shared<NickyRState>(GetModelAnimator()));
 	m_playerStateMachine->RegisterState(PlayerStateType::Craft,			make_shared<NickyCraftState>(GetModelAnimator()));
 	m_playerStateMachine->RegisterState(PlayerStateType::BaseAttack,	make_shared<NickyBaseAttackState>(GetModelAnimator(), shared_from_this()));
+	m_playerStateMachine->RegisterState(PlayerStateType::Counter,		make_shared<NickyCounterState>(GetModelAnimator(), shared_from_this()));
+
 
 	m_playerStateMachine->OnSkillUsed += [this](int skillIndex, shared_ptr<GameObject> target) {
 		if (skillIndex >= 0 && skillIndex < (int)m_skills.size() && m_skills[skillIndex])
@@ -236,6 +262,12 @@ void Nicky::InitNickyComponent()
 	attackScript->SetOwner(shared_from_this());
 	attackScript->SetActive(false);
 	AddComponent(attackScript);
+
+	auto counterScript = make_shared<NickyCounter>();
+	counterScript->SetOwner(shared_from_this());
+	counterScript->SetActive(false);
+	AddComponent(counterScript);
+
 	
 	AddComponent(m_collider);
 	AddComponent(m_rigidbody);

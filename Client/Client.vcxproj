@@ -97,9 +97,12 @@
     <ClInclude Include="MonsterBehaviour.h" />
     <ClInclude Include="Nicky.h" />
     <ClInclude Include="NickyAnimBaseAttackState.h" />
+    <ClInclude Include="NickyAnimCounterState.h" />
     <ClInclude Include="NickyAnimCraftState.h" />
     <ClInclude Include="NickyBaseAttack.h" />
     <ClInclude Include="NickyBaseAttackState.h" />
+    <ClInclude Include="NickyCounter.h" />
+    <ClInclude Include="NickyCounterState.h" />
     <ClInclude Include="NickyCraftState.h" />
     <ClInclude Include="NickyERange.h" />
     <ClInclude Include="NickyESkill.h" />
@@ -238,9 +241,12 @@
     <ClCompile Include="MonsterBehaviour.cpp" />
     <ClCompile Include="Nicky.cpp" />
     <ClCompile Include="NickyAnimBaseAttackState.cpp" />
+    <ClCompile Include="NickyAnimCounterState.cpp" />
     <ClCompile Include="NickyAnimCraftState.cpp" />
     <ClCompile Include="NickyBaseAttack.cpp" />
     <ClCompile Include="NickyBaseAttackState.cpp" />
+    <ClCompile Include="NickyCounter.cpp" />
+    <ClCompile Include="NickyCounterState.cpp" />
     <ClCompile Include="NickyCraftState.cpp" />
     <ClCompile Include="NickyERange.cpp" />
     <ClCompile Include="NickyESkill.cpp" />

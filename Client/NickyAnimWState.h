@@ -18,5 +18,7 @@ private:
     bool m_isAnimationStarted = false;
     bool m_isSkillComplete = false;  // 추가: 스킬 완료 플래그
     shared_ptr<ModelAnimator> m_cachedAnimator;  // 추가: 애니메이터 캐싱
+    vector<float> m_sequenceDurations;
+    float m_playSpeed = 2.f;
 };
 

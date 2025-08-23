@@ -41,12 +41,12 @@ void AssimpTool::Start()
 		shared_ptr<Converter> converter = make_shared<Converter>();
 
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Nicky/Nicky_Craft.fbx");
+		converter->ReadAssetFile(L"Nicky/Nicky_Glove_Skill_02_Counter.fbx");
 
 		//Memory ->CustomData;
 		//converter->ExportMaterialData(L"Nicky/NickyESkill_Mesh");
 		//converter->ExportModelData(L"Nicky/NickyESkill_Mesh");
-		converter->ExportAnimationData(L"Nicky/Nicky_Craft.fbx");
+		converter->ExportAnimationData(L"Nicky/Nicky_Glove_Skill_02_Counter");
 		//CustomData -> Memory;
 		
 
@@ -147,15 +147,15 @@ void AssimpTool::Start()
 
 	}*/
 	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
+		/*shared_ptr<Converter> converter = make_shared<Converter>();
 		converter->ReadAssetFile(L"wolf/wolf_appearwait_anim.fbx");
-		converter->ExportAnimationData(L"wolf/wolf_appearwait_anim");
+		converter->ExportAnimationData(L"wolf/wolf_appearwait_anim");*/
 
 	}
 	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
+		/*shared_ptr<Converter> converter = make_shared<Converter>();
 		converter->ReadAssetFile(L"wolf/wolf_appear_anim.fbx");
-		converter->ExportAnimationData(L"wolf/wolf_appear_anim");
+		converter->ExportAnimationData(L"wolf/wolf_appear_anim");*/
 
 	}
 

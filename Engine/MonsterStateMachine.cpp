@@ -40,7 +40,7 @@ void MonsterStateMachine::Update()
 
 void MonsterStateMachine::PrintCurState()
 {
-    if (GetGameObject()->GetName().compare(L"Alpha") != 0)
+    if (GetGameObject()->GetName().compare(L"Nicky") != 0)
         return;
 
     if (INPUT->GetButtonDown(KEY_TYPE::A))

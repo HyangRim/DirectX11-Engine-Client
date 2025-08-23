@@ -214,6 +214,9 @@
     <Filter Include="Scripts\Monster\Alpha\AlphaSkill">
       <UniqueIdentifier>{3b937e8d-2c31-4ad3-86f5-510ff4209d07}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Player\Nicky\NickyCounter">
+      <UniqueIdentifier>{29b5d241-67fe-445d-b363-873125482a58}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -629,6 +632,15 @@
     </ClCompile>
     <ClCompile Include="AlphaAnimSkillState.cpp">
       <Filter>Scripts\Monster\Alpha\AnimState</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyCounterState.cpp">
+      <Filter>Scripts\Player\Nicky\NickyLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyAnimCounterState.cpp">
+      <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
+    </ClCompile>
+    <ClCompile Include="NickyCounter.cpp">
+      <Filter>Scripts\Player\Nicky\NickyCounter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1052,6 +1064,15 @@
     </ClInclude>
     <ClInclude Include="AlphaAnimSkillState.h">
       <Filter>Scripts\Monster\Alpha\AnimState</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyCounterState.h">
+      <Filter>Scripts\Player\Nicky\NickyLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyAnimCounterState.h">
+      <Filter>Scripts\Player\Nicky\NickyAnims</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyCounter.h">
+      <Filter>Scripts\Player\Nicky\NickyCounter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

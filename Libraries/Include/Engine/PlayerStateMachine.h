@@ -13,7 +13,8 @@ enum class PlayerStateType
     Skill_4,
     Craft,
     Die,
-    BaseAttack
+    BaseAttack,
+    Counter,
 };
 class IPlayer;
 

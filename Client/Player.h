@@ -109,7 +109,9 @@ public:
 
     void SetUIManager(weak_ptr<UIManager> _manager) { m_uiManager = _manager; }
 
-
+    void SetIsAttacked(bool _isAttacked) { m_isAttacked = _isAttacked; }
+    bool IsAttacked() { return m_isAttacked; }
+   
 public:
     void AddSkillPoint(int points = 1) { m_status.availableSkillPoints += points; }
     bool HasSkillPoints() const { return m_status.availableSkillPoints > 0; }
@@ -148,7 +150,8 @@ protected:
     //그 이외에 UI들(체력, 경험치 등등) 
     //연동 위해서 필요함. (따로 UI클래스들 만들어야함)
     shared_ptr<HealthBar> m_healthBar;
-    
+   
+    bool m_isAttacked = false;
 
 private:
     float m_isStun = 0.f;

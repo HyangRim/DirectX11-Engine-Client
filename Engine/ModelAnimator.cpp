@@ -62,7 +62,7 @@ void ModelAnimator::UpdateCurrentAnimation()
 
     if (!currentAnim) return;
 
-    if (GetGameObject()->GetName().compare(L"Alpha") == 0)
+    if (GetGameObject()->GetName().compare(L"Nicky") == 0)
     {
         wstring name = currentAnim->m_name;
 
@@ -171,6 +171,9 @@ shared_ptr<Shader> ModelAnimator::GetShader()
 
 void ModelAnimator::SetAnimation(uint32 _animIndex, bool _immediate)
 {
+    
+
+
     if (_animIndex >= m_model->GetAnimationCount())
         return;
 
@@ -220,6 +223,15 @@ void ModelAnimator::SetNextAnimation(uint32 _animIndex, bool _tweenDuration)
 
 void ModelAnimator::SetNextAnimationByTag(const wstring& _tag, bool _tweenDuration)
 {
+    TweenDesc& desc = m_tweenDesc;
+    wstring currentTag = m_indexToTag[desc.m_curr.m_animIndex];
+    shared_ptr<ModelAnimation> currentAnim = m_model->GetAnimationByTag(currentTag);
+    if (currentAnim->m_name.compare(L"Root|Nicky_Glove_run|Base Layer")==0 && _tag.compare(L"wait"))
+    {
+        int a = 0;
+    }
+
+
     auto it = m_tagToIndex.find(_tag);
     if (it != m_tagToIndex.end())
     {

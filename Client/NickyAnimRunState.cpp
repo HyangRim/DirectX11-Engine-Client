@@ -14,6 +14,7 @@ void NickyAnimRunState::Enter(shared_ptr<ModelAnimator> animator)
     // Run 애니메이션 재생
     animator->SetAnimationByTag(L"Run", true);  // 부드러운 전환
     animator->SetAnimationSpeed(2.f);
+    //animator->PlaySequence(L"Run_Sequence");
 
     m_moveTime = 0.0f;
     m_isAnimationStarted = true;

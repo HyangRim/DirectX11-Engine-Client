@@ -39,7 +39,7 @@ void AlphaAnimAttackState::Enter(shared_ptr<ModelAnimator> _animator)
     }
 
 	SOUND->PlaySound(L"Alpha/AlphaOmega_atk01.wav", 2, 0.5f);
-	cout << "알파 Attack 애니메이션 시작." << endl;
+	//cout << "알파 Attack 애니메이션 시작." << endl;
 }
 
 void AlphaAnimAttackState::Update(shared_ptr<ModelAnimator> _animator)
@@ -62,7 +62,7 @@ void AlphaAnimAttackState::Update(shared_ptr<ModelAnimator> _animator)
     {
         // 시퀀스가 끝났으면 완료 플래그 설정
        // m_isAppearComplete = true;
-        cout << "알파 Attack 애니메이션 완료." << endl;
+       // cout << "알파 Attack 애니메이션 완료." << endl;
     }
 }
 
@@ -71,7 +71,7 @@ void AlphaAnimAttackState::Exit(shared_ptr<ModelAnimator> _animator)
     if (!_animator)
         return;
 
-    cout << "알파 Attack 애니메이션 종료 " << endl;
+   // cout << "알파 Attack 애니메이션 종료 " << endl;
 
     // 상태 종료 시 정리
     //m_animTime = 0.0f;

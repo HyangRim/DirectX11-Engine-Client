@@ -4,10 +4,14 @@
 
 #include "ModelAnimator.h"
 
+#include "PlayerStateMachine.h"
+#include "AnimationStateMachine.h"
+
 BiancaWSkill::BiancaWSkill(shared_ptr<Player> _player)
 	: Super(_player, 1)
 {
-	
+	m_player = _player;
+
 	//Bianca Coffin Object
 	m_shader = _player->GetShader();
 	m_skillCooldown = 10.f;
@@ -79,6 +83,18 @@ void BiancaWSkill::PlaySkill()
 
 void BiancaWSkill::Update()
 {
+	m_skillTimer += DT;
+	if (m_skillTimer >= m_skillDuration)
+	{
+		m_player->GetAnimationStateMachine()->ChangeState(AnimationStateType::Wait);
+		m_player->GetPlayerStateMachine()->ChangeState(PlayerStateType::Wait);
+	
+		m_skillTimer = 0.f;
+
+		return;
+	}
+
+
 	if (m_coffin)
 		m_coffin->GetTransform()->SetPosition(m_playerObject->GetTransform()->GetPosition());
 

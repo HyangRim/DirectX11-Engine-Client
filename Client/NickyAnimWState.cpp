@@ -14,8 +14,18 @@ void NickyAnimWState::Enter(shared_ptr<ModelAnimator> animator)
         return;
 
 
-    animator->SetAnimationSpeed(2.f);
+    animator->SetAnimationSpeed(m_playSpeed);
     // 스킬 시퀀스 재생
+
+     //재생속도에 따라 애니메이션 속도들 재설정
+    m_sequenceDurations = animator->GetSequenceAnimationDurations(L"Skill_2_Sequence");
+    for (size_t i = 0; i < m_sequenceDurations.size(); i++)
+    {
+        if (i == 2) continue;
+        m_sequenceDurations[i] /= m_playSpeed;
+    }
+    animator->SetSequenceAnimationDurations(L"Skill_2_Sequence", m_sequenceDurations);
+
     animator->PlaySequence(L"Skill_2_Sequence");
 
 
@@ -57,6 +67,13 @@ void NickyAnimWState::Exit(shared_ptr<ModelAnimator> animator)
     animator->SetAnimationSpeed(1.f);
     cout << "Nicky W 애니메이션 종료 " << endl;
 
+    //재생속도에 따라 애니메이션 속도들 원상복구  
+    for (size_t i = 0; i < m_sequenceDurations.size(); i++)
+    {
+        m_sequenceDurations[i] *= m_playSpeed;
+    }
+    animator->SetSequenceAnimationDurations(L"Skill_2_Sequence", m_sequenceDurations);
+
     // 상태 종료 시 정리
     m_skillTime = 0.0f;
     m_isAnimationStarted = false;
@@ -66,10 +83,26 @@ void NickyAnimWState::Exit(shared_ptr<ModelAnimator> animator)
 
 bool NickyAnimWState::CanTransitionTo(AnimationStateType nextState)
 {
-    // 스킬이 완료되었을 때만 Wait 상태로 전환 가능
-    if (m_isSkillComplete && nextState == AnimationStateType::Wait)
-    {
+    //// 스킬이 완료되었을 때만 Wait 상태로 전환 가능
+    //if (m_isSkillComplete && nextState == AnimationStateType::Wait)
+    //{
+    //    return true;
+    //}
+    //return false;
+
+    if (nextState == AnimationStateType::Counter)
         return true;
+
+    if (!m_isSkillComplete)
+        return false;
+
+    switch (nextState)
+    {
+    case AnimationStateType::Counter:
+    case AnimationStateType::Wait:
+        return true;
+    default:
+        return false;
     }
-    return false;
+
 }

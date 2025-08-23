@@ -19,7 +19,7 @@ void AlphaAnimTraceState::Enter(shared_ptr<ModelAnimator> _animator)
     m_idleTime = 0.0f;
     m_isAnimationStarted = true;
 
-    cout << "알파 Run 애니메이션 재생 시작" << endl;
+    //cout << "알파 Run 애니메이션 재생 시작" << endl;
 }
 
 void AlphaAnimTraceState::Update(shared_ptr<ModelAnimator> _animator)
@@ -48,7 +48,7 @@ void AlphaAnimTraceState::Exit(shared_ptr<ModelAnimator> _animator)
     if (!_animator)
         return;
 
-    cout << "알파 Run 상태 종료 " << endl;
+    //cout << "알파 Run 상태 종료 " << endl;
 
     // 상태 종료 시 정리
     m_idleTime = 0.0f;

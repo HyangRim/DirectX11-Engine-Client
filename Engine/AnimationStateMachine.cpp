@@ -66,7 +66,7 @@ void AnimationStateMachine::Update()
 
 void AnimationStateMachine::PrintCurState()
 {
-    if (GetGameObject()->GetName().compare(L"Alpha") != 0)
+    if (GetGameObject()->GetName().compare(L"Nicky") != 0)
         return;
 
     if (INPUT->GetButtonDown(KEY_TYPE::A))
@@ -85,7 +85,7 @@ void AnimationStateMachine::PrintCurState()
         case AnimationStateType::Skill_4:
             cout << "AnimationCurState : R 스킬 상태\n";
             break;
-        case AnimationStateType::Move:
+        case AnimationStateType::Run:
             cout << "AnimationCurState : Run 상태\n";
             break;
         case AnimationStateType::Wait:
@@ -93,6 +93,12 @@ void AnimationStateMachine::PrintCurState()
             break;
         case AnimationStateType::Trace:
             cout << "AnimationCurState : Trace 상태\n";
+            break;
+        case AnimationStateType::Counter:
+            cout << "AnimationCurState : Counter 상태\n";
+            break;
+        default:
+            cout << "Type : " << (uint32)m_currentState->GetType() << endl;
             break;
         } 
     }
@@ -182,10 +188,10 @@ void AnimationStateMachine::HandleSpecialStateTransitions()
     // W 스킬 완료 후 Wait 상태로 전환
     else if (GetCurrentState() == AnimationStateType::Skill_2)
     {
-        if (m_currentState->CanTransitionTo(AnimationStateType::Wait))
+        /*if (m_currentState->CanTransitionTo(AnimationStateType::Wait))
         {
             ChangeState(AnimationStateType::Wait);
-        }
+        }*/
     }
     // E 스킬 완료 후 Wait 상태로 전환
     else if (GetCurrentState() == AnimationStateType::Skill_3)
@@ -206,6 +212,14 @@ void AnimationStateMachine::HandleSpecialStateTransitions()
 
     // R 스킬 완료 후 Wait 상태로 전환
     else if (GetCurrentState() == AnimationStateType::Craft)
+    {
+        if (m_currentState->CanTransitionTo(AnimationStateType::Wait))
+        {
+            ChangeState(AnimationStateType::Wait);
+        }
+    }
+
+    else if (GetCurrentState() == AnimationStateType::Counter)
     {
         if (m_currentState->CanTransitionTo(AnimationStateType::Wait))
         {

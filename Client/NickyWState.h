@@ -6,7 +6,7 @@ class NickyWState :
     using Super = PlayerState;
 
 public:
-    NickyWState(shared_ptr<ModelAnimator> modelAnimator);
+    NickyWState(shared_ptr<ModelAnimator> modelAnimator, shared_ptr<GameObject> _player);
     ~NickyWState();
 
     virtual void Enter();
@@ -19,6 +19,7 @@ private:
     bool m_isAnimationStarted = false;
     bool m_isSkillComplete = false;  // 추가: 스킬 완료 플래그
 
+    shared_ptr<GameObject> m_player;
     shared_ptr<ModelAnimator> m_modelAnimator;
 
     friend class PlayerStateMachine;

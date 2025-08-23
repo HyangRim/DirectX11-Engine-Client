@@ -56,13 +56,17 @@ void AlphaBaseAttack::Update()
                 m_skillCoolTime = 12.5f;
             }
             else {
+                static_pointer_cast<Player>(m_target)->SetIsAttacked(true);
                 static_pointer_cast<Player>(m_target)->Damaged(static_pointer_cast<Monster>(m_owner)->GetMonsterStatus().adPower);
                 m_owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::BaseAttack);
                 SOUND->PlaySound(L"Wolf/AlphaOmega_atk01.wav", 3, 0.5f);
             }
 
         }
-
+    }
+    else
+    {
+        static_pointer_cast<Player>(m_target)->SetIsAttacked(false);
     }
 }
 

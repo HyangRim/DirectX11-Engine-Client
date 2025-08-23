@@ -19,6 +19,7 @@ enum class AnimationStateType
     Appear,
     Craft,
     Trace,
+    Counter,
 };
 
 class ModelAnimator;
