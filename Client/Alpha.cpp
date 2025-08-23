@@ -58,6 +58,8 @@ void Alpha::Start()
 
 void Alpha::Update()
 {
+	if (m_skill != nullptr)
+		m_skill->Update();
 	Super::Update();
 }
 
@@ -103,6 +105,12 @@ void Alpha::OnCollisionEnter(shared_ptr<GameObject> _other)
 
 void Alpha::OnCollisionExit(shared_ptr<GameObject> _other)
 {
+}
+
+void Alpha::PlaySkill()
+{
+	cout << "Alpha Skill ¹ßµ¿!\n";
+	m_skill->Play();
 }
 
 
@@ -233,6 +241,7 @@ void Alpha::InitAlphaComponent()
 	AddComponent(traceScript);
 
 	auto skillScript = make_shared<AlphaSkill>(shared_from_this());
+	m_skill = skillScript;
 
 	AddComponent(m_collider);
 	AddComponent(m_rigidbody);

@@ -23,8 +23,6 @@ void BiancaESkillCircle::Update()
 void BiancaESkillCircle::LateUpdate()
 {
 	Super::LateUpdate();
-	if (m_damageFlag)
-		m_damageFlag = false;
 }
 
 void BiancaESkillCircle::OnCollision(shared_ptr<GameObject> _other)

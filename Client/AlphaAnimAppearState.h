@@ -17,6 +17,6 @@ private:
     bool m_isAnimationStarted = false;
     bool m_isAppearComplete = false;  // 추가: 스킬 완료 플래그
 
-    float m_playSpeed = 2.f;
+    float m_playSpeed = 1.f;
 };
 

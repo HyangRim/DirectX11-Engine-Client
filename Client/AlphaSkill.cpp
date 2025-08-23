@@ -6,6 +6,16 @@
 
 AlphaSkill::AlphaSkill(shared_ptr<GameObject> _alpha) : m_alpha(_alpha)
 {
+	for (int idx = 0; idx < 5; ++idx) {
+		m_circleObjects[idx] = make_shared<BiancaESkillCircle>();
+
+		m_circleObjects[idx]->GetTransform()->SetScale(Vec3(1.f, 0.03f, 1.f));
+		m_circleObjects[idx]->AddComponent(make_shared<SphereCollider>());
+		m_circleObjects[idx]->GetCollider()->SetOffsetScale(Vec3(1.f, 30.f, 1.f));
+		m_circleObjects[idx]->SetActive(false);
+
+		CURSCENE->Add(m_circleObjects[idx]);
+	}
 }
 
 AlphaSkill::~AlphaSkill()
@@ -14,19 +24,12 @@ AlphaSkill::~AlphaSkill()
 
 void AlphaSkill::Start()
 {
-	for (int idx = 0; idx < 5; ++idx) {
-		m_circleObjects[idx] = make_shared<BiancaESkillCircle>();
-
-		m_circleObjects[idx]->GetTransform()->SetScale(Vec3(1.f, 0.03f, 1.f));
-		m_circleObjects[idx]->AddComponent(make_shared<SphereCollider>());
-		m_circleObjects[idx]->GetCollider()->SetOffsetScale(Vec3(1.f, 30.f, 1.f));
-		m_circleObjects[idx]->SetActive(false);
-	}
 }
 
 void AlphaSkill::Play()
 {
 	m_isActive = true;
+	m_boozer = false;
 	SOUND->PlaySound(L"Alpha/AlphaOmega_skill02_Ready.wav", 22, 0.5f);
 
 	//m_circleObject들 여러 개 배치. 
@@ -38,17 +41,19 @@ void AlphaSkill::Play()
 		float randomAngle = (rand() % 1200 - 600) * 0.1f;
 		float angleRadians = randomAngle * (3.14159f / 180.f);
 		
-		float randomDistance = (rand() % 650) * 0.01f;
+		float randomDistance = 1.5f + (rand() % 851) * 0.01f;  // 1.5~10.0
 
 		Vec3 direction;
 		direction.x = alphalook.x * cos(angleRadians) - alphalook.z * sin(angleRadians);
 		direction.z = alphalook.x * sin(angleRadians) + alphalook.z * cos(angleRadians);
-		direction.y = alphaPosition.y;
 
 		Vec3 finalPos = alphaPosition + direction * randomDistance;
+		finalPos.y = alphaPosition.y;
 
 		m_circleObjects[idx]->GetTransform()->SetPosition(finalPos);
+		cout << idx << " Circle : " << finalPos.x << " " << finalPos.y << " " << finalPos.z << "\n";
 		m_circleObjects[idx]->SetActive(true);
+		m_circleObjects[idx]->DamageFlag(true);
 	}
 }
 
@@ -57,22 +62,29 @@ void AlphaSkill::Update()
 	if (m_isActive && m_skillElapsedTime <= m_skillDuration) {
 		m_skillElapsedTime += DT;
 	}
-	else if(m_isActive && m_skillElapsedTime > m_skillDuration){
+	else if(m_isActive && m_skillElapsedTime > m_skillDuration && (m_skillEffectElapsedTime <= m_skillEffectDuration)){
 		if (!m_boozer) {
 			SOUND->PlaySound(L"Alpha/AlphaOmega_skill02_Spout.wav", 22, 0.5f);
 			unordered_set<shared_ptr<GameObject>> allobjects;
 			for (int idx = 0; idx < 5; ++idx) {
-				m_circleObjects[idx]->DamageFlag(false);
 				auto objects = m_circleObjects[idx]->GetCollisionObjects();
 
 				for (auto& object : objects) {
 					allobjects.insert(object);
 				}
 			}
-			m_boozer = true;
 
+			int damage = static_pointer_cast<Monster>(m_alpha)->GetMonsterStatus().adPower;
 			//여기서 allobject보내서 데미지 주기. 
+			for (auto object : allobjects) {
+				auto player = dynamic_pointer_cast<Player>(object);
+				if (player != nullptr) {
+					player->Damaged(damage * 5);
+					SOUND->PlaySound(L"AlphaOmega_skill02_Hit.wav", 22, 0.5f);
+				}
+			}
 
+			m_boozer = true;
 		}
 		m_skillEffectElapsedTime += DT;
 	}
@@ -83,6 +95,7 @@ void AlphaSkill::Update()
 		m_skillElapsedTime = 0.f;
 
 		for (int idx = 0; idx < 5; ++idx) {
+			m_circleObjects[idx]->DamageFlag(false);
 			m_circleObjects[idx]->SetActive(false);
 		}
 	}

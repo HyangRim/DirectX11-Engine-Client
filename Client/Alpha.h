@@ -21,6 +21,8 @@ public:
     virtual void OnCollisionEnter(shared_ptr<GameObject> _other) override;
     virtual void OnCollisionExit(shared_ptr<GameObject> _other) override;
 
+public:
+    void PlaySkill();
 private:
     void UpdateState();
 
