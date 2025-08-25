@@ -47,8 +47,9 @@ void BiancaBaseAttack::Update()
 		{
 			m_updateTimer = 0.f;
 			m_owner->GetNavMeshAgent()->SetDestination(targetPos);
-			if (m_animStateMachine->GetCurrentState() != AnimationStateType::Run)
-				m_animStateMachine->ChangeState(AnimationStateType::Run);
+			//if (m_animStateMachine->GetCurrentState() != AnimationStateT
+			// ype::Run)
+				//m_animStateMachine->ChangeState(AnimationStateType::Run);
 		}
 	}
 	else
@@ -68,7 +69,7 @@ void BiancaBaseAttack::Update()
 			static_pointer_cast<Monster>(m_owner)->Damaged(m_owner, static_pointer_cast<Player>(m_owner)->GetStatus().hitAttack);
 
 			m_updateTimer = 0.f;
-			m_owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::BaseAttack);
+			//m_owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::BaseAttack);
 		}
 	}
 

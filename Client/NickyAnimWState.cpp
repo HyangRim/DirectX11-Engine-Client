@@ -13,22 +13,22 @@ void NickyAnimWState::Enter(shared_ptr<ModelAnimator> animator)
     if (!animator)
         return;
 
-
-    animator->SetAnimationSpeed(m_playSpeed);
+    animator->PlaySequence(L"Skill_2_Sequence");
+    animator->SetCurrentAnimationSpeed(m_playSpeed);
     // 스킬 시퀀스 재생
 
+    m_expectedDuration = 0.f;
      //재생속도에 따라 애니메이션 속도들 재설정
     m_sequenceDurations = animator->GetSequenceAnimationDurations(L"Skill_2_Sequence");
     for (size_t i = 0; i < m_sequenceDurations.size(); i++)
     {
-        if (i == 2) continue;
         m_sequenceDurations[i] /= m_playSpeed;
+        m_expectedDuration += m_sequenceDurations[i];
     }
     animator->SetSequenceAnimationDurations(L"Skill_2_Sequence", m_sequenceDurations);
 
-    animator->PlaySequence(L"Skill_2_Sequence");
-
-
+    cout << "AnimtionState 에서의 기대 시간 : " << m_expectedDuration << endl;
+    
     m_skillTime = 0.0f;
     m_isAnimationStarted = true;
     m_isSkillComplete = false;
@@ -43,16 +43,11 @@ void NickyAnimWState::Update(shared_ptr<ModelAnimator> animator)
 
     // 대기 시간 업데이트
     m_skillTime += DT;
+    cout << "AnimationState 에서의 누적 시간 : " << m_skillTime << endl;
 
-    if (m_isSkillComplete)
-    {
-        // 스킬이 완료되면 자동으로 Wait 상태로 전환 요청
-        // 실제 전환은 AnimationStateMachine에서 처리
-        return;
-    }
 
     // 시퀀스 재생 상태 체크
-    if (m_isAnimationStarted && !animator->IsSequencePlaying())
+    if (!m_isSkillComplete && m_skillTime >= m_expectedDuration)
     {
         // 시퀀스가 끝났으면 완료 플래그 설정
         m_isSkillComplete = true;
@@ -78,31 +73,15 @@ void NickyAnimWState::Exit(shared_ptr<ModelAnimator> animator)
     m_skillTime = 0.0f;
     m_isAnimationStarted = false;
     m_isSkillComplete = false;
+   
     m_cachedAnimator.reset();
 }
 
 bool NickyAnimWState::CanTransitionTo(AnimationStateType nextState)
 {
-    //// 스킬이 완료되었을 때만 Wait 상태로 전환 가능
-    //if (m_isSkillComplete && nextState == AnimationStateType::Wait)
-    //{
-    //    return true;
-    //}
-    //return false;
-
-    if (nextState == AnimationStateType::Counter)
-        return true;
-
-    if (!m_isSkillComplete)
-        return false;
-
-    switch (nextState)
+    if (m_isSkillComplete && (nextState == AnimationStateType::Wait || nextState == AnimationStateType::Run))
     {
-    case AnimationStateType::Counter:
-    case AnimationStateType::Wait:
         return true;
-    default:
-        return false;
     }
-
+    return false;
 }

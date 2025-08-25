@@ -12,19 +12,26 @@ void NickyAnimRState::Enter(shared_ptr<ModelAnimator> animator)
 {
     if (!animator)
         return;
+    animator->PlaySequence(L"Skill_4_Sequence");
+    animator->SetCurrentAnimationSpeed(m_playSpeed);
 
-    animator->SetAnimationSpeed(m_playSpeed);
+    m_expectedDuration = 0.f;
     //재생속도에 따라 애니메이션 속도들 재설정
     m_sequenceDurations = animator->GetSequenceAnimationDurations(L"Skill_4_Sequence");
     for (size_t i = 0; i < m_sequenceDurations.size(); i++)
     {
-        if (i == 2) continue;
-        m_sequenceDurations[i] /= m_playSpeed;
+        if (i == 2)
+        {
+            m_expectedDuration += m_sequenceDurations[i];
+            continue;
+        }
+        m_sequenceDurations[i] = m_sequenceDurations[i] / m_playSpeed;
+        m_expectedDuration += m_sequenceDurations[i] / m_playSpeed;   
     }
     animator->SetSequenceAnimationDurations(L"Skill_4_Sequence", m_sequenceDurations);
 
-    // 스킬 시퀀스 재생
-    animator->PlaySequence(L"Skill_4_Sequence");
+    cout << "AnimationState 에서의 기대 시간 : " << m_expectedDuration << endl;
+
 
     m_skillTime = 0.0f;
     m_isAnimationStarted = true;
@@ -93,7 +100,7 @@ void NickyAnimRState::Exit(shared_ptr<ModelAnimator> animator)
 bool NickyAnimRState::CanTransitionTo(AnimationStateType nextState)
 {
     // 스킬이 완료되었을 때만 Wait 상태로 전환 가능
-    if (m_isSkillComplete && nextState == AnimationStateType::Wait)
+    if (m_isSkillComplete && (nextState == AnimationStateType::Wait || nextState == AnimationStateType::Run))
     {
         return true;
     }

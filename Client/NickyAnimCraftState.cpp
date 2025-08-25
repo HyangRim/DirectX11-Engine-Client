@@ -13,15 +13,14 @@ void NickyAnimCraftState::Enter(shared_ptr<ModelAnimator> animator)
     if (!animator)
         return;
 
-    animator->SetAnimationSpeed(m_playSpeed);
-    //m_expectedDuration = animator->GetAnimationDuration(L"Craft") / m_playSpeed;
-    // 스킬 시퀀스 재생
-    //animator->PlaySequence(L"Craft_Sequence");
+    
     animator->SetAnimationByTag(L"Craft", false);
-
+    animator->SetNextAnimationSpeed(m_playSpeed);
+  
     m_skillTime = 0.0f;
     m_isAnimationStarted = true;
     m_isSkillComplete = false;
+    cout << "니키 craft 기대시간 : " << m_expectedDuration << endl;
 
     cout << "Nicky Craft 애니메이션 재생 시작" << endl;
 }

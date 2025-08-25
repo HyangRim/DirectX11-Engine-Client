@@ -18,39 +18,25 @@ void BiancaAnimBaseAttackState::Enter(shared_ptr<ModelAnimator> animator)
 
     animator->SetAnimationSpeed(m_playSpeed);
 
+    // 모션 번갈아가기
     if (m_motionChange)
     {
-        /*m_sequenceDurations = animator->GetSequenceAnimationDurations(L"Wolf_Atk1_Sequence");
-        for (size_t i = 0; i < m_sequenceDurations.size(); i++)
-        {
-            m_sequenceDurations[i] /= m_playSpeed;
-        }
-        animator->SetSequenceAnimationDurations(L"Wolf_Atk1_Sequence", m_sequenceDurations);
-        animator->PlaySequence(L"Wolf_Atk1_Sequence");*/
-
         animator->SetAnimationByTag(L"BaseAttack_01", true);
-
-        m_motionChange = !m_motionChange;
+        SOUND->PlaySound(L"Nicky/Nicky_atk01.wav", 0, 0.5f);
+        cout << "BaseAttack_01 애니메이션 재생" << endl;
     }
     else
     {
-        /*m_sequenceDurations = animator->GetSequenceAnimationDurations(L"Wolf_Atk2_Sequence");
-        for (size_t i = 0; i < m_sequenceDurations.size(); i++)
-        {
-            m_sequenceDurations[i] /= m_playSpeed;
-        }
-        animator->SetSequenceAnimationDurations(L"Wolf_Atk2_Sequence", m_sequenceDurations);
-        animator->PlaySequence(L"Wolf_Atk2_Sequence");*/
-
         animator->SetAnimationByTag(L"BaseAttack_02", true);
-        m_motionChange = !m_motionChange;
+        SOUND->PlaySound(L"Nicky/Nicky_atk02.wav", 0, 0.5f);
+        cout << "BaseAttack_02 애니메이션 재생" << endl;
     }
 
-    m_skillTime = 0.0f;
-    m_isAnimationStarted = true;
-    m_isSkillComplete = false;
+    // 다음번을 위해 토글
+    m_motionChange = !m_motionChange;
 
-    cout << "Nicky BaseAttack 애니메이션 재생 시작" << endl;
+    m_skillTime = 0.0f;
+    m_isSkillComplete = false;
 }
 
 void BiancaAnimBaseAttackState::Update(shared_ptr<ModelAnimator> animator)
@@ -58,20 +44,13 @@ void BiancaAnimBaseAttackState::Update(shared_ptr<ModelAnimator> animator)
     if (!animator)
         return;
 
-    if (animator->GetGameObject()->GetComponent<BiancaBaseAttack>()->GetTarget() == nullptr)
-    {
-        m_isSkillComplete = true;
-        return;
-    }
-
     m_skillTime += DT;
+
     // 시간 기반으로 완료 체크
     if (!m_isSkillComplete && m_skillTime >= (38.f / 25.f) / 2.f)
     {
         m_isSkillComplete = true;
-        // 시퀀스 정지
-        //animator->StopSequence();
-        wcout << L"BaseAttack 시간 기반 완료!" << endl;
+        cout << "BaseAttack 애니메이션 완료!" << endl;
     }
 }
 
@@ -85,32 +64,31 @@ void BiancaAnimBaseAttackState::Exit(shared_ptr<ModelAnimator> animator)
 
     // 상태 종료 시 정리
     m_skillTime = 0.0f;
-    m_isAnimationStarted = false;
     m_isSkillComplete = false;
     m_cachedAnimator.reset();
 }
 
 bool BiancaAnimBaseAttackState::CanTransitionTo(AnimationStateType nextState)
 {
-    //// 스킬이 완료되었을 때만 Wait 상태로 전환 가능
-    //if (m_isSkillComplete && nextState == AnimationStateType::Wait)
-    //{
-    //    return true;
-    //}
-    //return false;
-
     switch (nextState)
     {
     case AnimationStateType::Wait:
+        // PlayerState에서 연속 공격이 끝났다고 판단할 때만 Wait로 전환
+        return m_isSkillComplete;
+
     case AnimationStateType::BaseAttack:
+        // 연속 공격을 위해 BaseAttack -> BaseAttack 전환 허용
+        return m_isSkillComplete;
+
     case AnimationStateType::Skill_1:
     case AnimationStateType::Skill_2:
     case AnimationStateType::Skill_3:
     case AnimationStateType::Skill_4:
-        return true;
     case AnimationStateType::Run:
-
+    case AnimationStateType::Craft:
+        // 다른 액션들은 언제든 전환 가능 (외부 입력 우선)
         return true;
+
     default:
         return false;
     }

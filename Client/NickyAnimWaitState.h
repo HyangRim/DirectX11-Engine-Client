@@ -13,8 +13,6 @@ public:
     bool CanTransitionTo(AnimationStateType nextState) override;
 
 private:
-    float m_idleTime = 0.0f;  // 대기 상태 지속 시간
-    bool m_isAnimationStarted = false;
-
+    float m_playSpeed = 2.f;
 };
 

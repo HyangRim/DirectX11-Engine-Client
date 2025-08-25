@@ -14,6 +14,9 @@ public:
     virtual void Exit();
     virtual bool CanTransitionTo(PlayerStateType newState);
 
+
+    bool IsSkillComplete() const { return m_isSkillComplete; } // 새로 추가
+
 private:
     float m_skillTime = 0.0f;  // 대기 상태 지속 시간
     bool m_isAnimationStarted = false;

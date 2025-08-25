@@ -46,6 +46,8 @@ bool NickyRunState::CanTransitionTo(PlayerStateType newState)
     switch (newState)
     {
     case PlayerStateType::Wait:
+        // 이동 완료 시에만 Wait 상태로 전환 허용
+        return true;
     case PlayerStateType::Skill_1:
     case PlayerStateType::Skill_2:
     case PlayerStateType::Skill_3:

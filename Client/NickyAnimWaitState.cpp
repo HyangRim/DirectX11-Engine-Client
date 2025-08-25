@@ -11,37 +11,17 @@ void NickyAnimWaitState::Enter(shared_ptr<ModelAnimator> animator)
 {
     if (!animator)
         return;
-    // 블렌딩 속도 2배로 설정
-    //animator->SetTweenSpeed(2.0f);
-    animator->SetAnimationSpeed(2.f);
-
+    
     // Wait 애니메이션 재생
     animator->SetAnimationByTag(L"Wait", false);
-
-    m_idleTime = 0.0f;
-    m_isAnimationStarted = true;
+    animator->SetNextAnimationSpeed(m_playSpeed);
 
     cout << "Nicky Wait 애니메이션 재생 시작" << endl;
 }
 
 void NickyAnimWaitState::Update(shared_ptr<ModelAnimator> animator)
 {
-    if (!animator)
-        return;
-
-    // 대기 시간 업데이트
-    m_idleTime += DT;
-
-    // 애니메이션이 정상적으로 재생되고 있는지 확인
-    if (m_isAnimationStarted)
-    {
-        wstring currentAnimTag = animator->GetCurrentAnimationTag();
-        if (currentAnimTag == L"Wait")
-        {
-            // Wait 애니메이션이 정상적으로 재생 중
-            // 필요시 추가 로직 구현
-        }
-    }
+    
 }
 
 void NickyAnimWaitState::Exit(shared_ptr<ModelAnimator> animator)
@@ -51,15 +31,10 @@ void NickyAnimWaitState::Exit(shared_ptr<ModelAnimator> animator)
 
     cout << "Nicky Wait 애니메이션 재생 종료"  << endl;
     animator->SetAnimationSpeed(1.f);
-    // 상태 종료 시 정리
-    m_idleTime = 0.0f;
-    m_isAnimationStarted = false;
 }
 
 bool NickyAnimWaitState::CanTransitionTo(AnimationStateType nextState)
 {
-    cout << "다음타입 : " << (int)nextState << endl;
-
     if (nextState == AnimationStateType::Run)
     {
         int a = 0;

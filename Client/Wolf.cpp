@@ -88,13 +88,13 @@ void Wolf::OnCollisionEnter(shared_ptr<GameObject> _other)
 
 	// 기타 예외 (추가 오브젝트 타입들은 필요시 확장)
 	if (chaseTarget) {
-		static_pointer_cast<WolfTraceState>(m_monsterStateMachine->GetState(MonsterStateType::Trace))->SetOtherObject(chaseTarget);
-		static_pointer_cast<WolfAttackState>(m_monsterStateMachine->GetState(MonsterStateType::Attack))->SetOtherObject(chaseTarget);
+		//static_pointer_cast<WolfTraceState>(m_monsterStateMachine->GetState(MonsterStateType::Trace))->SetOtherObject(chaseTarget);
+		//static_pointer_cast<WolfAttackState>(m_monsterStateMachine->GetState(MonsterStateType::Attack))->SetOtherObject(chaseTarget);
 		
 		GetComponent<WolfBaseAttack>()->SetTarget(chaseTarget);
 		
-		m_monsterStateMachine->ChangeState(MonsterStateType::Trace);
-		m_animationStateMachine->ChangeState(AnimationStateType::Trace);
+		//m_monsterStateMachine->ChangeState(MonsterStateType::Trace);
+		//m_animationStateMachine->ChangeState(AnimationStateType::Trace);
 	}
 }
 
@@ -234,7 +234,7 @@ void Wolf::InitWolfAI()
 
 void Wolf::InitWolfMSM()
 {
-	m_monsterStateMachine = make_shared<MonsterStateMachine>(m_animationStateMachine);
+	m_monsterStateMachine = make_shared<MonsterStateMachine>();
 	AddComponent(m_monsterStateMachine);
 
 	m_monsterStateMachine->RegisterState(MonsterStateType::Wait, make_shared<WolfWaitState>());
@@ -250,6 +250,6 @@ void Wolf::InitWolfMSM()
 
 void Wolf::InitWolfStats()
 {
-	m_monsterStatus.hp = 50;
+	m_monsterStatus.hp = 1000;
 	
 }

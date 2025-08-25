@@ -13,10 +13,9 @@ void BiancaAnimRunState::Enter(shared_ptr<ModelAnimator> animator)
         return;
 
     // Run 애니메이션 재생
-    animator->SetAnimationByTag(L"Run", false);  // 부드러운 전환
-    animator->SetAnimationSpeed(2.f);
-    m_moveTime = 0.0f;
-    m_isAnimationStarted = true;
+    animator->SetAnimationByTag(L"Run", true);
+    animator->SetCurrentAnimationSpeed(m_playSpeed);
+
 
     cout << "Bianca Run 애니메이션 재생 시작" << endl;
 }
@@ -26,17 +25,7 @@ void BiancaAnimRunState::Update(shared_ptr<ModelAnimator> animator)
     if (!animator)
         return;
 
-    m_moveTime += DT;
-
-    // 이동 애니메이션이 정상적으로 재생되고 있는지 확인
-    if (m_isAnimationStarted)
-    {
-        wstring currentAnimTag = animator->GetCurrentAnimationTag();
-        if (currentAnimTag == L"Run")
-        {
-            // Run 애니메이션이 정상적으로 재생 중
-        }
-    }
+ 
 }
 
 void BiancaAnimRunState::Exit(shared_ptr<ModelAnimator> animator)
@@ -46,8 +35,7 @@ void BiancaAnimRunState::Exit(shared_ptr<ModelAnimator> animator)
 
     cout << "Biaca Run 애니메이션 종료 " << endl;
     animator->SetAnimationSpeed(1.f);
-    m_moveTime = 0.0f;
-    m_isAnimationStarted = false;
+ 
 }
 
 bool BiancaAnimRunState::CanTransitionTo(AnimationStateType nextState)

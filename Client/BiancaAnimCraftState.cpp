@@ -13,14 +13,19 @@ void BiancaAnimCraftState::Enter(shared_ptr<ModelAnimator> animator)
     if (!animator)
         return;
 
-    animator->SetAnimationSpeed(m_playSpeed);
-    //m_expectedDuration = animator->GetAnimationDuration(L"Craft") / m_playSpeed;
-    // 스킬 시퀀스 재생
-    animator->PlaySequence(L"Craft_Sequence");
+    //animator->SetAnimationSpeed(m_playSpeed);
+    ////m_expectedDuration = animator->GetAnimationDuration(L"Craft") / m_playSpeed;
+    //// 스킬 시퀀스 재생
+    //animator->PlaySequence(L"Craft_Sequence");
+
+    animator->SetAnimationByTag(L"Craft", false);
+    animator->SetNextAnimationSpeed(m_playSpeed);
 
     m_skillTime = 0.0f;
     m_isAnimationStarted = true;
     m_isSkillComplete = false;
+
+    cout << "비앙카 craft 기대시간 : " << m_expectedDuration << endl;
 
     cout << "Bianca Craft 애니메이션 재생 시작" << endl;
 }
@@ -37,8 +42,8 @@ void BiancaAnimCraftState::Update(shared_ptr<ModelAnimator> animator)
     {
         m_isSkillComplete = true;
         // 시퀀스 정지
-        animator->StopSequence();
-        wcout << L"Craft 시간 기반 완료!" << endl;
+        //animator->StopSequence();
+        cout << "Craft 시간 기반 완료!" << endl;
     }
 }
 

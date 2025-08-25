@@ -20,33 +20,28 @@ BiancaQState::~BiancaQState()
 void BiancaQState::Enter()
 {
     m_skillTime = 0.0f;
-    m_isAnimationStarted = true;
     m_isSkillComplete = false;
     m_durationTime = 0.f;
+    m_expectedDuration = m_modelAnimator->GetAnimationDuration(L"Skill_1") / 2.f;
     cout << "BiancaQState진입\n";
 }
 
 void BiancaQState::Update()
 {
-
-    UpdateNormalSkill();
-    
+    UpdateNormalSkill();  
 }
 
 void BiancaQState::Exit()
 {
     // 상태 종료 시 정리
     m_skillTime = 0.0f;
-    m_isAnimationStarted = false;
     m_isSkillComplete = false;
-
     cout << "BiancaQState종료\n";
 }
 
 bool BiancaQState::CanTransitionTo(PlayerStateType newState)
 {
-    // 스킬이 완료되었을 때만 Wait 상태로 전환 가능
-    if ((m_isSkillComplete && newState == PlayerStateType::Wait))
+    if (m_isSkillComplete && (newState == PlayerStateType::Wait || newState == PlayerStateType::Run))
     {
         return true;
     }
@@ -59,15 +54,9 @@ void BiancaQState::UpdateNormalSkill()
     // 대기 시간 업데이트
     m_skillTime += DT;
 
-    if (m_isSkillComplete)
-    {
-        // 스킬이 완료되면 자동으로 Wait 상태로 전환 요청
-        // 실제 전환은 AnimationStateMachine에서 처리
-        return;
-    }
 
     // 시퀀스 재생 상태 체크
-    if (m_isAnimationStarted && !m_modelAnimator->IsSequencePlaying())
+    if (!m_isSkillComplete && m_skillTime >= m_expectedDuration)
     {
         // 시퀀스가 끝났으면 완료 플래그 설정
         m_isSkillComplete = true;

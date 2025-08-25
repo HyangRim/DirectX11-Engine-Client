@@ -36,8 +36,8 @@ void WolfAttackState::Update()
 	if (static_pointer_cast<Monster>(m_wolf)->GetMonsterStatus().hp <= 0)
 	{
 		m_isAttackComplete = true;
-		m_wolf->GetMonsterStateMachine()->ChangeState(MonsterStateType::Death);
-		m_wolf->GetAnimationStateMachine()->ChangeState(AnimationStateType::Death);
+		//m_wolf->GetMonsterStateMachine()->ChangeState(MonsterStateType::Death);
+		//m_wolf->GetAnimationStateMachine()->ChangeState(AnimationStateType::Death);
 
 		static_pointer_cast<Monster>(m_wolf)->SetDead(true);
 		return;

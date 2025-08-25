@@ -86,8 +86,8 @@ void BiancaWSkill::Update()
 	m_skillTimer += DT;
 	if (m_skillTimer >= m_skillDuration)
 	{
-		m_player->GetAnimationStateMachine()->ChangeState(AnimationStateType::Wait);
-		m_player->GetPlayerStateMachine()->ChangeState(PlayerStateType::Wait);
+		//m_player->GetAnimationStateMachine()->ChangeState(AnimationStateType::Wait);
+		//m_player->GetPlayerStateMachine()->ChangeState(PlayerStateType::Wait);
 	
 		m_skillTimer = 0.f;
 

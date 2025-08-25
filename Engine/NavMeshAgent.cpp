@@ -146,14 +146,14 @@ void NavMeshAgent::UpdateAnimation()
             case NavMeshAgentState::Moving:
                 if (!stateMachine->IsInState(AnimationStateType::Run))
                 {
-                    stateMachine->ChangeState(AnimationStateType::Run);
+                    //stateMachine->ChangeState(AnimationStateType::Run);
                 }
                 break;
             case NavMeshAgentState::Idle:
             case NavMeshAgentState::Arrived:
                 if (!stateMachine->IsInState(AnimationStateType::Wait))
                 {
-                    stateMachine->ChangeState(AnimationStateType::Wait);
+                   // stateMachine->ChangeState(AnimationStateType::Wait);
                 }
                 break;
             }

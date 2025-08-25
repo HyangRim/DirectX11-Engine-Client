@@ -65,6 +65,10 @@ public:
     void SetAnimationByTag(const wstring& _tag, bool _immediate = false);
     void SetNextAnimation(uint32 _animIndex, bool _tweenDuration = 1.0f);
     void SetNextAnimationByTag(const wstring& _tag, bool _tweenDuration = 1.0f);
+    // ModelAnimator.cpp¿¡ ±¸Çö
+    void SetCurrentAnimationSpeed(float _speed);
+    void SetNextAnimationSpeed(float _speed);
+
     void SetAnimationSpeed(float _speed);
 
     // ============================================================================

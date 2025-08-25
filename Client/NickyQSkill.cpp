@@ -168,11 +168,12 @@ bool NickyQSkill::IsFirstAnimationPlaying()
 
 	return static_pointer_cast<NickyAnimQState>(curAnimState)->IsFirstAnimationActive();
 
-	//auto animator = m_playerObject->GetModelAnimator();
-	//if (!animator) return false;
+	auto animator = m_playerObject->GetModelAnimator();
+	if (!animator) return false;
 
-	//wstring currentAnim = animator->GetCurrentAnimationTag();
+	wstring currentAnim = animator->GetCurrentAnimationTag();
 
-	//// 시퀀스가 재생 중이고, 현재 애니메이션이 Rush인 경우만 true
-	//return animator->IsSequencePlaying() && currentAnim == L"Skill_01_Rush";
+	// 시퀀스가 재생 중이고, 현재 애니메이션이 Rush인 경우만 true
+	return animator->IsSequencePlaying() && currentAnim == L"Skill_01_Rush";
+	return false;
 }

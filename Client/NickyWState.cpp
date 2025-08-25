@@ -25,23 +25,22 @@ void NickyWState::Enter()
     m_isAnimationStarted = true;
     m_isSkillComplete = false;
 
+    m_expectedDuration = m_modelAnimator->GetAnimationDuration(L"Skill_02_Guard") + m_modelAnimator->GetAnimationDuration(L"Skill_02_Loop");
+    m_expectedDuration /= 2.f;
+
+    cout << "PlayerState 에서의 기대 시간 : " << m_expectedDuration << endl;
+
+
     cout << "NickyWState진입\n";
 }
 
 void NickyWState::Update()
 {
-        // 대기 시간 업데이트
     m_skillTime += DT;
-
-    if (m_isSkillComplete)
-    {
-        // 스킬이 완료되면 자동으로 Wait 상태로 전환 요청
-        // 실제 전환은 AnimationStateMachine에서 처리
-        return;
-    }
+    cout << "PlayerState 에서의 누적 시간 : " << m_skillTime << endl;
 
     // 시퀀스 재생 상태 체크
-    if (!m_isSkillComplete && !m_modelAnimator->IsSequencePlaying())
+    if (!m_isSkillComplete && m_skillTime >= m_expectedDuration)
     {
         // 시퀀스가 끝났으면 완료 플래그 설정
         m_isSkillComplete = true;
@@ -61,28 +60,9 @@ void NickyWState::Exit()
 
 bool NickyWState::CanTransitionTo(PlayerStateType newState)
 {
-    //// 스킬이 완료되었을 때만 Wait 상태로 전환 가능
-    //if (m_isSkillComplete && newState == PlayerStateType::Wait)
-    //{
-    //    return true;
-    //}
-    //return false;
-
-    //반격은 바로
-    if (newState == PlayerStateType::Counter)
-        return true;
-
-
-    if (!m_isSkillComplete)
-        return false;
-
-    switch (newState)
+    if (m_isSkillComplete && (newState == PlayerStateType::Wait || newState == PlayerStateType::Run))
     {
-    case PlayerStateType::Counter:
-    case PlayerStateType::Wait:
         return true;
-    default:
-        return false;
     }
-
+    return false;
 }

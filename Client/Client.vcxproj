@@ -39,6 +39,7 @@
     <ClInclude Include="AlphaTraceState.h" />
     <ClInclude Include="AlphaWaitState.h" />
     <ClInclude Include="AlphaWalkState.h" />
+    <ClInclude Include="BaseAttackState.h" />
     <ClInclude Include="BaseSkill.h" />
     <ClInclude Include="Bianca.h" />
     <ClInclude Include="BiancaAnimBaseAttackState.h" />
@@ -185,6 +186,7 @@
     <ClCompile Include="AlphaTraceState.cpp" />
     <ClCompile Include="AlphaWaitState.cpp" />
     <ClCompile Include="AlphaWalkState.cpp" />
+    <ClCompile Include="BaseAttackState.cpp" />
     <ClCompile Include="BaseSkill.cpp" />
     <ClCompile Include="Bianca.cpp" />
     <ClCompile Include="BiancaAnimBaseAttackState.cpp" />

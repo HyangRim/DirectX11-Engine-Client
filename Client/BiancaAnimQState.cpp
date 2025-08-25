@@ -12,10 +12,13 @@ void BiancaAnimQState::Enter(shared_ptr<ModelAnimator> animator)
 {
     if (!animator)
         return;
-    animator->SetAnimationSpeed(m_playSpeed);
+
+    animator->PlaySequence(L"Skill_1_Sequence");
+    animator->SetCurrentAnimationSpeed(m_playSpeed);
+
     m_expectedDuration = animator->GetAnimationDuration(L"Skill_1") / m_playSpeed;
     // 스킬 시퀀스 재생
-    animator->PlaySequence(L"Skill_1_Sequence");
+    
 
     m_skillTime = 0.0f;
     m_isAnimationStarted = true;
@@ -28,24 +31,6 @@ void BiancaAnimQState::Update(shared_ptr<ModelAnimator> animator)
 {
     if (!animator)
         return;
-
-    //// 대기 시간 업데이트
-    //m_skillTime += DT;
-
-    //if (m_isSkillComplete)
-    //{
-    //    // 스킬이 완료되면 자동으로 Wait 상태로 전환 요청
-    //    // 실제 전환은 AnimationStateMachine에서 처리
-    //    return;
-    //}
-
-    //// 시퀀스 재생 상태 체크
-    //if (m_isAnimationStarted && !animator->IsSequencePlaying())
-    //{
-    //    // 시퀀스가 끝났으면 완료 플래그 설정
-    //    m_isSkillComplete = true;
-    //    cout << "Q 스킬 시퀀스 자동 완료 감지" << endl;
-    //}
 
     m_skillTime += DT;
 
@@ -78,7 +63,7 @@ void BiancaAnimQState::Exit(shared_ptr<ModelAnimator> animator)
 bool BiancaAnimQState::CanTransitionTo(AnimationStateType nextState)
 {
     // 스킬이 완료되었을 때만 Wait 상태로 전환 가능
-    if (m_isSkillComplete && nextState == AnimationStateType::Wait)
+    if (m_isSkillComplete && (nextState == AnimationStateType::Wait || nextState == AnimationStateType::Run))
     {
         return true;
     }

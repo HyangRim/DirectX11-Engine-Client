@@ -14,31 +14,14 @@ void BiancaAnimWaitState::Enter(shared_ptr<ModelAnimator> animator)
 
     // Wait 애니메이션 재생
     animator->SetAnimationByTag(L"Wait", false);
-    animator->SetAnimationSpeed(2.f);
-    m_idleTime = 0.0f;
-    m_isAnimationStarted = true;
+    animator->SetCurrentAnimationSpeed(2.f);
 
     cout << "Bianca Wait  애니메이션 재생 시작" << endl;
 }
 
 void BiancaAnimWaitState::Update(shared_ptr<ModelAnimator> animator)
 {
-    if (!animator)
-        return;
-
-    // 대기 시간 업데이트
-    m_idleTime += DT;
-
-    // 애니메이션이 정상적으로 재생되고 있는지 확인
-    if (m_isAnimationStarted)
-    {
-        wstring currentAnimTag = animator->GetCurrentAnimationTag();
-        if (currentAnimTag == L"Wait")
-        {
-            // Wait 애니메이션이 정상적으로 재생 중
-            // 필요시 추가 로직 구현
-        }
-    }
+   
 }
 
 void BiancaAnimWaitState::Exit(shared_ptr<ModelAnimator> animator)
@@ -48,9 +31,6 @@ void BiancaAnimWaitState::Exit(shared_ptr<ModelAnimator> animator)
 
     cout << "Bianca Wait  애니메이션 재생 종료 " << endl;
     animator->SetAnimationSpeed(1.f);
-    // 상태 종료 시 정리
-    m_idleTime = 0.0f;
-    m_isAnimationStarted = false;
 }
 
 bool BiancaAnimWaitState::CanTransitionTo(AnimationStateType nextState)

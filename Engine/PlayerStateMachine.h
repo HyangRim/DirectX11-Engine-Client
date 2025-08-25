@@ -52,50 +52,98 @@ protected:
 class PlayerStateMachine :
     public Component
 {
+    using Super = Component;
 public:
-    PlayerStateMachine(shared_ptr<AnimationStateMachine> animationStateMachine, int chargingInfo, int isMovableOnSkill, int isNeedTarget);
+    PlayerStateMachine(uint32 _characterIdx);
     ~PlayerStateMachine();
 
     // Component 주요 함수 오버라이드
-    virtual void Init() override;
     virtual void Start() override;
     virtual void Update() override;
     virtual void OnDestroy() override;
 
     // 상태 관리
-    void ChangeState(PlayerStateType newState);
+    void RequestStateChange(PlayerStateType newState);
     bool CanChangeState(PlayerStateType newState);
 
-    void ProcessInput();
-    //void ProcessAnimationFSM();
-    Ray CreateRayFromMouse(POINT mousePos, shared_ptr<Camera> camera);
-
+    // 상태 조회
+    PlayerStateType GetCurrentState() const;
+    shared_ptr<PlayerState> GetCurrentStatePtr() const;
+    shared_ptr<PlayerState> GetState(PlayerStateType type) const;
     bool IsInState(PlayerStateType state) const;
 
-    // 상태 등록 함수 (외부에서 상태 등록 가능)
+    // 상태 등록
     void RegisterState(PlayerStateType type, shared_ptr<PlayerState> state);
 
-    PlayerStateType GetCurrentState() const; //타입만 넘겨줌
-    shared_ptr<PlayerState> GetCurState() { return m_currentState; } //state 포인터를 넘겨줌
-    shared_ptr<PlayerState> GetState(PlayerStateType type) { return m_states[type]; }
+    // 입력 처리 (외부에서 호출)
+    void ProcessInput();
+    Ray CreateRayFromMouse(POINT mousePos, shared_ptr<Camera> camera);
 
-    void HandleSpecialStateTransitions();
-
-    void SetPlayerInterface(shared_ptr<IPlayer> pIayerInterface) { m_playerInterface = pIayerInterface; }
+    // 스킬 관련
+    void SetPlayerInterface(shared_ptr<class IPlayer> playerInterface);
+    void SetAttackTarget(shared_ptr<GameObject> target);
+    shared_ptr<GameObject> GetPickedTargetAtMouse();
+    bool CheckTargetForSkill(KEY_TYPE skillKey);
 
     void PrintCurState();
 
+public:
+    // 델리게이트
+    Delegate::Delegate<int, shared_ptr<GameObject>> OnSkillUsed;
+    Delegate::Delegate<bool&> OnTryCraftFirst;// 기존
+
+    Delegate::Delegate<bool&> OnTryCraft;  // 제작 시도 요청
+    Delegate::Delegate<bool&> OnCraftCompleted;  // 제작 완료 체크
+
+    // 새로 추가할 스킬 완료 체크 Delegate
+    Delegate::Delegate<bool&> OnQSkillCompleted;  // Q스킬 완료 체크
+    Delegate::Delegate<bool&> OnWSkillCompleted;  // W스킬 완료 체크
+    Delegate::Delegate<bool&> OnESkillCompleted;  // E스킬 완료 체크
+    Delegate::Delegate<bool&> OnRSkillCompleted;  // E스킬 완료 체크
+
 private:
-    shared_ptr<ModelAnimator> m_modelAnimator;
+    // 상태 전환 실제 실행
+    void ExecuteStateChange(PlayerStateType newState);
+
+    // 이벤트 핸들러
+    void HandleStateChangeRequest(shared_ptr<EventData> eventData);
+    void HandleAnimationStateChanged(shared_ptr<EventData> eventData);
+
+    // 입력 처리 내부 로직
+    void HandleMovementInput();
+    void CheckMovementCompletion();
+
+    void HandleSkillInput();
+    void CheckQSkillCompletion();
+    void CheckWSkillCompletion();
+    void CheckESkillCompletion();
+    void CheckRSkillCompletion();
+
+    void HandleCraftInput();
+    void CheckCraftCompletion();
+
+    void HandleAttackInput();
+    bool IsValidAttackTarget(shared_ptr<GameObject> target);
+
+    void HandleRightClickInput();
+
+private:
     unordered_map<PlayerStateType, shared_ptr<PlayerState>> m_states;
     shared_ptr<PlayerState> m_currentState;
 
-    shared_ptr<AnimationStateMachine> m_animationStateMachine;
+    // 컴포넌트 참조
+    shared_ptr<class AnimationStateMachine> m_animationStateMachine;
+    shared_ptr<class NavMeshAgent> m_navMeshAgent;
+    shared_ptr<class IPlayer> m_playerInterface;
 
-    int m_chargingInfo;
-    int m_isMovableOnSkill; //스킬 시전 중 우클릭으로 움직일 수 없는 스킬 Q,W,E,R -> 8, 4, 2, 1
-    int m_isNeedTarget; //타겟이 필요한 스킬 목록 Q,W,E,R -> 8, 4, 2, 1
+    // 상태 전환 대기열
+    queue<PlayerStateType> m_stateChangeQueue;
+    // 입력 처리
+    bool m_inputEnabled = true;
+    // 디버그
+    bool m_enableDebugLog = false;
 
+    uint32 m_characterIndex = 0;
 
 private:
     shared_ptr<GameObject> m_attackTarget; // 공격 대상 저장
@@ -103,41 +151,13 @@ private:
     float m_baseAttackDelay = (38.f / 25.f) / 2.f;
     float m_baseAttackDelayDuration = 0.f;
 
-public:
-    void SetAttackTarget(shared_ptr<GameObject> target);
-    void MoveToAttackTarget(Vec3 targetPos, float attackRange);
-    void StartBaseAttack();
-
 
 private:
-    shared_ptr<IPlayer> m_playerInterface;
+    bool m_qSkillCompletionChecked = false;  // 추가
+    bool m_wSkillCompletionChecked = false;  // 추가
+    bool m_eSkillCompletionChecked = false;  // 추가
+    bool m_rSkillCompletionChecked = false;  // 추가
 
 
-private:
-    bool CheckTargetForSkill(KEY_TYPE skillKey);
-    shared_ptr<GameObject> GetPickedTargetAtMouse();
-
-    bool IsSkillOnCooldown(int skillIndex);
-
-public:
-    /*using SkillUsedDelegate = Delegate::Delegate<int>;
-
-    SkillUsedDelegate OnSkillUsed;*/
-
-public:
-   
-    Delegate::Delegate<bool&> OnTryCraftFirst;
-
-    // 델리게이트에 타겟 정보 추가
-    using SkillUsedDelegate = Delegate::Delegate<int, shared_ptr<GameObject>>;
-    using SkillCooldownCheckDelegate = Delegate::Delegate<int, bool&>; // (skillIndex, OUT isOnCooldown)
-    SkillUsedDelegate OnSkillUsed;
-    SkillCooldownCheckDelegate OnSkillCooldownCheck;
-
-
-
-private:
-    void HandleStateChangeRequest(shared_ptr<EventData> eventData);
-    void ChangeStateImmediate(PlayerStateType newState);
 };
 

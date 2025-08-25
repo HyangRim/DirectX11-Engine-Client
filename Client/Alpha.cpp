@@ -93,13 +93,13 @@ void Alpha::OnCollisionEnter(shared_ptr<GameObject> _other)
 
 	// 기타 예외 (추가 오브젝트 타입들은 필요시 확장)
 	if (chaseTarget) {
-		static_pointer_cast<AlphaTraceState>(m_monsterStateMachine->GetState(MonsterStateType::Trace))->SetOtherObject(chaseTarget);
-		static_pointer_cast<AlphaAttackState>(m_monsterStateMachine->GetState(MonsterStateType::Attack))->SetOtherObject(chaseTarget);
+		//static_pointer_cast<AlphaTraceState>(m_monsterStateMachine->GetState(MonsterStateType::Trace))->SetOtherObject(chaseTarget);
+		//static_pointer_cast<AlphaAttackState>(m_monsterStateMachine->GetState(MonsterStateType::Attack))->SetOtherObject(chaseTarget);
 
 		GetComponent<AlphaBaseAttack>()->SetTarget(chaseTarget);
 
-		m_monsterStateMachine->ChangeState(MonsterStateType::Trace);
-		m_animationStateMachine->ChangeState(AnimationStateType::Trace);
+		//m_monsterStateMachine->ChangeState(MonsterStateType::Trace);
+		//m_animationStateMachine->ChangeState(AnimationStateType::Trace);
 	}
 }
 
@@ -206,7 +206,7 @@ void Alpha::InitAlphaAnimation()
 
 void Alpha::InitAlphaMSM()
 {
-	m_monsterStateMachine = make_shared<MonsterStateMachine>(m_animationStateMachine);
+	m_monsterStateMachine = make_shared<MonsterStateMachine>();
 	AddComponent(m_monsterStateMachine);
 
 	m_monsterStateMachine->RegisterState(MonsterStateType::Wait,	make_shared<AlphaWaitState>());

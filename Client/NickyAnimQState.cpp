@@ -341,7 +341,7 @@ bool NickyAnimQState::IsStartAnimationComplete()
     float animDuration = m_cachedAnimator->GetAnimationDuration(currentAnim);
 
     // 애니메이션 길이의 90%가 지나면 완료로 간주
-    return m_startAnimationTime >= (animDuration * 0.9f);
+    return m_startAnimationTime >= (animDuration * 1.0f);
 }
 
 void NickyAnimQState::Exit(shared_ptr<ModelAnimator> animator)
@@ -369,7 +369,7 @@ void NickyAnimQState::Exit(shared_ptr<ModelAnimator> animator)
 bool NickyAnimQState::CanTransitionTo(AnimationStateType nextState)
 {
     // 스킬이 완료되었을 때만 Wait 상태로 전환 가능
-    return (m_isComplete && nextState == AnimationStateType::Wait) || nextState == AnimationStateType::Move;
+    return (m_isComplete && (nextState == AnimationStateType::Wait || nextState == AnimationStateType::Run));
 }
 
 bool NickyAnimQState::IsCharging() const

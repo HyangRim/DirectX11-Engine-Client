@@ -33,8 +33,8 @@ void NickyBaseAttack::Update()
 		{
 			m_updateTimer = 0.f;
 			m_owner->GetNavMeshAgent()->SetDestination(targetPos);
-			if (m_animStateMachine->GetCurrentState() != AnimationStateType::Run)
-				m_animStateMachine->ChangeState(AnimationStateType::Run);
+			//if (m_animStateMachine->GetCurrentState() != AnimationStateType::Run)
+				//m_animStateMachine->ChangeState(AnimationStateType::Run);
 		}
 	}
 	else
@@ -54,7 +54,7 @@ void NickyBaseAttack::Update()
 
 
 			m_updateTimer = 0.f;
-			m_owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::BaseAttack);
+			//m_owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::BaseAttack);
 
 			if (m_motionChange)
 			{

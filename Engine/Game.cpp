@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "IExecute.h"
 #include "Scene.h"
+#include "SkillConfig.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -22,6 +23,8 @@ WPARAM Game::Run(GameDesc& desc)
 	if (!InitInstance(SW_SHOWNORMAL))
 		return FALSE;
 		
+
+	SkillConfig::InitializeConfigs();
 	GRAPHICS->Init(_desc.hWnd);
 	TIME->Init();
 	INPUT->Init(_desc.hWnd);

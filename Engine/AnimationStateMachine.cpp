@@ -15,9 +15,8 @@
 
 AnimationStateMachine::AnimationStateMachine(AnimationStateType initialState)
     : Super(ComponentType::AnimationStateMachine)
+    , m_initialStateType(initialState)
 {
-    m_initialStateType = initialState;
-
     // 이벤트 구독
     EVENT->Subscribe(EventType::ANIMATION_STATE_CHANGE_REQUEST,
         [this](shared_ptr<EventData> eventData) {
@@ -27,6 +26,7 @@ AnimationStateMachine::AnimationStateMachine(AnimationStateType initialState)
 
 AnimationStateMachine::~AnimationStateMachine()
 {
+    EVENT->UnsubscribeAll(EventType::ANIMATION_STATE_CHANGE_REQUEST);
 }
 
 void AnimationStateMachine::Start()
@@ -39,13 +39,14 @@ void AnimationStateMachine::Start()
         m_animator = gameObject->GetModelAnimator();
     }
 
-    InitializeStates();
-
     // 초기 상태 설정
-    m_currentState = m_states[m_initialStateType];
-    if (m_currentState)
+    if (m_states.find(m_initialStateType) != m_states.end())
     {
-        m_currentState->Enter(m_animator);
+        m_currentState = m_states[m_initialStateType];
+        if (m_currentState && m_animator)
+        {
+            m_currentState->Enter(m_animator);
+        }
     }
 }
 
@@ -53,16 +54,117 @@ void AnimationStateMachine::Update()
 {
     Super::Update();
     PrintCurState();
-   // ProcessInput();
-
-    if (m_currentState)
+  
+    // 대기열의 상태 변경 요청 처리
+    while (!m_stateChangeQueue.empty())
     {
-        m_currentState->Update(m_animator);     
-
-        // 특수 상태 처리 추가
-        HandleSpecialStateTransitions();
+        AnimationStateType newState = m_stateChangeQueue.front();
+        m_stateChangeQueue.pop();
+        ExecuteStateChange(newState);
     }
+
+    // 현재 상태 업데이트
+    if (m_currentState && m_animator)
+    {
+        m_currentState->Update(m_animator);
+    }
+
+    // 애니메이션 완료 체크 및 자동 전환
+    CheckAnimationCompletion();
+    HandleAutoTransitions();
 }
+
+void AnimationStateMachine::OnDestroy()
+{
+    if (m_currentState && m_animator)
+    {
+        m_currentState->Exit(m_animator);
+    }
+    m_currentState = nullptr;
+    m_states.clear();
+
+    // 이벤트 구독 해제
+    EVENT->UnsubscribeAll(EventType::ANIMATION_STATE_CHANGE_REQUEST);
+
+    Super::OnDestroy();
+}
+
+
+
+void AnimationStateMachine::RequestStateChange(AnimationStateType newState)
+{
+    // EventManager를 통해 상태 변경 요청
+    auto eventData = make_shared<AnimationStateChangeEventData>(
+        EventType::ANIMATION_STATE_CHANGE_REQUEST,
+        GetGameObject(),
+        newState
+    );
+    EVENT->QueueEvent(eventData);
+}
+
+bool AnimationStateMachine::CanChangeState(AnimationStateType newState)
+{
+    if (!m_currentState)
+        return true;
+
+    return m_currentState->CanTransitionTo(newState);
+}
+
+
+
+AnimationStateType AnimationStateMachine::GetCurrentState() const
+{
+    return m_currentState ? m_currentState->GetType() : m_initialStateType;
+}
+
+shared_ptr<AnimationState> AnimationStateMachine::GetCurrentStatePtr() const
+{
+    return m_currentState;
+}
+
+shared_ptr<AnimationState> AnimationStateMachine::GetState(AnimationStateType type) const
+{
+    auto it = m_states.find(type);
+    if (it != m_states.end()) {
+        return it->second;  // 찾은 경우 값 반환
+    }
+    return nullptr;  // 찾지 못한 경우 nullptr 반환
+}
+
+bool AnimationStateMachine::IsInState(AnimationStateType state) const
+{
+    return GetCurrentState() == state;
+}
+
+
+
+
+void AnimationStateMachine::RegisterState(AnimationStateType type, shared_ptr<AnimationState> state)
+{
+    m_states[type] = state;
+}
+
+
+
+bool AnimationStateMachine::IsCurrentAnimationCompleted() const
+{
+    if (!m_animator)
+        return false;
+
+    return m_animator->IsAnimationFinished() && !m_animator->IsAnimationTransitioning();
+}
+
+float AnimationStateMachine::GetCurrentAnimationProgress() const
+{
+    if (!m_animator)
+        return 0.0f;
+
+    // ModelAnimator에서 진행률 계산 로직 필요
+    // 임시로 0.0f 반환
+    return 0.0f;
+}
+
+
 
 void AnimationStateMachine::PrintCurState()
 {
@@ -104,151 +206,9 @@ void AnimationStateMachine::PrintCurState()
     }
 }
 
-void AnimationStateMachine::ChangeState(AnimationStateType newState)
-{
-    // ============== 이벤트 매니저 이전 ================ //
-    if (!CanChangeState(newState))
-        return;
-
-    if (m_animator == nullptr) {
-        auto gameObject = GetGameObject();
-        if (gameObject)
-        {
-            m_animator = gameObject->GetModelAnimator();
-        }
-    }
-
-    // 현재 상태 종료
-    if (m_currentState)
-    {
-        m_currentState->Exit(m_animator);
-    }
-
-    // 새 상태 시작
-    m_currentState = m_states[newState];
-    if (m_currentState)
-    {
-        m_currentState->Enter(m_animator);
-    }
-    // ============== 이벤트 매니저 이전 ================ //
-
-   /* auto eventData = make_shared<AnimationStateChangeEventData>(
-        EventType::ANIMATION_STATE_CHANGE_REQUEST,
-        GetGameObject(),
-        newState);
-
-    EVENT->QueueEvent(eventData);*/
-}
-
-bool AnimationStateMachine::CanChangeState(AnimationStateType newState)
-{
-    if (!m_currentState)
-        return true;
-
-    return m_currentState->CanTransitionTo(newState);
-}
-void AnimationStateMachine::SetInitialState(AnimationStateType initialState)
-{
-    m_initialStateType = initialState;
-}
 
 
-AnimationStateType AnimationStateMachine::GetCurrentState() const
-{
-    return m_currentState ? m_currentState->GetType() : AnimationStateType::Wait;
-}
-
-
-shared_ptr<AnimationState> AnimationStateMachine::GetState(AnimationStateType type)
-{
-    return  m_states[type];
-}
-
-bool AnimationStateMachine::IsInState(AnimationStateType state) const
-{
-    return GetCurrentState() == state;
-}
-
-void AnimationStateMachine::InitializeStates()
-{
-    // ... 다른 상태들 등록
-}
-//
-// 새로운 메서드 추가
-void AnimationStateMachine::HandleSpecialStateTransitions()
-{
-    // Q 스킬 완료 후 Wait 상태로 전환
-    if (GetCurrentState() == AnimationStateType::Skill_1)
-    {
-        if (m_currentState->CanTransitionTo(AnimationStateType::Wait))
-        {
-            ChangeState(AnimationStateType::Wait);
-        }
-    }
-    // W 스킬 완료 후 Wait 상태로 전환
-    else if (GetCurrentState() == AnimationStateType::Skill_2)
-    {
-        /*if (m_currentState->CanTransitionTo(AnimationStateType::Wait))
-        {
-            ChangeState(AnimationStateType::Wait);
-        }*/
-    }
-    // E 스킬 완료 후 Wait 상태로 전환
-    else if (GetCurrentState() == AnimationStateType::Skill_3)
-    {
-        if (m_currentState->CanTransitionTo(AnimationStateType::Wait))
-        {
-            ChangeState(AnimationStateType::Wait);
-        }
-    }
-    // R 스킬 완료 후 Wait 상태로 전환
-    else if (GetCurrentState() == AnimationStateType::Skill_4)
-    {
-        if (m_currentState->CanTransitionTo(AnimationStateType::Wait))
-        {
-            ChangeState(AnimationStateType::Wait);
-        }
-    }
-
-    // R 스킬 완료 후 Wait 상태로 전환
-    else if (GetCurrentState() == AnimationStateType::Craft)
-    {
-        if (m_currentState->CanTransitionTo(AnimationStateType::Wait))
-        {
-            ChangeState(AnimationStateType::Wait);
-        }
-    }
-
-    else if (GetCurrentState() == AnimationStateType::Counter)
-    {
-        if (m_currentState->CanTransitionTo(AnimationStateType::Wait))
-        {
-            ChangeState(AnimationStateType::Wait);
-        }
-    }
-
-    // 다른 스킬들도 동일하게 처리 가능
-    // if (GetCurrentState() == AnimationStateType::Skill_1) { ... }
-}
-
-void AnimationStateMachine::RegisterState(AnimationStateType type, shared_ptr<AnimationState> state)
-{
-    m_states[type] = state;
-}
-
-
-void AnimationStateMachine::HandleStateChangeRequest(shared_ptr<EventData> eventData)
-{
-    auto stateChangeData = static_pointer_cast<AnimationStateChangeEventData>(eventData);
-
-    // 자신의 GameObject인지 확인
-    if (stateChangeData->m_target != GetGameObject())
-        return;
-
-    ChangeStateImmediate(stateChangeData->m_newState);
-}
-
-void AnimationStateMachine::ChangeStateImmediate(AnimationStateType newState)
+void AnimationStateMachine::ExecuteStateChange(AnimationStateType newState)
 {
     if (!CanChangeState(newState))
         return;
@@ -256,14 +216,14 @@ void AnimationStateMachine::ChangeStateImmediate(AnimationStateType newState)
     AnimationStateType oldState = GetCurrentState();
 
     // 현재 상태 종료
-    if (m_currentState)
+    if (m_currentState && m_animator)
     {
         m_currentState->Exit(m_animator);
     }
 
     // 새 상태 시작
     m_currentState = m_states[newState];
-    if (m_currentState)
+    if (m_currentState && m_animator)
     {
         m_currentState->Enter(m_animator);
     }
@@ -276,4 +236,84 @@ void AnimationStateMachine::ChangeStateImmediate(AnimationStateType newState)
         static_cast<int>(newState)
     );
     EVENT->TriggerEvent(completedEventData);
+
+    if (m_enableDebugLog)
+    {
+        cout << "AnimationState changed: " << static_cast<int>(oldState)
+            << " -> " << static_cast<int>(newState) << endl;
+    }
 }
+
+void AnimationStateMachine::CheckAnimationCompletion()
+{
+    if (!m_animator || !m_currentState)
+        return;
+
+    // 현재 애니메이션이 완료되었는지 확인
+    if (IsCurrentAnimationCompleted())
+    {
+        // 애니메이션 완료 이벤트 발생
+        auto eventData = make_shared<EventData>(EventType::ANIMATION_END);
+        EVENT->TriggerEvent(eventData);
+    }
+}
+
+void AnimationStateMachine::HandleAutoTransitions()
+{
+    if (!m_currentState)
+        return;
+
+    AnimationStateType currentType = GetCurrentState();
+    auto it = m_autoTransitions.find(currentType);
+
+    if (it != m_autoTransitions.end() && IsCurrentAnimationCompleted())
+    {
+        RequestStateChange(it->second);
+    }
+}
+
+void AnimationStateMachine::HandleStateChangeRequest(shared_ptr<EventData> eventData)
+{
+    auto stateChangeData = static_pointer_cast<AnimationStateChangeEventData>(eventData);
+
+    // 자신의 GameObject인지 확인
+    if (stateChangeData->m_target != GetGameObject())
+        return;
+
+    //ChangeStateImmediate(stateChangeData->m_newState);
+    // 
+    // 상태 변경 대기열에 추가
+    m_stateChangeQueue.push(stateChangeData->m_newState);
+}
+
+
+//
+//void AnimationStateMachine::ChangeStateImmediate(AnimationStateType newState)
+//{
+//    if (!CanChangeState(newState))
+//        return;
+//
+//    AnimationStateType oldState = GetCurrentState();
+//
+//    // 현재 상태 종료
+//    if (m_currentState)
+//    {
+//        m_currentState->Exit(m_animator);
+//    }
+//
+//    // 새 상태 시작
+//    m_currentState = m_states[newState];
+//    if (m_currentState)
+//    {
+//        m_currentState->Enter(m_animator);
+//    }
+//
+//    // 상태 변경 완료 이벤트 발생
+//    auto completedEventData = make_shared<StateEventData>(
+//        EventType::ANIMATION_STATE_CHANGED,
+//        GetGameObject(),
+//        static_cast<int>(oldState),
+//        static_cast<int>(newState)
+//    );
+//    EVENT->TriggerEvent(completedEventData);
+//}

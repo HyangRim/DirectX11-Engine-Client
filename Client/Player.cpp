@@ -176,13 +176,13 @@ void Player::StartCraftAnimation()
 
 	// 애니메이션 상태 전환
 	auto animStateMachine = GetComponent<AnimationStateMachine>();
-	if (animStateMachine)
-		animStateMachine->ChangeState(AnimationStateType::Craft);
+	//if (animStateMachine)
+		//animStateMachine->ChangeState(AnimationStateType::Craft);
 
 	// 플레이어 상태 전환
 	auto playerStateMachine = GetComponent<PlayerStateMachine>();
-	if (playerStateMachine)
-		playerStateMachine->ChangeState(PlayerStateType::Craft);
+	//if (playerStateMachine)
+		//playerStateMachine->ChangeState(PlayerStateType::Craft);
 }
 
 void Player::LevelUp()

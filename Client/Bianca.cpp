@@ -132,10 +132,12 @@ void Bianca::InitBiancaAnimation()
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Craft,		make_shared<BiancaAnimCraftState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait,			make_shared<BiancaAnimWaitState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Run,			make_shared<BiancaAnimRunState>());
+
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_1,		make_shared<BiancaAnimQState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_2,		make_shared<BiancaAnimWState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_3,		make_shared<BiancaAnimEState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Skill_4,		make_shared<BiancaAnimRState>());
+
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::BaseAttack,	make_shared<BiancaAnimBaseAttackState>());
 
 	auto animator = GetModelAnimator();
@@ -164,7 +166,7 @@ void Bianca::InitBiancaAnimation()
 
 void Bianca::InitBiancaPSM()
 {
-	m_playerStateMachine = make_shared<PlayerStateMachine>(GetAnimationStateMachine(), 2, 14, 0);
+	m_playerStateMachine = make_shared<PlayerStateMachine>(0);
 
 	auto self = static_pointer_cast<Player>(shared_from_this());
 	m_playerInterface = make_shared<PlayerInterface>(self);
@@ -173,7 +175,8 @@ void Bianca::InitBiancaPSM()
 
 	m_playerStateMachine->RegisterState(PlayerStateType::Craft,			make_shared<BiancaCraftState>(GetModelAnimator()));
 	m_playerStateMachine->RegisterState(PlayerStateType::Run,			make_shared<BiancaRunState>());
-	m_playerStateMachine->RegisterState(PlayerStateType::Wait,			make_shared<BiancaWaitState>());																				
+	m_playerStateMachine->RegisterState(PlayerStateType::Wait,			make_shared<BiancaWaitState>());	
+
 	m_playerStateMachine->RegisterState(PlayerStateType::Skill_1,		make_shared<BiancaQState>(GetModelAnimator()));
 	m_playerStateMachine->RegisterState(PlayerStateType::Skill_2,		make_shared<BiancaWState>(GetModelAnimator()));
 	m_playerStateMachine->RegisterState(PlayerStateType::Skill_3,		make_shared<BiancaEState>(GetModelAnimator()));

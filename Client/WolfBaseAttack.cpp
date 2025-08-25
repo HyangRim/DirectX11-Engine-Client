@@ -44,15 +44,15 @@ void WolfBaseAttack::Update()
         else if (distance >= 10.f)
         {
             m_isAttackComplete = true;
-            m_owner->GetMonsterStateMachine()->ChangeState(MonsterStateType::Trace);
-            m_owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::Trace);
+            //m_owner->GetMonsterStateMachine()->ChangeState(MonsterStateType::Trace);
+            //m_owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::Trace);
 
             return;
         }
         else
         {
             static_pointer_cast<Player>(m_target)->Damaged(static_pointer_cast<Monster>(m_owner)->GetMonsterStatus().adPower);
-            m_owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::BaseAttack);
+            //m_owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::BaseAttack);
             //SOUND->PlaySound(L"Wolf/wolf_attack.wav", 3, 0.5f);
         }
             

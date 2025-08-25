@@ -62,6 +62,16 @@ private:
 	void UpdateItemBoxSlots(shared_ptr<GameObject> _itemBoxObject);
 	//=====================UI관련 함수=====================//
 
+	//=====================제작 완료 확인 함수=======================//
+	bool IsCraftStateCompleted(); // 새로 추가
+	//=====================제작 완료 확인 함수=======================//
+
+	//=====================스킬 완료 확인 함수=======================//
+	bool IsQSkillCompleted(); // 새로 추가
+	bool IsWSkillCompleted();
+	bool IsESkillCompleted();
+	bool IsRSkillCompleted();
+	//=====================스킬 완료 확인 함수=======================//
 
 private:
 	//멀티 스레드 로딩용 함수.

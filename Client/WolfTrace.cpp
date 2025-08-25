@@ -45,10 +45,10 @@ void WolfTrace::Update()
         if (msm && msm->CanChangeState(MonsterStateType::Attack))
         {
             cout << "공격 거리 이내 - Attack State 상태로 전환" << endl;
-            msm->ChangeState(MonsterStateType::Attack);
+            //msm->ChangeState(MonsterStateType::Attack);
             auto animSM = m_owner->GetAnimationStateMachine();
             if (animSM) {
-                animSM->ChangeState(AnimationStateType::BaseAttack);
+                //animSM->ChangeState(AnimationStateType::BaseAttack);
             }
         }
     }

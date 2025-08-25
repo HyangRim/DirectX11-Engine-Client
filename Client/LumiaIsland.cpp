@@ -43,7 +43,18 @@
 
 #include "UIResourceManager.h"
 
+#include "NickyCraftState.h"
+#include "BiancaCraftState.h"
 
+#include "NickyQState.h";
+#include "NickyWState.h"
+#include "NickyEState.h"
+#include "NickyRState.h"
+
+#include "BiancaQState.h"
+#include "BiancaWState.h"
+#include "BiancaEState.h"
+#include "BiancaRState.h"
 
 LumiaIsland::LumiaIsland()
 {
@@ -91,7 +102,7 @@ void LumiaIsland::Start()
 	CreateCemeterySmallInterior();
 	CreateCemeteryEnvironment();
 
-	//m_cameraScript->SetTarget(m_player);
+	m_cameraScript->SetTarget(m_player);
 	CreateCemeteryItemBox();
 	CreateTestDummy();
 
@@ -100,18 +111,19 @@ void LumiaIsland::Start()
 
 
 	////Monster 추가.
-	//CreateMonsterWolf(Vec3(15, 18, 16));
-	CreateMonsterAlpha(Vec3(20, 18, 16));
+	CreateMonsterWolf(Vec3(15, 18, 16));
+	//CreateMonsterAlpha(Vec3(20, 18, 16));
 
 	
-
 	TIME->ResetDeltaTime();
 	SOUND->StopAll();
 	SOUND->PlayBGM(L"BSER_AreaBGM_CEMETERY.wav", 0.5f);
 	CreateCursor();
 	Super::Start();
 
+	// 기존 OnTryCraftFirst는 유지하되, 새로운 OnTryCraft도 추가 등록
 	m_player->GetPlayerStateMachine()->OnTryCraftFirst.Push([this](bool& success) {
+		// 기존 로직 유지
 		auto inventoryMgr = InventoryManager::GetInstance();
 		auto recipes = inventoryMgr->GetAvailableRecipes();
 
@@ -130,15 +142,13 @@ void LumiaIsland::Start()
 				}
 				};
 
-			// 결과 아이템의 등급 확인
 			auto resultItem = ItemManager::GetInstance()->GetItem(recipes[0]->GetResultItemID());
 			if (!resultItem) return;
 
 			ITEMGRADE itemGrade = resultItem->GetItemGrade();
 
-
-			m_player->GetPlayerStateMachine()->GetState(PlayerStateType::Craft)->SetRecipeIndex(0);
-			m_player->GetAnimationStateMachine()->GetState(AnimationStateType::Craft)->SetExpectedDuration(GetCraftTimeByGrade(itemGrade));
+			m_player->GetPlayerStateMachine()->GetCurrentStatePtr()->SetRecipeIndex(0);
+			m_player->GetAnimationStateMachine()->GetCurrentStatePtr()->SetExpectedDuration(GetCraftTimeByGrade(itemGrade));
 
 			m_uiManager->GetCraftGageUI()->SetVisible(true);
 			m_uiManager->GetCraftGageUI()->SetItem(resultItem);
@@ -146,7 +156,78 @@ void LumiaIsland::Start()
 		}
 		else
 			success = false;
-	});
+		});
+
+	// 새로운 OnTryCraft Delegate 등록 (더 간단한 버전)
+	m_player->GetPlayerStateMachine()->OnTryCraft.Push([this](bool& success) {
+		auto inventoryMgr = InventoryManager::GetInstance();
+		auto recipes = inventoryMgr->GetAvailableRecipes();
+
+		success = !recipes.empty();  // 제작 가능한 레시피가 있으면 true
+
+		if (success)
+		{
+			// 제작 준비 작업
+			auto resultItem = ItemManager::GetInstance()->GetItem(recipes[0]->GetResultItemID());
+			if (resultItem)
+			{
+				// 제작 시간 설정
+				auto GetCraftTimeByGrade = [](ITEMGRADE grade) -> float {
+					switch (grade) {
+					case ITEMGRADE::COMMON:    return 1.0f; 
+					case ITEMGRADE::UNCOMMON:  return 3.0f; 
+					case ITEMGRADE::RARE:      return 5.0f; 
+					case ITEMGRADE::EPIC:      return 7.0f; 
+					case ITEMGRADE::LEGENDARY: return 9.0f; 
+					default:                   return 11.0f;
+					}
+					};
+
+				ITEMGRADE itemGrade = resultItem->GetItemGrade();
+				float craftTime = GetCraftTimeByGrade(itemGrade);
+
+				// PlayerState에 레시피 인덱스 설정
+				m_player->GetPlayerStateMachine()->GetCurrentStatePtr()->SetRecipeIndex(0);
+
+				// AnimationState에 예상 시간 설정
+				m_player->GetAnimationStateMachine()->GetCurrentStatePtr()->SetExpectedDuration(craftTime);
+
+				// UI 업데이트
+				m_uiManager->GetCraftGageUI()->SetVisible(true);
+				m_uiManager->GetCraftGageUI()->SetItem(resultItem);
+			}
+		}
+		});
+
+	// === 새로운 OnCraftCompleted Delegate 등록 ===
+	m_player->GetPlayerStateMachine()->OnCraftCompleted.Push([this](bool& completed) {
+		// NickyCraftState의 완료 상태를 확인하는 로직
+		completed = IsCraftStateCompleted();
+		});
+
+	// 기존 Delegate들은 유지하고 새로운 OnQSkillCompleted 추가
+	m_player->GetPlayerStateMachine()->OnQSkillCompleted.Push([this](bool& completed) {
+		// Q스킬 완료 상태를 확인하는 로직
+		completed = IsQSkillCompleted();
+		});
+
+	// 기존 Delegate들은 유지하고 새로운 OnQSkillCompleted 추가
+	m_player->GetPlayerStateMachine()->OnWSkillCompleted.Push([this](bool& completed) {
+		// Q스킬 완료 상태를 확인하는 로직
+		completed = IsWSkillCompleted();
+		});
+
+	// 기존 Delegate들은 유지하고 새로운 OnESkillCompleted 추가
+	m_player->GetPlayerStateMachine()->OnESkillCompleted.Push([this](bool& completed) {
+		// Q스킬 완료 상태를 확인하는 로직
+		completed = IsESkillCompleted();
+		});
+
+	// 기존 Delegate들은 유지하고 새로운 OnESkillCompleted 추가
+	m_player->GetPlayerStateMachine()->OnRSkillCompleted.Push([this](bool& completed) {
+		// Q스킬 완료 상태를 확인하는 로직
+		completed = IsRSkillCompleted();
+		});
 }
 
 void LumiaIsland::Update()
@@ -189,10 +270,10 @@ void LumiaIsland::CreateMainCamera()
 	//camera->GetTransform()->SetPosition(Vec3{ 10.f, 30.f, -5.f });
 	camera->GetTransform()->SetRotation(Vec3(45.f, -45.f, 0.f));
 	camera->AddComponent(make_shared<Camera>());
-	camera->AddComponent(make_shared<CameraScript>());
+	//camera->AddComponent(make_shared<CameraScript>());
 	// 
-	//m_cameraScript = make_shared<BiancaCamera>();
-	//camera->AddComponent(m_cameraScript);
+	m_cameraScript = make_shared<BiancaCamera>();
+	camera->AddComponent(m_cameraScript);
 
 	camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
 	CURSCENE->Add(camera);
@@ -1829,7 +1910,7 @@ void LumiaIsland::CreateTestDummy()
 		obj->GetTransform()->SetLocalPosition(Vec3(10, 18, 15));
 		obj->AddComponent(make_shared<AABBBoxCollider>());
 		obj->GetCollider()->SetOffsetScale(Vec3(1, 1, 1));
-		obj->GetTransform()->SetLocalScale(Vec3(1.f));
+		obj->GetTransform()->SetLocalScale(Vec3(2.f));
 		obj->SetType(OBJECTTYPE::PLAYER);
 
 		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
@@ -1887,4 +1968,171 @@ void LumiaIsland::ControlPlayerStatus()
 	{
 		InventoryManager::GetInstance()->PushItem(ItemManager::GetInstance()->GetItem(L"피아노선"));
 	}
+}
+
+// LumiaIsland.cpp에 구현 추가
+bool LumiaIsland::IsCraftStateCompleted()
+{
+	// 현재 Player의 PlayerState가 Craft인지 확인하고, 완료 상태인지 체크
+	auto psm = m_player->GetPlayerStateMachine();
+	if (psm && psm->IsInState(PlayerStateType::Craft))
+	{
+		auto currentState = psm->GetCurrentStatePtr();
+		if (currentState)
+		{
+			if (m_selectedCharacterIdx == 1)
+			{
+				// NickyCraftState로 캐스팅해서 완료 상태 확인
+				auto craftState = dynamic_pointer_cast<NickyCraftState>(currentState);
+				if (craftState)
+				{
+					// NickyCraftState의 private 멤버에 접근하기 위해 friend 선언 필요하거나
+					// public getter 메서드 추가 필요
+					return craftState->IsSkillComplete(); // 이 메서드를 NickyCraftState에 추가 필요
+				}
+			}
+			else if (m_selectedCharacterIdx == 0)
+			{
+				// BiancaCraftState로 캐스팅해서 완료 상태 확인
+				auto craftState = dynamic_pointer_cast<BiancaCraftState>(currentState);
+				if (craftState)
+				{
+					// BiancaCraftState의 private 멤버에 접근하기 위해 friend 선언 필요하거나
+					// public getter 메서드 추가 필요
+					return craftState->IsSkillComplete(); // 이 메서드를 BiancaCraftState에 추가 필요
+				}
+			}
+
+
+			
+		}
+	}
+	return false;
+}
+
+// LumiaIsland.cpp에 구현 추가
+bool LumiaIsland::IsQSkillCompleted()
+{
+	// 현재 Player의 PlayerState가 Skill_1인지 확인하고, 완료 상태인지 체크
+	auto psm = m_player->GetPlayerStateMachine();
+	if (psm && psm->IsInState(PlayerStateType::Skill_1))
+	{
+		auto currentState = psm->GetCurrentStatePtr();
+		if (currentState)
+		{
+			// 니키인지 비앙카인지 확인 후 적절한 완료 체크
+			if (m_selectedCharacterIdx == 1) // 니키
+			{
+				auto qState = dynamic_pointer_cast<NickyQState>(currentState);
+				if (qState)
+				{
+					return qState->IsSkillComplete(); // 이 메서드를 NickyQState에 추가 필요
+				}
+			}
+			else if (m_selectedCharacterIdx == 0) // 비앙카
+			{
+				auto qState = dynamic_pointer_cast<BiancaQState>(currentState);
+				if (qState)
+				{
+					return qState->IsSkillComplete(); // 이 메서드를 BiancaQState에 추가 필요
+				}
+			}
+		}
+	}
+	return false;
+}
+
+// LumiaIsland.cpp에 구현 추가
+bool LumiaIsland::IsWSkillCompleted()
+{
+	// 현재 Player의 PlayerState가 Skill_2인지 확인하고, 완료 상태인지 체크
+	auto psm = m_player->GetPlayerStateMachine();
+	if (psm && psm->IsInState(PlayerStateType::Skill_2))
+	{
+		auto currentState = psm->GetCurrentStatePtr();
+		if (currentState)
+		{
+			// 니키인지 비앙카인지 확인 후 적절한 완료 체크
+			if (m_selectedCharacterIdx == 1) // 니키
+			{
+				auto wState = dynamic_pointer_cast<NickyWState>(currentState);
+				if (wState)
+				{
+					return wState->IsSkillComplete(); // 이 메서드를 NickyQState에 추가 필요
+				}
+			}
+			else if (m_selectedCharacterIdx == 0) // 비앙카
+			{
+				auto wState = dynamic_pointer_cast<BiancaWState>(currentState);
+				if (wState)
+				{
+					return wState->IsSkillComplete(); // 이 메서드를 BiancaQState에 추가 필요
+				}
+			}
+		}
+	}
+	return false;
+}
+
+// LumiaIsland.cpp에 구현 추가
+bool LumiaIsland::IsESkillCompleted()
+{
+	// 현재 Player의 PlayerState가 Skill_1인지 확인하고, 완료 상태인지 체크
+	auto psm = m_player->GetPlayerStateMachine();
+	if (psm && psm->IsInState(PlayerStateType::Skill_3))
+	{
+		auto currentState = psm->GetCurrentStatePtr();
+		if (currentState)
+		{
+			// 니키인지 비앙카인지 확인 후 적절한 완료 체크
+			if (m_selectedCharacterIdx == 1) // 니키
+			{
+				auto eState = dynamic_pointer_cast<NickyEState>(currentState);
+				if (eState)
+				{
+					return eState->IsSkillComplete(); // 이 메서드를 NickyEState에 추가 필요
+				}
+			}
+			else if (m_selectedCharacterIdx == 0) // 비앙카
+			{
+				auto eState = dynamic_pointer_cast<BiancaEState>(currentState);
+				if (eState)
+				{
+					return eState->IsSkillComplete(); // 이 메서드를 BiancaEState에 추가 필요
+				}
+			}
+		}
+	}
+	return false;
+}
+
+bool LumiaIsland::IsRSkillCompleted()
+{
+	// 현재 Player의 PlayerState가 Skill_1인지 확인하고, 완료 상태인지 체크
+	auto psm = m_player->GetPlayerStateMachine();
+	if (psm && psm->IsInState(PlayerStateType::Skill_4))
+	{
+		auto currentState = psm->GetCurrentStatePtr();
+		if (currentState)
+		{
+			// 니키인지 비앙카인지 확인 후 적절한 완료 체크
+			if (m_selectedCharacterIdx == 1) // 니키
+			{
+				auto rState = dynamic_pointer_cast<NickyRState>(currentState);
+				if (rState)
+				{
+					return rState->IsSkillComplete(); // 이 메서드를 NickyEState에 추가 필요
+				}
+			}
+			else if (m_selectedCharacterIdx == 0) // 비앙카
+			{
+				auto rState = dynamic_pointer_cast<BiancaRState>(currentState);
+				if (rState)
+				{
+					return rState->IsSkillComplete(); // 이 메서드를 BiancaEState에 추가 필요
+				}
+			}
+		}
+	}
+	return false;
 }

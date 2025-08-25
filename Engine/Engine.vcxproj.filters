@@ -247,9 +247,6 @@
     <ClCompile Include="PlayerStateMachine.cpp">
       <Filter>04. Component\PlayerState</Filter>
     </ClCompile>
-    <ClCompile Include="ISkill.cpp">
-      <Filter>00. Engine\Interface</Filter>
-    </ClCompile>
     <ClCompile Include="IPlayer.cpp">
       <Filter>00. Engine\Interface</Filter>
     </ClCompile>
@@ -273,6 +270,12 @@
     </ClCompile>
     <ClCompile Include="EventManager.cpp">
       <Filter>02. Managers\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="ISkill.cpp">
+      <Filter>00. Engine\Interface\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="SkillConfig.cpp">
+      <Filter>00. Engine\Interface\Skill\SkillConfig</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -537,9 +540,6 @@
     <ClInclude Include="PlayerStateMachine.h">
       <Filter>04. Component\PlayerState</Filter>
     </ClInclude>
-    <ClInclude Include="ISkill.h">
-      <Filter>00. Engine\Interface</Filter>
-    </ClInclude>
     <ClInclude Include="IPlayer.h">
       <Filter>00. Engine\Interface</Filter>
     </ClInclude>
@@ -566,6 +566,12 @@
     </ClInclude>
     <ClInclude Include="EventClass.h">
       <Filter>02. Managers\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="ISkill.h">
+      <Filter>00. Engine\Interface\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="SkillConfig.h">
+      <Filter>00. Engine\Interface\Skill\SkillConfig</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -649,6 +655,12 @@
     </Filter>
     <Filter Include="02. Managers\Event">
       <UniqueIdentifier>{ffa335f7-b3ec-43d7-bae8-903cbce2c1cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Engine\Interface\Skill">
+      <UniqueIdentifier>{6157bb8c-634c-451f-8322-c902b9d7ca78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Engine\Interface\Skill\SkillConfig">
+      <UniqueIdentifier>{028ae89e-c78d-47aa-a424-703757499283}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

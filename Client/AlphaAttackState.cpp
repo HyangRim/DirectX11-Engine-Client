@@ -34,8 +34,8 @@ void AlphaAttackState::Update()
 	if (static_pointer_cast<Monster>(m_alpha)->GetMonsterStatus().hp <= 0)
 	{
 		m_isAttackComplete = true;
-		m_alpha->GetMonsterStateMachine()->ChangeState(MonsterStateType::Death);
-		m_alpha->GetAnimationStateMachine()->ChangeState(AnimationStateType::Death);
+		//m_alpha->GetMonsterStateMachine()->ChangeState(MonsterStateType::Death);
+		//m_alpha->GetAnimationStateMachine()->ChangeState(AnimationStateType::Death);
 
 		static_pointer_cast<Monster>(m_alpha)->SetDead(true);
 		return;

@@ -302,7 +302,7 @@ void BiancaAnimEState::Exit(shared_ptr<ModelAnimator> animator)
 bool BiancaAnimEState::CanTransitionTo(AnimationStateType nextState)
 {
     // 스킬이 완료되었을 때만 Wait 상태로 전환 가능
-    return m_isComplete && nextState == AnimationStateType::Wait;
+    return (m_isComplete && (nextState == AnimationStateType::Wait || nextState == AnimationStateType::Run));
 }
 
 bool BiancaAnimEState::IsCharging() const

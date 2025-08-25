@@ -104,11 +104,11 @@ void CraftGagePanelUI::RegisterUIObject(shared_ptr<GameObject> uiObject)
 float CraftGagePanelUI::GetCraftTimeByGrade(ITEMGRADE grade)
 {
 	switch (grade) {
-	case ITEMGRADE::COMMON:    return 1.0f;
-	case ITEMGRADE::UNCOMMON:  return 1.5f;
-	case ITEMGRADE::RARE:      return 2.0f;
-	case ITEMGRADE::EPIC:      return 3.0f;
-	case ITEMGRADE::LEGENDARY: return 3.0f;
-	default:                   return 5.0f;
+	case ITEMGRADE::COMMON:    return 1.0f; 
+	case ITEMGRADE::UNCOMMON:  return 3.0f; 
+	case ITEMGRADE::RARE:      return 5.0f; 
+	case ITEMGRADE::EPIC:      return 7.0f; 
+	case ITEMGRADE::LEGENDARY: return 9.0f; 
+	default:                   return 11.0f;
 	}
 }

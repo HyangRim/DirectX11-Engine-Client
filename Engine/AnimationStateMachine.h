@@ -11,44 +11,54 @@ public:
     AnimationStateMachine(AnimationStateType initialState = AnimationStateType::Wait);
     ~AnimationStateMachine();
 
+    //Component 메서드 오버라이드
     virtual void Start() override;
     virtual void Update() override;
+    virtual void OnDestroy() override;
 
-    // 상태 전환
-    void ChangeState(AnimationStateType newState);
+    // 상태 관리
+    void RequestStateChange(AnimationStateType newState);
     bool CanChangeState(AnimationStateType newState);
-    void SetInitialState(AnimationStateType initialState);
 
     // 상태 조회
     AnimationStateType GetCurrentState() const;
-    shared_ptr<AnimationState> GetState(AnimationStateType type);
-
+    shared_ptr<AnimationState> GetCurrentStatePtr() const;
+    shared_ptr<AnimationState> GetState(AnimationStateType type) const;
     bool IsInState(AnimationStateType state) const;
 
-    // 입력 처리
-    void ProcessInput();
+    // 상태 등록
     void RegisterState(AnimationStateType type, shared_ptr<AnimationState> state);
 
-    Ray CreateRayFromMouse(POINT mousePos, shared_ptr<Camera> camera);
+    // 애니메이션 완료 체크
+    bool IsCurrentAnimationCompleted() const;
+    float GetCurrentAnimationProgress() const;
 
+    
     void PrintCurState();
 
 private:
-    void InitializeStates();
-    void HandleSpecialStateTransitions();  // 추가
-   
-private:
+    // 상태 전환 실제 실행
+    void ExecuteStateChange(AnimationStateType newState);
+
+    // 애니메이션 완료 감지 및 자동 전환
+    void CheckAnimationCompletion();
+    void HandleAutoTransitions();
+
     void HandleStateChangeRequest(shared_ptr<EventData> eventData);
-    void ChangeStateImmediate(AnimationStateType newState);
 
 private:
     unordered_map<AnimationStateType, shared_ptr<AnimationState>> m_states;
     shared_ptr<AnimationState> m_currentState;
     shared_ptr<ModelAnimator> m_animator;
-    AnimationStateType m_initialStateType = AnimationStateType::Wait; // 기본값
+ 
+    AnimationStateType m_initialStateType;
 
+    // 상태 전환 대기열
+    queue<AnimationStateType> m_stateChangeQueue;
 
-    // 입력 상태
-    bool m_wasMoving = false;
-    bool m_isChargingQ = false;
+    // 자동 전환 설정
+    unordered_map<AnimationStateType, AnimationStateType> m_autoTransitions;
+
+    // 디버그
+    bool m_enableDebugLog = false;
 };

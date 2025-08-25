@@ -105,7 +105,7 @@ void Monster::Damaged(DamageInfo _damage)
 	if (monsterHP <= 0) {
 		//사망 애니메이션으로. 
 		m_healthBar->SetVisible(false);
-		GetMonsterStateMachine()->ChangeState(MonsterStateType::Death);
+		//GetMonsterStateMachine()->ChangeState(MonsterStateType::Death);
 		m_isStun = true;
 	}
 

@@ -25,19 +25,6 @@ void NickyWSkill::PlaySkill()
 
 void NickyWSkill::Update()
 {
-	m_skillTimer += DT;
+	
 
-	if (m_player->IsAttacked() && m_player->GetPlayerStateMachine()->GetCurrentState() == PlayerStateType::Skill_2)
-	{
-		m_player->GetPlayerStateMachine()->ChangeState(PlayerStateType::Counter);
-		m_player->GetAnimationStateMachine()->ChangeState(AnimationStateType::Counter);
-		return;
-	}
-
-	if (m_skillTimer >= m_skillDuration && m_player->GetPlayerStateMachine()->GetCurrentState()==PlayerStateType::Skill_2)
-	{	
-		m_player->GetPlayerStateMachine()->ChangeState(PlayerStateType::Wait);
-		m_player->GetAnimationStateMachine()->ChangeState(AnimationStateType::Wait);
-		return;
-	}
 }

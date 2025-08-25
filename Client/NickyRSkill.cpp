@@ -3,7 +3,7 @@
 
 #include "Player.h"
 #include "AnimationState.h"
-#include "NickyRSkillState.h"
+#include "NickyAnimRState.h"
 
 NickyRSkill::NickyRSkill(shared_ptr<Player> _player)
 	: Super(_player, 3)
@@ -103,6 +103,7 @@ void NickyRSkill::CalculateSkillDirection()
 	m_moveDuration = distance / m_speed;
 	
 	SetRushDuration(m_moveDuration);
+	cout << "러쉬 시간 : " << m_moveDuration << endl;
 
 	m_moveElapsedTime = 0.f;
 	m_moveFlag = true;
@@ -120,7 +121,9 @@ bool NickyRSkill::IsRushAnimationPlaying()
 {
 	shared_ptr<AnimationState> curAnimState = m_playerObject->GetAnimationStateMachine()->GetState(AnimationStateType::Skill_4);
 
-	return static_pointer_cast<NickyRSkillState>(curAnimState)->IsRushAnimationActive();
+	return static_pointer_cast<NickyAnimRState>(curAnimState)->IsRushAnimationActive();
+
+	return false;
 }
 
 void NickyRSkill::SetRushDuration(float duration)

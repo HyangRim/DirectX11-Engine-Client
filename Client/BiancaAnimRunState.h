@@ -13,8 +13,7 @@ public:
     bool CanTransitionTo(AnimationStateType nextState) override;
 
 private:
-    float m_moveTime = 0.0f;
-    bool m_isAnimationStarted = false;
+    float m_playSpeed = 2.f;
 
 };
 
