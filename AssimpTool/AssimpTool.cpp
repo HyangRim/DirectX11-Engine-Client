@@ -71,28 +71,113 @@ void AssimpTool::Start()
 	//}
 
 
-	//{
-	//	shared_ptr<Converter> converter = make_shared<Converter>();
-	//	//FBX -> Memory
-	//	converter->ReadAssetFile(L"Bianca/BiancaCoffin_mesh.fbx");
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetery_STR_GraveBase_01.fbx");
 
-	//	//Memory ->CustomData;
-	//	converter->ExportMaterialData(L"Bianca/BiancaCoffin_mesh");
-	//	converter->ExportModelData(L"Bianca/BiancaCoffin_mesh");
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Map2/Cemetery_STR_GraveBase_01");
+		converter->ExportModelData(L"Map2/Cemetery_STR_GraveBase_01");
 
-	//	//CustomData -> Memory;
-	//}
-	//{
-	//	shared_ptr<Converter> converter = make_shared<Converter>();
-	//	//FBX -> Memory
-	//	converter->ReadAssetFile(L"Bianca/BiancaUmbrella_mesh.fbx");
+		//CustomData -> Memory;
+	}
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetery_STR_OuterWall_01.fbx");
 
-	//	//Memory ->CustomData;
-	//	converter->ExportMaterialData(L"Bianca/BiancaUmbrella_mesh");
-	//	converter->ExportModelData(L"Bianca/BiancaUmbrella_mesh");
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Map2/Cemetery_STR_OuterWall_01");
+		converter->ExportModelData(L"Map2/Cemetery_STR_OuterWall_01");
 
-	//	//CustomData -> Memory;
-	//}
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Cemetery_STR_OuterWall_01_Fence.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Map2/Cemetery_STR_OuterWall_01_Fence");
+		converter->ExportModelData(L"Map2/Cemetery_STR_OuterWall_01_Fence");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Tree_Ancient_01.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Map2/Tree_Ancient_01");
+		converter->ExportModelData(L"Map2/Tree_Ancient_01");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Tree_Ancient_03.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Map2/Tree_Ancient_03");
+		converter->ExportModelData(L"Map2/Tree_Ancient_03");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Tree_Cherry_01.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Map2/Tree_Cherry_01");
+		converter->ExportModelData(L"Map2/Tree_Cherry_01");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Tree_08_Re.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Map2/Tree_08_Re");
+		converter->ExportModelData(L"Map2/Tree_08_Re");
+
+		//CustomData -> Memory;
+	}
+
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Tree_05_Re.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Map2/Tree_05_Re");
+		converter->ExportModelData(L"Map2/Tree_05_Re");
+
+		//CustomData -> Memory;
+	}
+	{
+		shared_ptr<Converter> converter = make_shared<Converter>();
+		//FBX -> Memory
+		converter->ReadAssetFile(L"Map2/Tree_04_Re.fbx");
+
+		//Memory ->CustomData;
+		converter->ExportMaterialData(L"Map2/Tree_04_Re");
+		converter->ExportModelData(L"Map2/Tree_04_Re");
+
+		//CustomData -> Memory;
+	}
+
+
 	//{
 	//	shared_ptr<Converter> converter = make_shared<Converter>();
 	//	converter->ReadAssetFile(L"Bianca/BiancaUmbrella_anim1.fbx");

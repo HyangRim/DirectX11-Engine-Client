@@ -88,9 +88,10 @@ void LumiaIsland::Start()
 	
 	CreateCemeteryBase();
 	CreateCemeteryInterior();
+	CreateCemeterySmallInterior();
 	CreateCemeteryEnvironment();
 
-	m_cameraScript->SetTarget(m_player);
+	//m_cameraScript->SetTarget(m_player);
 	CreateCemeteryItemBox();
 	CreateTestDummy();
 
@@ -188,9 +189,10 @@ void LumiaIsland::CreateMainCamera()
 	//camera->GetTransform()->SetPosition(Vec3{ 10.f, 30.f, -5.f });
 	camera->GetTransform()->SetRotation(Vec3(45.f, -45.f, 0.f));
 	camera->AddComponent(make_shared<Camera>());
-	//camera->AddComponent(make_shared<CameraScript>());
-	m_cameraScript = make_shared<BiancaCamera>();
-	camera->AddComponent(m_cameraScript);
+	camera->AddComponent(make_shared<CameraScript>());
+	// 
+	//m_cameraScript = make_shared<BiancaCamera>();
+	//camera->AddComponent(m_cameraScript);
 
 	camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
 	CURSCENE->Add(camera);
@@ -750,6 +752,386 @@ void LumiaIsland::CreateCemeteryInterior()
 			CURSCENE->Add(obj);
 		}
 	}
+
+
+	//병원, 물가쪽 벽. 
+	{
+		//Cemetery_STR_OuterWall_01
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_STR_OuterWall_01", L"map2/Cemetery_STR_OuterWall_01");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"map2/Cemetery_STR_OuterWall_01");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Cemetery_STR_OuterWall_01");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(86.014, 17.859, 113.655));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::MAP);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+		}
+
+		//Cemetery_STR_OuterWall_01_Fence
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_STR_OuterWall_01_Fence", L"map2/Cemetery_STR_OuterWall_01_Fence");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"map2/Cemetery_STR_OuterWall_01_Fence");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Cemetery_STR_OuterWall_01_Fence");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(86.014, 16.919, 113.655));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::MAP);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+		}
+
+		//Cemetery_STR_OuterWall_01_Grass
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_STR_OuterWall_01_Grass", L"map2/Cemetery_STR_OuterWall_01_Grass");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"map2/Cemetery_STR_OuterWall_01_Grass");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Cemetery_STR_OuterWall_01_Grass");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(85.961, 17.859, 113.655));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.025f, 0.02f, 0.02f));
+			obj->SetType(OBJECTTYPE::MAP);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+		}
+
+
+		//Cemetery_STR_InnerWall_01
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_STR_InnerWall_01", L"map2/Cemetery_STR_InnerWall_01");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"map2/Cemetery_STR_InnerWall_01");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Cemetery_STR_InnerWall_01");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(86.014, 17.859, 113.655));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::MAP);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+		}
+
+		//Cemetery_STR_InnerWall_01
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_STR_GraveBase_01", L"map2/Cemetery_STR_GraveBase_01");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"map2/Cemetery_STR_GraveBase_01");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Cemetery_STR_GraveBase_01");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(86.014, 17.859, 113.655));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::MAP);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+		}
+	}
+}
+
+void LumiaIsland::CreateCemeterySmallInterior()
+{
+
+	//Cemetery 숲 쪽, 4개 묘비 모여있는 곳. 
+	{
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_OBJ_Tombstone_08", L"Cemetery/Cemetery_OBJ_Tombstone_08");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"Cemetery/Cemetery_OBJ_Tombstone_08");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Cemetery_OBJ_Tombstone_08");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(29.2, 18, 27));
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.223f, 0.f));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+		}
+
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_OBJ_Tombstone_07", L"Cemetery/Cemetery_OBJ_Tombstone_07");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"Cemetery/Cemetery_OBJ_Tombstone_07");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Cemetery_OBJ_Tombstone_07");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(26.95, 18, 24));
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.223f, 0.f));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+		}
+
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Common_OBJ_BrickDecoTop_03_Broken_01", L"Cemetery/Common_OBJ_BrickDecoTop_03_Broken_01");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"Cemetery/Common_OBJ_BrickDecoTop_03_Broken_01");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Common_OBJ_BrickDecoTop_03_Broken_01");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(27.92, 20.2, 22.05));
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 40.f, 0.f));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.035f, 0.035f, 0.035f));
+			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+		}
+
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_OBJ_Tombstone_08", L"Cemetery/Cemetery_OBJ_Tombstone_08");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"Cemetery/Cemetery_OBJ_Tombstone_08");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Cemetery_OBJ_Tombstone_08");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(28.32, 18.2, 25.07));
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 40.f, 0.f));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.023f));
+			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+		}
+
+		//집. 
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_STR_House_02", L"map2/Cemetery_STR_House_02");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"map2/Cemetery_STR_House_02");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Cemetery_STR_House_02");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(38.846, 18.2, 22.12));
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+		}
+	}
+
+	//물가쪽. 
+	{
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_OBJ_Tombstone_08", L"Cemetery/Cemetery_OBJ_Tombstone_08");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"Cemetery/Cemetery_OBJ_Tombstone_08");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Cemetery_OBJ_Tombstone_08");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(24.28, 17.648, 55.89));
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 120.f, 0.f));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.03f));
+			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+		}
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Common_OBJ_BrickDecoTop_03_Broken_01", L"Cemetery/Common_OBJ_BrickDecoTop_03_Broken_01");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"Cemetery/Common_OBJ_BrickDecoTop_03_Broken_01");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Common_OBJ_BrickDecoTop_03_Broken_01");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(38.762, 19.648, 21.991));
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 14.785f, 0.f));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.023f));
+			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+		}
+
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Common_OBJ_BrickDecoTop_03_Broken_01", L"Cemetery/Common_OBJ_BrickDecoTop_03_Broken_01");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"Cemetery/Common_OBJ_BrickDecoTop_03_Broken_01");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Common_OBJ_BrickDecoTop_03_Broken_01");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(40.662, 19.648, 21.991));
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 14.785f, 0.f));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.023f));
+			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+		}
+	}
+
+
+	//묘지쪽.
+
+	{
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_OBJ_Tomb_03", L"Cemetery/Cemetery_OBJ_Tomb_03");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"Cemetery/Cemetery_OBJ_Tomb_03");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Cemetery_OBJ_Tomb_03");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(79.817, 18, 94.383));
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+		}
+
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_OBJ_Tomb_04", L"Cemetery/Cemetery_OBJ_Tomb_04");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"Cemetery/Cemetery_OBJ_Tomb_04");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Cemetery_OBJ_Tomb_04");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(68.3, 18, 94.07));
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+		}
+
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_OBJ_Tomb_04", L"Cemetery/Cemetery_OBJ_Tomb_04");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"Cemetery/Cemetery_OBJ_Tomb_04");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Cemetery_OBJ_Tomb_04");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(68.3, 18, 94.07));
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+		}
+
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Cemetery_OBJ_Tombstone_08", L"Cemetery/Cemetery_OBJ_Tombstone_08");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"Cemetery/Cemetery_OBJ_Tombstone_08");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Cemetery_OBJ_Tombstone_08");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(72.507, 17.8, 94.03));
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 90.f, -20.f));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.03f));
+			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+		}
+	}
+
+
+
 }
 
 void LumiaIsland::CreateCemeteryEnvironment()
@@ -938,6 +1320,53 @@ void LumiaIsland::CreateCemeteryEnvironment()
 		}
 		CURSCENE->Add(obj);
 	}
+
+	//나무 배치. 
+	{
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Tree_Ancient_03", L"map2/Tree_Ancient_03");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"map2/Tree_Ancient_03");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Tree_Ancient_03");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(15.741, 19.3, 37.451));
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f, -180.f, 0.f));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+		}
+
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Tree_Ancient_01", L"map2/Tree_Ancient_01");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"map2/Tree_Ancient_01");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Tree_Ancient_01");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(-12.094, 15.202, 29.772));
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f, -180.f, 0.f));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+
+		}
+	}
+
 }
 
 void LumiaIsland::CreateCemeteryItemBox()

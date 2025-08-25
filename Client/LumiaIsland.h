@@ -40,6 +40,7 @@ private:
 	//땅, 인테리어, 환경 생성. 
 	void CreateCemeteryBase();
 	void CreateCemeteryInterior();
+	void CreateCemeterySmallInterior();
 	void CreateCemeteryEnvironment();
 	void CreateCemeteryItemBox();
 	// NavMesh 관련 추가
