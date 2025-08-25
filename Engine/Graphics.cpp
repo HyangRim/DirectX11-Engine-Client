@@ -3,7 +3,7 @@
 
 #include "D2DTextRenderer.h"
 
-#define SHADOWMAP_SIZE 4096
+#define SHADOWMAP_SIZE 2048
 
 Graphics::~Graphics()
 {
