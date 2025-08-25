@@ -107,10 +107,10 @@ void Alpha::OnCollisionExit(shared_ptr<GameObject> _other)
 {
 }
 
-void Alpha::PlaySkill()
+void Alpha::PlaySkill(shared_ptr<GameObject> _target)
 {
-	cout << "Alpha Skill 발동!\n";
-	m_skill->Play();
+	//cout << "Alpha Skill 발동!\n";
+	m_skill->Play(_target);
 }
 
 

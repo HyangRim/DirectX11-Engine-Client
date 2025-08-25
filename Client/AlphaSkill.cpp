@@ -26,7 +26,7 @@ void AlphaSkill::Start()
 {
 }
 
-void AlphaSkill::Play()
+void AlphaSkill::Play(shared_ptr<GameObject> _target)
 {
 	m_isActive = true;
 	m_boozer = false;
@@ -34,7 +34,12 @@ void AlphaSkill::Play()
 
 	//m_circleObject들 여러 개 배치. 
 	Vec3 alphaPosition = m_alpha->GetTransform()->GetPosition();
-	Vec3 alphalook = m_alpha->GetTransform()->GetLook();
+	Vec3 targetPosition = _target->GetTransform()->GetPosition();
+
+	Vec3 alphaToTarget = targetPosition - alphaPosition;
+	alphaToTarget.y = 0.f;
+	alphaToTarget.Normalize();
+
 	for (int idx = 0; idx < 5; ++idx) {
 		m_circleObjects[idx]->DamageFlag(true);
 
@@ -44,8 +49,8 @@ void AlphaSkill::Play()
 		float randomDistance = 1.5f + (rand() % 851) * 0.01f;  // 1.5~10.0
 
 		Vec3 direction;
-		direction.x = alphalook.x * cos(angleRadians) - alphalook.z * sin(angleRadians);
-		direction.z = alphalook.x * sin(angleRadians) + alphalook.z * cos(angleRadians);
+		direction.x = alphaToTarget.x * cos(angleRadians) - alphaToTarget.z * sin(angleRadians);
+		direction.z = alphaToTarget.x * sin(angleRadians) + alphaToTarget.z * cos(angleRadians);
 
 		Vec3 finalPos = alphaPosition + direction * randomDistance;
 		finalPos.y = alphaPosition.y;

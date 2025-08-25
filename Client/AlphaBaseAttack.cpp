@@ -52,7 +52,7 @@ void AlphaBaseAttack::Update()
         else
         {
             if (m_skillCoolTime < 0.f) {
-                static_pointer_cast<Alpha>(m_owner)->PlaySkill();
+                static_pointer_cast<Alpha>(m_owner)->PlaySkill(m_target);
                 m_skillCoolTime = 12.5f;
             }
             else {

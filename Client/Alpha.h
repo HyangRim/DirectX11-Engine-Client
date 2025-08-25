@@ -22,7 +22,7 @@ public:
     virtual void OnCollisionExit(shared_ptr<GameObject> _other) override;
 
 public:
-    void PlaySkill();
+    void PlaySkill(shared_ptr<GameObject> _target);
 private:
     void UpdateState();
 
