@@ -100,8 +100,12 @@ void LumiaIsland::Start()
 
 
 	////Monster 추가.
-	//CreateMonsterWolf(Vec3(15, 18, 16));
-	CreateMonsterAlpha(Vec3(20, 18, 16));
+	CreateMonsterWolf(Vec3(45.587, 18, 49.758));
+	CreateMonsterWolf(Vec3(48.587, 18, 48.268));
+	CreateMonsterWolf(Vec3(51.587, 18, 50.228));
+
+	CreateMonsterWolf(Vec3(72.0, 18, 13.228), Vec3(0.f, 135.f, 0.f));
+	CreateMonsterAlpha(Vec3(116.722, 18, 108.22));
 
 	
 
@@ -1324,14 +1328,14 @@ void LumiaIsland::CreateCemeteryEnvironment()
 	//나무 배치. 
 	{
 		{
-			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Tree_Ancient_03", L"map2/Tree_Ancient_03");
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Tree_Ancient_01", L"map2/Tree_Ancient_01");
 			//m2->ReadModel(L"forest/forest");
-			m2->ReadMaterial(L"map2/Tree_Ancient_03");
+			m2->ReadMaterial(L"map2/Tree_Ancient_01");
 			auto obj = make_shared<GameObject>();
-			obj->SetName(L"Tree_Ancient_03");
+			obj->SetName(L"Tree_Ancient_01");
 			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
-			obj->GetTransform()->SetLocalPosition(Vec3(15.741, 19.3, 37.451));
-			obj->GetTransform()->SetLocalRotation(Vec3(0.f, -180.f, 0.f));
+			obj->GetTransform()->SetLocalPosition(Vec3(15.69, 19.728, 37.754));
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
 			//obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
 			obj->SetType(OBJECTTYPE::ENVIRONMENT);
@@ -1364,6 +1368,141 @@ void LumiaIsland::CreateCemeteryEnvironment()
 			}
 			CURSCENE->Add(obj);
 
+		}
+
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Tree_Ancient_03", L"map2/Tree_Ancient_03");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"map2/Tree_Ancient_03");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Tree_Ancient_03");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(6.26, 18.798, 54.7));
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+
+		}
+
+
+
+		//병원쪽. 
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Tree_04_Re", L"map2/Tree_04_Re");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"map2/Tree_04_Re");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Tree_04_Re");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(86.34, 18.628, 111.1));
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f, -180.f, 0.f));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+
+		}
+
+
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Tree_05_Re", L"map2/Tree_05_Re");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"map2/Tree_05_Re");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Tree_05_Re");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(86.34, 18.628, 101.1));
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f, -180.f, 0.f));
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+
+		}
+
+
+
+		//병원보다는 호수쪽. 
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Tree_08_Re", L"map2/Tree_08_Re");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"map2/Tree_08_Re");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Tree_08_Re");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(56.458, 19.19, 74.775));
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f, -180.f, 0.f));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+		}
+
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Tree_08_Re", L"map2/Tree_08_Re");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"map2/Tree_08_Re");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Tree_08_Re");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(32.5, 19.19, 54.9));
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f, -90.f, 0.f));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
+		}
+
+		{
+			shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"Tree_08_Re", L"map2/Tree_08_Re");
+			//m2->ReadModel(L"forest/forest");
+			m2->ReadMaterial(L"map2/Tree_08_Re");
+			auto obj = make_shared<GameObject>();
+			obj->SetName(L"Tree_08_Re");
+			obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+			obj->GetTransform()->SetLocalPosition(Vec3(46.284, 19.19, 58.488));
+			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
+			//obj->AddComponent(make_shared<AABBBoxCollider>());
+			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+
+			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+			{
+				obj->GetModelRenderer()->SetModel(m2);
+				obj->GetModelRenderer()->SetPass(1);
+			}
+			CURSCENE->Add(obj);
 		}
 	}
 
@@ -1530,21 +1669,22 @@ void LumiaIsland::CreateCharacterBianca()
 	CURSCENE->Add(bianca);
 }
 
-void LumiaIsland::CreateMonsterWolf(Vec3 _pos)
+void LumiaIsland::CreateMonsterWolf(Vec3 _pos, Vec3 _rot)
 {
 	shared_ptr<Wolf> wolf = make_shared<Wolf>(m_defaultshader);
 
 	wolf->GetTransform()->SetPosition(_pos);
+	wolf->GetTransform()->SetRotation(_rot);
 	wolf->GetTransform()->SetScale(Vec3(2.f));
 	CURSCENE->Add(wolf);
-
 }
 
-void LumiaIsland::CreateMonsterAlpha(Vec3 _pos)
+void LumiaIsland::CreateMonsterAlpha(Vec3 _pos, Vec3 _rot)
 {
 	shared_ptr<Alpha> alpha = make_shared<Alpha>(m_defaultshader);
 
 	alpha->GetTransform()->SetPosition(_pos);
+	alpha->GetTransform()->SetRotation(_rot);
 	alpha->GetTransform()->SetScale(Vec3(2.f));
 	CURSCENE->Add(alpha);
 }

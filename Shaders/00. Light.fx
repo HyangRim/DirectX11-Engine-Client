@@ -149,7 +149,7 @@ void ComputeNormalMapping(inout float3 normal, float3 tangent, float2 uv)
     normal = worldNormal;
 }
 
-static const float SMAP_SIZE = 4096.0f;
+static const float SMAP_SIZE = 2048.0f;
 static const float SMAP_DX = 1.0f / SMAP_SIZE;
 
 

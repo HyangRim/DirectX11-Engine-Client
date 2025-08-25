@@ -106,7 +106,7 @@ GBufferOutput PS_GBuffer(MeshOutput input)
     // 디퓨즈 텍스처 샘플링
     float4 albedo = DiffuseMap.Sample(LinearSampler, input.uv);
     
-    if (albedo.a < 0.01f)
+    if (albedo.a < 0.05f)
         discard;
     
     // G-Buffer 데이터 출력
