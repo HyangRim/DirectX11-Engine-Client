@@ -133,7 +133,9 @@ void Monster::Damaged(shared_ptr<GameObject> _attacker, int _damage)
 	if (monsterHP <= 0) {
 		//사망 애니메이션으로. 
 		//GetMonsterStateMachine()->ChangeState(MonsterStateType::Death);
-		m_healthBar->SetVisible(false);
+		if (m_healthBar != nullptr) {
+			m_healthBar->SetVisible(false);
+		}
 		Death(_attacker);
 		SetType(OBJECTTYPE::ITEMBOX);
 		m_isStun = true;

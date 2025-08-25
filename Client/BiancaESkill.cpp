@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Utils.h"
 #include "NavMeshAgent.h"
+#include "Monster.h"
 
 BiancaESkill::BiancaESkill(shared_ptr<Player> _player)
 	: Super(_player, 2)
@@ -161,9 +162,17 @@ void BiancaESkill::Update()
 			m_moveDuration = 0.f;
 			m_moveElapsedTime = 0.f;
 			m_startPos = m_playerObject->GetTransform()->GetPosition();
+			int SkillDamage = m_playerObject->GetStatus().hitAttack * 1.8f;
 
 			auto objects = m_circle->GetCollisionObjects();
 
+			for (auto object : objects) {
+				auto monster = dynamic_pointer_cast<Monster>(object);
+				if (monster != nullptr) {
+					monster->Damaged(m_playerObject, SkillDamage);
+					SOUND->PlaySound(L"Bianca/Bianca_Skill03_Hit.wav", 17, 0.5f);
+				}
+			}
 			//여기서 데미지 주기. 
 			//SOUND->PlaySound(L"Bianca/Bianca_Skill03_Hit.wav", 17, 0.5f);
 			//////아직 구현 X

@@ -12,7 +12,7 @@ public:
 public:
 	virtual void Start() override;
 	virtual void Update() override;
-	void Play();
+	void Play(shared_ptr<GameObject> _target);
 
 private:
 	shared_ptr<BiancaESkillCircle> m_circleObjects[5];
