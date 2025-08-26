@@ -27,7 +27,7 @@ void BiancaQCone::Update()
 	//m_lifeTime동안만 살아남을 수 있음. 
 	m_timer += DT;
 	if (m_timer >= m_lifeTime) {
-		//SetActive(false);
+		SetActive(false);
 		m_isBind = false;
 		debugFlag = false;
 		m_upElapsedTime = 0.f;
@@ -72,9 +72,8 @@ void BiancaQCone::OnCollisionEnter(shared_ptr<GameObject> _other)
 		m_upElapsedTime = 0.f;
 		//그 대상을 CASTING(BIND) 상태로 바꿈.
 
-
 		//데미지 줌. 
-
+		m_targetMonster->Damaged(m_Owner, static_pointer_cast<Player>(m_Owner)->GetStatus().hitAttack * 1.2f);
 		SOUND->PlaySound(L"Bianca/Bianca_Skill01_End.wav", 1, 0.5f);
 	}
 }
