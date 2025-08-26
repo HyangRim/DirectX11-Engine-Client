@@ -18,6 +18,7 @@ public:
     void LoadPlayerStatusResource();
     void LoadBtnBgUIResources();
     void LoadSkillIcons();
+    void LoadSkillLevelImages();
     void LoadStatusBarResources();
     void LoadEquipmentResources();
     void LoadCraftResources();

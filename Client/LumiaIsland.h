@@ -75,6 +75,11 @@ private:
 	bool IsRSkillCompleted();
 	//=====================스킬 완료 확인 함수=======================//
 
+	//=====================스킬 레벨업 함수=======================//
+	void HandleSkillLevelUpInput();
+	void LevelUpSkill(int skillIndex);
+	//=====================스킬 레벨업 함수=======================//
+
 private:
 	//멀티 스레드 로딩용 함수.
 	static DWORD WINAPI BackgroundLoadingThread(LPVOID _param);

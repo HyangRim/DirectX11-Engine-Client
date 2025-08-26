@@ -269,7 +269,7 @@ void LumiaIsland::Update()
 
 		CheckPickedItemBox();
 		ControlPlayerStatus();
-	
+		HandleSkillLevelUpInput();
 	}
 }
 
@@ -349,7 +349,7 @@ void LumiaIsland::CreateDefaultLight()
 void LumiaIsland::SelectCharacter()
 {
 	//테스트용 임시 강제 설정
-	m_selectedCharacterIdx = 0;
+	m_selectedCharacterIdx = 1;
 
 
 	if (m_selectedCharacterIdx == 0) {
@@ -2376,4 +2376,72 @@ bool LumiaIsland::IsRSkillCompleted()
 		}
 	}
 	return false;
+}
+
+// 새로운 메서드 추가
+void LumiaIsland::HandleSkillLevelUpInput()
+{
+	if (!m_player) return;
+
+	// CTRL이 눌린 상태에서만 처리
+	if (INPUT->GetButton(KEY_TYPE::LCTRL))
+	{
+		if (INPUT->GetButtonDown(KEY_TYPE::Q))
+		{
+			LevelUpSkill(0); // Q 스킬
+		}
+		else if (INPUT->GetButtonDown(KEY_TYPE::W))
+		{
+			LevelUpSkill(1); // W 스킬
+		}
+		else if (INPUT->GetButtonDown(KEY_TYPE::E))
+		{
+			LevelUpSkill(2); // E 스킬
+		}
+		else if (INPUT->GetButtonDown(KEY_TYPE::R))
+		{
+			LevelUpSkill(3); // R 스킬
+		}
+	}
+}
+
+void LumiaIsland::LevelUpSkill(int skillIndex)
+{
+	if (!m_player) return;
+
+	PlayerStatus& playerStatus = m_player->GetStatus();
+
+	// 스킬포인트가 있는지 확인
+	if (playerStatus.availableSkillPoints <= 0)
+	{
+		cout << "사용 가능한 스킬포인트가 없습니다." << endl;
+		return;
+	}
+
+	ISkill* skill = m_player->GetSkill(skillIndex);
+	if (!skill) return;
+
+	int curLevel = skill->GetCurSkillLevel();
+	int maxLevel = skill->GetMaxSkillLevel();
+
+	// 최대 레벨인지 확인
+	if (curLevel >= maxLevel)
+	{
+		cout << "스킬이 이미 최대 레벨입니다." << endl;
+		return;
+	}
+
+	// UI 업데이트
+	if (m_uiManager)
+	{
+		m_uiManager->GetGameHUD()->UpdateSkillLevelBar(skillIndex);
+	}
+	// 스킬 레벨업 실행
+	skill->SkillLevelUp();
+	playerStatus.availableSkillPoints--;
+
+	
+
+	cout << "스킬 " << (char)('Q' + skillIndex) << " 레벨업! 현재 레벨: "
+		<< skill->GetCurSkillLevel() << "/" << maxLevel << endl;
 }

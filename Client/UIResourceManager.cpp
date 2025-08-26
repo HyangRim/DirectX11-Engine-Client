@@ -94,6 +94,7 @@ void UIResourceManager::LoadAllUIResources()
 {
     LoadBtnBgUIResources();
     LoadSkillIcons();
+    LoadSkillLevelImages();
     LoadStatusBarResources();
     LoadEquipmentResources();
     LoadCraftResources();
@@ -172,6 +173,34 @@ void UIResourceManager::LoadSkillIcons()
     for (int i = 0; i < biancaSkillIcons.size(); i++)
     {
         LoadUIMaterial(L"Bianca" + skillTags[i], basePath + biancaSkillIcons[i] + L".png");
+    }
+}
+
+void UIResourceManager::LoadSkillLevelImages()
+{
+    wstring basePath = L"..\\Resources\\Textures\\UI\\StatusBar\\SkillSlot\\";
+
+    LoadUIMaterial(L"Img_Skill_LevelGageBg", basePath + L"Img_Skill_LevelGageBg.png");
+
+
+    vector<wstring> skillLevelBg_Five = {
+        L"UI_SkillLevelBg_Five", L"UI_SkillLevelBg_Five_LV1", L"UI_SkillLevelBg_Five_LV2",
+        L"UI_SkillLevelBg_Five_LV3", L"UI_SkillLevelBg_Five_LV4", L"UI_SkillLevelBg_Five_LV5"
+    };
+
+    vector<wstring> skillLevelBg_Three = {
+       L"UI_SkillLevelBg_Three", L"UI_SkillLevelBg_Three_LV1", L"UI_SkillLevelBg_Three_LV2",
+       L"UI_SkillLevelBg_Three_LV3"
+    };
+
+    for (int i = 0; i < skillLevelBg_Five.size(); i++)
+    {
+        LoadUIMaterial(skillLevelBg_Five[i], basePath + skillLevelBg_Five[i] + L".png");
+    }
+
+    for (int i = 0; i < skillLevelBg_Three.size(); i++)
+    {
+        LoadUIMaterial(skillLevelBg_Three[i], basePath + skillLevelBg_Three[i] + L".png");
     }
 }
 

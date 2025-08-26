@@ -19,15 +19,21 @@ public:
     void UpdateSkillCoolDown();
     void UpdateStatBar();
     void UpdatePlayerLevel();
+    void UpdateSkillLevelBar(int skillIndex);
 
 protected:
-
     virtual void CreatePanels();
+
+    void CreateSkillIcons();
+    void CreateStatBars();
+    void CreateCharacterImage();
 
     virtual void RegisterUIObject(shared_ptr<GameObject> uiObject);
 
 private:
     shared_ptr<Player> m_player;
+
+
     int m_selectedCharIdx;
 };
 

@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "SkillLevelUpPanelUI.h"
 
+#include "GameHUDPanelUI.h"
+
 #include "Player.h"
 
 SkillLevelUpPanelUI::SkillLevelUpPanelUI(shared_ptr<Player> player)
@@ -53,8 +55,21 @@ void SkillLevelUpPanelUI::CreatePanels()
 	{
 		auto skillLevelUpBtn = panel->AddButton(Vec2(10 + 43 * i, 25), Vec2(48, 52), cloneMaterial_skillLevelUpBtn->Clone(), L"SkillLevelUpBtn" + to_wstring(i));
 		skillLevelUpBtn->OnClick += [this, i] {
+
+			if (m_player->GetStatus().availableSkillPoints <= 0)
+				return;
+
+			ISkill* skill = m_player->GetSkill(i);
+
+			int curSkillLevel = skill->GetCurSkillLevel();
+			int maxSkillLevel = skill->GetMaxSkillLevel();
+
+			if (curSkillLevel == maxSkillLevel) return;
+
+			m_gameHUD.lock()->UpdateSkillLevelBar(i);
 			m_player->GetSkill(i)->SkillLevelUp();
 			m_player->GetStatus().availableSkillPoints--;
+
 		};
 	}
 

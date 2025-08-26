@@ -16,7 +16,10 @@ UIManager::UIManager(shared_ptr<Player> player, int selectedCharIdx)
 	, m_player(player)
 {
 	m_gameHUD = make_shared<GameHUDPanelUI>(player, selectedCharIdx);
+
 	m_skillLevelUp = make_shared<SkillLevelUpPanelUI>(player);
+	
+
 	m_playerStatus = make_shared<PlayerStatusPanelUI>(player);
 	m_time = make_shared<TimePanelUI>();
 	m_day = make_shared<DayPanelUI>();
@@ -52,6 +55,8 @@ void UIManager::InitializeUI()
 {
 	m_gameHUD->Initialize();
 	m_skillLevelUp->Initialize();
+	m_skillLevelUp->SetGameHUDPanelUI(m_gameHUD);
+	
 	m_playerStatus->Initialize();
 	m_time->Initialize();
 	m_day->Initialize();

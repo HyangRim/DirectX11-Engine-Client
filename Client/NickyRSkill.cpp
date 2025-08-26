@@ -10,6 +10,8 @@ NickyRSkill::NickyRSkill(shared_ptr<Player> _player)
 {
 	m_skillCooldown = 2.f;
 
+	SetMaxSkillLevel(3);
+
 	m_skillImage = RESOURCES->GetOrAddTexture(L"NickyR", L"..\\Resources\\Textures\\UI\\SkillIcon\\SkillIcon_1033500.png");
 }
 

@@ -193,8 +193,7 @@ void Player::LevelUp()
 	if (m_status.level >= 20)
 		return;
 
-	AddSkillPoint(1);
-
+	
 	//총 레벨업해야되는 값 ( 예를들어 경험치가 들어왔는데 최대 exp를 훨씬 초과하는 경우. ex) 2레벨업, 3레벨업 씩 해야되는경우
 	int shouldLevelUpValue = 0;
 	while (m_status.curExp >= m_status.curExpLimit)
@@ -205,6 +204,8 @@ void Player::LevelUp()
 	}
 
 	//m_status.curExp -= m_status.curExpLimit;
+	m_status.availableSkillPoints += shouldLevelUpValue;
+
 	SetLevel(m_status.level + shouldLevelUpValue);
 
 	wstring levelStr = to_wstring(m_status.level);

@@ -67,6 +67,23 @@ void GameHUDPanelUI::CreatePanels()
 	m_panel->SetLayerIndex(LAYER_UI);
 
 
+	CreateSkillIcons();
+	CreateStatBars();
+	CreateCharacterImage();
+
+
+	
+
+
+	
+	CURSCENE->AddUIObject(m_panel, true);
+	CURSCENE->RegisterUIParent(m_panel);
+}
+
+void GameHUDPanelUI::CreateSkillIcons()
+{
+	auto panel = m_panel->GetUIPanel();
+
 	wstring characterTag = L"";
 	if (m_selectedCharIdx == 0) characterTag = L"Bianca";
 	else if (m_selectedCharIdx == 1) characterTag = L"Nicky";
@@ -105,6 +122,33 @@ void GameHUDPanelUI::CreatePanels()
 	textR->SetUpdateInterval(1.f);
 
 
+	wstring baseImageTag_skillLevelFive = L"UI_SkillLevelBg_Five";
+	wstring baseImageTag_skillLevelThree = L"UI_SkillLevelBg_Three";
+
+	//스킬 레벨 이미지들
+	for (int i = 4; i < 8; i++)
+	{
+		shared_ptr<Material> cloneMaterial;
+		//궁극기는 3레벨짜리로
+		if (i == 7)
+		{
+			cloneMaterial = RESOURCES->Get<Material>(baseImageTag_skillLevelThree)->Clone();
+			imageUI->AddImageLayer(i, Vec2(128 + 43 * (i - 4), 40), Vec2(35, 4), cloneMaterial, 1);
+		}
+		//QWE는 5레벨짜리로
+		else
+		{		
+			cloneMaterial = RESOURCES->Get<Material>(baseImageTag_skillLevelFive)->Clone();
+			imageUI->AddImageLayer(i, Vec2(128 + 43 * (i - 4), 40), Vec2(35, 4), cloneMaterial, 1);
+		}
+	}
+
+}
+
+void GameHUDPanelUI::CreateStatBars()
+{
+	auto panel = m_panel->GetUIPanel();
+	
 	//HP바 UI
 	auto hpPanel = panel->AddPanel(Vec2(194, 70.f), Vec2(153, 10), nullptr, L"ChildHPPanel");
 	hpPanel->AddD2DText(
@@ -156,6 +200,11 @@ void GameHUDPanelUI::CreatePanels()
 	auto expPanelImageUI = expPanel->AddImageUI(Vec2(0.f), L"EXPPanelImageUI");
 	expPanelImageUI->AddImageLayer(0, Vec2(153, 10) / 2.f, Vec2(153, 10) * (1 / RESOLUTION_CONSTANT), RESOURCES->Get<Material>(L"HPBar_UI")->Clone(), 1);
 
+}
+
+void GameHUDPanelUI::CreateCharacterImage()
+{
+	auto panel = m_panel->GetUIPanel();
 
 	//캐릭터 이미지 패널 + 레벨
 	//캐릭터 초상화
@@ -181,32 +230,6 @@ void GameHUDPanelUI::CreatePanels()
 		TextAlignment::Center
 	);
 
-
-	/*m_skillLevelUpPanel = make_shared<GameObject>();
-	m_skillLevelUpPanel->SetName(L"SkillLevelUpPanel");
-
-	auto skillPanel = make_shared<UIPanel>();
-	m_skillLevelUpPanel->AddComponent(skillPanel);
-
-	skillPanel->Create(Vec2(602.f, 768 - 57 - 85), Vec2(153, 40), Vec4(1.f, 1.f, 1.f, 0.7f), nullptr);
-	m_skillLevelUpPanel->SetLayerIndex(LAYER_UI);
-
-	shared_ptr<Material> cloneMaterial_skillLevelUpBtn = RESOURCES->Get<Material>(L"Btn_LevelUp_MouseOver");
-	for (int i = 0; i < 4; i++)
-	{
-		auto skillLevelUpBtn = skillPanel->AddButton(Vec2(10 + 43 * i, 25), Vec2(48, 52), cloneMaterial_skillLevelUpBtn->Clone(), L"SkillLevelUpBtn" + to_wstring(i));
-		skillLevelUpBtn->OnClick += [this, i] {
-			m_player->GetSkill(i)->SkillLevelUp();
-			m_player->GetStatus().availableSkillPoints--;
-			};
-	}*/
-
-
-	CURSCENE->AddUIObject(m_panel, true);
-	CURSCENE->RegisterUIParent(m_panel);
-
-	//CURSCENE->AddUIObject(m_skillLevelUpPanel, true);
-	//CURSCENE->RegisterUIParent(m_skillLevelUpPanel);
 }
 
 void GameHUDPanelUI::RegisterUIObject(shared_ptr<GameObject> uiObject)
@@ -289,4 +312,35 @@ void GameHUDPanelUI::UpdatePlayerLevel()
 	PlayerStatus& playerStatus = m_player->GetStatus();
 
 	levelPanel->GetD2DText(L"LevelText")->SetText(to_wstring(playerStatus.level));
+}
+
+
+void GameHUDPanelUI::UpdateSkillLevelBar(int skillIndex)
+{
+	ISkill* skill = m_player->GetSkill(skillIndex);
+
+	int curSkillLevel = skill->GetCurSkillLevel();
+	
+	curSkillLevel += 1;
+
+	auto imageUI = m_panel->GetUIPanel()->GetImageUI(L"ImageUI");
+	wstring baseNameFive = L"UI_SkillLevelBg_Five_";
+	wstring baseNameThree = L"UI_SkillLevelBg_Three_";
+	wstring materialName;
+
+	shared_ptr<Material> cloneMaterial;
+
+	if (skillIndex == 3)
+	{
+		materialName = baseNameThree + L"LV" + to_wstring(curSkillLevel);
+		cloneMaterial = RESOURCES->Get<Material>(materialName)->Clone();
+		imageUI->SetMaterial(skillIndex + 4, cloneMaterial);
+	}
+	else
+	{
+		materialName = baseNameFive + L"LV" + to_wstring(curSkillLevel);
+		cloneMaterial = RESOURCES->Get<Material>(materialName)->Clone();
+		imageUI->SetMaterial(skillIndex + 4, cloneMaterial);
+	}
+
 }

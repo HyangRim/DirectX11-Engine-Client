@@ -553,6 +553,9 @@ void PlayerStateMachine::CheckMovementCompletion()
 
 void PlayerStateMachine::HandleSkillInput()
 {
+    if (INPUT->GetButtonDown(KEY_TYPE::LCTRL) || INPUT->GetButton(KEY_TYPE::LCTRL))
+        return;
+
     // Q ½ºÅ³
     if (INPUT->GetButtonDown(KEY_TYPE::Q))
     {

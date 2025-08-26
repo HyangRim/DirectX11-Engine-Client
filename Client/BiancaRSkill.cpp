@@ -12,7 +12,7 @@ BiancaRSkill::BiancaRSkill(shared_ptr<Player> _player)
 		m_skillName = L"진조의 군림";
 		m_skillDesc = L"비앙카가 주문 영창을 하며 자신의 주변에 마법진을 생성합니다.";
 		m_curSkillLevel = 0;
-		m_maxSkillLevel = 5;
+		m_maxSkillLevel = 3;
 		m_skillImage = RESOURCES->GetOrAddTexture(L"BiancaR", L"..\\Resources\\Textures\\UI\\SkillIcon\\SkillIcon_1042500.png");
 	}
 
