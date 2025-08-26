@@ -164,6 +164,7 @@ void ItemManager::CreatItems()
 			equipableItem->SetItemType(itemType[i]);
 			equipableItem->SetItemGrade(itemGrade[i]);
 			equipableItem->SetEquipType(equipableItemType[i]);
+			equipableItem->SetStatus(equipableItemStatus[i]);
 
 			m_itemsContainerByName[itemIconTag[i]] = equipableItem;
 			m_itemsContainerByID[itemIconID[i]] = equipableItem;
