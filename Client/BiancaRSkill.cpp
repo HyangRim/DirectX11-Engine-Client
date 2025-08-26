@@ -3,6 +3,7 @@
 #include "BiancaESkillCircle.h"
 #include "SnowBillboard.h"
 #include "Player.h"
+#include "Monster.h"
 
 BiancaRSkill::BiancaRSkill(shared_ptr<Player> _player)
 	: Super(_player, 3)
@@ -120,6 +121,7 @@ void BiancaRSkill::PlaySkill()
 	if (!skillFlag) {
 		skillFlag = true;
 		phaseTwo = false;
+		m_innerCircle->DamageFlag(true);
 		m_outerCircle->DamageFlag(true);
 		m_outerCircle->SetActive(true);
 		m_drainCircle->SetActive(true);
@@ -150,13 +152,19 @@ void BiancaRSkill::Update()
 			m_drainCircle->SetActive(false);
 			phaseTwo = true;
 			m_innerCircle->SetActive(true);
-			m_innerCircle->DamageFlag(true);
+			
 			m_circleFollowBianca = false;
 			//µ¥¹ÌÁö ÁÖ±â. 
 			auto gameObjects = m_outerCircle->GetCollisionObjects();
+
+			for (auto object : gameObjects) {
+				if (object->GetType() == OBJECTTYPE::MONSTER) {
+					static_pointer_cast<Monster>(object)->Damaged(m_playerObject, m_playerObject->GetStatus().hitAttack * 1.7f);
+				}
+				SOUND->PlaySound(L"Bianca/Bianca_Skill04_Active.wav", 1, 0.5f);
+			}
 			//cout << "InnerCircle Àü°³.";
 			m_outerCircle->DamageFlag(false);
-			SOUND->PlaySound(L"Bianca/Bianca_Skill04_Active.wav", 1, 0.5f);
 		}
 	}
 
@@ -178,12 +186,19 @@ void BiancaRSkill::Update()
 
 			//ÀÌÆåÆ® ÈÄ. µ¥¹ÌÁö ÁÜ. 
 			auto gameObjects = m_innerCircle->GetCollisionObjects();
+
+			for (auto object : gameObjects) {
+				if (object->GetType() == OBJECTTYPE::MONSTER) {
+					static_pointer_cast<Monster>(object)->Damaged(m_playerObject, m_playerObject->GetStatus().hitAttack * 2.5f);
+				}
+				SOUND->PlaySound(L"Bianca/Bianca_Skill04_End.wav", 1, 0.5f);
+			}
 			
 			m_circleFollowBianca = true;
 			m_innerCircle->SetActive(false);
 			m_outerCircle->SetActive(false);
 			SkillEnd();
-			SOUND->PlaySound(L"Bianca/Bianca_Skill04_End.wav", 1, 0.5f);
+			//SOUND->PlaySound(L"Bianca/Bianca_Skill04_End.wav", 1, 0.5f);
 			cout << "ºñ¾ÓÄ« ±Ã±Ø±â ³¡\n";
 		}
 	}
