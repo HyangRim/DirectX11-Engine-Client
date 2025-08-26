@@ -111,16 +111,16 @@ void LumiaIsland::Start()
 
 
 	////Monster Ãß°¡.
-	CreateMonsterWolf(Vec3(15, 18, 15.758));
-	CreateMonsterAlpha(Vec3(20, 18, 15.22));
+	//CreateMonsterWolf(Vec3(15, 18, 15.758));
+	//CreateMonsterAlpha(Vec3(20, 18, 15.22));
 
 
-	//CreateMonsterWolf(Vec3(45.587, 18, 49.758));
-	//CreateMonsterWolf(Vec3(48.587, 18, 48.268));
-	//CreateMonsterWolf(Vec3(51.587, 18, 50.228));
+	CreateMonsterWolf(Vec3(45.587, 18, 49.758));
+	CreateMonsterWolf(Vec3(48.587, 18, 48.268));
+	CreateMonsterWolf(Vec3(51.587, 18, 50.228));
 
-	//CreateMonsterWolf(Vec3(72.0, 18, 13.228), Vec3(0.f, 135.f, 0.f));
-	//CreateMonsterAlpha(Vec3(116.722, 18, 108.22));
+	CreateMonsterWolf(Vec3(72.0, 18, 13.228), Vec3(0.f, 135.f, 0.f));
+	CreateMonsterAlpha(Vec3(116.722, 18, 108.22));
 
 	
 
