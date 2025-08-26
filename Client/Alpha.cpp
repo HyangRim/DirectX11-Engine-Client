@@ -32,6 +32,7 @@ Alpha::Alpha(shared_ptr<Shader> _shader)
 	: Super(_shader)
 {
 	SetName(L"Alpha");
+	m_itembox = make_shared<ItemBox>();
 }
 
 Alpha::~Alpha()
@@ -243,7 +244,6 @@ void Alpha::InitAlphaComponent()
 	m_collider->SetVisible(false);
 	m_rigidbody = make_shared<Rigidbody>();
 	m_navAgent = make_shared<NavMeshAgent>();
-	m_itembox = make_shared<ItemBox>();
 
 	//m_skill = make_shared<AlphaSkill>(shared_from_this());
 

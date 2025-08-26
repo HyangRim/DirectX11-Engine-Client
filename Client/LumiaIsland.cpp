@@ -58,7 +58,6 @@
 
 LumiaIsland::LumiaIsland()
 {
-	
 }
 
 LumiaIsland::~LumiaIsland()
@@ -111,16 +110,38 @@ void LumiaIsland::Start()
 
 
 	////Monster Ãß°¡.
-	CreateMonsterWolf(Vec3(15, 18, 15.758));
-	CreateMonsterAlpha(Vec3(20, 18, 15.22));
+	{
+		auto wolf = CreateMonsterWolf(Vec3(15, 18, 15.758));
+		wolf->GetItemBox()->GetBoxInventory()[0] = ItemManager::GetInstance()->GetItem(L"¼è±¸½½");
+	}
+	{
+		auto wolf = CreateMonsterWolf(Vec3(20, 18, 15.22));
+		wolf->GetItemBox()->GetBoxInventory()[0] = ItemManager::GetInstance()->GetItem(L"¿îµ¿È­");
+	}
 
+	{
+		auto wolf = CreateMonsterWolf(Vec3(45.587, 18, 49.758));
+		wolf->GetItemBox()->GetBoxInventory()[0] = ItemManager::GetInstance()->GetItem(L"²É");
+	}
+	{
+		auto wolf = CreateMonsterWolf(Vec3(48.587, 18, 48.268));
+		wolf->GetItemBox()->GetBoxInventory()[0] = ItemManager::GetInstance()->GetItem(L"¿ø¼®");
 
-	//CreateMonsterWolf(Vec3(45.587, 18, 49.758));
-	//CreateMonsterWolf(Vec3(48.587, 18, 48.268));
-	//CreateMonsterWolf(Vec3(51.587, 18, 50.228));
+	}
+	{
+		auto wolf = CreateMonsterWolf(Vec3(51.587, 18, 50.228));
+		wolf->GetItemBox()->GetBoxInventory()[0] = ItemManager::GetInstance()->GetItem(L"µ¨Å¸ ·¹µå");
 
-	//CreateMonsterWolf(Vec3(72.0, 18, 13.228), Vec3(0.f, 135.f, 0.f));
-	//CreateMonsterAlpha(Vec3(116.722, 18, 108.22));
+	}
+	{
+		auto wolf = CreateMonsterWolf(Vec3(72.0, 18, 13.228), Vec3(0.f, 135.f, 0.f));
+		wolf->GetItemBox()->GetBoxInventory()[0] = ItemManager::GetInstance()->GetItem(L"ºØ´ë");
+		wolf->GetItemBox()->GetBoxInventory()[1] = ItemManager::GetInstance()->GetItem(L"±êÅÐ");
+		wolf->GetItemBox()->GetBoxInventory()[2] = ItemManager::GetInstance()->GetItem(L"µ¹¸æÀÌ");
+	}
+	{
+		CreateMonsterAlpha(Vec3(116.722, 18, 108.22));
+	}
 
 	
 
@@ -1686,6 +1707,8 @@ void LumiaIsland::CreateCemeteryItemBox()
 			obj->GetModelRenderer()->SetModel(m2);
 			obj->GetModelRenderer()->SetPass(1);
 		}
+
+		obj->GetComponent<ItemBox>()->GetBoxInventory()[0] = ItemManager::GetInstance()->GetItem(L"¿î¸íÀÇ ¼ö·¹¹ÙÄû");
 		CURSCENE->Add(obj);
 	}
 
@@ -1708,6 +1731,7 @@ void LumiaIsland::CreateCemeteryItemBox()
 			obj->GetModelRenderer()->SetModel(m2);
 			obj->GetModelRenderer()->SetPass(1);
 		}
+		obj->GetComponent<ItemBox>()->GetBoxInventory()[0] = ItemManager::GetInstance()->GetItem(L"ºñÁú¶õÅ×");
 		CURSCENE->Add(obj);
 	}
 
@@ -1730,6 +1754,7 @@ void LumiaIsland::CreateCemeteryItemBox()
 			obj->GetModelRenderer()->SetModel(m2);
 			obj->GetModelRenderer()->SetPass(1);
 		}
+		obj->GetComponent<ItemBox>()->GetBoxInventory()[0] = ItemManager::GetInstance()->GetItem(L"¾î»çÀÇ");
 		CURSCENE->Add(obj);
 	}
 
@@ -1826,7 +1851,7 @@ void LumiaIsland::CreateCharacterBianca()
 	CURSCENE->Add(bianca);
 }
 
-void LumiaIsland::CreateMonsterWolf(Vec3 _pos, Vec3 _rot)
+shared_ptr<Wolf> LumiaIsland::CreateMonsterWolf(Vec3 _pos, Vec3 _rot)
 {
 	shared_ptr<Wolf> wolf = make_shared<Wolf>(m_defaultshader);
 
@@ -1834,9 +1859,11 @@ void LumiaIsland::CreateMonsterWolf(Vec3 _pos, Vec3 _rot)
 	wolf->GetTransform()->SetRotation(_rot);
 	wolf->GetTransform()->SetScale(Vec3(2.f));
 	CURSCENE->Add(wolf);
+
+	return wolf;
 }
 
-void LumiaIsland::CreateMonsterAlpha(Vec3 _pos, Vec3 _rot)
+shared_ptr<Alpha> LumiaIsland::CreateMonsterAlpha(Vec3 _pos, Vec3 _rot)
 {
 	shared_ptr<Alpha> alpha = make_shared<Alpha>(m_defaultshader);
 
@@ -1844,6 +1871,8 @@ void LumiaIsland::CreateMonsterAlpha(Vec3 _pos, Vec3 _rot)
 	alpha->GetTransform()->SetRotation(_rot);
 	alpha->GetTransform()->SetScale(Vec3(2.f));
 	CURSCENE->Add(alpha);
+
+	return alpha;
 }
 
 void LumiaIsland::CreateCursor()

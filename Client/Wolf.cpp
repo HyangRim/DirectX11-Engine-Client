@@ -33,6 +33,7 @@ Wolf::Wolf(shared_ptr<Shader> _shader)
 	: Super(_shader)
 {
 	SetName(L"Wolf");
+	m_itembox = make_shared<ItemBox>();
 }
 
 Wolf::~Wolf()
@@ -206,7 +207,7 @@ void Wolf::InitWolfComponent()
 	//m_collider->SetVisible(false);
 	m_rigidbody = make_shared<Rigidbody>();
 	m_navAgent = make_shared<NavMeshAgent>();
-	m_itembox = make_shared<ItemBox>();
+	//m_itembox = make_shared<ItemBox>();
 
 	//행동 스크립트? 컴포넌트?
 	auto attackScript = make_shared<WolfBaseAttack>();
@@ -263,6 +264,6 @@ void Wolf::InitWolfMSM()
 
 void Wolf::InitWolfStats()
 {
-	m_monsterStatus.hp = 350;
+	m_monsterStatus.hp = 250;
 	
 }

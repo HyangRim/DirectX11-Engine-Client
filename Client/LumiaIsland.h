@@ -10,6 +10,8 @@ class GameObject;
 class Player;
 class Cursor;
 class BiancaCamera;
+class Wolf;
+class Alpha;
 
 class LumiaIsland :
     public Scene
@@ -48,8 +50,8 @@ private:
 	void CreateCharacterNicky();
 	void CreateCharacterBianca();
 
-	void CreateMonsterWolf(Vec3 _pos, Vec3 _rot = Vec3(0,0,0));
-	void CreateMonsterAlpha(Vec3 _pos, Vec3 _rot = Vec3(0,0,0));
+	shared_ptr<Wolf> CreateMonsterWolf(Vec3 _pos, Vec3 _rot = Vec3(0,0,0));
+	shared_ptr<Alpha> CreateMonsterAlpha(Vec3 _pos, Vec3 _rot = Vec3(0,0,0));
 
 	//=====================UI관련 함수=====================//
 	void CreateCursor();

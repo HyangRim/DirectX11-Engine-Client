@@ -80,9 +80,9 @@ void InventoryPanelUI::CreateInventorySlots()
 			int slotIndex = row * slotsX + col;
 
 			// ItemSlot »ý¼º
-			shared_ptr<ItemSlot> itemSlot;
+			shared_ptr<ItemSlot> itemSlot = make_shared<ItemSlot>(nullptr, true);
 
-			if		(row == 0 && col == 0) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"¸ÁÄ¡"), true);
+	/*		if		(row == 0 && col == 0) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"¸ÁÄ¡"), true);
 			else if (row == 0 && col == 1) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"¼è±¸½½"), true);
 			else if (row == 0 && col == 2) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"¿îµ¿È­"), true);
 			else if (row == 0 && col == 3) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"¿ø¼®"), true);
@@ -94,7 +94,7 @@ void InventoryPanelUI::CreateInventorySlots()
 			else if (row == 1 && col == 3) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"µ¹¸æÀÌ"), true);
 			else if (row == 1 && col == 4) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"µ¨Å¸ ·¹µå"), true);
 
-			else itemSlot =	make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"µ¹¸æÀÌ"), true);
+			else itemSlot =	make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"µ¹¸æÀÌ"), true);*/
 
 			itemSlot->SetSlotType(SLOTTYPE::INVENTORY);
 			Vec2 slotPos = Vec2(

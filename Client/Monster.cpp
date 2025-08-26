@@ -207,5 +207,5 @@ void Monster::Death(shared_ptr<GameObject> killer)
 
 float Monster::CalculateExpReward()
 {
-	return 1000.f;
+	return 500.f;
 }

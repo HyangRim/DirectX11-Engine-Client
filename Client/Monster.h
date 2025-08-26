@@ -67,6 +67,7 @@ public:
     void Death(shared_ptr<GameObject> killer);
 
     float CalculateExpReward();
+    shared_ptr<ItemBox> GetItemBox() { return m_itembox; }
 
 protected:
     //아이템 보유 가능. 죽을 시 열어볼 수 있음. 

@@ -33,7 +33,7 @@ protected:
 
 private:
     vector<shared_ptr<ItemSlot>> m_inventorySlots;
-   
+ 
 };
 
 
