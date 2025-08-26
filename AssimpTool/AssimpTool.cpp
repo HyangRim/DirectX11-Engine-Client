@@ -74,34 +74,22 @@ void AssimpTool::Start()
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Cemetery_STR_GraveBase_01.fbx");
+		converter->ReadAssetFile(L"Map2/ChurchBase.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Map2/Cemetery_STR_GraveBase_01");
-		converter->ExportModelData(L"Map2/Cemetery_STR_GraveBase_01");
+		converter->ExportMaterialData(L"Map2/ChurchBase");
+		converter->ExportModelData(L"Map2/ChurchBase");
 
 		//CustomData -> Memory;
 	}
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Cemetery_STR_OuterWall_01.fbx");
+		converter->ReadAssetFile(L"Map2/FactoryBase.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Map2/Cemetery_STR_OuterWall_01");
-		converter->ExportModelData(L"Map2/Cemetery_STR_OuterWall_01");
-
-		//CustomData -> Memory;
-	}
-
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Cemetery_STR_OuterWall_01_Fence.fbx");
-
-		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Map2/Cemetery_STR_OuterWall_01_Fence");
-		converter->ExportModelData(L"Map2/Cemetery_STR_OuterWall_01_Fence");
+		converter->ExportMaterialData(L"Map2/FactoryBase");
+		converter->ExportModelData(L"Map2/FactoryBase");
 
 		//CustomData -> Memory;
 	}
@@ -109,70 +97,11 @@ void AssimpTool::Start()
 	{
 		shared_ptr<Converter> converter = make_shared<Converter>();
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Tree_Ancient_01.fbx");
+		converter->ReadAssetFile(L"Map2/HospitalBase.fbx");
 
 		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Map2/Tree_Ancient_01");
-		converter->ExportModelData(L"Map2/Tree_Ancient_01");
-
-		//CustomData -> Memory;
-	}
-
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Tree_Ancient_03.fbx");
-
-		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Map2/Tree_Ancient_03");
-		converter->ExportModelData(L"Map2/Tree_Ancient_03");
-
-		//CustomData -> Memory;
-	}
-
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Tree_Cherry_01.fbx");
-
-		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Map2/Tree_Cherry_01");
-		converter->ExportModelData(L"Map2/Tree_Cherry_01");
-
-		//CustomData -> Memory;
-	}
-
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Tree_08_Re.fbx");
-
-		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Map2/Tree_08_Re");
-		converter->ExportModelData(L"Map2/Tree_08_Re");
-
-		//CustomData -> Memory;
-	}
-
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Tree_05_Re.fbx");
-
-		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Map2/Tree_05_Re");
-		converter->ExportModelData(L"Map2/Tree_05_Re");
-
-		//CustomData -> Memory;
-	}
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/Tree_04_Re.fbx");
-
-		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Map2/Tree_04_Re");
-		converter->ExportModelData(L"Map2/Tree_04_Re");
+		converter->ExportMaterialData(L"Map2/HospitalBase");
+		converter->ExportModelData(L"Map2/HospitalBase");
 
 		//CustomData -> Memory;
 	}

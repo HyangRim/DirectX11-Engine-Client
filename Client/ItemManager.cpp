@@ -80,19 +80,20 @@ const vector<EquipmentType> equipableItemType = {
 };
 
 const vector<ItemStatus> equipableItemStatus = {
-	{0}, {0}, {0}, {0}, {0},
-	{0}, {0}, {0}, {0}, {0},
-	{0}, {0}, {0}, {0}, {0},
-	{0}, {0}, {0}, {0}, {0},
+	{50}, {50}, {50}, {0}, {30, 0, 150},
+	{30, 0, 150}, {30, 0, 150}, {30, 0, 150}, {50, 0, 300, 150, 0, 0, 5}, {50, 0, 300, 150, 0, 0, 5},
+	{50, 0, 300, 150, 0, 0, 5}, {15, 0, 0, 0, 0.2f, 0, 0, 0, 0, 0.15f}, {0}, {0}, {15, 0, 0, 0, 0.2f, 0, 0, 0, 0, 0.15f},
+	{10, 0, 0, 0, 0, 0.2f}, {10, 0, 0, 0, 0, 0.2f}, {0}, {0}, {0},
 	{0}, {0}, {0}, {0}, {0},
 	{0}, {0}, {0}, {0},
 
-	{0}, {0}, {0}, {0}, {0},
-	{0}, {0}, {0}, {0}, {0},
-	{0}, {0}, {0}, {0}, {0},
+	{0}, {0}, {0}, {50}, {50},
+	{50}, {50, 0, 300, 150, 0, 0, 5}, {50, 0, 300, 150, 0, 0, 5}, {50, 0, 300, 150, 0, 0, 5}, {0},
+	{15, 0, 0, 0, 0.2f, 0, 0, 0, 0, 0.15f}, {10, 0, 0, 0, 0, 0.2f}, {10, 0, 0, 0, 0, 0.2f}, {0}, {0},
 	{0}, {0}, {0}, {0}, {0},
 	{0}, {0}
 };
+
 
 ItemManager::~ItemManager()
 {
@@ -164,6 +165,7 @@ void ItemManager::CreatItems()
 			equipableItem->SetItemType(itemType[i]);
 			equipableItem->SetItemGrade(itemGrade[i]);
 			equipableItem->SetEquipType(equipableItemType[i]);
+			equipableItem->SetStatus(equipableItemStatus[i]);
 
 			m_itemsContainerByName[itemIconTag[i]] = equipableItem;
 			m_itemsContainerByID[itemIconID[i]] = equipableItem;

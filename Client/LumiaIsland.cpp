@@ -332,7 +332,7 @@ void LumiaIsland::CreateDefaultLight()
 void LumiaIsland::SelectCharacter()
 {
 	//테스트용 임시 강제 설정
-	m_selectedCharacterIdx = 1;
+	m_selectedCharacterIdx = 0;
 
 
 	if (m_selectedCharacterIdx == 0) {
@@ -366,7 +366,7 @@ void LumiaIsland::CreateCemeteryBase()
 	obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
 	obj->GetTransform()->SetLocalPosition(Vec3(0, 0, 0));
 	obj->GetTransform()->SetLocalRotation(Vec3(0, 0.f, 0));
-	obj->AddComponent(make_shared<SphereCollider>());
+	//obj->AddComponent(make_shared<SphereCollider>());
 	obj->GetTransform()->SetLocalScale(Vec3(0.02f));
 	obj->SetType(OBJECTTYPE::MAP);
 
@@ -377,6 +377,76 @@ void LumiaIsland::CreateCemeteryBase()
 	}
 
 	CURSCENE->Add(obj);
+
+	//ChurchBase
+	{
+		shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"ChurchBase", L"map2/ChurchBase");
+		//m2->ReadModel(L"forest/forest");
+		m2->ReadMaterial(L"map2/ChurchBase");
+		auto obj = make_shared<GameObject>();
+		obj->SetName(L"ChurchBase");
+		obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+		obj->GetTransform()->SetLocalPosition(Vec3(-76.3f, 17.5f, -52.f));
+		obj->GetTransform()->SetLocalRotation(Vec3(0, 0.f, 0));
+		obj->AddComponent(make_shared<SphereCollider>());
+		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+		obj->SetType(OBJECTTYPE::MAP);
+
+		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+		{
+			obj->GetModelRenderer()->SetModel(m2);
+			obj->GetModelRenderer()->SetPass(1);
+		}
+
+		CURSCENE->Add(obj);
+	}
+
+	//ChurchBase
+	{
+		shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"FactoryBase", L"map2/FactoryBase");
+		//m2->ReadModel(L"forest/forest");
+		m2->ReadMaterial(L"map2/FactoryBase");
+		auto obj = make_shared<GameObject>();
+		obj->SetName(L"FactoryBase");
+		obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+		obj->GetTransform()->SetLocalPosition(Vec3(-76.3f, 17.5f, -52.f));
+		obj->GetTransform()->SetLocalRotation(Vec3(0, 0.f, 0));
+		obj->AddComponent(make_shared<SphereCollider>());
+		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+		obj->SetType(OBJECTTYPE::MAP);
+
+		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+		{
+			obj->GetModelRenderer()->SetModel(m2);
+			obj->GetModelRenderer()->SetPass(1);
+		}
+
+		CURSCENE->Add(obj);
+	}
+
+	{
+		shared_ptr<Model> m2 = RESOURCES->GetOrAddModel(L"HospitalBase", L"map2/HospitalBase");
+		//m2->ReadModel(L"forest/forest");
+		m2->ReadMaterial(L"map2/HospitalBase");
+		auto obj = make_shared<GameObject>();
+		obj->SetName(L"HospitalBase");
+		obj->GetTransform()->SetParent(m_CemeteryParent->GetTransform());
+		obj->GetTransform()->SetLocalPosition(Vec3(-76.3f, 17.f, -54.5f));
+		obj->GetTransform()->SetLocalRotation(Vec3(0, 0.f, 0));
+		obj->AddComponent(make_shared<SphereCollider>());
+		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
+		obj->SetType(OBJECTTYPE::MAP);
+
+		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
+		{
+			obj->GetModelRenderer()->SetModel(m2);
+			obj->GetModelRenderer()->SetPass(1);
+		}
+
+		CURSCENE->Add(obj);
+	}
+
+
 }
 
 void LumiaIsland::CreateCemeteryInterior()
