@@ -15,13 +15,11 @@ void AlphaAnimAppearState::Enter(shared_ptr<ModelAnimator> _animator)
     if (!_animator)
         return;
 
-    _animator->SetAnimationSpeed(m_playSpeed);
-    m_expectedDuration = _animator->GetAnimationDuration(L"Appear") / m_playSpeed;
-    // Wait 애니메이션 재생
     _animator->PlaySequence(L"Appear");
+    _animator->SetCurrentAnimationSpeed(m_playSpeed);
+    m_expectedDuration = _animator->GetAnimationDuration(L"Appear") / m_playSpeed;
 
     m_animTime = 0.0f;
-    m_isAnimationStarted = true;
     m_isAppearComplete = false;
     cout << "Alpha Appear 애니메이션 재생 시작" << endl;
 }
@@ -53,7 +51,6 @@ void AlphaAnimAppearState::Exit(shared_ptr<ModelAnimator> _animator)
 
     // 상태 종료 시 정리
     m_animTime = 0.0f;
-    m_isAnimationStarted = false;
     m_isAppearComplete = false;
     _animator->SetAnimationSpeed(1.f);
 }

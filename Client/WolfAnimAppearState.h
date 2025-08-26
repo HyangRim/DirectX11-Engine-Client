@@ -17,6 +17,8 @@ private:
     bool m_isAnimationStarted = false;
     bool m_isAppearComplete = false;  // 추가: 스킬 완료 플래그
 
+    float m_expectedDuration = 0.f;
+
     vector<float> m_sequenceDurations;
     float m_playSpeed = 2.f;
 };

@@ -23,6 +23,7 @@
 #include "AlphaSkill.h"
 
 #include "MonsterStateMachine.h"
+#include "MonsterInterface.h"
 
 #include "SkillObject.h"
 #include "Player.h"
@@ -79,32 +80,41 @@ void Alpha::OnCollision(shared_ptr<GameObject> _other)
 
 void Alpha::OnCollisionEnter(shared_ptr<GameObject> _other)
 {
-	shared_ptr<GameObject> chaseTarget = nullptr;
-	// 만약 _other가 Player라면 (직접 충돌)
-	if (dynamic_pointer_cast<Player>(_other)) {
-		chaseTarget = _other;
-	}
-	// 만약 _other가 스킬 오브젝트라면, owner를 찾아서 Player를 추적
-	else if (auto skillObj = dynamic_pointer_cast<SkillObject>(_other)) {
-		if (skillObj->GetOwner()) {
-			chaseTarget = skillObj->GetOwner();
-		}
-	}
+	//shared_ptr<GameObject> chaseTarget = nullptr;
+	//// 만약 _other가 Player라면 (직접 충돌)
+	//if (dynamic_pointer_cast<Player>(_other)) {
+	//	chaseTarget = _other;
+	//}
+	//// 만약 _other가 스킬 오브젝트라면, owner를 찾아서 Player를 추적
+	//else if (auto skillObj = dynamic_pointer_cast<SkillObject>(_other)) {
+	//	if (skillObj->GetOwner()) {
+	//		chaseTarget = skillObj->GetOwner();
+	//	}
+	//}
 
-	// 기타 예외 (추가 오브젝트 타입들은 필요시 확장)
-	if (chaseTarget) {
-		//static_pointer_cast<AlphaTraceState>(m_monsterStateMachine->GetState(MonsterStateType::Trace))->SetOtherObject(chaseTarget);
-		//static_pointer_cast<AlphaAttackState>(m_monsterStateMachine->GetState(MonsterStateType::Attack))->SetOtherObject(chaseTarget);
+	//// 기타 예외 (추가 오브젝트 타입들은 필요시 확장)
+	//if (chaseTarget) {
+	//	//static_pointer_cast<AlphaTraceState>(m_monsterStateMachine->GetState(MonsterStateType::Trace))->SetOtherObject(chaseTarget);
+	//	//static_pointer_cast<AlphaAttackState>(m_monsterStateMachine->GetState(MonsterStateType::Attack))->SetOtherObject(chaseTarget);
 
-		GetComponent<AlphaBaseAttack>()->SetTarget(chaseTarget);
+	//	GetComponent<AlphaBaseAttack>()->SetTarget(chaseTarget);
 
-		//m_monsterStateMachine->ChangeState(MonsterStateType::Trace);
-		//m_animationStateMachine->ChangeState(AnimationStateType::Trace);
+	//	//m_monsterStateMachine->ChangeState(MonsterStateType::Trace);
+	//	//m_animationStateMachine->ChangeState(AnimationStateType::Trace);
+	//}
+
+	if (_other->GetType() == OBJECTTYPE::PLAYER ||
+		(dynamic_pointer_cast<SkillObject>(_other) &&
+			dynamic_pointer_cast<SkillObject>(_other)->GetOwner()->GetType() == OBJECTTYPE::PLAYER))
+	{
+		SetAttacked(true);
+		cout << "몬스터가 공격받음" << endl;
 	}
 }
 
 void Alpha::OnCollisionExit(shared_ptr<GameObject> _other)
 {
+	SetAttacked(false);
 }
 
 void Alpha::PlaySkill(shared_ptr<GameObject> _target)
@@ -146,9 +156,9 @@ void Alpha::InitAlphaAnimation()
 	AddComponent(m_animationStateMachine);
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait, make_shared<AlphaAnimWaitState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Appear, make_shared<AlphaAnimAppearState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Move, make_shared<AlphaAnimWalkState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Death, make_shared<AlphaAnimDeathState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Dying, make_shared<AlphaAnimDyingState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Run, make_shared<AlphaAnimWalkState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Trace, make_shared<AlphaAnimTraceState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::BaseAttack, make_shared<AlphaAnimAttackState>());
 
@@ -209,11 +219,17 @@ void Alpha::InitAlphaMSM()
 	m_monsterStateMachine = make_shared<MonsterStateMachine>();
 	AddComponent(m_monsterStateMachine);
 
+	auto self = static_pointer_cast<Monster>(shared_from_this());
+	m_monsterInterface = make_shared<MonsterInterface>(self);
+
+	m_monsterStateMachine->SetMonsterInterface(m_monsterInterface);
+
 	m_monsterStateMachine->RegisterState(MonsterStateType::Wait,	make_shared<AlphaWaitState>());
 	m_monsterStateMachine->RegisterState(MonsterStateType::Appear,	make_shared<AlphaAppearState>());
-	m_monsterStateMachine->RegisterState(MonsterStateType::Move,	make_shared<AlphaWalkState>());
-	m_monsterStateMachine->RegisterState(MonsterStateType::Death,	make_shared<AlphaDeathState>());
-	m_monsterStateMachine->RegisterState(MonsterStateType::Dying,	make_shared<AlphaDyingState>());
+	m_monsterStateMachine->RegisterState(MonsterStateType::Death, make_shared<AlphaDeathState>());
+	m_monsterStateMachine->RegisterState(MonsterStateType::Dying, make_shared<AlphaDyingState>());
+	m_monsterStateMachine->RegisterState(MonsterStateType::Run,	make_shared<AlphaWalkState>());
+
 	m_monsterStateMachine->RegisterState(MonsterStateType::Trace,	make_shared<AlphaTraceState>(shared_from_this()));
 	m_monsterStateMachine->RegisterState(MonsterStateType::Attack,	make_shared<AlphaAttackState>(shared_from_this()));
 

@@ -20,7 +20,7 @@ void AlphaTraceState::Enter()
 
     auto attackScript = m_alpha->GetComponent<AlphaTrace>();
     if (attackScript) {
-        attackScript->SetTarget(m_otherObj);
+        attackScript->SetTarget(m_target);
         attackScript->StartTrace();
     }
 
@@ -52,9 +52,6 @@ bool AlphaTraceState::CanTransitionTo(MonsterStateType newState)
     case MonsterStateType::Death:
     case MonsterStateType::Wait:
         return true;
-
-    case MonsterStateType::Trace:
-        return false;
     default:
         return false;
     }

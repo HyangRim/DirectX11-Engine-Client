@@ -7,6 +7,7 @@ class Item;
 class HealthBar;
 class ItemBox;
 class AI;
+class MonsterInterface;
 
 struct MonsterStatus {
     int level = 1;
@@ -42,6 +43,9 @@ public:
 public:
     MonsterStatus& GetMonsterStatus() { return m_monsterStatus; }
     shared_ptr<Player> GetTarget() { return m_targetPlayer; }
+    bool IsAttacked() { return m_isAttacked; }
+    void SetAttacked(bool _isAttacked) { m_isAttacked = _isAttacked; }
+
     bool IsStun() { return m_isStun > 0.f ? true : false; }
     void SetLevel(int _value) { m_monsterStatus.level = _value; }
     void SetMaxHP(int32 _value) { m_monsterStatus.maxHp = _value; }
@@ -79,6 +83,9 @@ protected:
     shared_ptr<ItemBox> m_itembox;
 
     MonsterStatus m_monsterStatus;
+
+    shared_ptr<MonsterInterface> m_monsterInterface;
+
   
     shared_ptr<Player> m_targetPlayer;
     shared_ptr<HealthBar> m_healthBar;
@@ -89,5 +96,7 @@ protected:
 private:
     float m_isStun = 0.f;
     bool m_isDead = false;
+
+    bool m_isAttacked = false;
 };
 

@@ -3,7 +3,7 @@
 
 
 WolfRunState::WolfRunState()
-	:Super(MonsterStateType::Move)
+	:Super(MonsterStateType::Run)
 {
 
 }

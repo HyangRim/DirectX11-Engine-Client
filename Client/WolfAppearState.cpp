@@ -10,10 +10,9 @@ WolfAppearState::WolfAppearState()
 void WolfAppearState::Enter()
 {
 	m_animTime = 0.f;
-	m_isAnimationStarted = true;
 	m_isAppearComplete = false;
 
-
+	m_expectedDuration = (60.f / 25.f) / 2.f;
 
 	cout << "´Á´ë Appear State ÁøÀÔ\n";
 }

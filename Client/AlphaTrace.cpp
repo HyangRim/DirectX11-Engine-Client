@@ -31,34 +31,6 @@ void AlphaTrace::Update()
         m_navAgent->SetSpeed(m_traceSpeed);
         m_updateTimer = 0.0f;
     }
-
-    // 공격 사거리 진입시 상태머신에게 알림, 혹은 직접 상태 전환을 유도할 수도 있음
-    float distance = Vec3::Distance(otherObjPos, wolfPos);
-
-
-    if (distance < m_attackRange)
-    {
-        cout << "알파 공격 사거리 진입\n";
-        // ex) 상태머신의 상태 바꾸기
-        // 혹은 콜백/Delegate로 공격동작 시작 호출
-        auto msm = m_owner->GetMonsterStateMachine();
-        if (msm && msm->CanChangeState(MonsterStateType::Attack))
-        {
-            cout << "공격 거리 이내 - Attack State 상태로 전환" << endl;
-            //msm->ChangeState(MonsterStateType::Attack);
-            auto animSM = m_owner->GetAnimationStateMachine();
-            if (animSM) {
-                //animSM->ChangeState(AnimationStateType::BaseAttack);
-            }
-        }
-    }
-   /* else {
-        cout << "알파 거리 멀어짐\n";
-        auto animSM = m_owner->GetAnimationStateMachine();
-        if (animSM) {
-            animSM->ChangeState(AnimationStateType::Trace);
-        }
-    }*/
 }
 
 void AlphaTrace::StartTrace()

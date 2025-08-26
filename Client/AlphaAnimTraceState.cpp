@@ -10,11 +10,9 @@ void AlphaAnimTraceState::Enter(shared_ptr<ModelAnimator> _animator)
 {
     if (!_animator)
         return;
-    _animator->SetAnimationSpeed(m_playSpeed);
-    // Wait 애니메이션 재생
-    //_animator->SetAnimationByTag(L"Run", false);
-
     _animator->PlaySequence(L"Run");
+    _animator->SetCurrentAnimationSpeed(m_playSpeed);
+   
 
     m_idleTime = 0.0f;
     m_isAnimationStarted = true;
@@ -24,23 +22,8 @@ void AlphaAnimTraceState::Enter(shared_ptr<ModelAnimator> _animator)
 
 void AlphaAnimTraceState::Update(shared_ptr<ModelAnimator> _animator)
 {
-    if (!_animator)
-        return;
+    
 
-    // 대기 시간 업데이트
-    m_idleTime += DT;
-
-    // 애니메이션이 정상적으로 재생되고 있는지 확인
-    if (m_isAnimationStarted)
-    {
-        wstring currentAnimTag = _animator->GetCurrentAnimationTag();
-        if (currentAnimTag == L"Run")
-        {
-            //cout << "Run애니메이션 재생중...\n";
-            // Wait 애니메이션이 정상적으로 재생 중
-            // 필요시 추가 로직 구현
-        }
-    }
 }
 
 void AlphaAnimTraceState::Exit(shared_ptr<ModelAnimator> _animator)
@@ -61,15 +44,13 @@ bool AlphaAnimTraceState::CanTransitionTo(AnimationStateType _nextState)
     // Wait 상태에서는 대부분의 상태로 전환 가능
     switch (_nextState)
     {
-    case AnimationStateType::Move:
+
     case AnimationStateType::BaseAttack:
     case AnimationStateType::Run:
     case AnimationStateType::Dying:
-    case AnimationStateType::Death:   
-        return true;
-    case AnimationStateType::Trace:
+    case AnimationStateType::Death:
     case AnimationStateType::Wait:
-        return false;  // 자기 자신으로는 전환 불가
+        return true;
     default:
         return false;
     }

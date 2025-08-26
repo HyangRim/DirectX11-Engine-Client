@@ -4,7 +4,7 @@ enum class MonsterStateType
 {
     Wait,
     Appear,
-    Move,
+    Run,
     Death,
     Dying,
     Attack,
@@ -24,7 +24,11 @@ public:
 
     MonsterStateType GetType() const { return m_type; }
 
+    void SetTarget(shared_ptr<GameObject> _target) { m_target = _target; }
+    shared_ptr<GameObject> GetTarget() { return m_target; }
+
 protected:
+    shared_ptr<GameObject> m_target;
     MonsterStateType m_type;
     float m_expectedDuration;
 };

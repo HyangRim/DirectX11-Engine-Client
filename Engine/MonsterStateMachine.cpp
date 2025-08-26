@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include "AnimationStateMachine.h"
 #include "NavMeshAgent.h"
+#include "IMonster.h"
 
 MonsterStateMachine::MonsterStateMachine()
     : Super(ComponentType::MonsterStateMachine)
@@ -56,6 +57,10 @@ void MonsterStateMachine::Update()
 
     // AI 로직 처리
     ProcessAI();
+
+    // 상태 완료 체크들
+    CheckAppearCompletion();
+    CheckDeathCompletion();
 
     // 대기열의 상태 변경 요청 처리
     while (!m_stateChangeQueue.empty())
@@ -116,7 +121,14 @@ void MonsterStateMachine::ExecuteStateChange(MonsterStateType newState)
     m_currentState = m_states[newState];
     if (m_currentState)
     {
+        // 상태 진입 후 안전하게 타겟 설정
+        if (m_target && (newState == MonsterStateType::Trace || newState == MonsterStateType::Attack))
+        {
+            m_currentState->SetTarget(m_target);
+        }
+
         m_currentState->Enter();
+
     }
 
     // 상태 변경 완료 이벤트 발생
@@ -135,57 +147,123 @@ void MonsterStateMachine::ExecuteStateChange(MonsterStateType newState)
     }
 }
 
+void MonsterStateMachine::HandleDeath()
+{
+    if (m_monsterInterface->GetHP() <= 0)
+    {
+        RequestStateChange(MonsterStateType::Death);
+    }
+}
+
 void MonsterStateMachine::ProcessAI()
 {
-    // 타겟 감지 업데이트
-    UpdateTargetDetection();
+    // 1. 체력 체크 (최우선)
+    if (m_monsterInterface && m_monsterInterface->GetHP() <= 0)
+    {
+        // 아직 Death 상태가 아니라면 Death로 전환
+        if (!IsInState(MonsterStateType::Death) && !IsInState(MonsterStateType::Dying))
+        {
+            cout << "몬스터 사망 감지 - Death 상태로 전환" << endl;
+            RequestStateChange(MonsterStateType::Death);
 
-    // 현재 상태에 따른 AI 로직
+            if (m_animationStateMachine)
+                m_animationStateMachine->RequestStateChange(AnimationStateType::Death);
+
+            return; // 사망 처리 후 다른 AI 로직은 실행하지 않음
+        }
+    }
+
+    // 2. 죽지 않은 경우에만 일반 AI 로직 실행
+    if (IsInState(MonsterStateType::Death) || IsInState(MonsterStateType::Dying))
+        return;
+
+    // 3. 타겟 유효성 검사 및 거리 계산
+    float distanceToTarget = 0.0f;
+    bool hasValidTarget = false;
+
+    if (m_target && m_target->GetActive() && m_target->GetType() == OBJECTTYPE::PLAYER)
+    {
+        distanceToTarget = Vec3::Distance(
+            GetGameObject()->GetTransform()->GetPosition(),
+            m_target->GetTransform()->GetPosition()
+        );
+        hasValidTarget = true;
+    }
+
+    // 4. 새로운 상태 전환 로직 (피격 기반)
     MonsterStateType currentState = GetCurrentState();
 
     switch (currentState)
     {
+    case MonsterStateType::Appear:
+        // Appear 상태는 애니메이션 완료로 처리
+        break;
+
     case MonsterStateType::Wait:
-        if (m_target)
-        {
-            RequestStateChange(MonsterStateType::Trace);
-        }
+        // Wait 상태에서는 피격 시에만 상태 전환 (Damaged에서 처리)
+        // 별도 탐지 로직 없음
         break;
 
     case MonsterStateType::Trace:
-        if (!m_target)
+        if (!hasValidTarget)
         {
+            cout << "추적 중 타겟 소실 - Wait 상태로 전환" << endl;
+            SetTarget(nullptr);
             RequestStateChange(MonsterStateType::Wait);
+            if (m_animationStateMachine)
+                m_animationStateMachine->RequestStateChange(AnimationStateType::Wait);
         }
-        else
+        else if (distanceToTarget <= m_attackRange)
         {
-            // 타겟과의 거리 체크
-            float distance = Vec3::Distance(
-                GetGameObject()->GetTransform()->GetPosition(),
-                m_target->GetTransform()->GetPosition()
-            );
-
-            if (distance <= m_attackRange)
+            // **이미 Attack 상태가 아닐 때만 전환 요청**
+            if (!IsInState(MonsterStateType::Attack))
             {
+                cout << "공격 사거리 진입 - Attack 상태로 전환 (거리: " << distanceToTarget << ")" << endl;
                 RequestStateChange(MonsterStateType::Attack);
+                if (m_animationStateMachine)
+                    m_animationStateMachine->RequestStateChange(AnimationStateType::BaseAttack);
             }
         }
         break;
 
     case MonsterStateType::Attack:
-        // 공격 완료 후 로직은 애니메이션 완료 이벤트로 처리
+        if (!hasValidTarget)
+        {
+            cout << "공격 중 타겟 소실 - Wait 상태로 전환" << endl;
+            SetTarget(nullptr);
+            RequestStateChange(MonsterStateType::Wait);
+            if (m_animationStateMachine)
+                m_animationStateMachine->RequestStateChange(AnimationStateType::Wait);
+        }
+        else if (distanceToTarget > m_attackRange )
+        {
+            // **이미 Trace 상태가 아닐 때만 전환 요청**
+            if (!IsInState(MonsterStateType::Trace))
+            {
+                RequestStateChange(MonsterStateType::Trace);
+                if (m_animationStateMachine)
+                    m_animationStateMachine->RequestStateChange(AnimationStateType::Trace);
+            }
+        }
+        
+        // 공격 범위 내에 있으면 Attack 상태 유지 (연속 공격)
         break;
     }
 }
 
 void MonsterStateMachine::UpdateTargetDetection()
 {
-    // 플레이어 탐지 로직
-    auto gameObjects = CURSCENE->GetObjects();
+    // 이미 타겟이 있고 유효하다면 유지
+    if (m_target && m_target->GetActive() && m_target->GetType() == OBJECTTYPE::PLAYER)
+    {
+        return; // 기존 타겟 유지
+    }
 
+    // 새로운 타겟 탐지
+    auto gameObjects = CURSCENE->GetObjects();
     for (auto& obj : gameObjects)
     {
-        if (obj->GetType() == OBJECTTYPE::PLAYER)
+        if (obj->GetType() == OBJECTTYPE::PLAYER && obj->GetActive())
         {
             float distance = Vec3::Distance(
                 GetGameObject()->GetTransform()->GetPosition(),
@@ -195,23 +273,17 @@ void MonsterStateMachine::UpdateTargetDetection()
             if (distance <= m_detectionRange)
             {
                 SetTarget(obj);
+                cout << "새로운 타겟 감지: " << obj->GetName().c_str() << endl;
                 return;
             }
         }
     }
 
-    // 범위 내에 플레이어가 없으면 타겟 해제
+    // 유효한 타겟이 없으면 해제
     if (m_target)
     {
-        float distance = Vec3::Distance(
-            GetGameObject()->GetTransform()->GetPosition(),
-            m_target->GetTransform()->GetPosition()
-        );
-
-        if (distance > m_detectionRange * 1.5f) // 히스테리시스 적용
-        {
-            SetTarget(nullptr);
-        }
+        SetTarget(nullptr);
+        cout << "타겟 해제됨" << endl;
     }
 }
 
@@ -275,6 +347,16 @@ shared_ptr<MonsterState> MonsterStateMachine::GetCurrentStatePtr() const
     return m_currentState;
 }
 
+shared_ptr<MonsterState> MonsterStateMachine::GetState(MonsterStateType type) const
+{
+    auto it = m_states.find(type);
+    if (it != m_states.end()) {
+        return it->second;  // 찾은 경우 값 반환
+    }
+    return nullptr;  // 찾지 못한 경우 nullptr 반환
+}
+
+
 bool MonsterStateMachine::IsInState(MonsterStateType state) const
 {
     return GetCurrentState() == state;
@@ -293,4 +375,66 @@ void MonsterStateMachine::SetTarget(shared_ptr<GameObject> target)
 shared_ptr<GameObject> MonsterStateMachine::GetTarget() const
 {
     return m_target;
+}
+
+void MonsterStateMachine::SetMonsterInterface(shared_ptr<IMonster> monsterInterface)
+{
+    m_monsterInterface = monsterInterface;
+}
+
+// 새로운 완료 체크 함수들 추가
+void MonsterStateMachine::CheckAppearCompletion()
+{
+    if (IsInState(MonsterStateType::Appear))
+    {
+        if (m_appearCompletionChecked)
+            return;
+
+        // Appear 상태에서 Wait로 전환 가능한지 체크
+        if (m_currentState->CanTransitionTo(MonsterStateType::Wait))
+        {
+            cout << "Appear 완료 감지 - Wait 상태로 전환" << endl;
+
+            m_appearCompletionChecked = true;
+
+            RequestStateChange(MonsterStateType::Wait);
+
+            if (m_animationStateMachine)
+            {
+                m_animationStateMachine->RequestStateChange(AnimationStateType::Wait);
+            }
+        }
+    }
+    else
+    {
+        m_appearCompletionChecked = false;
+    }
+}
+
+void MonsterStateMachine::CheckDeathCompletion()
+{
+    if (IsInState(MonsterStateType::Death))
+    {
+        if (m_deathCompletionChecked)
+            return;
+
+        // Death 상태에서 Dying로 전환 가능한지 체크
+        if (m_currentState->CanTransitionTo(MonsterStateType::Dying))
+        {
+            cout << "Death 완료 감지 - Dying 상태로 전환" << endl;
+
+            m_deathCompletionChecked = true;
+
+            RequestStateChange(MonsterStateType::Dying);
+
+            if (m_animationStateMachine)
+            {
+                m_animationStateMachine->RequestStateChange(AnimationStateType::Dying);
+            }
+        }
+    }
+    else
+    {
+        m_deathCompletionChecked = false;
+    }
 }

@@ -19,7 +19,7 @@ public:
 
 private:
     shared_ptr<GameObject> m_wolf;
-    bool m_isAnimationStarted;
+    float m_expectedDuration = 0.f;
     float m_animTime;
     bool m_isDeathComplete = false;
 };

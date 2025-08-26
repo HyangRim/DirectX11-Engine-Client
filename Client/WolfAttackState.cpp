@@ -24,7 +24,7 @@ void WolfAttackState::Enter()
 	// WolfBaseAttack 컴포넌트 활성화
 	auto attackScript = m_wolf->GetComponent<WolfBaseAttack>();
 	if (attackScript) {
-		attackScript->SetTarget(m_otherObj);
+		attackScript->SetTarget(m_target);
 		attackScript->StartAttack();
 	}
 
@@ -33,38 +33,31 @@ void WolfAttackState::Enter()
 
 void WolfAttackState::Update()
 {
-	if (static_pointer_cast<Monster>(m_wolf)->GetMonsterStatus().hp <= 0)
-	{
-		m_isAttackComplete = true;
-		//m_wolf->GetMonsterStateMachine()->ChangeState(MonsterStateType::Death);
-		//m_wolf->GetAnimationStateMachine()->ChangeState(AnimationStateType::Death);
-
-		static_pointer_cast<Monster>(m_wolf)->SetDead(true);
-		return;
-	}
-
-
 	m_animTime += DT;
 
 	if (!m_isAttackComplete && m_animTime >= (36.f / 25.f) )
 	{
-		Vec3 otherObjPos = m_otherObj->GetTransform()->GetPosition();
+		Vec3 otherObjPos = m_target->GetTransform()->GetPosition();
 		Vec3 wolfPos = m_wolf->GetTransform()->GetPosition();
-
 		float distance = Vec3::Distance(wolfPos, otherObjPos);
 
-		m_animTime = 0.f;
-
-		if (distance >= 50.0f)
+		// 공격 범위 내에 있으면 연속 공격
+		if (distance <= 3.0f) // 공격 범위
 		{
+			cout << "연속 공격 실행" << endl;
+			m_animTime = 0.f; // 타이머 리셋
+
+			// 다음 공격 애니메이션 요청 (번갈아가며 재생)
+			auto animSM = m_wolf->GetAnimationStateMachine();
+			if (animSM) {
+				animSM->RequestStateChange(AnimationStateType::BaseAttack);
+			}
+		}
+		else
+		{
+			// 공격 범위를 벗어나면 완료 (MonsterStateMachine에서 상태 전환)
 			m_isAttackComplete = true;
 		}
-		else if (distance >= 10.f)
-		{
-			m_isAttackComplete = true;
-			
-			return;
-		}	
 	}
 }
 
@@ -72,7 +65,7 @@ void WolfAttackState::Exit()
 {
 	m_animTime = 0.f;
 	m_isAnimationStarted = false;
-
+	m_isAttackComplete = false;
 	auto attackScript = m_wolf->GetComponent<WolfBaseAttack>();
 	if (attackScript) {
 		attackScript->StopAttack();
@@ -83,12 +76,14 @@ void WolfAttackState::Exit()
 
 bool WolfAttackState::CanTransitionTo(MonsterStateType newState)
 {
+	if (newState == MonsterStateType::Trace || newState==MonsterStateType::Death)
+		return true;
+
 	if (m_isAttackComplete)
 	{
 		switch (newState)
 		{
 		case MonsterStateType::Wait:
-		case MonsterStateType::Trace:
 		case MonsterStateType::Death:
 			return true;
 		default:

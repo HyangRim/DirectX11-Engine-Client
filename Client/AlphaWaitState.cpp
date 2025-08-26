@@ -34,7 +34,7 @@ bool AlphaWaitState::CanTransitionTo(MonsterStateType newState)
     {
     case MonsterStateType::Wait:
         return false; // 자기 자신으로는 전환 불가
-    case MonsterStateType::Move:
+    case MonsterStateType::Run:
     case MonsterStateType::Death:
     case MonsterStateType::Dying:
     case MonsterStateType::Trace:

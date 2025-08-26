@@ -34,40 +34,15 @@ void AlphaBaseAttack::Update()
     {
         m_attackTimer = 0.f;
 
-        if (distance >= 50.0f)
+        if (m_skillCoolTime <= 0)
         {
-            cout << "알파 Attack State 완료!" << endl;
-            m_isAttackComplete = true;
+            static_pointer_cast<Alpha>(m_owner)->PlaySkill(m_target);
+            m_skillCoolTime = 12.5f;
         }
-        else if (distance >= 10.f)
-        {
-            cout << "공격범위 벗어남 추적으로 변경\n";
-            m_isAttackComplete = true; 
 
-            //m_owner->GetMonsterStateMachine()->ChangeState(MonsterStateType::Trace);   
-            //m_owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::Trace);
-                
-            return;
-        }
-        else
-        {
-            if (m_skillCoolTime < 0.f) {
-                static_pointer_cast<Alpha>(m_owner)->PlaySkill(m_target);
-                m_skillCoolTime = 12.5f;
-            }
-            else {
-                static_pointer_cast<Player>(m_target)->SetIsAttacked(true);
-                static_pointer_cast<Player>(m_target)->Damaged(static_pointer_cast<Monster>(m_owner)->GetMonsterStatus().adPower);
-                //m_owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::BaseAttack);
-                SOUND->PlaySound(L"Wolf/AlphaOmega_atk01.wav", 3, 0.5f);
-            }
+        static_pointer_cast<Player>(m_target)->Damaged(static_pointer_cast<Monster>(m_owner)->GetMonsterStatus().adPower);
+    }
 
-        }
-    }
-    else
-    {
-        static_pointer_cast<Player>(m_target)->SetIsAttacked(false);
-    }
 }
 
 void AlphaBaseAttack::StartAttack()

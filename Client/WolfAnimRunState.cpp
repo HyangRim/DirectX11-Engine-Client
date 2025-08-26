@@ -54,7 +54,7 @@ bool WolfAnimRunState::CanTransitionTo(AnimationStateType _nextState)
 {
     switch (_nextState)
     {
-    case AnimationStateType::Move:
+  
     case AnimationStateType::Wait:
     case AnimationStateType::BaseAttack:
         return true;

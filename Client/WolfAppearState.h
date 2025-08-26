@@ -13,10 +13,11 @@ public:
     virtual void Exit();
     virtual bool CanTransitionTo(MonsterStateType newState);
 
-
 private:
     bool m_isAnimationStarted;
     float m_animTime;
     bool m_isAppearComplete = false;
+
+    float m_expectedDuration = 0.f;
 };
 

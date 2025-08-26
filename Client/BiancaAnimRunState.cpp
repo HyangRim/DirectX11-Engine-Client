@@ -3,7 +3,7 @@
 #include "ModelAnimator.h"
 
 BiancaAnimRunState::BiancaAnimRunState()
-    : AnimationState(AnimationStateType::Move)
+    : AnimationState(AnimationStateType::Run)
 {
 }
 

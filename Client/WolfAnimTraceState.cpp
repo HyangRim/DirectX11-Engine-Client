@@ -9,11 +9,12 @@ WolfAnimTraceState::WolfAnimTraceState()
 void WolfAnimTraceState::Enter(shared_ptr<ModelAnimator> _animator)
 {
     if (!_animator)
-        return;
-    _animator->SetAnimationSpeed(m_playSpeed);
+        return; 
+    _animator->PlaySequence(L"Wolf_Run_Sequence");
+    _animator->SetCurrentAnimationSpeed(m_playSpeed);
     // Wait 애니메이션 재생
     //_animator->SetAnimationByTag(L"Run", false);
-    _animator->PlaySequence(L"Wolf_Run_Sequence");
+   
     m_idleTime = 0.0f;
     m_isAnimationStarted = true;
 
@@ -22,22 +23,7 @@ void WolfAnimTraceState::Enter(shared_ptr<ModelAnimator> _animator)
 
 void WolfAnimTraceState::Update(shared_ptr<ModelAnimator> _animator)
 {
-    if (!_animator)
-        return;
-
-    // 대기 시간 업데이트
-    m_idleTime += DT;
-
-    // 애니메이션이 정상적으로 재생되고 있는지 확인
-    if (m_isAnimationStarted)
-    {
-        wstring currentAnimTag = _animator->GetCurrentAnimationTag();
-        if (currentAnimTag == L"Run")
-        {
-            // Wait 애니메이션이 정상적으로 재생 중
-            // 필요시 추가 로직 구현
-        }
-    }
+    
 }
 
 void WolfAnimTraceState::Exit(shared_ptr<ModelAnimator> _animator)
@@ -58,14 +44,13 @@ bool WolfAnimTraceState::CanTransitionTo(AnimationStateType _nextState)
     // Wait 상태에서는 대부분의 상태로 전환 가능
     switch (_nextState)
     {
-    case AnimationStateType::Move:
+ 
     case AnimationStateType::BaseAttack:
     case AnimationStateType::Run:
     case AnimationStateType::Dying:
     case AnimationStateType::Death:
-        return true;
     case AnimationStateType::Wait:
-        return false;  // 자기 자신으로는 전환 불가
+        return true;
     default:
         return false;
     }

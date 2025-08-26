@@ -5,7 +5,7 @@ enum class AnimationStateType
 {
     Wait = 0,
     Run,
-    Move,
+
     BaseAttack,
     Skill_1,
     Skill_2,

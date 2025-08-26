@@ -2,7 +2,7 @@
 #include "AlphaWalkState.h"
 
 AlphaWalkState::AlphaWalkState()
-	:Super(MonsterStateType::Move)
+	:Super(MonsterStateType::Run)
 {
 
 }
@@ -34,7 +34,7 @@ bool AlphaWalkState::CanTransitionTo(MonsterStateType newState)
 	{
 	case MonsterStateType::Wait:
 		return true; // 자기 자신으로는 전환 불가
-	case MonsterStateType::Move:
+	case MonsterStateType::Run:
 		return false;
 	case MonsterStateType::Death:
 	case MonsterStateType::Dying:

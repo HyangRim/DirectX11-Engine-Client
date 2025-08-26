@@ -96,6 +96,7 @@
     <ClInclude Include="Main.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="MonsterBehaviour.h" />
+    <ClInclude Include="MonsterInterface.h" />
     <ClInclude Include="Nicky.h" />
     <ClInclude Include="NickyAnimBaseAttackState.h" />
     <ClInclude Include="NickyAnimCounterState.h" />
@@ -241,6 +242,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="MonsterBehaviour.cpp" />
+    <ClCompile Include="MonsterInterface.cpp" />
     <ClCompile Include="Nicky.cpp" />
     <ClCompile Include="NickyAnimBaseAttackState.cpp" />
     <ClCompile Include="NickyAnimCounterState.cpp" />

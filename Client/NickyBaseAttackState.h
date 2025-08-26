@@ -17,7 +17,7 @@ private:
     shared_ptr<GameObject> m_player;
     shared_ptr<ModelAnimator> m_modelAnimator;
 
-    float m_attackTime = 0.0f;
+    float m_attackTime = 100.0f;
     float m_attackCooldown = (38.f / 25.f) / 2.f;  // 기본 공격 쿨타임
     bool m_isMovingToTarget = true;
     bool m_hasDealtDamage = false;

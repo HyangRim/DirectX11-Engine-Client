@@ -648,6 +648,9 @@
     <ClCompile Include="BaseAttackState.cpp">
       <Filter>Scripts\Player\BaseAttack</Filter>
     </ClCompile>
+    <ClCompile Include="MonsterInterface.cpp">
+      <Filter>Scripts\Monster</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -1082,6 +1085,9 @@
     </ClInclude>
     <ClInclude Include="BaseAttackState.h">
       <Filter>Scripts\Player\BaseAttack</Filter>
+    </ClInclude>
+    <ClInclude Include="MonsterInterface.h">
+      <Filter>Scripts\Monster</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

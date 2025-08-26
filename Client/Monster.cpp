@@ -119,34 +119,74 @@ void Monster::Damaged(DamageInfo _damage)
 
 void Monster::Damaged(shared_ptr<GameObject> _attacker, int _damage)
 {
+	//MonsterStatus info = GetMonsterStatus();
+	//cout << "몬스터 현재 체력 : " << info.hp << endl;
+
+	//int32 baseAttack = _damage * 100;
+	//int32 baseDefense = 100;
+
+	//int32 finalDamage = baseAttack / baseDefense;
+
+	//int32 monsterHP = info.hp;
+	//monsterHP -= finalDamage;
+
+	//if (monsterHP <= 0) {
+	//	//사망 애니메이션으로. 
+	//	//GetMonsterStateMachine()->ChangeState(MonsterStateType::Death);
+	//	if (m_healthBar != nullptr) {
+	//		m_healthBar->SetVisible(false);
+	//	}
+	//	Death(_attacker);
+	//	SetType(OBJECTTYPE::ITEMBOX);
+	//	m_isStun = true;
+	//}
+
+	///*if (_damage.stunTime > 0.f) {
+	//	m_isStun = max(m_isStun, _damage.stunTime);
+	//	SetType(OBJECTTYPE::ITEMBOX);
+	//}*/
+
+	//SetHP(monsterHP);
+
 	MonsterStatus info = GetMonsterStatus();
 	cout << "몬스터 현재 체력 : " << info.hp << endl;
 
 	int32 baseAttack = _damage * 100;
 	int32 baseDefense = 100;
-
 	int32 finalDamage = baseAttack / baseDefense;
-
 	int32 monsterHP = info.hp;
 	monsterHP -= finalDamage;
 
-	if (monsterHP <= 0) {
-		//사망 애니메이션으로. 
-		//GetMonsterStateMachine()->ChangeState(MonsterStateType::Death);
-		if (m_healthBar != nullptr) {
-			m_healthBar->SetVisible(false);
+	// **1. 피격시 공격자를 타겟으로 설정**
+	if (m_monsterStateMachine && _attacker &&
+		_attacker->GetActive() && _attacker->GetType() == OBJECTTYPE::PLAYER)
+	{
+		m_monsterStateMachine->SetTarget(_attacker);
+		cout << "피격으로 인한 타겟 설정: " << _attacker->GetName().c_str() << endl;
+
+		
+		if (!m_monsterStateMachine->IsInState(MonsterStateType::Attack) && !m_monsterStateMachine->IsInState(MonsterStateType::Trace))
+		{
+			m_monsterStateMachine->RequestStateChange(MonsterStateType::Trace);
+			if (m_animationStateMachine)
+				m_animationStateMachine->RequestStateChange(AnimationStateType::Trace);
+
 		}
-		Death(_attacker);
-		SetType(OBJECTTYPE::ITEMBOX);
-		m_isStun = true;
 	}
 
-	/*if (_damage.stunTime > 0.f) {
-		m_isStun = max(m_isStun, _damage.stunTime);
-		SetType(OBJECTTYPE::ITEMBOX);
-	}*/
-
 	SetHP(monsterHP);
+
+	if (monsterHP <= 0)
+	{
+		cout << "몬스터 사망" << endl;
+
+		if (m_healthBar)
+			m_healthBar->SetVisible(false);
+
+		Death(_attacker);
+		SetDead(true);
+		SetType(OBJECTTYPE::ITEMBOX);
+	}
 }
 
 

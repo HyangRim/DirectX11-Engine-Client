@@ -277,6 +277,9 @@
     <ClCompile Include="SkillConfig.cpp">
       <Filter>00. Engine\Interface\Skill\SkillConfig</Filter>
     </ClCompile>
+    <ClCompile Include="IMonster.cpp">
+      <Filter>00. Engine\Interface</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Types.h">
@@ -572,6 +575,9 @@
     </ClInclude>
     <ClInclude Include="SkillConfig.h">
       <Filter>00. Engine\Interface\Skill\SkillConfig</Filter>
+    </ClInclude>
+    <ClInclude Include="IMonster.h">
+      <Filter>00. Engine\Interface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

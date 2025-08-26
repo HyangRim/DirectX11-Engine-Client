@@ -23,7 +23,7 @@
 
 
 #include "MonsterStateMachine.h"
-
+#include "MonsterInterface.h"
 
 
 #include "SkillObject.h"
@@ -74,32 +74,43 @@ void Wolf::OnCollision(shared_ptr<GameObject> _other)
 
 void Wolf::OnCollisionEnter(shared_ptr<GameObject> _other)
 {
-	shared_ptr<GameObject> chaseTarget = nullptr;
-	// 만약 _other가 Player라면 (직접 충돌)
-	if (dynamic_pointer_cast<Player>(_other)) {
-		chaseTarget = _other;
-	}
-	// 만약 _other가 스킬 오브젝트라면, owner를 찾아서 Player를 추적
-	else if (auto skillObj = dynamic_pointer_cast<SkillObject>(_other)) {
-		if (skillObj->GetOwner()) {
-			chaseTarget = skillObj->GetOwner();
-		}
-	}
+	//shared_ptr<GameObject> chaseTarget = nullptr;
+	//// 만약 _other가 Player라면 (직접 충돌)
+	//if (dynamic_pointer_cast<Player>(_other)) {
+	//	chaseTarget = _other;
+	//}
+	//// 만약 _other가 스킬 오브젝트라면, owner를 찾아서 Player를 추적
+	//else if (auto skillObj = dynamic_pointer_cast<SkillObject>(_other)) {
+	//	if (skillObj->GetOwner()) {
+	//		chaseTarget = skillObj->GetOwner();
+	//	}
+	//}
 
-	// 기타 예외 (추가 오브젝트 타입들은 필요시 확장)
-	if (chaseTarget) {
-		//static_pointer_cast<WolfTraceState>(m_monsterStateMachine->GetState(MonsterStateType::Trace))->SetOtherObject(chaseTarget);
-		//static_pointer_cast<WolfAttackState>(m_monsterStateMachine->GetState(MonsterStateType::Attack))->SetOtherObject(chaseTarget);
-		
-		GetComponent<WolfBaseAttack>()->SetTarget(chaseTarget);
-		
-		//m_monsterStateMachine->ChangeState(MonsterStateType::Trace);
-		//m_animationStateMachine->ChangeState(AnimationStateType::Trace);
+	//// 기타 예외 (추가 오브젝트 타입들은 필요시 확장)
+	//if (chaseTarget) {
+	//	//static_pointer_cast<WolfTraceState>(m_monsterStateMachine->GetState(MonsterStateType::Trace))->SetOtherObject(chaseTarget);
+	//	//static_pointer_cast<WolfAttackState>(m_monsterStateMachine->GetState(MonsterStateType::Attack))->SetOtherObject(chaseTarget);
+	//	
+	//	GetComponent<WolfBaseAttack>()->SetTarget(chaseTarget);
+	//	
+	//	//m_monsterStateMachine->ChangeState(MonsterStateType::Trace);
+	//	//m_animationStateMachine->ChangeState(AnimationStateType::Trace);
+	//}
+
+	// 피격 시 타겟 설정은 Monster::Damaged에서 처리하므로
+	// 단순히 피격 플래그만 설정
+	if (_other->GetType() == OBJECTTYPE::PLAYER ||
+		(dynamic_pointer_cast<SkillObject>(_other) &&
+			dynamic_pointer_cast<SkillObject>(_other)->GetOwner()->GetType() == OBJECTTYPE::PLAYER))
+	{
+		SetAttacked(true);
+		cout << "몬스터가 공격받음" << endl;
 	}
 }
 
 void Wolf::OnCollisionExit(shared_ptr<GameObject> _other)
 {
+	SetAttacked(false);
 }
 
 
@@ -137,8 +148,8 @@ void Wolf::InitWolfAnimation()
 	AddComponent(m_animationStateMachine);
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Wait,			make_shared<WolfAnimWaitState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Appear,		make_shared<WolfAnimAppearState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::Move,			make_shared<WolfAnimRunState>());
-	GetAnimationStateMachine()->RegisterState(AnimationStateType::BaseAttack,	make_shared<WolfAnimAttackState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Run,			make_shared<WolfAnimRunState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::BaseAttack, make_shared<WolfAnimAttackState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Death,		make_shared<WolfAnimDeathState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Dying,		make_shared<WolfAnimDyingState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Trace,		make_shared<WolfAnimTraceState>());
@@ -206,8 +217,6 @@ void Wolf::InitWolfComponent()
 	traceScript->SetOwner(shared_from_this());
 	AddComponent(traceScript);
 
-
-
 	AddComponent(m_collider);
 	AddComponent(m_rigidbody);
 	AddComponent(m_navAgent);
@@ -237,19 +246,23 @@ void Wolf::InitWolfMSM()
 	m_monsterStateMachine = make_shared<MonsterStateMachine>();
 	AddComponent(m_monsterStateMachine);
 
+
+	auto self = static_pointer_cast<Monster>(shared_from_this());
+	m_monsterInterface = make_shared<MonsterInterface>(self);
+
+	m_monsterStateMachine->SetMonsterInterface(m_monsterInterface);
+
 	m_monsterStateMachine->RegisterState(MonsterStateType::Wait, make_shared<WolfWaitState>());
 	m_monsterStateMachine->RegisterState(MonsterStateType::Appear, make_shared<WolfAppearState>());
-	m_monsterStateMachine->RegisterState(MonsterStateType::Move, make_shared<WolfRunState>());
+	m_monsterStateMachine->RegisterState(MonsterStateType::Run, make_shared<WolfRunState>());
 	m_monsterStateMachine->RegisterState(MonsterStateType::Death, make_shared<WolfDeathState>(shared_from_this()));
 	m_monsterStateMachine->RegisterState(MonsterStateType::Dying, make_shared<WolfDyingState>());
 	m_monsterStateMachine->RegisterState(MonsterStateType::Trace, make_shared<WolfTraceState>(shared_from_this()));
 	m_monsterStateMachine->RegisterState(MonsterStateType::Attack, make_shared<WolfAttackState>(shared_from_this()));
-
-
 }
 
 void Wolf::InitWolfStats()
 {
-	m_monsterStatus.hp = 1000;
+	m_monsterStatus.hp = 100;
 	
 }

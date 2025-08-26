@@ -104,19 +104,23 @@ void LumiaIsland::Start()
 
 	m_cameraScript->SetTarget(m_player);
 	CreateCemeteryItemBox();
-	CreateTestDummy();
+	//CreateTestDummy();
 
 	//// NavMesh 생성 추가
 	CreateNavMesh();
 
 
 	////Monster 추가.
-	CreateMonsterWolf(Vec3(45.587, 18, 49.758));
-	CreateMonsterWolf(Vec3(48.587, 18, 48.268));
-	CreateMonsterWolf(Vec3(51.587, 18, 50.228));
+	CreateMonsterWolf(Vec3(15, 18, 15.758));
+	CreateMonsterAlpha(Vec3(20, 18, 15.22));
 
-	CreateMonsterWolf(Vec3(72.0, 18, 13.228), Vec3(0.f, 135.f, 0.f));
-	CreateMonsterAlpha(Vec3(116.722, 18, 108.22));
+
+	//CreateMonsterWolf(Vec3(45.587, 18, 49.758));
+	//CreateMonsterWolf(Vec3(48.587, 18, 48.268));
+	//CreateMonsterWolf(Vec3(51.587, 18, 50.228));
+
+	//CreateMonsterWolf(Vec3(72.0, 18, 13.228), Vec3(0.f, 135.f, 0.f));
+	//CreateMonsterAlpha(Vec3(116.722, 18, 108.22));
 
 	
 
@@ -1728,6 +1732,7 @@ void LumiaIsland::CreateCharacterNicky()
 	nicky->SetName(L"Nicky");
 	nicky->GetTransform()->SetPosition(Vec3(15, 18, 5));
 	nicky->GetTransform()->SetScale(Vec3(2.f));
+	nicky->SetType(OBJECTTYPE::PLAYER);
 	
 	m_selectedCharacterIdx = 1;
 
@@ -1742,7 +1747,7 @@ void LumiaIsland::CreateCharacterBianca()
 	shared_ptr<Bianca> bianca = make_shared<Bianca>(m_defaultshader);
 	bianca->GetTransform()->SetPosition(Vec3(15, 18, 5));
 	bianca->GetTransform()->SetScale(Vec3(2.f));
-
+	bianca->SetType(OBJECTTYPE::PLAYER);
 	m_selectedCharacterIdx = 0;
 
 	m_player = bianca;

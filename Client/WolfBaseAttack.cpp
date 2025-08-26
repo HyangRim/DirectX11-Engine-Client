@@ -25,37 +25,23 @@ void WolfBaseAttack::Update()
 
     Vec3 otherObjPos = m_target->GetTransform()->GetPosition();
     Vec3 wolfPos = m_owner->GetTransform()->GetPosition();
-
     CalcDir(otherObjPos, wolfPos);
 
-    // 공격 타이머 갱신
     m_attackTimer += DT;
-    float distance = Vec3::Distance(wolfPos, otherObjPos);
 
+    // 공격 타이밍에 데미지 처리
     if (!m_isAttackComplete && m_attackTimer >= m_attackDuration)
     {
         m_attackTimer = 0.f;
 
-        if (distance >= 50.0f)
-        {
-            cout << "늑대 Attack State 완료!" << endl;
-            m_isAttackComplete = true;
-        }
-        else if (distance >= 10.f)
-        {
-            m_isAttackComplete = true;
-            //m_owner->GetMonsterStateMachine()->ChangeState(MonsterStateType::Trace);
-            //m_owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::Trace);
+        // 데미지 처리
+        static_pointer_cast<Player>(m_target)->Damaged(
+            static_pointer_cast<Monster>(m_owner)->GetMonsterStatus().adPower
+        );
 
-            return;
-        }
-        else
-        {
-            static_pointer_cast<Player>(m_target)->Damaged(static_pointer_cast<Monster>(m_owner)->GetMonsterStatus().adPower);
-            //m_owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::BaseAttack);
-            //SOUND->PlaySound(L"Wolf/wolf_attack.wav", 3, 0.5f);
-        }
-            
+        cout << "몬스터 공격 데미지 적용" << endl;
+
+        // 애니메이션 상태 전환은 WolfAttackState에서 처리
     }
 
 }

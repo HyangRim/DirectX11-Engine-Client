@@ -15,7 +15,7 @@ void NickyBaseAttackState::Enter()
 {
     cout << "기본공격 상태 진입" << endl;
 
-    m_attackTime = 0.0f;
+    m_attackTime = 100.0f;
     m_isMovingToTarget = true;
     m_hasDealtDamage = false;
     m_isAttackComplete = false;
@@ -65,6 +65,10 @@ void NickyBaseAttackState::Update()
         cout << "타겟이 죽었습니다." << endl;
         m_isAttackComplete = true;
         m_shouldContinueAttacking = false;
+
+        m_player->GetPlayerStateMachine()->RequestStateChange(PlayerStateType::Wait);
+        m_player->GetAnimationStateMachine()->RequestStateChange(AnimationStateType::Wait);
+
         return;
     }
 
@@ -135,11 +139,11 @@ void NickyBaseAttackState::UpdateMovementToTarget()
         // 공격 범위 내 도착
         m_player->GetNavMeshAgent()->Stop();
         m_isMovingToTarget = false;
-        m_attackTime = 0.0f; // 공격 시간 리셋
+        m_attackTime = 100.0f; // 공격 시간 리셋
 
         RotateToTarget();
         m_player->GetAnimationStateMachine()->RequestStateChange(AnimationStateType::BaseAttack);
-        // 첫 공격 시작 - 애니메이션 상태 변경은 PlayerStateMachine에서 처리됨
+ 
         cout << "공격 범위 도달 - 평타 시작" << endl;
     }
 }
@@ -152,13 +156,14 @@ void NickyBaseAttackState::UpdateAttackLogic()
         cout << "타겟이 공격 범위를 벗어남 - 다시 추격" << endl;
         m_isMovingToTarget = true;
         m_hasDealtDamage = false;
-        m_attackTime = 0.0f;
+        m_attackTime = 100.0f;
         return;
     }
-
+    //cout << "AttackTime : " << m_attackTime << endl;
     // 공격 쿨타임 체크
     if (m_attackTime >= m_attackCooldown)
     {
+        int a = 0;
         if (!m_hasDealtDamage)
         {
             DealDamage();
@@ -169,7 +174,7 @@ void NickyBaseAttackState::UpdateAttackLogic()
         }
 
         // 다음 공격 사이클 준비 (약간의 여유시간 후)
-        if (m_attackTime >= m_attackCooldown * 1.0f)
+        if (m_attackTime >= m_attackCooldown)
         {
             if (m_shouldContinueAttacking && m_target && !static_pointer_cast<Monster>(m_target)->IsDead())
             {
