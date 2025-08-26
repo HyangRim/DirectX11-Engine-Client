@@ -15,7 +15,7 @@ void BiancaBaseAttackState::Enter()
 {
     cout << "기본공격 상태 진입" << endl;
 
-    m_attackTime = 0.0f;
+    m_attackTime = 100.0f;
     m_isMovingToTarget = true;
     m_hasDealtDamage = false;
     m_isAttackComplete = false;
@@ -135,7 +135,7 @@ void BiancaBaseAttackState::UpdateMovementToTarget()
         // 공격 범위 내 도착
         m_player->GetNavMeshAgent()->Stop();
         m_isMovingToTarget = false;
-        m_attackTime = 0.0f; // 공격 시간 리셋
+        m_attackTime = 100.0f; // 공격 시간 리셋
 
         RotateToTarget();
         m_player->GetAnimationStateMachine()->RequestStateChange(AnimationStateType::BaseAttack);
@@ -152,7 +152,7 @@ void BiancaBaseAttackState::UpdateAttackLogic()
         cout << "타겟이 공격 범위를 벗어남 - 다시 추격" << endl;
         m_isMovingToTarget = true;
         m_hasDealtDamage = false;
-        m_attackTime = 0.0f;
+        m_attackTime = 100.0f;
         return;
     }
 
