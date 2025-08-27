@@ -264,6 +264,6 @@ void Wolf::InitWolfMSM()
 
 void Wolf::InitWolfStats()
 {
-	m_monsterStatus.hp = 250;
+	m_monsterStatus.hp = 200;
 	
 }

@@ -3,12 +3,26 @@
 #include "BiancaBaseAttackState.h"
 #include "Player.h"
 #include "Monster.h"
+#include "BiancaQProjectile.h"
 
 BiancaBaseAttackState::BiancaBaseAttackState(shared_ptr<ModelAnimator> modelAnimator, shared_ptr<GameObject> player)
     : PlayerState(PlayerStateType::BaseAttack)
     , m_player(player)
     , m_modelAnimator(modelAnimator)
 {
+    m_Projectile = make_shared<BiancaQProjectile>(player);
+    m_Projectile->SetName(L"Bianca_Q_Projectile");
+    m_Projectile->SetActive(false);
+    m_Projectile->AddComponent(make_shared<MeshRenderer>());
+    m_Projectile->AddComponent(make_shared<SphereCollider>());
+    {
+        auto mesh = RESOURCES->Get<Mesh>(L"Sphere");
+        m_Projectile->GetMeshRenderer()->SetMesh(mesh);
+        m_Projectile->GetMeshRenderer()->SetPass(0);
+        m_Projectile->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"default"));
+    }
+    CURSCENE->Add(m_Projectile);
+    
 }
 
 void BiancaBaseAttackState::Enter()
@@ -165,6 +179,13 @@ void BiancaBaseAttackState::UpdateAttackLogic()
             m_hasDealtDamage = true;
 
             // 다음 공격 준비
+            //투사체 던지기.
+            Vec3 startPos = m_player->GetTransform()->GetPosition();
+            Vec3 endPos = m_target->GetTransform()->GetPosition();
+            float distance = Vec3::Distance(startPos, endPos);
+            float flightTime = distance / m_speed;
+            m_Projectile->SetMoveTarget(startPos, endPos, flightTime);
+
             CheckForContinuousAttack();
         }
 
@@ -252,8 +273,8 @@ void BiancaBaseAttackState::DealDamage()
         auto player = static_pointer_cast<Player>(m_player);
         if (player)
         {
-            monster->Damaged(m_player, player->GetStatus().hitAttack);
-            SOUND->PlaySound(L"Nicky/Nicky_atk_hit.wav", 1, 0.5f);
+            //monster->Damaged(m_player, player->GetStatus().hitAttack);
+            //SOUND->PlaySound(L"Nicky/Nicky_atk_hit.wav", 1, 0.5f);
 
             cout << "기본공격 데미지: " << player->GetStatus().hitAttack << endl;
         }

@@ -160,10 +160,11 @@ void BiancaRSkill::Update()
 			for (auto object : gameObjects) {
 				if (object->GetType() == OBJECTTYPE::MONSTER) {
 					static_pointer_cast<Monster>(object)->Damaged(m_playerObject, m_playerObject->GetStatus().hitAttack * 1.7f);
+					SOUND->PlaySound(L"Bianca/Bianca_Skill04_Hit01.wav", 1, 0.5f);
 				}
-				SOUND->PlaySound(L"Bianca/Bianca_Skill04_Active.wav", 1, 0.5f);
 			}
 			//cout << "InnerCircle Àü°³.";
+			SOUND->PlaySound(L"Bianca/Bianca_Skill04_Active.wav", 1, 0.5f);
 			m_outerCircle->DamageFlag(false);
 		}
 	}
@@ -173,7 +174,7 @@ void BiancaRSkill::Update()
 		if (m_innerCircleDuration > m_innerCircleElapsedTime) {
 			m_innerCircleElapsedTime += DT;
 
-			float circleSize = Utils::FLerp(0.f, 5.5f, m_innerCircleElapsedTime / m_innerCircleDuration);
+			float circleSize = Utils::FLerp(0.f, 8.5f, m_innerCircleElapsedTime / m_innerCircleDuration);
 			Vec3 circleScale = Vec3(circleSize, 0.03f, circleSize);
 
 			m_innerCircle->GetTransform()->SetScale(circleScale);
@@ -190,10 +191,10 @@ void BiancaRSkill::Update()
 			for (auto object : gameObjects) {
 				if (object->GetType() == OBJECTTYPE::MONSTER) {
 					static_pointer_cast<Monster>(object)->Damaged(m_playerObject, m_playerObject->GetStatus().hitAttack * 2.5f);
+					SOUND->PlaySound(L"Bianca/Bianca_Skill04_Hit02.wav", 1, 0.5f);
 				}
-				SOUND->PlaySound(L"Bianca/Bianca_Skill04_End.wav", 1, 0.5f);
 			}
-			
+			SOUND->PlaySound(L"Bianca/Bianca_Skill04_End.wav", 1, 0.5f);
 			m_circleFollowBianca = true;
 			m_innerCircle->SetActive(false);
 			m_outerCircle->SetActive(false);

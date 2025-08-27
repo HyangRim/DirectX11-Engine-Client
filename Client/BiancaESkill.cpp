@@ -92,14 +92,14 @@ void BiancaESkill::Update()
 	if (m_skillcurCooldown > 0.f)
 		return;
 
-	if (INPUT->GetButtonDown(KEY_TYPE::E)) {
+	if (INPUT->GetButtonDown(KEY_TYPE::E) && !INPUT->GetButton(KEY_TYPE::LCTRL)) {
 		//17 eID사용.
 		m_circle->SetActive(true);
 		
 		SOUND->PlaySound(L"Bianca/Bianca_Skill03_Charge.wav", 17, 0.5f);
 	}
 
-	if (INPUT->GetButton(KEY_TYPE::E)) {
+	if (INPUT->GetButton(KEY_TYPE::E) && !INPUT->GetButton(KEY_TYPE::LCTRL)) {
 		m_circleSizeElapedTime = m_circleKeepElapedTime += DT;
 
 		float circleSize = 1.f + (m_circleSizeElapedTime / m_circleSizeDuration) * 2.f;
@@ -111,7 +111,7 @@ void BiancaESkill::Update()
 		m_circle->GetTransform()->SetLocalScale(scale);
 
 	}
-	else if(INPUT->GetButtonUp(KEY_TYPE::E) || m_circleKeepElapedTime > 4.f)
+	else if((INPUT->GetButtonUp(KEY_TYPE::E) || m_circleKeepElapedTime > 4.f) && !INPUT->GetButton(KEY_TYPE::LCTRL))
 	{
 		m_playerObject->GetNavMeshAgent()->Stop();
 		//E키 떼었을 때. 
@@ -173,9 +173,6 @@ void BiancaESkill::Update()
 					SOUND->PlaySound(L"Bianca/Bianca_Skill03_Hit.wav", 17, 0.5f);
 				}
 			}
-			//여기서 데미지 주기. 
-			//SOUND->PlaySound(L"Bianca/Bianca_Skill03_Hit.wav", 17, 0.5f);
-			//////아직 구현 X
 
 			m_circle->DamageFlag(false);
 			

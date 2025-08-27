@@ -16,7 +16,7 @@ public:
     virtual void Update() override;
 
     virtual void OnCollisionEnter(shared_ptr<GameObject> _other) override;
-
+    void ResetTimer() { m_timer = 0.f; }
 private:
     bool m_isBind = false;
     float m_timer = 0.f;
