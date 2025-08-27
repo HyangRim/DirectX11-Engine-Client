@@ -28,8 +28,7 @@ void NickyWState::Enter()
     m_expectedDuration = m_modelAnimator->GetAnimationDuration(L"Skill_02_Guard") + m_modelAnimator->GetAnimationDuration(L"Skill_02_Loop");
     m_expectedDuration /= 2.f;
 
-    cout << "PlayerState 에서의 기대 시간 : " << m_expectedDuration << endl;
-
+   
 
     cout << "NickyWState진입\n";
 }
@@ -37,8 +36,7 @@ void NickyWState::Enter()
 void NickyWState::Update()
 {
     m_skillTime += DT;
-    cout << "PlayerState 에서의 누적 시간 : " << m_skillTime << endl;
-
+    
     // 시퀀스 재생 상태 체크
     if (!m_isSkillComplete && m_skillTime >= m_expectedDuration)
     {
@@ -60,6 +58,9 @@ void NickyWState::Exit()
 
 bool NickyWState::CanTransitionTo(PlayerStateType newState)
 {
+    if (newState == PlayerStateType::Counter)
+        return true;
+
     if (m_isSkillComplete && (newState == PlayerStateType::Wait || newState == PlayerStateType::Run))
     {
         return true;

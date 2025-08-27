@@ -84,6 +84,8 @@ public:
     void SetAttackTarget(shared_ptr<GameObject> target);
     shared_ptr<GameObject> GetPickedTargetAtMouse();
     bool CheckTargetForSkill(KEY_TYPE skillKey);
+    bool IsCurrentStateMovable() const;
+    
 
     void PrintCurState();
 
@@ -100,6 +102,7 @@ public:
     Delegate::Delegate<bool&> OnWSkillCompleted;  // W스킬 완료 체크
     Delegate::Delegate<bool&> OnESkillCompleted;  // E스킬 완료 체크
     Delegate::Delegate<bool&> OnRSkillCompleted;  // E스킬 완료 체크
+    Delegate::Delegate<bool&> OnCounterSkillCompleted;
 
 private:
     // 상태 전환 실제 실행
@@ -118,6 +121,7 @@ private:
     void CheckWSkillCompletion();
     void CheckESkillCompletion();
     void CheckRSkillCompletion();
+    void CheckCounterSkillCompletion();
 
     void HandleCraftInput();
     void CheckCraftCompletion();
@@ -158,6 +162,7 @@ private:
     bool m_eSkillCompletionChecked = false;  // 추가
     bool m_rSkillCompletionChecked = false;  // 추가
 
+    bool m_counterSkillCompletionChecked = false;
 
 };
 

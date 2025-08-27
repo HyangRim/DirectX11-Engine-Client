@@ -13,7 +13,7 @@ public:
     virtual void Update() override;
     virtual void Exit() override;
     virtual bool CanTransitionTo(PlayerStateType newState) override;
-
+    bool IsMovable() const override { return true; }
 private:
     shared_ptr<GameObject> m_player;
     shared_ptr<ModelAnimator> m_modelAnimator;

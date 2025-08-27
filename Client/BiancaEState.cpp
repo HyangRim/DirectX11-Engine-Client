@@ -36,6 +36,9 @@ void BiancaEState::Update()
 void BiancaEState::Exit()
 {
     // 상태 종료 시 정리
+    m_isCharging = true;
+    m_isReleasing = false;
+
     m_skillTime = 0.0f;
     m_isAnimationStarted = false;
     m_isSkillComplete = false;

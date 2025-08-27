@@ -61,8 +61,13 @@ public:
 
     bool CanUseSkill(int skillIndex) const override
     {
+        ISkill* skill = m_player.lock()->GetSkill(skillIndex);
+        int skillLevel = skill->GetCurSkillLevel();
+        if (skillLevel >= 1)
+            return true;
+        
         // 스킬 사용 가능 여부 확인 로직
-        return true; // 구현 필요
+        return false; // 구현 필요
     }
 
     void UseSkill(int skillIndex) override

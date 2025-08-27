@@ -35,11 +35,6 @@ void NickyAnimWaitState::Exit(shared_ptr<ModelAnimator> animator)
 
 bool NickyAnimWaitState::CanTransitionTo(AnimationStateType nextState)
 {
-    if (nextState == AnimationStateType::Run)
-    {
-        int a = 0;
-    }
-
     // Wait 상태에서는 대부분의 상태로 전환 가능
     switch (nextState)
     {

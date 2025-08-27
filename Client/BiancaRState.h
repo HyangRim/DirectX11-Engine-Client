@@ -13,7 +13,7 @@ public:
     virtual void Update();
     virtual void Exit();
     virtual bool CanTransitionTo(PlayerStateType newState);
-
+    virtual bool IsMovable() const override { return true; }
 
     bool IsSkillComplete() const { return m_isSkillComplete; } // 새로 추가
 

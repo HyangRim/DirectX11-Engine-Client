@@ -31,8 +31,8 @@ private:
     bool m_isAnimationStarted = false;
     bool m_isSkillComplete = false;  // 추가: 스킬 완료 플래그
 
-    bool m_isCharging;
-    bool m_isReleasing;
+    bool m_isCharging = false;
+    bool m_isReleasing = false;
     float m_chargeTime = 0;
     float m_durationTime = 0.f;
 

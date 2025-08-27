@@ -92,7 +92,7 @@ void PlayerStateMachine::Update()
     CheckWSkillCompletion();
     CheckESkillCompletion();
     CheckRSkillCompletion();
-
+    CheckCounterSkillCompletion();
 
     // 대기열의 상태 변경 요청 처리
     while (!m_stateChangeQueue.empty())
@@ -559,7 +559,8 @@ void PlayerStateMachine::HandleSkillInput()
     // Q 스킬
     if (INPUT->GetButtonDown(KEY_TYPE::Q))
     {
-        if (m_playerInterface && m_playerInterface->GetCurSkillCooldown(0) <= 0.0f)
+        if (m_playerInterface && m_playerInterface->GetCurSkillCooldown(0) <= 0.0f && m_playerInterface->CanUseSkill(0)
+            && !IsInState(PlayerStateType::Skill_1))
         {
             m_navMeshAgent->Stop();
 
@@ -573,10 +574,11 @@ void PlayerStateMachine::HandleSkillInput()
     }
 
     if (INPUT->GetButtonDown(KEY_TYPE::W))
-    {
-        m_navMeshAgent->Stop();
-        if (m_playerInterface && m_playerInterface->GetCurSkillCooldown(1) <= 0.0f)
+    {   
+        if (m_playerInterface && m_playerInterface->GetCurSkillCooldown(1) <= 0.0f && m_playerInterface->CanUseSkill(1)
+            && !IsInState(PlayerStateType::Skill_2))
         {
+            m_navMeshAgent->Stop();
             RequestStateChange(PlayerStateType::Skill_2);
 
             if (m_animationStateMachine)
@@ -588,9 +590,11 @@ void PlayerStateMachine::HandleSkillInput()
 
     if (INPUT->GetButtonDown(KEY_TYPE::E))
     {
-        m_navMeshAgent->Stop();
-        if (m_playerInterface && m_playerInterface->GetCurSkillCooldown(2) <= 0.0f)
-        {
+       
+        if (m_playerInterface && m_playerInterface->GetCurSkillCooldown(2) <= 0.0f && m_playerInterface->CanUseSkill(2)
+            && !IsInState(PlayerStateType::Skill_3))
+        { 
+            m_navMeshAgent->Stop();
             RequestStateChange(PlayerStateType::Skill_3);
 
             if (m_animationStateMachine)
@@ -601,7 +605,8 @@ void PlayerStateMachine::HandleSkillInput()
     }
     if (INPUT->GetButtonDown(KEY_TYPE::R))
     {
-        if (m_playerInterface && m_playerInterface->GetCurSkillCooldown(3) <= 0.0f)
+        if (m_playerInterface && m_playerInterface->GetCurSkillCooldown(3) <= 0.0f && m_playerInterface->CanUseSkill(3)
+            && !IsInState(PlayerStateType::Skill_4))
         {
             // 스킬 메타 데이터 조회
             const auto& rSkillMeta = SkillConfig::GetSkillMetaData(m_characterIndex, 3);
@@ -784,6 +789,39 @@ void PlayerStateMachine::CheckRSkillCompletion()
     }
 }
 
+void PlayerStateMachine::CheckCounterSkillCompletion()
+{
+    // Counter 상태일 때만 완료 체크
+    if (IsInState(PlayerStateType::Counter))
+    {
+        // 이미 완료 체크를 했으면 건너뛰기
+        if (m_counterSkillCompletionChecked)
+            return;
+
+        bool counterSkillCompleted = false;
+        OnCounterSkillCompleted(counterSkillCompleted);
+
+        if (counterSkillCompleted)
+        {
+            cout << "카운터 스킬 완료 감지 - Wait 상태로 전환" << endl;
+
+            m_counterSkillCompletionChecked = true;  // 플래그 설정
+
+            RequestStateChange(PlayerStateType::Wait);
+
+            if (m_animationStateMachine)
+            {
+                m_animationStateMachine->RequestStateChange(AnimationStateType::Wait);
+            }
+        }
+    }
+    else
+    {
+        // Counter 상태가 아니면 플래그 리셋
+        m_counterSkillCompletionChecked = false;
+    }
+}
+
 void PlayerStateMachine::HandleCraftInput()
 {
     if (INPUT->GetButtonDown(KEY_TYPE::Z))
@@ -914,9 +952,15 @@ void PlayerStateMachine::HandleRightClickInput()
     if (!INPUT->GetButtonDown(KEY_TYPE::RBUTTON))
         return;
 
-    // Wait나 Run 상태에서만 처리
-    if (!(IsInState(PlayerStateType::Run) || IsInState(PlayerStateType::Wait) || IsInState(PlayerStateType::BaseAttack)))
+    // 이동 가능 여부 통합 체크
+    if (!IsCurrentStateMovable()) {
+        cout << "현재 상태에서 이동/공격이 불가능합니다." << endl;
         return;
+    }
+
+    //// Wait나 Run 상태에서만 처리
+    //if (!(IsInState(PlayerStateType::Run) || IsInState(PlayerStateType::Wait) || IsInState(PlayerStateType::BaseAttack)))
+    //    return;
 
     // 1. 먼저 공격 대상이 있는지 확인
     auto attackTarget = GetPickedTargetAtMouse();
@@ -947,253 +991,15 @@ void PlayerStateMachine::HandleRightClickInput()
         HandleMovementInput();
     }
 }
-//
-//void PlayerStateMachine::ProcessInput()
-//{
-//
-//    if ((GetCurrentState() == PlayerStateType::Skill_1) && ((1 << 3) & m_isMovableOnSkill))
-//    {
-//        if ((1 << 3) & m_chargingInfo)
-//        {
-//            if (!m_currentState->IsMovable())
-//            {
-//                // 이동 불가능한 상태 (Release 중)
-//                return;
-//            }
-//        }
-//        else
-//        {
-//            //cout << "Q 스킬 중 이동 금지\n";
-//
-//            return;
-//        }
-// 
-//    }
-//    if ((GetCurrentState() == PlayerStateType::Skill_2) && ((1 << 2) & m_isMovableOnSkill))
-//    {
-//        //cout << "W 스킬 중 이동 금지\n";
-//        return;
-//    }
-//    if ((GetCurrentState() == PlayerStateType::Skill_3) && ((1 << 1) & m_isMovableOnSkill))
-//    {
-//        if ((1 << 1) & m_chargingInfo)
-//        {
-//            if (!m_currentState->IsMovable())
-//            {
-//                // 이동 불가능한 상태 (Release 중)
-//                return;
-//            }
-//        }
-//        else
-//        {
-//            //cout << "E 스킬 중 이동 금지\n";
-//
-//            return;
-//        }
-//    }
-//    if ((GetCurrentState() == PlayerStateType::Skill_4) && ((1 << 0) & m_isMovableOnSkill))
-//    {
-//        //cout << "R 스킬 중 이동 금지\n";
-//        return;
-//    }
-//    if ((GetCurrentState() == PlayerStateType::Craft))
-//    {
-//        //cout << "W 스킬 중 이동 금지\n";
-//        return;
-//    }
-//    if (((GetCurrentState() == PlayerStateType::Counter)))
-//    {
-//        cout << "카운터 공격 중 이동금지\n";
-//        return;
-//    }
-//
-//
-//
-//    // NavMeshAgent 가져오기 - 올바른 ComponentType 사용
-//    auto gameObject = GetGameObject();
-//    auto navMeshAgent = gameObject->GetFixedComponent<NavMeshAgent>(ComponentType::NavMeshAgent);
-//
-//    if (!navMeshAgent)
-//    {
-//        cout << "NavMeshAgent not found!" << endl;
-//        return;
-//    }
-//
-//    m_baseAttackDelayDuration += DT;
-//    // 우클릭 처리
-//    if (INPUT->GetButtonDown(KEY_TYPE::RBUTTON))
-//    {
-//        // 우클릭으로 공격 대상 피킹
-//        auto attackTarget = CURSCENE->GetObjectManager()->PickObjectForAttack(GetGameObject());
-//
-//        //cout << "BaseAttackDelay : " << m_baseAttackDelayDuration << endl;
-//        if (attackTarget && m_baseAttackDelay <= m_baseAttackDelayDuration)
-//        {
-//            m_baseAttackDelayDuration = 0.f;
-//            m_states[PlayerStateType::BaseAttack]->SetTarget(attackTarget);
-//            ChangeState(PlayerStateType::BaseAttack);
-//        }
-//        else if (attackTarget == nullptr)
-//        {
-//            m_states[PlayerStateType::BaseAttack]->SetTarget(nullptr);
-//            // 마우스 위치 유효성 검사
-//            POINT mousePos = INPUT->GetMousePos();
-//            if (mousePos.x < 0 || mousePos.y < 0) return;
-//
-//            auto camera = CURSCENE->GetMainCamera();
-//            if (!camera) return;
-//
-//            auto cameraComp = camera->GetCamera();
-//            if (!cameraComp) return;
-//
-//            Ray ray = CreateRayFromMouse(mousePos, cameraComp);
-//
-//            // NavMesh 찾기 및 Ray cast
-//            bool foundDestination = false;
-//            for (auto& obj : CURSCENE->GetObjects())
-//            {
-//                auto navMesh = obj->GetFixedComponent<NavMesh>(ComponentType::NavMesh);
-//                if (navMesh)
-//                {
-//                    Vec3 hitPoint;
-//                    if (navMesh->RaycastNavMesh(ray, hitPoint))
-//                    {
-//                        navMeshAgent->SetDestination(hitPoint);
-//                        foundDestination = true;
-//
-//                        // 이동 명령이 성공하면 즉시 Run 상태로 전환
-//                        if (CanChangeState(PlayerStateType::Run))
-//                        {
-//                            ChangeState(PlayerStateType::Run);
-//                            m_animationStateMachine->ChangeState(AnimationStateType::Run);
-//                        }
-//                        break;
-//                    }
-//                }
-//            }
-//
-//            if (!foundDestination)
-//            {
-//                cout << "No valid destination found on NavMesh" << endl;
-//            }
-//        }
-//    }
-//
-//    // NavMeshAgent 상태 지속적 모니터링 (이동 완료 감지용)
-//    if (navMeshAgent->HasReachedDestination() && IsInState(PlayerStateType::Run))
-//    {
-//
-//        ChangeState(PlayerStateType::Wait);
-//        m_animationStateMachine->ChangeState(AnimationStateType::Wait);
-//    }
-//
-//    if (INPUT->GetButtonDown(KEY_TYPE::LCTRL) || INPUT->GetButton(KEY_TYPE::LCTRL))
-//    {
-//        cout << "왼쪽컨트롤 키 눌림\n";
-//        return;
-//    }
-//
-//    // 스킬 입력 시 이동 중지
-//    if (INPUT->GetButtonDown(KEY_TYPE::Q))
-//    {
-//        
-//        float curCoolDown = m_playerInterface->GetCurSkillCooldown(0);
-//        float maxCoolDown = m_playerInterface->GetMaxSkillCooldown(0);
-//
-//        cout << "최대 쿨타임 : " << maxCoolDown << ", 현재 쿨타임 : " << curCoolDown << endl;
-//        
-//        if (curCoolDown > 0.f) return;
-//
-//        navMeshAgent->Stop(); // 이동 중지
-//        m_animationStateMachine->ChangeState(AnimationStateType::Skill_1);
-//        ChangeState(PlayerStateType::Skill_1);
-//
-//        OnSkillUsed(0,nullptr);  // 0: Q 스킬 인덱스
-//    }
-//    if (INPUT->GetButtonDown(KEY_TYPE::W))
-//    {
-//        float curCoolDown = m_playerInterface->GetCurSkillCooldown(1);
-//        float maxCoolDown = m_playerInterface->GetMaxSkillCooldown(1);
-//
-//        cout << "최대 쿨타임 : " << maxCoolDown << ", 현재 쿨타임 : " << curCoolDown << endl;
-//
-//        if (curCoolDown > 0.f) return;
-//
-//        navMeshAgent->Stop();
-//        m_animationStateMachine->ChangeState(AnimationStateType::Skill_2);
-//        ChangeState(PlayerStateType::Skill_2);
-//
-//        OnSkillUsed(1, nullptr);  // 1: W 스킬 인덱스
-//    }
-//    if (INPUT->GetButtonDown(KEY_TYPE::E))
-//    {
-//        float curCoolDown = m_playerInterface->GetCurSkillCooldown(2);
-//        float maxCoolDown = m_playerInterface->GetMaxSkillCooldown(2);
-//
-//        cout << "최대 쿨타임 : " << maxCoolDown << ", 현재 쿨타임 : " << curCoolDown << endl;
-//
-//        if (curCoolDown > 0.f) return;
-//
-//        navMeshAgent->Stop();
-//        m_animationStateMachine->ChangeState(AnimationStateType::Skill_3);
-//        ChangeState(PlayerStateType::Skill_3);
-//
-//        OnSkillUsed(2, nullptr);  // 2: E 스킬 인덱스
-//    }
-//    if (INPUT->GetButtonDown(KEY_TYPE::R))
-//    {
-//        float curCoolDown = m_playerInterface->GetCurSkillCooldown(3);
-//        float maxCoolDown = m_playerInterface->GetMaxSkillCooldown(3);
-//
-//        cout << "최대 쿨타임 : " << maxCoolDown << ", 현재 쿨타임 : " << curCoolDown << endl;
-//
-//        if (curCoolDown > 0.f) return;
-//
-//        if (m_isNeedTarget & (1 << 0))
-//        {
-//            // R 스킬은 타겟이 필요함
-//            if (CheckTargetForSkill(KEY_TYPE::R))
-//            {
-//                auto target = GetPickedTargetAtMouse();
-//                navMeshAgent->Stop();
-//                OnSkillUsed(3, target);  // R은 타겟 정보 전달
-//                m_animationStateMachine->ChangeState(AnimationStateType::Skill_4);
-//                ChangeState(PlayerStateType::Skill_4);
-//
-//            }
-//            else
-//            {
-//                cout << "R 스킬: 유효한 타겟이 없습니다." << endl;
-//            }
-//        }
-//        else
-//        {
-//            navMeshAgent->Stop();
-//            m_animationStateMachine->ChangeState(AnimationStateType::Skill_4);
-//            ChangeState(PlayerStateType::Skill_4);
-//
-//            OnSkillUsed(3, nullptr);  // 3: R 스킬 인덱스 
-//        }
-//    }
-//    // PlayerStateMachine.cpp - Z키 처리
-//    if (INPUT->GetButtonDown(KEY_TYPE::Z))
-//    {
-//        bool craftSuccess = false;
-//        OnTryCraftFirst(craftSuccess);  // Client에게 "첫 번째 조합 시도해줘" 요청
-//       
-//        if (!craftSuccess) return;
-//
-//        // 애니메이션 전환
-//        auto navMeshAgent = GetGameObject()
-//            ->GetFixedComponent<NavMeshAgent>(ComponentType::NavMeshAgent);
-//        if (navMeshAgent)
-//            navMeshAgent->Stop();
-//
-//        m_animationStateMachine->ChangeState(AnimationStateType::Craft);
-//        ChangeState(PlayerStateType::Craft);     
-//    }  
-//}
 
+// PlayerStateMachine.cpp에 구현
+bool PlayerStateMachine::IsCurrentStateMovable() const
+{
+    if (!m_currentState)
+        return true; // 기본 허용
+
+    return m_currentState->IsMovable();
+}
 
 void PlayerStateMachine::PrintCurState()
 {

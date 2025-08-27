@@ -20,23 +20,20 @@ NickyCounterState::~NickyCounterState()
 
 void NickyCounterState::Enter()
 {
+    cout << "니키 카운터 State진입!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+
     // NickyBaseAttack 컴포넌트 활성화
     auto counterScript = m_player->GetComponent<NickyCounter>();
     if (counterScript) {
         counterScript->StartCounter();
     }
+    m_skillTime = 0.f;
+    m_isSkillComplete = false; 
 }
 void NickyCounterState::Update()
 {
     // 대기 시간 업데이트
     m_skillTime += DT;
-
-    if (m_isSkillComplete)
-    {
-        // 스킬이 완료되면 자동으로 Wait 상태로 전환 요청
-        // 실제 전환은 AnimationStateMachine에서 처리
-        return;
-    }
 
     // 시퀀스 재생 상태 체크
     if (!m_isSkillComplete && m_skillTime >= (18.5/25.f) / 2.f)
@@ -53,12 +50,16 @@ void NickyCounterState::Exit()
     if (counterScript) {
         counterScript->StopCounter();
     }
+    m_skillTime = 0.f;
+    m_isSkillComplete = false;
+
+    cout << "니키 카운터 State탈출!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
 }
 
 bool NickyCounterState::CanTransitionTo(PlayerStateType newState)
 {
     // 스킬이 완료되었을 때만 Wait 상태로 전환 가능
-    if (m_isSkillComplete && newState == PlayerStateType::Wait)
+    if (m_isSkillComplete && (newState == PlayerStateType::Wait || newState == PlayerStateType::Run))
     {
         return true;
     }

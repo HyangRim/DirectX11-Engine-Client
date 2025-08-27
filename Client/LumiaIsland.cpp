@@ -50,6 +50,7 @@
 #include "NickyWState.h"
 #include "NickyEState.h"
 #include "NickyRState.h"
+#include "NickyCounterState.h"
 
 #include "BiancaQState.h"
 #include "BiancaWState.h"
@@ -237,7 +238,7 @@ void LumiaIsland::Start()
 		completed = IsQSkillCompleted();
 		});
 
-	// 기존 Delegate들은 유지하고 새로운 OnQSkillCompleted 추가
+	// 기존 Delegate들은 유지하고 새로운 OnWSkillCompleted 추가
 	m_player->GetPlayerStateMachine()->OnWSkillCompleted.Push([this](bool& completed) {
 		// Q스킬 완료 상태를 확인하는 로직
 		completed = IsWSkillCompleted();
@@ -249,10 +250,16 @@ void LumiaIsland::Start()
 		completed = IsESkillCompleted();
 		});
 
-	// 기존 Delegate들은 유지하고 새로운 OnESkillCompleted 추가
+	// 기존 Delegate들은 유지하고 새로운 OnRSkillCompleted 추가
 	m_player->GetPlayerStateMachine()->OnRSkillCompleted.Push([this](bool& completed) {
 		// Q스킬 완료 상태를 확인하는 로직
 		completed = IsRSkillCompleted();
+		});
+
+	// 기존 Delegate들은 유지하고 새로운 OnCounterSkillCompleted 추가
+	m_player->GetPlayerStateMachine()->OnCounterSkillCompleted.Push([this](bool& completed) {
+		// Q스킬 완료 상태를 확인하는 로직
+		completed = IsCounterSkillCompleted();
 		});
 }
 
@@ -349,7 +356,7 @@ void LumiaIsland::CreateDefaultLight()
 void LumiaIsland::SelectCharacter()
 {
 	//테스트용 임시 강제 설정
-	m_selectedCharacterIdx = 0;
+	m_selectedCharacterIdx = 1;
 
 
 	if (m_selectedCharacterIdx == 0) {
@@ -2372,6 +2379,33 @@ bool LumiaIsland::IsRSkillCompleted()
 				{
 					return rState->IsSkillComplete(); // 이 메서드를 BiancaEState에 추가 필요
 				}
+			}
+		}
+	}
+	return false;
+}
+
+bool LumiaIsland::IsCounterSkillCompleted()
+{
+	// 현재 Player의 PlayerState가 counter인지 확인하고, 완료 상태인지 체크
+	auto psm = m_player->GetPlayerStateMachine();
+	if (psm && psm->IsInState(PlayerStateType::Counter))
+	{
+		auto currentState = psm->GetCurrentStatePtr();
+		if (currentState)
+		{
+			// 니키인지 비앙카인지 확인 후 적절한 완료 체크
+			if (m_selectedCharacterIdx == 1) // 니키
+			{
+				auto counterState = dynamic_pointer_cast<NickyCounterState>(currentState);
+				if (counterState)
+				{
+					return counterState->IsSkillComplete(); // 이 메서드를 NickyEState에 추가 필요
+				}
+			}
+			else if (m_selectedCharacterIdx == 0) // 비앙카
+			{
+				
 			}
 		}
 	}

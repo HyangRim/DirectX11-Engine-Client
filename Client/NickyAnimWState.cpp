@@ -43,8 +43,7 @@ void NickyAnimWState::Update(shared_ptr<ModelAnimator> animator)
 
     // 대기 시간 업데이트
     m_skillTime += DT;
-    cout << "AnimationState 에서의 누적 시간 : " << m_skillTime << endl;
-
+   
 
     // 시퀀스 재생 상태 체크
     if (!m_isSkillComplete && m_skillTime >= m_expectedDuration)
@@ -79,6 +78,9 @@ void NickyAnimWState::Exit(shared_ptr<ModelAnimator> animator)
 
 bool NickyAnimWState::CanTransitionTo(AnimationStateType nextState)
 {
+    if (nextState == AnimationStateType::Counter)
+        return true;
+
     if (m_isSkillComplete && (nextState == AnimationStateType::Wait || nextState == AnimationStateType::Run))
     {
         return true;

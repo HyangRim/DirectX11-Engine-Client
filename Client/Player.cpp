@@ -261,6 +261,13 @@ void Player::Damaged(DamageInfo _damage)
 
 void Player::Damaged(int _damage)
 {
+	if (m_playerStateMachine->GetCurrentState() == PlayerStateType::Skill_2)
+	{
+		m_playerStateMachine->RequestStateChange(PlayerStateType::Counter);
+		GetAnimationStateMachine()->RequestStateChange(AnimationStateType::Counter);
+	}
+
+
 	PlayerStatus info = GetStatus();
 
 	int32 baseAttack = _damage * 100;

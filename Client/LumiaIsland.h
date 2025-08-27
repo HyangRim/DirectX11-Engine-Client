@@ -73,6 +73,7 @@ private:
 	bool IsWSkillCompleted();
 	bool IsESkillCompleted();
 	bool IsRSkillCompleted();
+	bool IsCounterSkillCompleted();
 	//=====================스킬 완료 확인 함수=======================//
 
 	//=====================스킬 레벨업 함수=======================//

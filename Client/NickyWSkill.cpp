@@ -20,11 +20,20 @@ NickyWSkill::~NickyWSkill()
 
 void NickyWSkill::PlaySkill()
 {
-
+	SOUND->PlaySound(L"Nicky/Nicky_skill02_Gaurd.wav", 20, 0.5f);
 }
 
 void NickyWSkill::Update()
 {
-	
+	UpdateSkillCoolDown();
 
+	if (m_player->GetPlayerStateMachine()->IsInState(PlayerStateType::Skill_2))
+	{
+		m_skillTimer += DT;
+		if (m_skillTimer >= m_skillDuration)
+		{
+			m_skillTimer = 0.f;
+			SkillEnd();
+		}
+	}
 }

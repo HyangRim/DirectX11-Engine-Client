@@ -96,6 +96,9 @@ void Nicky::OnCollision(shared_ptr<GameObject> _other)
 void Nicky::OnCollisionEnter(shared_ptr<GameObject> _other)
 {
 	//SetIsAttacked(true);
+
+
+
 }
 
 void Nicky::OnCollisionExit(shared_ptr<GameObject> _other)
@@ -167,7 +170,7 @@ void Nicky::InitNickyAnimation()
 	
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::Craft,		make_shared<NickyAnimCraftState>());
 	GetAnimationStateMachine()->RegisterState(AnimationStateType::BaseAttack,	make_shared<NickyAnimBaseAttackState>());
-	//GetAnimationStateMachine()->RegisterState(AnimationStateType::Counter,		make_shared<NickyAnimCounterState>());
+	GetAnimationStateMachine()->RegisterState(AnimationStateType::Counter,		make_shared<NickyAnimCounterState>());
 
 
 	auto animator = GetModelAnimator();
@@ -235,7 +238,7 @@ void Nicky::InitNickyPSM()
 	m_playerStateMachine->RegisterState(PlayerStateType::Skill_4,		make_shared<NickyRState>(GetModelAnimator()));
 	m_playerStateMachine->RegisterState(PlayerStateType::Craft,			make_shared<NickyCraftState>(GetModelAnimator()));
 	m_playerStateMachine->RegisterState(PlayerStateType::BaseAttack,	make_shared<NickyBaseAttackState>(GetModelAnimator(), shared_from_this()));
-	//m_playerStateMachine->RegisterState(PlayerStateType::Counter,		make_shared<NickyCounterState>(GetModelAnimator(), shared_from_this()));
+	m_playerStateMachine->RegisterState(PlayerStateType::Counter,		make_shared<NickyCounterState>(GetModelAnimator(), shared_from_this()));
 
 
 	m_playerStateMachine->OnSkillUsed += [this](int skillIndex, shared_ptr<GameObject> target) {

@@ -16,7 +16,7 @@ public:
 
 
     bool IsSkillComplete() const { return m_isSkillComplete; } // 새로 추가
-
+    bool IsMovable() const override { return false; }
 private:
     float m_skillTime = 0.0f;  // 대기 상태 지속 시간
     bool m_isAnimationStarted = false;

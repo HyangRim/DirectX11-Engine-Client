@@ -21,11 +21,7 @@ void NickyCounter::Update()
 	m_updateTimer += DT;
 
 	if (m_updateTimer >= m_attackDuration)
-	{
-		/*m_owner->GetNavMeshAgent()->Stop();
-		m_owner->GetPlayerStateMachine()->ChangeState(PlayerStateType::Wait);
-		m_owner->GetAnimationStateMachine()->ChangeState(AnimationStateType::Wait);*/
-
+	{		
 		return;
 	}
 }
@@ -33,14 +29,13 @@ void NickyCounter::Update()
 void NickyCounter::StartCounter()
 {
 	SetActive(true);
+	SOUND->PlaySound(L"Nicky/Nicky_skill02_GuardSuccess.wav", 21, 0.5f);
 	m_updateTimer = 0.f;
 }
 
 void NickyCounter::StopCounter()
 {
-	SetActive(false);
-
-	
+	SetActive(false);	
 	m_updateTimer = 0.f;
 }
 
