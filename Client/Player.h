@@ -10,6 +10,7 @@ class PlayerStateMachine;
 class PlayerInterface;
 class UIManager;
 class HealthBar;
+class Monster;
 
 struct DamageInfo;
 struct ItemStatus;
@@ -88,7 +89,7 @@ public:
     shared_ptr<Shader> GetShader() { return m_defaultShader; }
 
     void Damaged(DamageInfo _damage);
-    void Damaged(int _damage);
+    void Damaged(shared_ptr<Monster> _attacker, int _damage);
 
     void SetLevel(int _value);
     void SetCurExpLimit(int _value) { m_status.curExpLimit = _value; }

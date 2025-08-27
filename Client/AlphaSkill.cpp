@@ -84,7 +84,7 @@ void AlphaSkill::Update()
 			for (auto object : allobjects) {
 				auto player = dynamic_pointer_cast<Player>(object);
 				if (player != nullptr) {
-					player->Damaged(damage * 5);
+					player->Damaged(static_pointer_cast<Monster>(m_alpha), damage * 5);
 					SOUND->PlaySound(L"AlphaOmega_skill02_Hit.wav", 22, 0.5f);
 				}
 			}

@@ -18,7 +18,8 @@ public:
 
     // 차징 시간 설정을 위한 함수 추가
     void SetChargeTime(float chargeTime) { m_chargeTime = chargeTime; }
-
+    void ForceEndSkill();  // 강제 종료 함수 추가
+    void EndSkillNaturally();
 private:
     shared_ptr<Shader> m_shader = nullptr;
 
@@ -42,4 +43,5 @@ private:
     int soundCount = 2;
 
     bool m_skillFlag = false;
+    bool m_isForceEnded = false;  // 강제 종료 플래그 추가
 };

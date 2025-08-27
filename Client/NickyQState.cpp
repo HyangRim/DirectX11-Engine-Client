@@ -90,5 +90,22 @@ void NickyQState::ReleaseSkill()
     }
 }
 
+void NickyQState::ForceEnd()
+{
+    // Release 상태에서만 강제 종료 허용
+    if (!m_isReleasing)
+    {
+        cout << "차징 중에는 강제 종료 불가!" << endl;
+        return;
+    }
+
+    cout << "NickyQState 자연스러운 완료 처리!" << endl;
+
+    m_isForcedEnd = true;
+
+    m_chargeTime = (13.f / 25.f) / 2.f;
+    m_durationTime = 0.f;
+}
+
 
 

@@ -511,7 +511,7 @@ void PlayerStateMachine::HandleMovementInput()
                     GetGameObject()->GetNavMeshAgent()->SetDestination(hitPoint);
                     foundDestination = true;
 
-                    cout << "이동 시작 - Run 상태로 전환" << endl;
+                   // cout << "이동 시작 - Run 상태로 전환" << endl;
                     RequestStateChange(PlayerStateType::Run);
 
                     if (m_animationStateMachine)
@@ -704,7 +704,7 @@ void PlayerStateMachine::CheckWSkillCompletion()
 
         if (wSkillCompleted)
         {
-            cout << "W스킬 완료 감지 - Wait 상태로 전환" << endl;
+            //cout << "W스킬 완료 감지 - Wait 상태로 전환" << endl;
 
             m_wSkillCompletionChecked = true;  // 플래그 설정
 
@@ -970,8 +970,7 @@ void PlayerStateMachine::HandleRightClickInput()
         // 공격 쿨타임 체크
         if (m_baseAttackDelayDuration >= m_baseAttackDelay)
         {
-            cout << "기본공격 실행" << endl;
-
+       
             m_baseAttackDelayDuration = 0.f;
             RequestStateChange(PlayerStateType::BaseAttack);
 
@@ -982,7 +981,7 @@ void PlayerStateMachine::HandleRightClickInput()
         }
         else
         {
-            cout << "기본공격 쿨타임 중" << endl;
+           // cout << "기본공격 쿨타임 중" << endl;
         }
     }
     else

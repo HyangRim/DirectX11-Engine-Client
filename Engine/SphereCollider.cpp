@@ -27,13 +27,29 @@ SphereCollider::~SphereCollider()
 
 void SphereCollider::Update()
 {
-	m_DebugObject->SetActive(GetGameObject()->GetActive());
+	/*m_DebugObject->SetActive(GetGameObject()->GetActive());
 	m_boundingSphere.Center = GetGameObject()->GetTransform()->GetPosition() + m_offSetPos;
 
 	Vec3 scale = GetGameObject()->GetTransform()->GetScale();
 
 	m_boundingSphere.Radius = m_radius * max(max(scale.x, scale.y), scale.z);
 
+	m_DebugObject->GetTransform()->SetScale(GetGameObject()->GetTransform()->GetScale() * 2.f * m_offsetScale);
+	m_DebugObject->GetTransform()->SetRotation(GetGameObject()->GetTransform()->GetRotation());
+	m_DebugObject->GetTransform()->SetPosition(GetGameObject()->GetTransform()->GetPosition() + m_offSetPos);*/
+
+
+	m_DebugObject->SetActive(GetGameObject()->GetActive());
+	m_boundingSphere.Center = GetGameObject()->GetTransform()->GetPosition() + m_offSetPos;
+
+	Vec3 scale = GetGameObject()->GetTransform()->GetScale();
+	float maxScale = max(max(scale.x, scale.y), scale.z);
+
+	// offsetScale을 실제 충돌 판정에도 적용
+	float offsetScaleMax = max(max(m_offsetScale.x, m_offsetScale.y), m_offsetScale.z);
+	m_boundingSphere.Radius = m_radius * maxScale * offsetScaleMax;
+
+	// 디버그 오브젝트도 동일하게 설정
 	m_DebugObject->GetTransform()->SetScale(GetGameObject()->GetTransform()->GetScale() * 2.f * m_offsetScale);
 	m_DebugObject->GetTransform()->SetRotation(GetGameObject()->GetTransform()->GetRotation());
 	m_DebugObject->GetTransform()->SetPosition(GetGameObject()->GetTransform()->GetPosition() + m_offSetPos);

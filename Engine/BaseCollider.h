@@ -44,7 +44,7 @@ protected:
 	bool m_visible = true;
 
 	Vec3 m_offSetPos = { 0,0,0 };
-	Vec3 m_offsetScale = { 200, 200, 200 };
+	Vec3 m_offsetScale = { 1, 1, 1 };
 	shared_ptr<GameObject> m_DebugObject;
 };
 

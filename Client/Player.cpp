@@ -9,6 +9,7 @@
 #include "HealthBar.h"
 #include "PlayerStateMachine.h"
 #include "FogOfWar.h"
+#include "Monster.h"	
 
 Player::Player()
 {
@@ -259,14 +260,18 @@ void Player::Damaged(DamageInfo _damage)
 	SetHP(playerHP);
 }
 
-void Player::Damaged(int _damage)
+void Player::Damaged(shared_ptr<Monster> _attacker, int _damage)
 {
 	if (m_playerStateMachine->GetCurrentState() == PlayerStateType::Skill_2)
 	{
-		m_playerStateMachine->RequestStateChange(PlayerStateType::Counter);
-		GetAnimationStateMachine()->RequestStateChange(AnimationStateType::Counter);
+		if (m_playerStateMachine->GetState(PlayerStateType::Counter))
+		{
+			m_playerStateMachine->GetState(PlayerStateType::Counter)->SetTarget(_attacker);
+			
+			m_playerStateMachine->RequestStateChange(PlayerStateType::Counter);
+			GetAnimationStateMachine()->RequestStateChange(AnimationStateType::Counter);
+		}	
 	}
-
 
 	PlayerStatus info = GetStatus();
 

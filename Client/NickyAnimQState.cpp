@@ -204,6 +204,31 @@ void NickyAnimQState::UpdateReleasing()
         else
             m_isComplete = true;
     }
+
+    //if (!m_cachedAnimator)
+    //    return;
+
+    //wstring currentAnim = m_cachedAnimator->GetCurrentAnimationTag();
+
+    //// 강제 종료된 경우 또는 일반적인 End 애니메이션 처리
+    //if (m_isForcedEnd || currentAnim == L"Skill_01_End")
+    //{
+    //    if (m_cachedAnimator->IsAnimationFinished())
+    //    {
+    //        m_isComplete = true;
+    //        cout << "Nicky Q 스킬 애니메이션 완료!" << endl;
+    //    }
+    //}
+    //else
+    //{
+    //    // Rush 애니메이션이 재생 중일 때만 true
+    //    m_isFirstAnimationActive = (currentAnim == L"Skill_01_Rush");
+
+    //    if (currentAnim == L"Skill_01_Attack" || currentAnim == L"Skill_01_Rush")
+    //        return;
+    //    else
+    //        m_isComplete = true;
+    //}
 }
 
 void NickyAnimQState::SetInitialMovementState(bool wasMoving)
@@ -346,23 +371,41 @@ bool NickyAnimQState::IsStartAnimationComplete()
 
 void NickyAnimQState::Exit(shared_ptr<ModelAnimator> animator)
 {
+    //if (!animator)
+    //    return;
+
+    //cout << "Nicky Q 스킬 애니메이션 종료 " << endl;
+
+    //// 상태 정리
+    //m_chargeTime = 0.0f;
+    //m_skillTime = 0.0f;
+    //m_isReleasing = false;
+
+    //m_isComplete = false;
+    //m_isChargingActive = false;
+    //m_isStartAnimationPlaying = false;
+    //m_cachedAnimator.reset();
+
+    //animator->SetAnimationSpeed(1.f);
+
+    //m_chargeState = QSkillChargeState::Default;
+
     if (!animator)
         return;
 
-    cout << "Nicky Q 스킬 애니메이션 종료 " << endl;
+    cout << "Nicky Q 스킬 애니메이션 종료" << endl;
 
     // 상태 정리
     m_chargeTime = 0.0f;
     m_skillTime = 0.0f;
     m_isReleasing = false;
-
     m_isComplete = false;
     m_isChargingActive = false;
     m_isStartAnimationPlaying = false;
+    m_isForcedEnd = false;  // 강제 종료 플래그도 리셋
     m_cachedAnimator.reset();
 
     animator->SetAnimationSpeed(1.f);
-
     m_chargeState = QSkillChargeState::Default;
 }
 
@@ -380,4 +423,25 @@ bool NickyAnimQState::IsCharging() const
 bool NickyAnimQState::IsComplete() const
 {
     return m_isComplete;
+}
+
+void NickyAnimQState::ForceEndAnimation()
+{
+    if (!m_cachedAnimator) return;
+
+    cout << "Q 스킬 애니메이션 강제 종료!" << endl;
+
+    m_isForcedEnd = true;
+    m_isReleasing = true;
+    m_isChargingActive = false;
+
+    // End 애니메이션으로 즉시 변경
+    vector<wstring> endSequence = { L"Skill_01_End" };
+    vector<float> endDurations = { (13.f / 25.f) / m_playSpeed };
+
+    m_cachedAnimator->StopSequence();
+
+    m_cachedAnimator->CreateSequence(L"Force_End_Sequence", endSequence, endDurations, false);
+    m_cachedAnimator->PlaySequence(L"Force_End_Sequence");
+    m_cachedAnimator->SetCurrentAnimationSpeed(m_playSpeed);
 }

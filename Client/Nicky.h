@@ -31,5 +31,13 @@ public:
     virtual void Death() override;
     virtual void MakeItem() override;
     virtual void MakeFood() override;
+
+
+    // Nicky.h에 멤버 변수 추가
+private:
+    bool m_qSkillDamageDealt = false;  // Q 스킬 데미지 처리 플래그
+
+    friend class NickyQSkill;
+
 };
 

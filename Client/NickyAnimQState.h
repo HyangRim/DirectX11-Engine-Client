@@ -32,6 +32,7 @@ public:
     bool IsCharging() const;
     bool IsComplete() const;
     float GetChargeTime() const { return m_chargeTime; }
+    void ForceEndAnimation();  // 강제 애니메이션 종료 함수 추가
 
 private:
     // 내부 로직 처리
@@ -44,6 +45,7 @@ private:
     bool IsStartAnimationComplete();
     void ReleaseSkill();
 
+    
 private:
     shared_ptr<GameObject> GetGameObject() const;
 
@@ -63,7 +65,7 @@ private:
     bool m_isStartAnimationPlaying = false;
     float m_startAnimationTime = 0.0f;
     float m_playSpeed = 2.f;
-
+    bool m_isForcedEnd = false;  // 강제 종료 플래그
     shared_ptr<ModelAnimator> m_cachedAnimator;
   
 private:

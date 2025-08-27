@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "AnimationState.h"
 #include "NickyAnimRState.h"
+#include "Monster.h"
 
 NickyRSkill::NickyRSkill(shared_ptr<Player> _player)
 	: Super(_player, 3)
@@ -22,32 +23,104 @@ NickyRSkill::~NickyRSkill()
 
 void NickyRSkill::PlaySkill()
 {
+	//if (!m_target)
+	//{
+	//	cout << "R 스킬: 타겟이 설정되지 않았습니다." << endl;
+	//	return;
+	//}
+
+	//int soundIdx = rand() % soundCount + 1;
+	//wstring soundString = L"Nicky/Nicky_PlaySkill4_" + to_wstring(soundIdx) + L".wav";
+
+	//SOUND->PlaySound(soundString, 1, 0.5f);
+	//SOUND->PlaySound(L"Nicky/Nicky_skill04_Ready.wav", 4, 0.5f);
+	//// 타겟 위치로 스킬 방향 계산
+	//CalculateSkillDirection();
+
 	if (!m_target)
 	{
 		cout << "R 스킬: 타겟이 설정되지 않았습니다." << endl;
 		return;
 	}
 
+	// 초기 타겟 위치 저장
+	m_lastTargetPos = m_target->GetTransform()->GetPosition();
+
 	int soundIdx = rand() % soundCount + 1;
 	wstring soundString = L"Nicky/Nicky_PlaySkill4_" + to_wstring(soundIdx) + L".wav";
-
 	SOUND->PlaySound(soundString, 1, 0.5f);
 	SOUND->PlaySound(L"Nicky/Nicky_skill04_Ready.wav", 4, 0.5f);
-	// 타겟 위치로 스킬 방향 계산
+
 	CalculateSkillDirection();
 }
 
 void NickyRSkill::Update()
 {
+	//UpdateSkillCoolDown();
+
+	//if (m_moveFlag)
+	//{
+	//	// Rush 애니메이션이 재생 중일 때만 이동
+	//	if (IsRushAnimationPlaying())
+	//	{
+	//		m_rushSoundDuration += DT;
+	//		m_moveElapsedTime += DT;
+	//		float moveT = m_moveElapsedTime / m_moveDuration;
+
+	//		if (m_rushSoundDuration > 0.1f)
+	//		{
+	//			SOUND->PlaySound(L"Nicky/Nicky_skill04_Rush.wav", 2, 0.5f);
+	//			m_rushSoundDuration = 0.f;
+	//		}
+
+	//		// 이동 완료 체크
+	//		if (moveT >= 1.0f)
+	//		{
+	//			moveT = 1.0f;
+	//			m_moveFlag = false; // 이동 완료
+	//			//cout << "R 스킬 이동 완료!" << endl;
+	//			SOUND->PlaySound(L"Nicky/Nicky_skill04_Attack.wav", 3, 0.5f);
+
+	//			static_pointer_cast<Monster>(m_target)->Damaged(m_playerObject,
+	//				static_pointer_cast<Player>(m_playerObject)->GetStatus().hitAttack * 1.5f);
+
+	//			SkillEnd();
+	//		}
+
+	//		//cout << "진행률 : " << moveT * 100 << "%" << endl;
+	//		Vec3 curPos = Utils::Lerp(m_startPos, m_targetPos, moveT);
+	//		m_playerObject->GetTransform()->SetPosition(curPos);
+	//	}
+	//	else if (m_moveElapsedTime > 0.0f)
+	//	{
+	//		// Rush 애니메이션이 끝났는데 이동 중이면 중지
+	//		m_moveFlag = false;
+	//	}
+	//}
+
+
 	UpdateSkillCoolDown();
 
 	if (m_moveFlag)
 	{
-		// Rush 애니메이션이 재생 중일 때만 이동
 		if (IsRushAnimationPlaying())
 		{
 			m_rushSoundDuration += DT;
 			m_moveElapsedTime += DT;
+
+			// **핵심**: 동적 타겟 추적 로직
+			if (m_isDynamicTracking && m_target)
+			{
+				m_trackingTimer += DT;
+
+				// 일정 간격으로만 업데이트 (렉 방지)
+				if (m_trackingTimer >= m_trackingUpdateInterval)
+				{
+					UpdateTargetPosition();
+					m_trackingTimer = 0.f;
+				}
+			}
+
 			float moveT = m_moveElapsedTime / m_moveDuration;
 
 			if (m_rushSoundDuration > 0.1f)
@@ -60,23 +133,26 @@ void NickyRSkill::Update()
 			if (moveT >= 1.0f)
 			{
 				moveT = 1.0f;
-				m_moveFlag = false; // 이동 완료
-				//cout << "R 스킬 이동 완료!" << endl;
+				m_moveFlag = false;
 				SOUND->PlaySound(L"Nicky/Nicky_skill04_Attack.wav", 3, 0.5f);
+
+				if (m_target && m_target->GetType() == OBJECTTYPE::MONSTER)
+				{
+					static_pointer_cast<Monster>(m_target)->Damaged(m_playerObject,
+						static_pointer_cast<Player>(m_playerObject)->GetStatus().hitAttack * 1.5f);
+				}
+
 				SkillEnd();
 			}
 
-			//cout << "진행률 : " << moveT * 100 << "%" << endl;
 			Vec3 curPos = Utils::Lerp(m_startPos, m_targetPos, moveT);
 			m_playerObject->GetTransform()->SetPosition(curPos);
 		}
 		else if (m_moveElapsedTime > 0.0f)
 		{
-			// Rush 애니메이션이 끝났는데 이동 중이면 중지
 			m_moveFlag = false;
 		}
 	}
-
 }
 
 void NickyRSkill::CalculateSkillDirection()
@@ -131,4 +207,37 @@ bool NickyRSkill::IsRushAnimationPlaying()
 void NickyRSkill::SetRushDuration(float duration)
 {
 	m_playerObject->GetModelAnimator()->SetSequenceAnimationDuration(L"Skill_4_Sequence", 2, duration);
+}
+
+void NickyRSkill::UpdateTargetPosition()
+{
+	if (!m_target || !m_target->GetActive())
+		return;
+
+	Vec3 currentTargetPos = m_target->GetTransform()->GetPosition();
+
+	// 타겟이 실제로 이동했는지 확인 (불필요한 계산 방지)
+	float distanceMoved = Vec3::Distance(currentTargetPos, m_lastTargetPos);
+	if (distanceMoved < 0.1f)  // 0.1미터 이하 움직임은 무시
+		return;
+
+	Vec3 playerPos = m_playerObject->GetTransform()->GetPosition();
+	Vec3 direction = currentTargetPos - playerPos;
+	direction.Normalize();
+
+	// 타겟 바로 앞 1미터까지만 이동
+	float moveDistance = Vec3::Distance(playerPos, currentTargetPos) - 1.f;
+	if (moveDistance < 0.5f) moveDistance = 0.5f;  // 최소 거리 보장
+
+	// **부드러운 전환**: 기존 목표점과 새 목표점을 보간
+	Vec3 newTargetPos = playerPos + direction * moveDistance;
+	m_targetPos = Utils::Lerp(m_targetPos, newTargetPos, 0.3f);  // 30% 보간으로 부드럽게
+
+	// 회전도 업데이트
+	float targetYaw = atan2(direction.x, direction.z) + 3.141592f;
+	Vec3 currentRotation = m_playerObject->GetTransform()->GetLocalRotation();
+	Vec3 newRotation = Vec3(currentRotation.x, targetYaw * 180.0f / 3.14159f, currentRotation.z);
+	m_playerObject->GetTransform()->SetLocalRotation(newRotation);
+
+	m_lastTargetPos = currentTargetPos;  // 이전 위치 저장
 }

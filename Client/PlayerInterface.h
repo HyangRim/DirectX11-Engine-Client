@@ -51,7 +51,7 @@ public:
 
     void TakeDamage(int damage) override
     {
-        m_player.lock()->Damaged(damage);
+        //m_player.lock()->Damaged(damage);
     }
 
     void AddExp(int exp) override

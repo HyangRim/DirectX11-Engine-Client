@@ -4,6 +4,7 @@
 #include "NickyCounter.h"
 
 #include "Player.h"
+#include "NickyWSkill.h"
 
 NickyCounterState::NickyCounterState(shared_ptr<ModelAnimator> modelAnimator, shared_ptr<GameObject> _player)
     :Super(PlayerStateType::Counter)
@@ -21,10 +22,16 @@ NickyCounterState::~NickyCounterState()
 void NickyCounterState::Enter()
 {
     cout << "니키 카운터 State진입!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-
+    auto player = static_pointer_cast<Player>(m_player);
+    if (auto wSkill = static_cast<NickyWSkill*>(player->GetSkill(1)))  // W는 인덱스 1
+    {
+        wSkill->SkillEnd();  // 쿨타임 설정
+        cout << "Counter 진입으로 W 스킬 쿨타임 설정" << endl;
+    }
     // NickyBaseAttack 컴포넌트 활성화
     auto counterScript = m_player->GetComponent<NickyCounter>();
     if (counterScript) {
+        counterScript->SetTarget(m_target);
         counterScript->StartCounter();
     }
     m_skillTime = 0.f;

@@ -18,7 +18,6 @@ public:
 
     void CalcDir(Vec3 otherPos, Vec3 wolfPos);
     bool IsInAttackRange();
-
 private:
     bool m_motionChange = true;
     float m_attackRange = 4.f;

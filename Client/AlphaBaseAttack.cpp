@@ -40,7 +40,7 @@ void AlphaBaseAttack::Update()
             m_skillCoolTime = 12.5f;
         }
 
-        static_pointer_cast<Player>(m_target)->Damaged(static_pointer_cast<Monster>(m_owner)->GetMonsterStatus().adPower);
+        static_pointer_cast<Player>(m_target)->Damaged(static_pointer_cast<Monster>(m_owner), static_pointer_cast<Monster>(m_owner)->GetMonsterStatus().adPower);
     }
 
 }

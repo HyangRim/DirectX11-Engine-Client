@@ -40,6 +40,8 @@
 #include "NickyBaseAttack.h"
 #include "NickyCounter.h"
 
+#include "Monster.h"
+
 Nicky::Nicky(shared_ptr<Shader> _defaultShader)
 {
 	m_defaultShader = _defaultShader;
@@ -76,6 +78,8 @@ void Nicky::Update()
 		GetNavMeshAgent()->Stop();
 		return;
 	}
+
+	
 }
 
 void Nicky::LateUpdate()
@@ -90,20 +94,83 @@ void Nicky::FixedUpdate()
 
 void Nicky::OnCollision(shared_ptr<GameObject> _other)
 {
+	// Q 스킬 Release 중이고 아직 데미지를 주지 않은 상태에서만 처리
+	if (m_playerStateMachine->GetCurrentState() == PlayerStateType::Skill_1)
+	{
+		if (_other->GetType() == OBJECTTYPE::MONSTER)
+		{
+			auto monster = static_pointer_cast<Monster>(_other);
+			if (monster->GetActive() && !monster->IsDead())
+			{
+				auto qState = static_pointer_cast<NickyQState>(
+					m_playerStateMachine->GetState(PlayerStateType::Skill_1)
+				);
 
+				// Release 중이고 아직 데미지를 주지 않은 경우
+				if (qState && qState->IsReleasing() && !m_qSkillDamageDealt)
+				{
+					int skillDamage = static_cast<int>(GetStatus().hitAttack * 2.0f);
+					monster->Damaged(static_pointer_cast<Player>(shared_from_this()), skillDamage);
+
+					if (auto qSkill = static_cast<NickyQSkill*>(m_skills[0].get()))
+					{
+						qSkill->ForceEndSkill();
+					}
+
+					m_qSkillDamageDealt = true;  // 데미지 처리 완료 플래그
+
+					cout << "Q 스킬 OnCollision에서 몬스터 데미지: " << skillDamage << endl;
+					SOUND->PlaySound(L"Nicky/Nicky_skill01_Hit.wav", 5, 0.5f);
+				}
+			}
+		}
+	}
 }
 
 void Nicky::OnCollisionEnter(shared_ptr<GameObject> _other)
 {
-	//SetIsAttacked(true);
+	// Q 스킬 중 몬스터 충돌 감지
+	if (m_playerStateMachine->GetCurrentState() == PlayerStateType::Skill_1)
+	{
+		if (_other->GetType() == OBJECTTYPE::MONSTER)
+		{
+			auto monster = static_pointer_cast<Monster>(_other);
+			if (monster->GetActive() && !monster->IsDead())
+			{
+				// Q 스킬 상태 확인 - Release 중일 때만 강제 종료
+				auto qState = static_pointer_cast<NickyQState>(
+					m_playerStateMachine->GetState(PlayerStateType::Skill_1)
+				);
 
+				if (qState && qState->IsReleasing())  // Release 중일 때만
+				{
+					// 몬스터에게 데미지 적용
+					int skillDamage = static_cast<int>(GetStatus().hitAttack * 2.0f);
+					monster->Damaged(static_pointer_cast<Player>(shared_from_this()), skillDamage);
 
+					// Q 스킬 강제 종료 (Rush -> End로)
+					if (auto qSkill = static_cast<NickyQSkill*>(m_skills[0].get()))
+					{
+						qSkill->ForceEndSkill();
+					}
 
+					cout << "Q 스킬 Release 중 몬스터 충돌! 데미지: " << skillDamage << endl;
+					SOUND->PlaySound(L"Nicky/Nicky_skill01_Hit.wav", 5, 0.5f);
+				}
+				// 차징 중일 때는 충돌 무시 (데미지도 없음)
+				else if (qState && qState->IsCharging())
+				{
+					cout << "차징 중에는 충돌 무시" << endl;
+				}
+			}
+		}
+	}
 }
 
 void Nicky::OnCollisionExit(shared_ptr<GameObject> _other)
 {
 	//SetIsAttacked(false);
+	
 }
 
 void Nicky::InitNickyModel()

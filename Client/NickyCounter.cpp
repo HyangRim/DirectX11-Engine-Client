@@ -5,6 +5,8 @@
 
 #include "Player.h"
 #include "Monster.h"
+#include "BaseSkill.h"
+#include "NickyWSkill.h"
 
 NickyCounter::NickyCounter()
 {
@@ -29,6 +31,11 @@ void NickyCounter::Update()
 void NickyCounter::StartCounter()
 {
 	SetActive(true);
+	static_pointer_cast<Monster>(m_target)->Damaged(m_owner, static_pointer_cast<Player>(m_owner)->GetStatus().hitAttack * 1.5f);
+	CalcDir(m_target->GetTransform()->GetPosition(), m_owner->GetTransform()->GetPosition());
+	
+	
+
 	SOUND->PlaySound(L"Nicky/Nicky_skill02_GuardSuccess.wav", 21, 0.5f);
 	m_updateTimer = 0.f;
 }

@@ -21,7 +21,7 @@ public:
     void CalculateSkillDirection();
     bool IsRushAnimationPlaying();
     void SetRushDuration(float duration);
-
+    void UpdateTargetPosition();
 private:
     shared_ptr<Shader> m_shader = nullptr;
     shared_ptr<GameObject> m_target = nullptr;
@@ -37,6 +37,12 @@ private:
     float m_moveElapsedTime = 0.f;
 
     float m_rushSoundDuration = 0.f;
+
+    // 기존 변수들...
+    bool m_isDynamicTracking = true;  // 동적 추적 활성화 여부
+    float m_trackingUpdateInterval = 0.2f;  // 추적 업데이트 간격 (50FPS)
+    float m_trackingTimer = 0.f;  // 추적 타이머
+    Vec3 m_lastTargetPos;  // 이전 타겟 위치 (변화 감지용)
 
     int soundCount = 2;
 };

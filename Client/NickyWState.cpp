@@ -28,8 +28,7 @@ void NickyWState::Enter()
     m_expectedDuration = m_modelAnimator->GetAnimationDuration(L"Skill_02_Guard") + m_modelAnimator->GetAnimationDuration(L"Skill_02_Loop");
     m_expectedDuration /= 2.f;
 
-   
-
+  
     cout << "NickyWStateÁøÀÔ\n";
 }
 

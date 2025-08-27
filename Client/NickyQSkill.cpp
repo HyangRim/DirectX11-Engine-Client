@@ -7,6 +7,9 @@
 
 #include "ModelAnimator.h"
 
+#include "NickyQState.h"
+#include "Nicky.h"
+
 NickyQSkill::NickyQSkill(shared_ptr<Player> _player)
 	: Super(_player, 0)
 {
@@ -57,7 +60,11 @@ void NickyQSkill::PlaySkill()
 	SOUND->PlaySound(soundString, 1, 0.5f);
 
 	m_skillFlag = true;
-
+	// 플레이어의 데미지 플래그 리셋
+	if (auto nicky = static_pointer_cast<Nicky>(m_playerObject))
+	{
+		nicky->m_qSkillDamageDealt = false;  // friend로 접근하거나 public 함수로 만들어야 함
+	}
 }
 
 void NickyQSkill::Update()
@@ -77,7 +84,7 @@ void NickyQSkill::Update()
 		{
 			SOUND->PlaySound(L"Nicky/Nicky_skill01_Charge.wav", 2, 0.5f);
 
-			//m_chargingEffect->SetActive(true);
+			m_chargingEffect->SetActive(true);
 			m_bskillStart = true;
 			m_duration = 0.f;
 		}
@@ -104,6 +111,7 @@ void NickyQSkill::Update()
 			{
 				m_moveElapsedTime += DT;
 				float movet = m_moveElapsedTime / m_moveDuration;
+				//cout << "이동률 : " << movet * 100 << endl;
 				Vec3 curPos = Utils::Lerp(m_startPos, m_targetPos, movet);
 				m_playerObject->GetTransform()->SetPosition(curPos);
 			}
@@ -116,6 +124,11 @@ void NickyQSkill::Update()
 				m_startPos = m_playerObject->GetTransform()->GetPosition();
 
 				m_skillFlag = false;
+
+				cout << "이동완료\n";
+
+				ForceEndSkill();
+
 				SkillEnd();
 			}
 		}
@@ -176,4 +189,45 @@ bool NickyQSkill::IsFirstAnimationPlaying()
 	// 시퀀스가 재생 중이고, 현재 애니메이션이 Rush인 경우만 true
 	return animator->IsSequencePlaying() && currentAnim == L"Skill_01_Rush";
 	return false;
+}
+
+
+void NickyQSkill::ForceEndSkill()
+{
+	cout << "Q 스킬 강제 종료!" << endl;
+
+	// 이동 중지
+	m_moveFlag = false;
+	m_isForceEnded = true;
+
+	// 애니메이션을 End로 강제 변경
+	if (m_playerObject->GetAnimationStateMachine())
+	{
+		auto animQState = static_pointer_cast<NickyAnimQState>(
+			m_playerObject->GetAnimationStateMachine()->GetState(AnimationStateType::Skill_1)
+		);
+
+		auto logicQState = static_pointer_cast<NickyQState>(
+			m_playerObject->GetPlayerStateMachine()->GetState(PlayerStateType::Skill_1)
+		);
+
+		if (animQState)
+		{
+			animQState->ForceEndAnimation();
+		}
+
+		if (logicQState)
+		{
+			logicQState->ForceEnd();
+		}
+	}
+
+	m_moveFlag = false;
+	m_moveDuration = 0.f;
+	m_moveElapsedTime = 0.f;
+	m_startPos = m_playerObject->GetTransform()->GetPosition();
+
+	m_skillFlag = false;
+
+	SkillEnd();
 }

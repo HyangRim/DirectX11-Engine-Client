@@ -36,6 +36,7 @@ void WolfBaseAttack::Update()
 
         // 데미지 처리
         static_pointer_cast<Player>(m_target)->Damaged(
+            static_pointer_cast<Monster>(m_owner),
             static_pointer_cast<Monster>(m_owner)->GetMonsterStatus().adPower
         );
 
