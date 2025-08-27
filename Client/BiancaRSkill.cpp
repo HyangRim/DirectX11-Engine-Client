@@ -134,6 +134,9 @@ void BiancaRSkill::PlaySkill()
 
 void BiancaRSkill::Update()
 {
+	UpdateSkillCoolDown();
+
+
 	//평소, 캐스팅 중일 때 circle들이 비앙카 따라다님. 
 	if (m_circleFollowBianca) {
 		Vec3 biancaPosition = m_playerObject->GetTransform()->GetPosition();

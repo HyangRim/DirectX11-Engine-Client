@@ -80,6 +80,8 @@ void BiancaAnimRState::Exit(shared_ptr<ModelAnimator> animator)
     {
         m_sequenceDurations[i] *= m_playSpeed;
     }
+    animator->SetSequenceAnimationDurations(L"Skill_4_Sequence", m_sequenceDurations);
+
 }
 
 bool BiancaAnimRState::CanTransitionTo(AnimationStateType nextState)

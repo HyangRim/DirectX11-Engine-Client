@@ -14,7 +14,7 @@ BiancaESkill::BiancaESkill(shared_ptr<Player> _player)
 	}
 
 	{
-		m_skillCooldown = 8.f;
+		m_skillCooldown = 3.f;
 		m_skillName = L"순환.";
 		m_skillDesc = L"비앙카가 혈액의 고리를 충전하고 전방으로 돌진하여 스킬 피해를 입힙니다.";
 		m_curSkillLevel = 0;
@@ -45,11 +45,15 @@ BiancaESkill::BiancaESkill(shared_ptr<Player> _player)
 
 		m_collider = make_shared<SphereCollider>();
 		m_circle->AddComponent(m_collider);
-		m_collider->SetOffsetScale(Vec3(1.f, 30.f, 1.f));
-		m_circle->SetActive(false);
+
+		//
+		m_collider->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+		//
+
+		m_circle->SetActive(true);
 		m_circle->GetTransform()->SetParent(m_playerObject->GetTransform());
 		m_circle->GetTransform()->SetLocalPosition(Vec3(0.f, 0.03f, 0.f));
-		m_circle->GetCollider()->SetVisible(false);
+		m_circle->GetCollider()->SetVisible(true);
 		CURSCENE->Add(m_circle);
 	}
 
