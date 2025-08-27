@@ -14,6 +14,8 @@ public:
     virtual void PlaySkill() override;
     virtual void Update() override;
 
+    void ForceEndSkill();
+
 private:
     bool m_pushSkill = false;
     bool m_moveFlag = false;
@@ -31,6 +33,8 @@ private:
     float m_moveDuration = 0.f;
     float m_moveElapsedTime = 0.f;
     Vec3 m_startPos, m_targetPos;
+
+    bool m_isForceEnded = false;
 
 private:
     shared_ptr<SphereCollider> m_collider;

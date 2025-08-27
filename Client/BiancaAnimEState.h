@@ -26,6 +26,7 @@ public:
     bool IsCharging() const;
     bool IsComplete() const;
     float GetChargeTime() const { return m_chargeTime; }
+    void ForceEndAnimation();
 
 private:
     void UpdateCharging();
@@ -50,6 +51,7 @@ private:
     bool m_isReleasing = false;
     bool m_isEnding = false;
     bool m_isComplete = false;
+    bool m_isForcedEnd = false;  // 강제 종료 플래그
 
     shared_ptr<ModelAnimator> m_cachedAnimator;
     float m_playSpeed = 2.f;

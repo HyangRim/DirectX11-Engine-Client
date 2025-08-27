@@ -6,6 +6,9 @@
 #include "NavMeshAgent.h"
 #include "Monster.h"
 
+#include "BiancaEState.h"
+#include "BiancaAnimEState.h"
+
 BiancaESkill::BiancaESkill(shared_ptr<Player> _player)
 	: Super(_player, 2)
 {
@@ -151,15 +154,18 @@ void BiancaESkill::Update()
 		SOUND->PlaySound(L"Bianca/Bianca_Skill03_Attack.wav", 17, 0.5f);
 	}
 	
-	if (m_moveFlag) {
-		if (m_moveElapsedTime <= m_moveDuration) {
+	if (m_moveFlag) 
+	{
+		if (m_moveElapsedTime <= m_moveDuration)
+		{
 			m_moveElapsedTime += DT;
 			float movet = m_moveElapsedTime / m_moveDuration;
 			Vec3 curPos = Utils::Lerp(m_startPos, m_targetPos, movet);
 			m_playerObject->GetTransform()->SetPosition(curPos);
 			m_circle->DamageFlag(true);
 		}
-		else {
+		else
+		{
 			m_moveFlag = false;
 			m_circleSizeElapedTime = 0.f;
 			m_circleKeepElapedTime = 0.f;
@@ -170,9 +176,11 @@ void BiancaESkill::Update()
 
 			auto objects = m_circle->GetCollisionObjects();
 
-			for (auto object : objects) {
+			for (auto object : objects) 
+			{
 				auto monster = dynamic_pointer_cast<Monster>(object);
-				if (monster != nullptr) {
+				if (monster != nullptr) 
+				{
 					monster->Damaged(m_playerObject, SkillDamage);
 					SOUND->PlaySound(L"Bianca/Bianca_Skill03_Hit.wav", 17, 0.5f);
 				}
@@ -180,11 +188,55 @@ void BiancaESkill::Update()
 
 			m_circle->DamageFlag(false);
 			
+			ForceEndSkill();
+
+
 			SkillEnd();
 			//m_circle->SetActive(false);
 			m_endFlag = true;
 			m_eSkillEndElapsedTime = 0.f;
 		}
 	}
-	 
+}
+
+
+
+void BiancaESkill::ForceEndSkill()
+{
+	cout << "E 스킬 강제 종료!" << endl;
+
+	// 이동 중지
+	m_moveFlag = false;
+	m_isForceEnded = true;
+
+	// 애니메이션을 End로 강제 변경
+	if (m_playerObject->GetAnimationStateMachine())
+	{
+		auto animQState = static_pointer_cast<BiancaAnimEState>(
+			m_playerObject->GetAnimationStateMachine()->GetState(AnimationStateType::Skill_3)
+		);
+
+		auto logicQState = static_pointer_cast<BiancaEState>(
+			m_playerObject->GetPlayerStateMachine()->GetState(PlayerStateType::Skill_3)
+		);
+
+		if (animQState)
+		{
+			animQState->ForceEndAnimation();
+		}
+
+		if (logicQState)
+		{
+			logicQState->ForceEnd();
+		}
+	}
+
+	m_moveFlag = false;
+	m_moveDuration = 0.f;
+	m_moveElapsedTime = 0.f;
+	m_startPos = m_playerObject->GetTransform()->GetPosition();
+
+	//m_skillFlag = false;
+
+	SkillEnd();
 }

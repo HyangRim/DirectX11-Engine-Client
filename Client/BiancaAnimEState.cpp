@@ -293,6 +293,7 @@ void BiancaAnimEState::Exit(shared_ptr<ModelAnimator> animator)
     m_isReleasing = false;
     m_isEnding = false;
     m_isComplete = false;
+    m_isForcedEnd = false;
     m_skillState = BiancaESkillChargeState::ChargingWait;
     m_cachedAnimator.reset();
 
@@ -313,4 +314,25 @@ bool BiancaAnimEState::IsCharging() const
 bool BiancaAnimEState::IsComplete() const
 {
     return m_isComplete;
+}
+
+void BiancaAnimEState::ForceEndAnimation()
+{
+    if (!m_cachedAnimator) return;
+
+    cout << "Q 스킬 애니메이션 강제 종료!" << endl;
+
+    m_isForcedEnd = true;
+    m_isReleasing = true;
+    m_isCharging = false;
+
+    // End 애니메이션으로 즉시 변경
+    vector<wstring> endSequence = { L"Skill_3_3" };
+    vector<float> endDurations = { (17.f / 25.f) / m_playSpeed };
+
+    m_cachedAnimator->StopSequence();
+
+    m_cachedAnimator->CreateSequence(L"Force_End_Sequence", endSequence, endDurations, false);
+    m_cachedAnimator->PlaySequence(L"Force_End_Sequence");
+    m_cachedAnimator->SetCurrentAnimationSpeed(m_playSpeed);
 }
