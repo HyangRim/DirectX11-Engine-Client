@@ -45,6 +45,7 @@ void ImGuiManager::Render()
 
 void ImGuiManager::ShowPickedObj()
 {
+	return;
 	auto curPickedObj = CURSCENE->GetPickedObj();
 
 	//메모리 영역이 유효할 경우에.

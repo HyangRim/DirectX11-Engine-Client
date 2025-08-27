@@ -1,5 +1,7 @@
 #pragma once
 #include "PlayerStateMachine.h"
+
+class BiancaQProjectile;
 class BiancaBaseAttackState :
     public PlayerState
 {
@@ -35,5 +37,11 @@ private:
     void RotateToTarget();
     void DealDamage();
     void CheckForContinuousAttack();
+
+
+private:
+    shared_ptr<BiancaQProjectile> m_Projectile;
+    float m_speed = 35.f;
+
 };
 

@@ -41,11 +41,13 @@ BiancaQSkill::BiancaQSkill(shared_ptr<Player> _player)
 		m_Cone->AddComponent(make_shared<AABBBoxCollider>());
 		m_Cone->GetCollider()->SetOffsetScale(Vec3(1, 10, 1));
 		m_Cone->SetType(OBJECTTYPE::MAP);
-		{
+		{ 
 			auto mesh = RESOURCES->Get<Mesh>(L"Cone");
 			m_Cone->GetMeshRenderer()->SetMesh(mesh);
 			m_Cone->GetMeshRenderer()->SetPass(0);
-			m_Cone->GetMeshRenderer()->SetMaterial(RESOURCES->Get<Material>(L"default"));
+			auto mat = RESOURCES->Get<Material>(L"default")->Clone();
+			mat->GetMaterialDesc().diffuse = Vec4(1.f, 0.5f, 0.5f, 1.f);
+			m_Cone->GetMeshRenderer()->SetMaterial(mat);
 		}
 		CURSCENE->Add(m_Cone);
 	}
@@ -104,6 +106,7 @@ void BiancaQSkill::Update()
 		ProjectilePos.y -= 5.f;
 		//cout << ProjectilePos.x << " " << ProjectilePos.y << " " << ProjectilePos.z << "\n";
 		m_Cone->GetTransform()->SetPosition(ProjectilePos);
+		m_Cone->ResetTimer();
 		m_Cone->SetActive(true);
 	}
 }

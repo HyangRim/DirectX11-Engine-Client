@@ -61,16 +61,16 @@ void Bianca::Update()
 		return;
 	}
 
-	if (INPUT->GetButtonDown(KEY_TYPE::Q)) {
+	if (INPUT->GetButtonDown(KEY_TYPE::Q) && !INPUT->GetButton(KEY_TYPE::LCTRL)) {
 		m_skills[0]->PlaySkill();
 	}
-	else if (INPUT->GetButtonDown(KEY_TYPE::W)) {
+	else if (INPUT->GetButtonDown(KEY_TYPE::W) && !INPUT->GetButton(KEY_TYPE::LCTRL)) {
 		m_skills[1]->PlaySkill();
 	}
 	else if (INPUT->GetButtonDown(KEY_TYPE::E)) {
-
+		//E는 특수 매커니즘. 
 	}
-	else if (INPUT->GetButtonDown(KEY_TYPE::R)) {
+	else if (INPUT->GetButtonDown(KEY_TYPE::R) && !INPUT->GetButton(KEY_TYPE::LCTRL)) {
 		m_skills[3]->PlaySkill();
 	}
 }

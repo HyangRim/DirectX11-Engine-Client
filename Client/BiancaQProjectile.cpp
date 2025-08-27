@@ -48,7 +48,7 @@ void BiancaQProjectile::OnCollisionEnter(shared_ptr<GameObject> _other)
 		SOUND->PlaySound(L"Bianca/Bianca_Skill01_Hit02.wav", 1, 0.5f);
 	}
 	if (_other->GetType() == OBJECTTYPE::MONSTER) {
-		static_pointer_cast<Monster>(_other)->Damaged(m_Owner, static_pointer_cast<Player>(m_Owner)->GetStatus().hitAttack * 1.5f);
+		static_pointer_cast<Monster>(_other)->Damaged(m_Owner, static_pointer_cast<Player>(m_Owner)->GetStatus().hitAttack * 1.f);
 		SOUND->PlaySound(L"Bianca/Bianca_Skill01_Hit01.wav", 1, 0.5f);
 	}
 }
