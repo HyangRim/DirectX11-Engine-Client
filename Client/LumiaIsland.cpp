@@ -349,7 +349,7 @@ void LumiaIsland::CreateDefaultLight()
 void LumiaIsland::SelectCharacter()
 {
 	//테스트용 임시 강제 설정
-	m_selectedCharacterIdx = 1;
+	m_selectedCharacterIdx = 0;
 
 
 	if (m_selectedCharacterIdx == 0) {

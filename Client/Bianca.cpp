@@ -61,7 +61,7 @@ void Bianca::Update()
 		return;
 	}
 
-	if (INPUT->GetButtonDown(KEY_TYPE::Q)) {
+	/*if (INPUT->GetButtonDown(KEY_TYPE::Q)) {
 		m_skills[0]->PlaySkill();
 	}
 	else if (INPUT->GetButtonDown(KEY_TYPE::W)) {
@@ -72,7 +72,7 @@ void Bianca::Update()
 	}
 	else if (INPUT->GetButtonDown(KEY_TYPE::R)) {
 		m_skills[3]->PlaySkill();
-	}
+	}*/
 }
 
 void Bianca::LateUpdate()
