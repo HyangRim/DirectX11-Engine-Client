@@ -74,6 +74,9 @@ void BiancaESkill::PlaySkill()
 
 void BiancaESkill::Update()
 {
+
+	if (m_curSkillLevel <= 0)
+		return;
 	m_skillcurCooldown -= DT;
 
 	//원이 작아지는 연출은 스킬 쿨에 상관없음. 
