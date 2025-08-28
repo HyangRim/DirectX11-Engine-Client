@@ -86,6 +86,9 @@ void SliderUI::Create(Vec2 localPos, Vec2 size, shared_ptr<Material> trackMateri
         CURSCENE->AddUIObject(m_trackObject, false);
         CURSCENE->RegisterUIChild(m_trackObject);
 
+        CURSCENE->AddUIObject(m_fillObject, false);
+        CURSCENE->RegisterUIChild(m_fillObject);
+
         CURSCENE->AddUIObject(m_handleObject, false);
         CURSCENE->RegisterUIChild(m_handleObject);
     }
@@ -257,15 +260,52 @@ void SliderUI::UpdateHandlePosition()
 void SliderUI::UpdateFillPosition()
 {
     if (!m_fillObject) return;
+    //if (m_direction == SliderDirection::HORIZONTAL)
+    //{
+    //    float percent = (m_currentValue - m_minValue) / (m_maxValue - m_minValue);
+    //    m_fillObject->GetTransform()->SetScale(Vec3(m_trackSize.x * percent, m_trackSize.y, 1));
+    //}
+    //else
+    //{
+    //    float percent = (m_currentValue - m_minValue) / (m_maxValue - m_minValue);
+    //    m_fillObject->GetTransform()->SetScale(Vec3(m_trackSize.x, m_trackSize.y * percent, 1));
+    //}
+
+    float height = GRAPHICS->GetViewport().GetHeight();
+    float width = GRAPHICS->GetViewport().GetWidth();
+    float percent = (m_currentValue - m_minValue) / (m_maxValue - m_minValue);
+
     if (m_direction == SliderDirection::HORIZONTAL)
     {
-        float percent = (m_currentValue - m_minValue) / (m_maxValue - m_minValue);
-        m_fillObject->GetTransform()->SetScale(Vec3(m_trackSize.x * percent, m_trackSize.y, 1));
+        // 왼쪽에서 시작하는 방식
+        float fillWidth = m_trackSize.x * percent;
+
+        // 크기 설정
+        m_fillObject->GetTransform()->SetScale(Vec3(fillWidth, m_trackSize.y, 1));
+
+        float trackLeftX = m_worldPosition.x - m_trackSize.x / 2.0f;
+        float fillCenterX = trackLeftX + fillWidth / 2.0f;
+
+        float fillX = fillCenterX - width / 2.0f; 
+        float fillY = height / 2.0f - m_worldPosition.y;
+
+        m_fillObject->GetTransform()->SetPosition(Vec3(fillX, fillY, m_zTrackPos - 0.01f));
     }
-    else
+    else // VERTICAL
     {
-        float percent = (m_currentValue - m_minValue) / (m_maxValue - m_minValue);
-        m_fillObject->GetTransform()->SetScale(Vec3(m_trackSize.x, m_trackSize.y * percent, 1));
+        //  아래쪽에서 시작하는 방식
+        float fillHeight = m_trackSize.y * percent;
+
+        // 크기 설정
+        m_fillObject->GetTransform()->SetScale(Vec3(m_trackSize.x, fillHeight, 1));
+
+        float trackBottomY = m_worldPosition.y + m_trackSize.y / 2.0f;
+        float fillCenterY = trackBottomY - fillHeight / 2.0f;
+
+        float fillX = m_worldPosition.x - width / 2.0f;
+        float fillY = height / 2.0f - fillCenterY;
+
+        m_fillObject->GetTransform()->SetPosition(Vec3(fillX, fillY, m_zTrackPos - 0.01f));
     }
 }
 
