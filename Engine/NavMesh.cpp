@@ -18,7 +18,7 @@ void NavMesh::Start()
     Super::Start();
     LoadNavMeshData();
     InitializeSpatialGrid();
-    DebugPrintTriangles();
+    //DebugPrintTriangles();
 }
 
 void NavMesh::Update()

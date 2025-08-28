@@ -55,7 +55,7 @@ private:
 	float m_fadeDistance = 3.0f;
 	float m_smoothness = 3.0f;
 
-	float m_curTime = 0.f;
+	float m_curTime = 0.06f;
 	float m_updateTime = 0.05f;
 
 	FogOfWarData m_lastFowData = {};

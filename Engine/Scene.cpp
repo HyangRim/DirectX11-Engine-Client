@@ -38,9 +38,7 @@ void Scene::Start()
 {
     //충돌 판정 초기화. 
     m_mapColInfo.clear();
-
     m_objectManager->Start();
-
     m_objectManager->UpdateQuadTree();
 }
 
