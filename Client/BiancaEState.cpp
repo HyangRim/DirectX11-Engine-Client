@@ -72,7 +72,7 @@ void BiancaEState::UpdateCharging()
 {
     m_chargeTime += DT;
 
-    if (INPUT->GetButtonUp(KEY_TYPE::E))
+    if (INPUT->GetButtonUp(KEY_TYPE::E) && !INPUT->GetButton(KEY_TYPE::LCTRL))
     {
         cout << "Â÷Â¡ ½Ã°£ : " << m_chargeTime << endl;
         m_isReleasing = true;
