@@ -44,6 +44,7 @@ void BiancaQProjectile::OnCollision(shared_ptr<GameObject> _other)
 
 void BiancaQProjectile::OnCollisionEnter(shared_ptr<GameObject> _other)
 {
+	if (m_baseAttack) return;
 	if (_other->GetType() == OBJECTTYPE::PLAYER) {
 		SOUND->PlaySound(L"Bianca/Bianca_Skill01_Hit02.wav", 1, 0.5f);
 	}

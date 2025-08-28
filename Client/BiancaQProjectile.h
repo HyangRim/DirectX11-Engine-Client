@@ -20,10 +20,13 @@ public:
     void SetMoveTarget(Vec3& _startPos, Vec3& _endPos, float _timer);
     bool GetArrive() const { return m_arrive; }
     void SetArrive(bool _arrive) { m_arrive = _arrive; }
+    void SetBaseAttack(bool _value) { m_baseAttack = _value; }
 
     float GetSpeed() const { return m_speed; }
 
 private:
+
+    bool m_baseAttack = false;
     bool m_moving = false;
     bool m_arrive = false;
 

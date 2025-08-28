@@ -13,6 +13,7 @@ BiancaBaseAttackState::BiancaBaseAttackState(shared_ptr<ModelAnimator> modelAnim
     m_Projectile = make_shared<BiancaQProjectile>(player);
     m_Projectile->SetName(L"Bianca_Q_Projectile");
     m_Projectile->SetActive(false);
+    m_Projectile->SetBaseAttack(true);
     m_Projectile->AddComponent(make_shared<MeshRenderer>());
     m_Projectile->AddComponent(make_shared<SphereCollider>());
     {
@@ -170,6 +171,11 @@ void BiancaBaseAttackState::UpdateAttackLogic()
         return;
     }
 
+    if (m_Projectile->GetArrive()) {
+        m_Projectile->SetArrive(false);
+        DealDamage();
+    }
+
     // 공격 쿨타임 체크
     if (m_attackTime >= m_attackCooldown)
     {
@@ -185,6 +191,7 @@ void BiancaBaseAttackState::UpdateAttackLogic()
             float distance = Vec3::Distance(startPos, endPos);
             float flightTime = distance / m_speed;
             m_Projectile->SetMoveTarget(startPos, endPos, flightTime);
+            SOUND->PlaySound(L"Bianca/Bianca_Arcana_Attack.wav", 1, 0.5f);
 
             CheckForContinuousAttack();
         }
@@ -273,10 +280,10 @@ void BiancaBaseAttackState::DealDamage()
         auto player = static_pointer_cast<Player>(m_player);
         if (player)
         {
-            //monster->Damaged(m_player, player->GetStatus().hitAttack);
-            //SOUND->PlaySound(L"Nicky/Nicky_atk_hit.wav", 1, 0.5f);
+            monster->Damaged(m_player, player->GetStatus().hitAttack);
+            SOUND->PlaySound(L"Bianca/Bianca_Arcana_Hit.wav", 1, 0.5f);
 
-            cout << "기본공격 데미지: " << player->GetStatus().hitAttack << endl;
+            //cout << "기본공격 데미지: " << player->GetStatus().hitAttack << endl;
         }
     }
 }

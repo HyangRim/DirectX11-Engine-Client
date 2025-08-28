@@ -9,7 +9,7 @@ BiancaRSkill::BiancaRSkill(shared_ptr<Player> _player)
 	: Super(_player, 3)
 {
 	{
-		m_skillCooldown = 6.f;
+		m_skillCooldown = 25.f;
 		m_skillName = L"진조의 군림";
 		m_skillDesc = L"비앙카가 주문 영창을 하며 자신의 주변에 마법진을 생성합니다.";
 		m_curSkillLevel = 0;
@@ -128,6 +128,7 @@ void BiancaRSkill::PlaySkill()
 		m_drainBlood->SetActive(true);
 		SOUND->PlaySound(L"Bianca/Bianca_Skill04_Charge.wav", 1, 0.5f);
 		SOUND->PlaySound(L"Bianca/Bianca_Skill04_Loop.wav", 1, 0.5f);
+		SkillEnd();
 		//cout << "Outer Circle전개\n";
 	}
 }
@@ -201,7 +202,6 @@ void BiancaRSkill::Update()
 			m_circleFollowBianca = true;
 			m_innerCircle->SetActive(false);
 			m_outerCircle->SetActive(false);
-			SkillEnd();
 			//SOUND->PlaySound(L"Bianca/Bianca_Skill04_End.wav", 1, 0.5f);
 			cout << "비앙카 궁극기 끝\n";
 		}

@@ -53,10 +53,10 @@ BiancaESkill::BiancaESkill(shared_ptr<Player> _player)
 		m_collider->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 		//
 
-		m_circle->SetActive(true);
+		m_circle->SetActive(false);
 		m_circle->GetTransform()->SetParent(m_playerObject->GetTransform());
 		m_circle->GetTransform()->SetLocalPosition(Vec3(0.f, 0.03f, 0.f));
-		m_circle->GetCollider()->SetVisible(true);
+		m_circle->GetCollider()->SetVisible(false);
 		CURSCENE->Add(m_circle);
 	}
 
