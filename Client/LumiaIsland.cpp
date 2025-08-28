@@ -1814,7 +1814,7 @@ void LumiaIsland::CreateNavMesh()
 		m_navMesh->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 		{
 			m_navMesh->GetModelRenderer()->SetModel(m1);
-			m_navMesh->GetModelRenderer()->SetPass(3);
+			m_navMesh->GetModelRenderer()->SetPass(1);
 		}
 
 		m_navMesh->AddComponent(make_shared<NavMesh>());
