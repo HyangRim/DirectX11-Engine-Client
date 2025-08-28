@@ -6,6 +6,8 @@
 #include "NickyAnimRState.h"
 #include "Monster.h"
 
+#include "UIResourceManager.h"
+
 NickyRSkill::NickyRSkill(shared_ptr<Player> _player)
 	: Super(_player, 3)
 {
@@ -14,6 +16,92 @@ NickyRSkill::NickyRSkill(shared_ptr<Player> _player)
 	SetMaxSkillLevel(3);
 
 	m_skillImage = RESOURCES->GetOrAddTexture(L"NickyR", L"..\\Resources\\Textures\\UI\\SkillIcon\\SkillIcon_1033500.png");
+	//FX_BI_Nicky_S005_Skill04_01
+	//shared_ptr<Material> m_rSkillEffectImage1 = UIResourceManager::GetInstance()->LoadUIMaterial(L"NickyRSkillEffect_1", L"..\\Resources\\Textures\\Nicky\\FX_BI_Nicky_S005_Skill04_01.png");
+	//shared_ptr<Material> m_rSkillEffectImage2 = UIResourceManager::GetInstance()->LoadUIMaterial(L"NickyRSkillEffect_2", L"..\\Resources\\Textures\\Nicky\\FX_BI_Nicky_S005_Skill04_02.png");
+
+
+	
+	shared_ptr<Material> m_rSkillEffectImage1 = make_shared<Material>();
+	shared_ptr<Shader> shader = make_shared<Shader>(L"FOW.fx");
+	m_rSkillEffectImage1->SetShader(shader);
+	m_rSkillEffectImage1->SetRenderQueue(RenderQueue::Cutout);
+	//m_rSkillEffectImage1->SetTransparent(true);
+	m_rSkillEffectImage1->SetRenderingMode(RenderingMode::Forward);
+
+	auto texture = RESOURCES->Load<Texture>(L"NickyRSkillEffect_1", L"..\\Resources\\Textures\\Nicky\\FX_BI_Nicky_S005_Skill04_01.png");
+	m_rSkillEffectImage1->SetDiffuseMap(texture);
+
+	MaterialDesc& desc = m_rSkillEffectImage1->GetMaterialDesc();
+	desc.ambient = Vec4(1.f);
+	desc.diffuse = Vec4(1.f);
+	desc.specular = Vec4(1.f);
+
+	RESOURCES->Add(L"NickyRSkillEffect_1", m_rSkillEffectImage1);
+	
+
+
+	shared_ptr<Material> m_rSkillEffectImage2 = make_shared<Material>();
+	shader = make_shared<Shader>(L"FOW.fx");
+	m_rSkillEffectImage2->SetShader(shader);
+	m_rSkillEffectImage2->SetRenderQueue(RenderQueue::Cutout);
+	//m_rSkillEffectImage1->SetTransparent(true);
+	m_rSkillEffectImage2->SetRenderingMode(RenderingMode::Forward);
+
+	auto texture2 = RESOURCES->Load<Texture>(L"NickyRSkillEffect_2", L"..\\Resources\\Textures\\Nicky\\FX_BI_Nicky_S005_Skill04_02.png");
+	m_rSkillEffectImage2->SetDiffuseMap(texture2);
+
+	desc = m_rSkillEffectImage2->GetMaterialDesc();
+	desc.ambient = Vec4(1.f);
+	desc.diffuse = Vec4(1.f);
+	desc.specular = Vec4(1.f);
+
+	RESOURCES->Add(L"NickyRSkillEffect_2", m_rSkillEffectImage2);
+	
+
+
+	{
+		m_effect1 = make_shared<GameObject>();
+		m_effect1->AddComponent(make_shared<MeshRenderer>());
+		m_effect1->SetName(L"Nicky_RSkill_Punch_1");
+
+		m_effect1->GetMeshRenderer()->SetMaterial(m_rSkillEffectImage1);
+		m_effect1->GetMeshRenderer()->SetMesh(RESOURCES->Get<Mesh>(L"Quad"));
+		m_effect1->GetMeshRenderer()->SetPass(0);
+		m_effect1->GetMeshRenderer()->GetMaterial()->SetCastShadow(false);
+
+		m_effect1->SetActive(false);
+
+		m_effect1->GetTransform()->SetScale(Vec3(2.f, 2.f, 2.f));
+		m_effect1->GetTransform()->SetLocalRotation(Vec3(90.f, 0.f, 0.f));
+		m_effect1->GetTransform()->SetParent(m_playerObject->GetTransform());
+		m_effect1->GetTransform()->SetLocalPosition(Vec3(-1.f, 0.f, -0.5f));
+
+		m_effectDuration = _player->GetModelAnimator()->GetAnimationDuration(L"Skill_04_Attack");
+
+		CURSCENE->Add(m_effect1);
+	}
+
+	{
+		m_effect2 = make_shared<GameObject>();
+		m_effect2->AddComponent(make_shared<MeshRenderer>());
+		m_effect2->SetName(L"Nicky_RSkill_Punch_2");
+				
+		m_effect2->GetMeshRenderer()->SetMaterial(m_rSkillEffectImage2);
+		m_effect2->GetMeshRenderer()->SetMesh(RESOURCES->Get<Mesh>(L"Quad"));
+		m_effect2->GetMeshRenderer()->SetPass(0);
+		m_effect2->GetMeshRenderer()->GetMaterial()->SetCastShadow(false);
+				
+		m_effect2->SetActive(false);
+			
+		m_effect2->GetTransform()->SetScale(Vec3(2.f,2.f, 2.f));
+		m_effect2->GetTransform()->SetLocalRotation(Vec3(90.f, 0.f, 0.f));
+		m_effect2->GetTransform()->SetParent(m_playerObject->GetTransform());
+		m_effect2->GetTransform()->SetLocalPosition(Vec3(1.f, 0.f, -0.5f));
+
+
+		CURSCENE->Add(m_effect2);
+	}
 }
 
 NickyRSkill::~NickyRSkill()
@@ -23,20 +111,6 @@ NickyRSkill::~NickyRSkill()
 
 void NickyRSkill::PlaySkill()
 {
-	//if (!m_target)
-	//{
-	//	cout << "R 스킬: 타겟이 설정되지 않았습니다." << endl;
-	//	return;
-	//}
-
-	//int soundIdx = rand() % soundCount + 1;
-	//wstring soundString = L"Nicky/Nicky_PlaySkill4_" + to_wstring(soundIdx) + L".wav";
-
-	//SOUND->PlaySound(soundString, 1, 0.5f);
-	//SOUND->PlaySound(L"Nicky/Nicky_skill04_Ready.wav", 4, 0.5f);
-	//// 타겟 위치로 스킬 방향 계산
-	//CalculateSkillDirection();
-
 	if (!m_target)
 	{
 		cout << "R 스킬: 타겟이 설정되지 않았습니다." << endl;
@@ -56,51 +130,8 @@ void NickyRSkill::PlaySkill()
 
 void NickyRSkill::Update()
 {
-	//UpdateSkillCoolDown();
-
-	//if (m_moveFlag)
-	//{
-	//	// Rush 애니메이션이 재생 중일 때만 이동
-	//	if (IsRushAnimationPlaying())
-	//	{
-	//		m_rushSoundDuration += DT;
-	//		m_moveElapsedTime += DT;
-	//		float moveT = m_moveElapsedTime / m_moveDuration;
-
-	//		if (m_rushSoundDuration > 0.1f)
-	//		{
-	//			SOUND->PlaySound(L"Nicky/Nicky_skill04_Rush.wav", 2, 0.5f);
-	//			m_rushSoundDuration = 0.f;
-	//		}
-
-	//		// 이동 완료 체크
-	//		if (moveT >= 1.0f)
-	//		{
-	//			moveT = 1.0f;
-	//			m_moveFlag = false; // 이동 완료
-	//			//cout << "R 스킬 이동 완료!" << endl;
-	//			SOUND->PlaySound(L"Nicky/Nicky_skill04_Attack.wav", 3, 0.5f);
-
-	//			static_pointer_cast<Monster>(m_target)->Damaged(m_playerObject,
-	//				static_pointer_cast<Player>(m_playerObject)->GetStatus().hitAttack * 1.5f);
-
-	//			SkillEnd();
-	//		}
-
-	//		//cout << "진행률 : " << moveT * 100 << "%" << endl;
-	//		Vec3 curPos = Utils::Lerp(m_startPos, m_targetPos, moveT);
-	//		m_playerObject->GetTransform()->SetPosition(curPos);
-	//	}
-	//	else if (m_moveElapsedTime > 0.0f)
-	//	{
-	//		// Rush 애니메이션이 끝났는데 이동 중이면 중지
-	//		m_moveFlag = false;
-	//	}
-	//}
-
-
 	UpdateSkillCoolDown();
-
+	//UpdateEffectPosition();
 	if (m_moveFlag)
 	{
 		if (IsRushAnimationPlaying())
@@ -136,6 +167,10 @@ void NickyRSkill::Update()
 				m_moveFlag = false;
 				SOUND->PlaySound(L"Nicky/Nicky_skill04_Attack.wav", 3, 0.5f);
 
+				m_effect1->SetActive(true);
+				m_effect2->SetActive(true);
+
+
 				if (m_target && m_target->GetType() == OBJECTTYPE::MONSTER)
 				{
 					static_pointer_cast<Monster>(m_target)->Damaged(m_playerObject,
@@ -151,6 +186,18 @@ void NickyRSkill::Update()
 		else if (m_moveElapsedTime > 0.0f)
 		{
 			m_moveFlag = false;
+			
+		}
+	}
+	else
+	{
+		
+		m_effectTime += DT;
+		if (m_effectTime >= m_effectDuration - 0.05f)
+		{
+			m_effect1->SetActive(false);
+			m_effect2->SetActive(false);
+			m_effectTime = 0.f;
 		}
 	}
 }
@@ -240,4 +287,25 @@ void NickyRSkill::UpdateTargetPosition()
 	m_playerObject->GetTransform()->SetLocalRotation(newRotation);
 
 	m_lastTargetPos = currentTargetPos;  // 이전 위치 저장
+}
+
+void NickyRSkill::UpdateEffectPosition()
+{
+	if (!m_target) return;
+
+	//Vec3 playerPos = m_playerObject->GetTransform()->GetPosition();
+	//Vec3 playerRot = m_playerObject->GetTransform()->GetRotation();
+
+	//m_effect1->GetTransform()->SetPosition(playerPos);
+
+
+	//// 플레이어 회전 행렬 생성
+	//Matrix rotationMatrix = Matrix::CreateRotationY(XMConvertToRadians(playerRot.y));
+	//rotationMatrix *= Matrix::CreateRotationX(XMConvertToRadians(playerRot.x));
+	//rotationMatrix *= Matrix::CreateRotationZ(XMConvertToRadians(playerRot.z));
+
+	//Vec3 rotatedOffset = Vec3::Transform(baseOffset, rotationMatrix);
+
+	//// Collider의 오프셋 업데이트
+	//m_effect1->GetTransform()->SetRotation()
 }

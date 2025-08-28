@@ -651,6 +651,9 @@
     <ClCompile Include="MonsterInterface.cpp">
       <Filter>Scripts\Monster</Filter>
     </ClCompile>
+    <ClCompile Include="NickyREffect.cpp">
+      <Filter>Scripts\Player\Nicky\NickyR</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -1088,6 +1091,9 @@
     </ClInclude>
     <ClInclude Include="MonsterInterface.h">
       <Filter>Scripts\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="NickyREffect.h">
+      <Filter>Scripts\Player\Nicky\NickyR</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

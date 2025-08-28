@@ -219,6 +219,15 @@ technique11 T0
         SetVertexShader(CompileShader(vs_5_0, VS()));
         SetPixelShader(CompileShader(ps_5_0, PS_ManaBar()));
     }
+
+    // 알파 블렌딩 패스
+    pass P8
+    {
+        
+        SetBlendState(AlphaBlend, float4(0, 0, 0, 0), 0xFF);
+        SetVertexShader(CompileShader(vs_5_0, VS()));
+        SetPixelShader(CompileShader(ps_5_0, PS()));
+    }
 }
 
 #endif
