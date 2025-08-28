@@ -1149,7 +1149,7 @@ void LumiaIsland::CreateCemeterySmallInterior()
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
 			//obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+			obj->SetType(OBJECTTYPE::MAP);
 
 			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 			{
