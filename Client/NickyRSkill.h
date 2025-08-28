@@ -22,9 +22,16 @@ public:
     bool IsRushAnimationPlaying();
     void SetRushDuration(float duration);
     void UpdateTargetPosition();
+    void UpdateEffectPosition();
+
 private:
     shared_ptr<Shader> m_shader = nullptr;
     shared_ptr<GameObject> m_target = nullptr;
+
+    shared_ptr<GameObject> m_effect1 = nullptr;
+    shared_ptr<GameObject> m_effect2 = nullptr;
+
+
     Vec3 m_startPos, m_targetPos;
 
     float m_maxRange = 5.f;
@@ -45,5 +52,9 @@ private:
     Vec3 m_lastTargetPos;  // 이전 타겟 위치 (변화 감지용)
 
     int soundCount = 2;
+
+
+    float m_effectTime = 0.f;
+    float m_effectDuration = 0.f;
 };
 

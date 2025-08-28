@@ -21,7 +21,6 @@ NickyESkill::NickyESkill(shared_ptr<Player> _player)
 		m_skillImage = RESOURCES->GetOrAddTexture(L"NickyE", L"..\\Resources\\Textures\\UI\\SkillIcon_1033400");
 	}
 	{
-
 		shared_ptr<Model> m1 = make_shared<Model>();
 
 		m1->ReadModel(L"Nicky/NickyESkill_Mesh");

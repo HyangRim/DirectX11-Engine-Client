@@ -113,6 +113,7 @@
     <ClInclude Include="NickyQSkill.h" />
     <ClInclude Include="NickyAnimQState.h" />
     <ClInclude Include="NickyQState.h" />
+    <ClInclude Include="NickyREffect.h" />
     <ClInclude Include="NickyRSkill.h" />
     <ClInclude Include="NickyAnimRState.h" />
     <ClInclude Include="NickyAnimRunState.h" />
@@ -259,6 +260,7 @@
     <ClCompile Include="NickyQSkill.cpp" />
     <ClCompile Include="NickyAnimQState.cpp" />
     <ClCompile Include="NickyQState.cpp" />
+    <ClCompile Include="NickyREffect.cpp" />
     <ClCompile Include="NickyRSkill.cpp" />
     <ClCompile Include="NickyAnimRState.cpp" />
     <ClCompile Include="NickyAnimRunState.cpp" />
