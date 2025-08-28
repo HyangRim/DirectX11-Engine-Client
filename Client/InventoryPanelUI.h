@@ -24,7 +24,7 @@ public:
 
 public:
     vector<shared_ptr<ItemSlot>>& GetInventorySlots() { return m_inventorySlots; }
-
+    void CreateBaseSlots();
 protected:
     virtual void CreatePanels();
 
@@ -32,6 +32,7 @@ protected:
 
 
 private:
+    shared_ptr<GameObject> m_basePanel;
     vector<shared_ptr<ItemSlot>> m_inventorySlots;
  
 };

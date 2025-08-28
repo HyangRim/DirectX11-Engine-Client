@@ -79,7 +79,7 @@ void CraftListPanelUI::CreatePanels()
     Vec2 panelPos = Vec2(150.f, 400.f);
     Vec2 panelSize = Vec2(200.f, 400.f);
 
-    panel->Create(Vec2(960.f, 768 - 57 - 75), Vec2(252, 62), Vec4(1.f, 0.f, 0.f, 1.f), nullptr);
+    panel->Create(Vec2(940.f, 768 - 57 - 65), Vec2(252, 62), Vec4(1.f, 0.f, 0.f, 0.f), nullptr);
 
     m_panel->SetLayerIndex(LAYER_UI);
 
@@ -108,7 +108,7 @@ void CraftListPanelUI::CreateCraftSlots()
     int slotsX = 5;
     int slotsY = 2;
     Vec2 panelSize = m_panel->GetUIPanel()->GetSize();
-    Vec2 slotSize = Vec2(46, 28);
+    Vec2 slotSize = Vec2(46, 32);
     Vec2 spacing = Vec2(5, 5);
     //Vec2 startPos = Vec2(960.f - (252 / 2.f) + 23, (768 - 57 - 75) - (62 / 2.f) + 14); // 패널 내 시작 위치
     Vec2 startPos = Vec2(23, 14);

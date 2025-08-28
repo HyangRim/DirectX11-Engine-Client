@@ -171,7 +171,7 @@ void BiancaBaseAttackState::UpdateAttackLogic()
         return;
     }
 
-    if (m_Projectile->GetArrive()) {
+    if (m_Projectile->GetActive() && m_Projectile->GetArrive()) {
         m_Projectile->SetArrive(false);
         DealDamage();
     }

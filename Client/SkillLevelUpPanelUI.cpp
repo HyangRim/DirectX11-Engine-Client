@@ -47,13 +47,13 @@ void SkillLevelUpPanelUI::CreatePanels()
 	auto panel = make_shared<UIPanel>();
 	m_panel->AddComponent(panel);
 
-	panel->Create(Vec2(602.f, 768 - 57 - 85), Vec2(153, 40), Vec4(1.f, 1.f, 1.f, 0.7f), nullptr);
+	panel->Create(Vec2(679.f, 768 - 57 - 85), Vec2(258, 40), Vec4(1.f, 1.f, 1.f, 0.0f), nullptr);
 	m_panel->SetLayerIndex(LAYER_UI);
 
 	shared_ptr<Material> cloneMaterial_skillLevelUpBtn = RESOURCES->Get<Material>(L"Btn_LevelUp_MouseOver");
 	for (int i = 0; i < 4; i++)
 	{
-		auto skillLevelUpBtn = panel->AddButton(Vec2(10 + 43 * i, 25), Vec2(48, 52), cloneMaterial_skillLevelUpBtn->Clone(), L"SkillLevelUpBtn" + to_wstring(i));
+		auto skillLevelUpBtn = panel->AddButton(Vec2(27 + 55 * i, 25), Vec2(70, 70), cloneMaterial_skillLevelUpBtn->Clone(), L"SkillLevelUpBtn" + to_wstring(i));
 		skillLevelUpBtn->OnClick += [this, i] {
 
 			if (m_player->GetStatus().availableSkillPoints <= 0)

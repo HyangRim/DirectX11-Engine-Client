@@ -33,10 +33,6 @@ void EquipmentPanelUI::Cleanup()
 
 }
 
-
-
-
-
 void EquipmentPanelUI::CreatePanels()
 {
 	m_panel = make_shared<GameObject>();
@@ -45,7 +41,7 @@ void EquipmentPanelUI::CreatePanels()
 	auto panel = make_shared<UIPanel>();
 	m_panel->AddComponent(panel);
 
-	panel->Create(Vec2(380.f, 768 - 57), Vec2(38, 115), Vec4(0.f, 0.f, 0.f, 0.7f), nullptr);
+	panel->Create(Vec2(419.f, 768 - 57), Vec2(38, 115), Vec4(0.12f, 0.15f, 0.18f, 0.9f), nullptr);
 	m_panel->SetLayerIndex(LAYER_UI);
 
 	CURSCENE->AddUIObject(m_panel, true);
@@ -53,7 +49,7 @@ void EquipmentPanelUI::CreatePanels()
 
 	CreateEquipmentSlots();
 }
-
+//0.12 , 0.15, 0.18
 void EquipmentPanelUI::CreateEquipmentSlots()
 {
 	m_equipmentSlots.clear();

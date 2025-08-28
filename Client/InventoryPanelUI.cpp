@@ -38,6 +38,11 @@ void InventoryPanelUI::Cleanup()
 
 
 
+void InventoryPanelUI::CreateBaseSlots()
+{
+
+}
+
 void InventoryPanelUI::CreatePanels()
 {
 	m_panel = make_shared<GameObject>();
@@ -45,13 +50,14 @@ void InventoryPanelUI::CreatePanels()
 
 	auto panel = make_shared<UIPanel>();
 	m_panel->AddComponent(panel);
-
-	panel->Create(Vec2(960.f, 768 - 57), Vec2(252, 62), Vec4(0.f, 0.f, 0.f, 0.f), nullptr);
+	//size y 56추가. 
+	panel->Create(Vec2(938.f, 768 - 56), Vec2(272, 118), Vec4(0.12f, 0.15f, 0.18f, 0.9f), nullptr);
 	m_panel->SetLayerIndex(LAYER_UI);
 
 	CURSCENE->AddUIObject(m_panel, true);
 	CURSCENE->RegisterUIParent(m_panel);
 
+	CreateBaseSlots();
 	CreateInventorySlots();
 }
 
@@ -67,10 +73,10 @@ void InventoryPanelUI::CreateInventorySlots()
 	// 5x2 그리드로 10개 슬롯 생성
 	int slotsX = 5;
 	int slotsY = 2;
-	Vec2 slotSize = Vec2(46, 28);
+	Vec2 slotSize = Vec2(46, 36);
 	Vec2 spacing = Vec2(5, 5);
 	//Vec2 startPos = Vec2(960.f - (252 / 2.f) + 23, (768 - 57) - (62 / 2.f) + 14); // 패널 내 시작 위치
-	Vec2 startPos = Vec2(46 + 2, 14 + 2);
+	Vec2 startPos = Vec2(34 + 2, 34 + 2);
 	Vec2 panelSize = Vec2(252, 62);
 
 	for (int row = 0; row < slotsY; row++)
@@ -80,9 +86,9 @@ void InventoryPanelUI::CreateInventorySlots()
 			int slotIndex = row * slotsX + col;
 
 			// ItemSlot 생성
-			shared_ptr<ItemSlot> itemSlot = make_shared<ItemSlot>(nullptr, true);
-
-	/*		if		(row == 0 && col == 0) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"망치"), true);
+			//shared_ptr<ItemSlot> itemSlot = make_shared<ItemSlot>(nullptr, true);
+			shared_ptr<ItemSlot> itemSlot;
+			if		(row == 0 && col == 0) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"망치"), true);
 			else if (row == 0 && col == 1) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"쇠구슬"), true);
 			else if (row == 0 && col == 2) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"운동화"), true);
 			else if (row == 0 && col == 3) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"원석"), true);
@@ -94,7 +100,7 @@ void InventoryPanelUI::CreateInventorySlots()
 			else if (row == 1 && col == 3) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"돌멩이"), true);
 			else if (row == 1 && col == 4) itemSlot = make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"델타 레드"), true);
 
-			else itemSlot =	make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"돌멩이"), true);*/
+			else itemSlot =	make_shared<ItemSlot>(ItemManager::GetInstance()->GetItem(L"돌멩이"), true);
 
 			itemSlot->SetSlotType(SLOTTYPE::INVENTORY);
 			Vec2 slotPos = Vec2(

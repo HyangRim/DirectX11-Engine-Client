@@ -58,7 +58,7 @@ void PlayerStatusPanelUI::CreatePanels()
 	auto panel = make_shared<UIPanel>();
 	m_panel->AddComponent(panel);
 
-	panel->Create(Vec2(274.f, 768 - 57), Vec2(155, 115), Vec4(0.f, 0.f, 0.f, 0.7f), nullptr);
+	panel->Create(Vec2(323.f, 768 - 57), Vec2(155, 115), Vec4(0.12f, 0.15f, 0.18f, 0.9f), nullptr);
 	m_panel->SetLayerIndex(LAYER_UI);
 
 	auto imageUI = m_panel->GetUIPanel()->AddImageUI(Vec2(0, 0), L"ImageUI");

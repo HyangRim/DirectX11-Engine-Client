@@ -63,7 +63,7 @@ void GameHUDPanelUI::CreatePanels()
 	auto panel = make_shared<UIPanel>();
 	m_panel->AddComponent(panel);
 
-	panel->Create(Vec2(615.f, 768 - 57), Vec2(414, 115), Vec4(1.f, 0.f, 1.f, 0.7f), nullptr);
+	panel->Create(Vec2(625.f, 768 - 57), Vec2(374, 115), Vec4(0.12f, 0.15f, 0.18f, 0.9f), nullptr);
 	m_panel->SetLayerIndex(LAYER_UI);
 
 
@@ -94,29 +94,29 @@ void GameHUDPanelUI::CreateSkillIcons()
 	for (int i = 0; i < 4; i++)
 	{
 		shared_ptr<Material> cloneMaterial_skillIcon = RESOURCES->Get<Material>(characterTag + skillTag[i])->Clone();
-		imageUI->AddImageLayer(i, Vec2(128 + 43 * i, 25), Vec2(35, 38), cloneMaterial_skillIcon, 1);
+		imageUI->AddImageLayer(i, Vec2(139 + 55 * i, 30), Vec2(60, 60), cloneMaterial_skillIcon, 1);
 	}
 
 	//Q
-	auto textQ = panel->AddD2DText(Vec2(128, 25), L"5", 20.0f,
+	auto textQ = panel->AddD2DText(Vec2(139, 30), L"5", 20.0f,
 		Vec4(1, 0, 0, 1), 1.0f, Vec4(0, 0, 0, 0), 1.0f,
 		L"QSkillCoolDown", TextAlignment::Center);
 	textQ->SetUpdateInterval(1.f);
 
 	//W
-	auto textW = panel->AddD2DText(Vec2(128 + 43 * 1, 25), L"4", 20.0f,
+	auto textW = panel->AddD2DText(Vec2(139 + 55 * 1, 30), L"4", 20.0f,
 		Vec4(1, 0, 0, 1), 1.0f, Vec4(0, 0, 0, 0), 1.0f,
 		L"WSkillCoolDown", TextAlignment::Center);
 	textW->SetUpdateInterval(1.f);
 
 	//E
-	auto textE = panel->AddD2DText(Vec2(128 + 43 * 2, 25), L"3", 20.0f,
+	auto textE = panel->AddD2DText(Vec2(139 + 55 * 2, 30), L"3", 20.0f,
 		Vec4(1, 0, 0, 1), 1.0f, Vec4(0, 0, 0, 0), 1.0f,
 		L"ESkillCoolDown", TextAlignment::Center);
 	textE->SetUpdateInterval(1.f);
 
 	//R
-	auto textR = panel->AddD2DText(Vec2(128 + 43 * 3, 25), L"2", 20.0f,
+	auto textR = panel->AddD2DText(Vec2(139 + 55 * 3, 30), L"2", 20.0f,
 		Vec4(1, 0, 0, 1), 1.0f, Vec4(0, 0, 0, 0), 1.0f,
 		L"RSkillCoolDown", TextAlignment::Center);
 	textR->SetUpdateInterval(1.f);
@@ -133,13 +133,13 @@ void GameHUDPanelUI::CreateSkillIcons()
 		if (i == 7)
 		{
 			cloneMaterial = RESOURCES->Get<Material>(baseImageTag_skillLevelThree)->Clone();
-			imageUI->AddImageLayer(i, Vec2(128 + 43 * (i - 4), 40), Vec2(35, 4), cloneMaterial, 1);
+			imageUI->AddImageLayer(i, Vec2(139 + 55 * (i - 4), 50), Vec2(60, 7), cloneMaterial, 1);
 		}
 		//QWE는 5레벨짜리로
 		else
 		{		
 			cloneMaterial = RESOURCES->Get<Material>(baseImageTag_skillLevelFive)->Clone();
-			imageUI->AddImageLayer(i, Vec2(128 + 43 * (i - 4), 40), Vec2(35, 4), cloneMaterial, 1);
+			imageUI->AddImageLayer(i, Vec2(139 + 55 * (i - 4), 50), Vec2(60, 7), cloneMaterial, 1);
 		}
 	}
 
@@ -150,9 +150,9 @@ void GameHUDPanelUI::CreateStatBars()
 	auto panel = m_panel->GetUIPanel();
 	
 	//HP바 UI
-	auto hpPanel = panel->AddPanel(Vec2(194, 70.f), Vec2(153, 10), nullptr, L"ChildHPPanel");
+	auto hpPanel = panel->AddPanel(Vec2(244, 70.f), Vec2(253, 10), nullptr, L"ChildHPPanel");
 	hpPanel->AddD2DText(
-		Vec2(153, 10) / 2.f,
+		Vec2(253, 10) / 2.f,
 		L"",
 		10.f,
 		Vec4(1.f, 1.f, 1.f, 1.f),
@@ -163,15 +163,15 @@ void GameHUDPanelUI::CreateStatBars()
 		TextAlignment::Center
 	);
 	auto hpPanelImageUI = hpPanel->AddImageUI(Vec2(0.f), L"HPPanelImageUI");
-	hpPanelImageUI->AddImageLayer(0, Vec2(153, 10) / 2.f, Vec2(153, 10) * (1 / RESOLUTION_CONSTANT), RESOURCES->Get<Material>(L"HPBar_UI")->Clone(), 1);
+	hpPanelImageUI->AddImageLayer(0, Vec2(253, 10) / 2.f, Vec2(253, 10) * (1 / RESOLUTION_CONSTANT), RESOURCES->Get<Material>(L"HPBar_UI")->Clone(), 1);
 
 	Vec3 hpPos = hpPanelImageUI->GetGameObject()->GetTransform()->GetPosition();
 
 
 	//SP바 UI
-	auto spPanel = panel->AddPanel(Vec2(194, 85.f), Vec2(153, 10), nullptr, L"ChildSPPanel");
+	auto spPanel = panel->AddPanel(Vec2(244, 85.f), Vec2(253, 10), nullptr, L"ChildSPPanel");
 	spPanel->AddD2DText(
-		Vec2(153, 10) / 2.f,
+		Vec2(253, 10) / 2.f,
 		L"",
 		10.f,
 		Vec4(1.f, 1.f, 1.f, 1.f),
@@ -182,12 +182,12 @@ void GameHUDPanelUI::CreateStatBars()
 		TextAlignment::Center
 	);
 	auto spPanelImageUI = spPanel->AddImageUI(Vec2(0.f), L"SPPanelImageUI");
-	spPanelImageUI->AddImageLayer(0, Vec2(153, 10) / 2.f, Vec2(153, 10) * (1 / RESOLUTION_CONSTANT), RESOURCES->Get<Material>(L"SPBar_UI")->Clone(), 1);
+	spPanelImageUI->AddImageLayer(0, Vec2(253, 10) / 2.f, Vec2(253, 10) * (1 / RESOLUTION_CONSTANT), RESOURCES->Get<Material>(L"SPBar_UI")->Clone(), 1);
 
 	//경험치바 UI
-	auto expPanel = panel->AddPanel(Vec2(194, 100.f), Vec2(153, 10), nullptr, L"ChildEXPPanel");
+	auto expPanel = panel->AddPanel(Vec2(244, 100.f), Vec2(253, 10), nullptr, L"ChildEXPPanel");
 	expPanel->AddD2DText(
-		Vec2(153, 10) / 2.f,
+		Vec2(253, 10) / 2.f,
 		L"",
 		10.f,
 		Vec4(1.f, 1.f, 1.f, 1.f),
@@ -198,7 +198,7 @@ void GameHUDPanelUI::CreateStatBars()
 		TextAlignment::Center
 	);
 	auto expPanelImageUI = expPanel->AddImageUI(Vec2(0.f), L"EXPPanelImageUI");
-	expPanelImageUI->AddImageLayer(0, Vec2(153, 10) / 2.f, Vec2(153, 10) * (1 / RESOLUTION_CONSTANT), RESOURCES->Get<Material>(L"HPBar_UI")->Clone(), 1);
+	expPanelImageUI->AddImageLayer(0, Vec2(253, 10) / 2.f, Vec2(253, 10) * (1 / RESOLUTION_CONSTANT), RESOURCES->Get<Material>(L"HPBar_UI")->Clone(), 1);
 
 }
 
@@ -273,8 +273,8 @@ void GameHUDPanelUI::UpdateStatBar()
 	// 직접 size 수정 대신 SetLayerSize() 사용
 	auto hpImageUI = hpPanel->GetImageUI(L"HPPanelImageUI");
 	float ratio = ((float)playerStatus.hp / (float)playerStatus.max_HP);
-	Vec2 newSize = Vec2(153.f * ratio, 10.f);
-	Vec2 newPos = Vec2(153.f / 2.f - (153.f / 2.f) * (1 - ratio), 10.f / 2.f);
+	Vec2 newSize = Vec2(253.f * ratio, 10.f);
+	Vec2 newPos = Vec2(253.f / 2.f - (253.f / 2.f) * (1 - ratio), 10.f / 2.f);
 	hpImageUI->SetLayerSize(0, newSize);  // 레이어 0의 크기 변경
 	hpImageUI->SetLayerPosition(0, newPos);
 
@@ -286,8 +286,8 @@ void GameHUDPanelUI::UpdateStatBar()
 	// 직접 size 수정 대신 SetLayerSize() 사용
 	auto spImageUI = spPanel->GetImageUI(L"SPPanelImageUI");
 	ratio = ((float)playerStatus.stamina / (float)playerStatus.max_Stamina);
-	newSize = Vec2(153.f * ratio, 10.f);
-	newPos = Vec2(153.f / 2.f - (153.f / 2.f) * (1 - ratio), 10.f / 2.f);
+	newSize = Vec2(253.f * ratio, 10.f);
+	newPos = Vec2(253.f / 2.f - (253.f / 2.f) * (1 - ratio), 10.f / 2.f);
 	spImageUI->SetLayerSize(0, newSize);  // 레이어 0의 크기 변경
 	spImageUI->SetLayerPosition(0, newPos);
 
@@ -299,8 +299,8 @@ void GameHUDPanelUI::UpdateStatBar()
 	// 직접 size 수정 대신 SetLayerSize() 사용
 	auto expImageUI = expPanel->GetImageUI(L"EXPPanelImageUI");
 	ratio = ((float)playerStatus.curExp / (float)playerStatus.curExpLimit);
-	newSize = Vec2(153.f * ratio, 10.f);
-	newPos = Vec2(153.f / 2.f - (153.f / 2.f) * (1 - ratio), 10.f / 2.f);
+	newSize = Vec2(253.f * ratio, 10.f);
+	newPos = Vec2(253.f / 2.f - (253.f / 2.f) * (1 - ratio), 10.f / 2.f);
 	expImageUI->SetLayerSize(0, newSize);  // 레이어 0의 크기 변경
 	expImageUI->SetLayerPosition(0, newPos);
 }
