@@ -286,4 +286,5 @@ void Alpha::InitAlphaComponent()
 
 void Alpha::InitAlphaStats()
 {
+	m_monsterStatus.hp = 1000;
 }

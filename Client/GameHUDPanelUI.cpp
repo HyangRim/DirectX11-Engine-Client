@@ -66,16 +66,10 @@ void GameHUDPanelUI::CreatePanels()
 	panel->Create(Vec2(625.f, 768 - 57), Vec2(374, 115), Vec4(0.12f, 0.15f, 0.18f, 0.9f), nullptr);
 	m_panel->SetLayerIndex(LAYER_UI);
 
-
 	CreateSkillIcons();
 	CreateStatBars();
 	CreateCharacterImage();
 
-
-	
-
-
-	
 	CURSCENE->AddUIObject(m_panel, true);
 	CURSCENE->RegisterUIParent(m_panel);
 }
@@ -252,7 +246,7 @@ void GameHUDPanelUI::UpdateSkillCoolDown()
 
 		if (skillCoolDownTextUI[i]) {
 			skillCoolDownTextUI[i]->SetText(to_wstring(skillCurCoolDown));
-			//skillCoolDownTextUI[i]->SetVisible(skillCurCoolDown > 0); // 0ÀÌ¸é ¼û±è, ¾Æ´Ï¸é Ç¥½Ã
+			skillCoolDownTextUI[i]->SetVisible(skillCurCoolDown > 0); // 0ÀÌ¸é ¼û±è, ¾Æ´Ï¸é Ç¥½Ã
 		}
 	}
 }
