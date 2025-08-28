@@ -356,7 +356,7 @@ void LumiaIsland::CreateDefaultLight()
 void LumiaIsland::SelectCharacter()
 {
 	//테스트용 임시 강제 설정
-	m_selectedCharacterIdx = 1;
+	//m_selectedCharacterIdx = 1;
 
 
 	if (m_selectedCharacterIdx == 0) {
@@ -1064,7 +1064,7 @@ void LumiaIsland::CreateCemeterySmallInterior()
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.223f, 0.f));
 			//obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+			obj->SetType(OBJECTTYPE::MAP);
 
 			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 			{
@@ -1085,7 +1085,7 @@ void LumiaIsland::CreateCemeterySmallInterior()
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.223f, 0.f));
 			//obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+			obj->SetType(OBJECTTYPE::MAP);
 
 			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 			{
@@ -1106,7 +1106,7 @@ void LumiaIsland::CreateCemeterySmallInterior()
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 40.f, 0.f));
 			//obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->GetTransform()->SetLocalScale(Vec3(0.035f, 0.035f, 0.035f));
-			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+			obj->SetType(OBJECTTYPE::MAP);
 
 			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 			{
@@ -1127,7 +1127,7 @@ void LumiaIsland::CreateCemeterySmallInterior()
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 40.f, 0.f));
 			//obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->GetTransform()->SetLocalScale(Vec3(0.023f));
-			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+			obj->SetType(OBJECTTYPE::MAP);
 
 			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 			{
@@ -1149,7 +1149,7 @@ void LumiaIsland::CreateCemeterySmallInterior()
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
 			//obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+			obj->SetType(OBJECTTYPE::MAP);
 
 			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 			{
@@ -1173,7 +1173,7 @@ void LumiaIsland::CreateCemeterySmallInterior()
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 120.f, 0.f));
 			//obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->GetTransform()->SetLocalScale(Vec3(0.03f));
-			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+			obj->SetType(OBJECTTYPE::MAP);
 
 			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 			{
@@ -1193,7 +1193,7 @@ void LumiaIsland::CreateCemeterySmallInterior()
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 14.785f, 0.f));
 			//obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->GetTransform()->SetLocalScale(Vec3(0.023f));
-			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+			obj->SetType(OBJECTTYPE::MAP);
 
 			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 			{
@@ -1214,7 +1214,7 @@ void LumiaIsland::CreateCemeterySmallInterior()
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 14.785f, 0.f));
 			//obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->GetTransform()->SetLocalScale(Vec3(0.023f));
-			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+			obj->SetType(OBJECTTYPE::MAP);
 
 			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 			{
@@ -1240,7 +1240,7 @@ void LumiaIsland::CreateCemeterySmallInterior()
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f));
 			//obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+			obj->SetType(OBJECTTYPE::MAP);
 
 			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 			{
@@ -1261,7 +1261,7 @@ void LumiaIsland::CreateCemeterySmallInterior()
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f));
 			//obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+			obj->SetType(OBJECTTYPE::MAP);
 
 			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 			{
@@ -1282,7 +1282,7 @@ void LumiaIsland::CreateCemeterySmallInterior()
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f));
 			//obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+			obj->SetType(OBJECTTYPE::MAP);
 
 			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 			{
@@ -1303,7 +1303,7 @@ void LumiaIsland::CreateCemeterySmallInterior()
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 90.f, -20.f));
 			//obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->GetTransform()->SetLocalScale(Vec3(0.03f));
-			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+			obj->SetType(OBJECTTYPE::MAP);
 
 			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 			{
@@ -1332,7 +1332,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 5486.223f, 0.f));
 		//obj->AddComponent(make_shared<AABBBoxCollider>());
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-		obj->SetType(OBJECTTYPE::ENVIRONMENT);
+		obj->SetType(OBJECTTYPE::MAP);
 
 		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 		{
@@ -1356,7 +1356,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 2557.334, 0.f));
 		//obj->AddComponent(make_shared<AABBBoxCollider>());
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-		obj->SetType(OBJECTTYPE::ENVIRONMENT);
+		obj->SetType(OBJECTTYPE::MAP);
 
 		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 		{
@@ -1379,7 +1379,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 4395.447, 0.f));
 		//obj->AddComponent(make_shared<AABBBoxCollider>());
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-		obj->SetType(OBJECTTYPE::ENVIRONMENT);
+		obj->SetType(OBJECTTYPE::MAP);
 
 		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 		{
@@ -1403,7 +1403,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, -1263.546, 0.f));
 		//obj->AddComponent(make_shared<AABBBoxCollider>());
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-		obj->SetType(OBJECTTYPE::ENVIRONMENT);
+		obj->SetType(OBJECTTYPE::MAP);
 
 		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 		{
@@ -1425,7 +1425,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
 		//obj->AddComponent(make_shared<AABBBoxCollider>());
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-		obj->SetType(OBJECTTYPE::ENVIRONMENT);
+		obj->SetType(OBJECTTYPE::MAP);
 
 		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 		{
@@ -1450,7 +1450,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, -47.64, 0.f));
 		//obj->AddComponent(make_shared<AABBBoxCollider>());
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-		obj->SetType(OBJECTTYPE::ENVIRONMENT);
+		obj->SetType(OBJECTTYPE::MAP);
 
 		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 		{
@@ -1472,7 +1472,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 169, 0.f));
 		//obj->AddComponent(make_shared<AABBBoxCollider>());
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-		obj->SetType(OBJECTTYPE::ENVIRONMENT);
+		obj->SetType(OBJECTTYPE::MAP);
 
 		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 		{
@@ -1495,7 +1495,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 169, 0.f));
 		//obj->AddComponent(make_shared<AABBBoxCollider>());
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-		obj->SetType(OBJECTTYPE::ENVIRONMENT);
+		obj->SetType(OBJECTTYPE::MAP);
 
 		obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 		{
@@ -1518,7 +1518,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
 			//obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+			obj->SetType(OBJECTTYPE::MAP);
 
 			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 			{
@@ -1539,7 +1539,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f, -180.f, 0.f));
 			//obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+			obj->SetType(OBJECTTYPE::MAP);
 
 			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 			{
@@ -1561,7 +1561,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
 			//obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+			obj->SetType(OBJECTTYPE::MAP);
 
 			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 			{
@@ -1586,7 +1586,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f, -180.f, 0.f));
 			//obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+			obj->SetType(OBJECTTYPE::MAP);
 
 			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 			{
@@ -1608,7 +1608,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 			obj->GetTransform()->SetLocalPosition(Vec3(86.34, 18.628, 101.1));
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f, -180.f, 0.f));
 			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+			obj->SetType(OBJECTTYPE::MAP);
 
 			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 			{
@@ -1633,7 +1633,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f, -180.f, 0.f));
 			//obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+			obj->SetType(OBJECTTYPE::MAP);
 
 			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 			{
@@ -1654,7 +1654,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f, -90.f, 0.f));
 			//obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+			obj->SetType(OBJECTTYPE::MAP);
 
 			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 			{
@@ -1675,7 +1675,7 @@ void LumiaIsland::CreateCemeteryEnvironment()
 			obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
 			//obj->AddComponent(make_shared<AABBBoxCollider>());
 			obj->GetTransform()->SetLocalScale(Vec3(0.02f));
-			obj->SetType(OBJECTTYPE::ENVIRONMENT);
+			obj->SetType(OBJECTTYPE::MAP);
 
 			obj->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 			{

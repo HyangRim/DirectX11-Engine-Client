@@ -24,6 +24,7 @@ void FogOfWar::Init()
 
 void FogOfWar::Start()
 {
+	//UpdateFOWShader();
 }
 
 void FogOfWar::Update()
