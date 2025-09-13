@@ -117,8 +117,7 @@ public:
 
 public:
 	//move로 복사 최소화.
-	void SetName(const wstring& _name) { m_Name = _name; }
-	void SetName(wstring&& _name) { m_Name = move(_name); }
+	void SetName(wstring _name) { m_Name = std::move(_name); }
 	 
 	wstring GetName() { return m_Name; }
 
