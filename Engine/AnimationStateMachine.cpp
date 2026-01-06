@@ -26,7 +26,7 @@ AnimationStateMachine::AnimationStateMachine(AnimationStateType initialState)
 
 AnimationStateMachine::~AnimationStateMachine()
 {
-    EVENT->UnsubscribeAll(EventType::ANIMATION_STATE_CHANGE_REQUEST);
+    //EVENT->UnsubscribeAll(EventType::ANIMATION_STATE_CHANGE_REQUEST);
 }
 
 void AnimationStateMachine::Start()

@@ -148,8 +148,56 @@ void Monster::Damaged(shared_ptr<GameObject> _attacker, int _damage)
 
 	//SetHP(monsterHP);
 
+
+	///////////////////////기존 MSM////////////////////////////
+
+	//MonsterStatus info = GetMonsterStatus();
+	//cout << "몬스터 현재 체력 : " << info.hp << endl;
+
+	//int32 baseAttack = _damage * 100;
+	//int32 baseDefense = 100;
+	//int32 finalDamage = baseAttack / baseDefense;
+	//int32 monsterHP = info.hp;
+	//monsterHP -= finalDamage;
+
+	//// **1. 피격시 공격자를 타겟으로 설정**
+	//if (m_monsterStateMachine && _attacker &&
+	//	_attacker->GetActive() && _attacker->GetType() == OBJECTTYPE::PLAYER)
+	//{
+	//	m_monsterStateMachine->SetTarget(_attacker);
+	//	cout << "피격으로 인한 타겟 설정: " << _attacker->GetName().c_str() << endl;
+
+	//	
+	//	if (!m_monsterStateMachine->IsInState(MonsterStateType::Attack) && !m_monsterStateMachine->IsInState(MonsterStateType::Trace))
+	//	{
+	//		m_monsterStateMachine->RequestStateChange(MonsterStateType::Trace);
+	//		if (m_animationStateMachine)
+	//			m_animationStateMachine->RequestStateChange(AnimationStateType::Trace);
+
+	//	}
+	//}
+
+	//SetHP(monsterHP);
+
+	//if (monsterHP <= 0)
+	//{
+	//	cout << "몬스터 사망" << endl;
+
+	//	if (m_healthBar)
+	//		m_healthBar->SetVisible(false);
+
+	//	Death(_attacker);
+	//	SetDead(true);
+	//	SetType(OBJECTTYPE::ITEMBOX);
+	//}
+
+
+	///////////////////////////////////////////////////
+
+
+
 	MonsterStatus info = GetMonsterStatus();
-	cout << "몬스터 현재 체력 : " << info.hp << endl;
+	// cout << "몬스터 현재 체력 : " << info.hp << endl;
 
 	int32 baseAttack = _damage * 100;
 	int32 baseDefense = 100;
@@ -157,21 +205,25 @@ void Monster::Damaged(shared_ptr<GameObject> _attacker, int _damage)
 	int32 monsterHP = info.hp;
 	monsterHP -= finalDamage;
 
-	// **1. 피격시 공격자를 타겟으로 설정**
-	if (m_monsterStateMachine && _attacker &&
-		_attacker->GetActive() && _attacker->GetType() == OBJECTTYPE::PLAYER)
+	// -----------------------------------------------------------------
+	// [수정] 1. 피격 시 공격자를 타겟으로 설정 (MonsterStateMachine 제거)
+	// -----------------------------------------------------------------
+	if (_attacker && _attacker->GetActive() && _attacker->GetType() == OBJECTTYPE::PLAYER)
 	{
-		m_monsterStateMachine->SetTarget(_attacker);
+		// 내 멤버 변수에 타겟 저장 (행동 트리가 이 변수를 참조함)
+		m_targetPlayer = static_pointer_cast<Player>(_attacker);
 		cout << "피격으로 인한 타겟 설정: " << _attacker->GetName().c_str() << endl;
 
-		
-		if (!m_monsterStateMachine->IsInState(MonsterStateType::Attack) && !m_monsterStateMachine->IsInState(MonsterStateType::Trace))
+		// [삭제] FSM 상태 강제 전환 코드 삭제 
+		// 행동 트리는 매 프레임 타겟 유무를 검사하므로, 변수만 세팅해주면
+		// 다음 프레임 Update 때 알아서 Trace 노드를 타게 됩니다.
+		/*
+		if (m_monsterStateMachine && !m_monsterStateMachine->IsInState(MonsterStateType::Attack) ...)
 		{
 			m_monsterStateMachine->RequestStateChange(MonsterStateType::Trace);
-			if (m_animationStateMachine)
-				m_animationStateMachine->RequestStateChange(AnimationStateType::Trace);
-
+			...
 		}
+		*/
 	}
 
 	SetHP(monsterHP);

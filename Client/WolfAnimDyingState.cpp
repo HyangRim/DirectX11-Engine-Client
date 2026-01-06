@@ -14,8 +14,6 @@ void WolfAnimDyingState::Enter(shared_ptr<ModelAnimator> _animator)
     _animator->PlaySequence(L"Wolf_dying_Sequence");
     _animator->SetCurrentAnimationSpeed(m_playSpeed);
     m_expectedDuration = _animator->GetAnimationDuration(L"Dying") / m_playSpeed;
- 
- 
 
     m_dyingTime = 0.0f;
     m_isDyingComplete = false;
@@ -30,10 +28,11 @@ void WolfAnimDyingState::Update(shared_ptr<ModelAnimator> _animator)
     // 대기 시간 업데이트
     m_dyingTime += DT;
 
-
+    
     // 시간 기반으로 완료 체크
     if (!m_isDyingComplete && m_dyingTime >= m_expectedDuration)
     {
+        cout << "늑대 Dying State 종료!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
         m_isDyingComplete = true;
         // 안전하게 시퀀스 정지
         //_animator->StopSequence();

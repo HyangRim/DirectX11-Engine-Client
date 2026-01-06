@@ -77,7 +77,6 @@ void BiancaBaseAttackState::Update()
     auto monster = static_pointer_cast<Monster>(m_target);
     if (monster && monster->IsDead())
     {
-        cout << "Å¸°ÙÀÌ Á×¾ú½À´Ï´Ù." << endl;
         m_isAttackComplete = true;
         m_shouldContinueAttacking = false;
         return;

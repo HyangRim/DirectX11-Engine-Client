@@ -16,7 +16,7 @@ void WolfAnimDeathState::Enter(shared_ptr<ModelAnimator> _animator)
     m_expectedDuration = _animator->GetAnimationDuration(L"Death") / m_playSpeed;
     // Wait 애니메이션 재생
     
-
+   
     m_deathTime = 0.0f;
     m_isDeathComplete = false;
     cout << "늑대 Death 애니메이션 재생 시작" << endl;
@@ -33,6 +33,7 @@ void WolfAnimDeathState::Update(shared_ptr<ModelAnimator> _animator)
     // 시간 기반으로 완료 체크
     if (!m_isDeathComplete && m_deathTime >= m_expectedDuration)
     {
+        cout << "늑대 죽는 모션 종료 !!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
         m_isDeathComplete = true;
         // 안전하게 시퀀스 정지
         _animator->StopSequence();
@@ -55,11 +56,7 @@ void WolfAnimDeathState::Exit(shared_ptr<ModelAnimator> _animator)
 
 bool WolfAnimDeathState::CanTransitionTo(AnimationStateType _nextState)
 {
-    switch (_nextState)
-    {
-    case AnimationStateType::Dying:
+    if (m_isDeathComplete && _nextState == AnimationStateType::Dying)
         return true;
-    default:
-        return false;
-    }
+    return false;
 }

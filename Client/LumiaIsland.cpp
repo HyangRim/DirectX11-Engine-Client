@@ -116,7 +116,7 @@ void LumiaIsland::Start()
 		auto wolf = CreateMonsterWolf(Vec3(15, 18, 15.758));
 		wolf->GetItemBox()->GetBoxInventory()[0] = ItemManager::GetInstance()->GetItem(L"쇠구슬");
 	}
-	{
+	/*{
 		auto wolf = CreateMonsterWolf(Vec3(20, 18, 15.22));
 		wolf->GetItemBox()->GetBoxInventory()[0] = ItemManager::GetInstance()->GetItem(L"운동화");
 	}
@@ -140,7 +140,7 @@ void LumiaIsland::Start()
 	}
 	{
 		CreateMonsterAlpha(Vec3(116.722, 18, 108.22));
-	}
+	}*/
 
 	TIME->ResetDeltaTime();
 	SOUND->StopAll();

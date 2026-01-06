@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "MonsterState.h"
 
+class GameObject;
 class Player;
 class Item;
 class HealthBar;
@@ -42,7 +43,12 @@ public:
 
 public:
     MonsterStatus& GetMonsterStatus() { return m_monsterStatus; }
+
+    // 타겟 관리용 함수 추가 (행동 트리 노드들이 사용)
+    void SetTarget(shared_ptr<Player> target) { m_targetPlayer = static_pointer_cast<Player>(target); }
     shared_ptr<Player> GetTarget() { return m_targetPlayer; }
+
+
     bool IsAttacked() { return m_isAttacked; }
     void SetAttacked(bool _isAttacked) { m_isAttacked = _isAttacked; }
 

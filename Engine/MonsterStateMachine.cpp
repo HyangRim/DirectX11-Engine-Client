@@ -41,9 +41,9 @@ void MonsterStateMachine::Start()
     }
 
     // 초기 상태 설정 (Appear 또는 Wait)
-    if (m_states.find(MonsterStateType::Appear) != m_states.end())
+    if (m_states.find(MonsterStateType::Wait) != m_states.end())
     {
-        m_currentState = m_states[MonsterStateType::Appear];
+        m_currentState = m_states[MonsterStateType::Wait];
         if (m_currentState)
         {
             m_currentState->Enter();

@@ -43,7 +43,6 @@ public:
     vector<shared_ptr<GameObject>> Query(const Ray& _ray, shared_ptr<Camera> _camera);
 
 
-
     // 성능 관련
     const QuadTreeStats& GetStats() const { return m_stats; }
     void UpdateStats();

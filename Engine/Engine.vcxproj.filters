@@ -280,6 +280,9 @@
     <ClCompile Include="IMonster.cpp">
       <Filter>00. Engine\Interface</Filter>
     </ClCompile>
+    <ClCompile Include="BehaviorTree.cpp">
+      <Filter>04. Component\BehaviorTree</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Types.h">
@@ -579,6 +582,9 @@
     <ClInclude Include="IMonster.h">
       <Filter>00. Engine\Interface</Filter>
     </ClInclude>
+    <ClInclude Include="BehaviorTree.h">
+      <Filter>04. Component\BehaviorTree</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Engine">
@@ -667,6 +673,9 @@
     </Filter>
     <Filter Include="00. Engine\Interface\Skill\SkillConfig">
       <UniqueIdentifier>{028ae89e-c78d-47aa-a424-703757499283}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Component\BehaviorTree">
+      <UniqueIdentifier>{e6f7ba37-a272-47e0-ba64-e7f7ab5a2a87}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

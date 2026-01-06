@@ -14,6 +14,7 @@ void WolfAnimAttackState::Enter(shared_ptr<ModelAnimator> _animator)
 
     _animator->SetAnimationSpeed(m_playSpeed);
     m_expectedDuration = (38.f / 25.f) / 2.f;
+
     if (m_motionChange)
     {
         m_sequenceDurations = _animator->GetSequenceAnimationDurations(L"Wolf_Atk1_Sequence");
@@ -52,7 +53,7 @@ void WolfAnimAttackState::Update(shared_ptr<ModelAnimator> _animator)
         return;
 
     m_animTime += DT;
-
+    //cout << "m_animTime : " << m_animTime << " , 기대시간 : " << m_expectedDuration << "\n";
     // 시퀀스 재생 상태 체크
     if (m_isAttackComplete && m_animTime >= m_expectedDuration)
     {
@@ -100,6 +101,8 @@ bool WolfAnimAttackState::CanTransitionTo(AnimationStateType _nextState)
         case AnimationStateType::Trace:
         case AnimationStateType::BaseAttack:
         case AnimationStateType::Death:
+        case AnimationStateType::Run:
+
             return true;
         default:
             return false;
