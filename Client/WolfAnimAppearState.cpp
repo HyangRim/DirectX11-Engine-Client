@@ -28,7 +28,7 @@ void WolfAnimAppearState::Enter(shared_ptr<ModelAnimator> _animator)
     m_animTime = 0.0f;
     m_isAppearComplete = false;
 
-    cout << "늑대 Appear 애니메이션 시작." << endl;
+    //cout << "늑대 Appear 애니메이션 시작." << endl;
 }
 
 void WolfAnimAppearState::Update(shared_ptr<ModelAnimator> _animator)
@@ -44,7 +44,7 @@ void WolfAnimAppearState::Update(shared_ptr<ModelAnimator> _animator)
     {
         // 시퀀스가 끝났으면 완료 플래그 설정
         m_isAppearComplete = true;
-        cout << "늑대 Appera 시퀸스 완료." << endl;
+        //cout << "늑대 Appera 시퀸스 완료." << endl;
     }
 }
 
@@ -53,7 +53,7 @@ void WolfAnimAppearState::Exit(shared_ptr<ModelAnimator> _animator)
     if (!_animator)
         return;
 
-    cout << "늑대 Appear  종료 " << endl;
+    //cout << "늑대 Appear  종료 " << endl;
 
     // 상태 종료 시 정리
     m_animTime = 0.0f;

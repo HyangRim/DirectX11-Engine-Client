@@ -202,7 +202,7 @@ void Wolf::InitWolfComponent()
 	m_collider = make_shared<SphereCollider>();
 	m_collider->SetOffset(Vec3(0, 1, 0));
 	m_collider->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-	m_collider->SetVisible(true);
+	m_collider->SetVisible(false);
 
 	//m_collider->SetVisible(false);
 	m_rigidbody = make_shared<Rigidbody>();
@@ -264,6 +264,6 @@ void Wolf::InitWolfMSM()
 
 void Wolf::InitWolfStats()
 {
+	m_monsterStatus.maxHp = 200;
 	m_monsterStatus.hp = 200;
-	
 }

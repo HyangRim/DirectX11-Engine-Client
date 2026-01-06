@@ -76,6 +76,56 @@ void RenderManager::RenderDeferred(vector<shared_ptr<GameObject>>& _gameObjects,
 {
 	ClearData();
 
+	// ★ 1. MultiLightDesc 데이터 채우기
+	m_multiLightDesc.activeLightCount = 0; // 초기화
+
+	auto gameObjects = CURSCENE->GetObjects();
+
+	for (auto& gameObject : gameObjects)
+	{
+		// 최대 개수(MAX_LIGHTS = 20) 체크
+		if (m_multiLightDesc.activeLightCount >= MAX_LIGHTS)
+			break;
+
+		shared_ptr<Light> lightComp = gameObject->GetFixedComponent<Light>(ComponentType::Light);
+
+		if (lightComp)
+		{
+			// 현재 채울 배열 인덱스
+			int idx = m_multiLightDesc.activeLightCount;
+
+			// 컴포넌트에서 LightDesc(기본) 가져오기
+	
+			const LightDesc2& srcDesc = lightComp->GetLightDesc2();
+			// 만약 Light 컴포넌트가 LightDesc2를 가지고 있다면 그걸 가져와야 함.
+			// 여기서는 LightDesc -> LightDesc2로 변환해서 넣는다고 가정:
+
+			// 데이터 복사 (LightDesc -> LightDesc2)
+			m_multiLightDesc.lights[idx].ambient = srcDesc.ambient;
+			m_multiLightDesc.lights[idx].diffuse = srcDesc.diffuse;
+			m_multiLightDesc.lights[idx].specular = srcDesc.specular;
+			m_multiLightDesc.lights[idx].emissive = srcDesc.emissive;
+			m_multiLightDesc.lights[idx].direction = srcDesc.direction;
+
+			// LightDesc에는 position, range, type이 없는데? 
+			// -> Light 컴포넌트가 이 값들을 별도로 가지고 있거나, LightDesc2를 따로 관리해야 함.
+			// 일단 GameObject Transform에서 위치는 가져올 수 있음.
+			m_multiLightDesc.lights[idx].position = gameObject->GetTransform()->GetPosition();
+
+			// [중요] 만약 Light 컴포넌트가 LightDesc2를 들고 있다면 그걸 바로 복사하세요.
+			// 예: LightDesc2& srcDesc2 = lightComp->GetLightDesc2();
+			// m_multiLightDesc.lights[idx] = srcDesc2; 
+
+			// 임시: 범위와 타입은 기본값 혹은 컴포넌트의 다른 변수에서 가져와야 함
+			m_multiLightDesc.lights[idx].range = 20.0f; // 임시 값
+			m_multiLightDesc.lights[idx].lightType = 1;     // 1: Point Light (임시)
+
+			m_multiLightDesc.activeLightCount++;
+		}
+	}
+
+
+
 	GRAPHICS->ClearDepthStencilView();
 	GRAPHICS->ClearGBufferView();
 	m_isShadowTech = _isShadowTech;
@@ -445,7 +495,6 @@ void RenderManager::AddData(InstanceID _instanceID, InstancingData& _data)
 
 void RenderManager::RenderGeometryPass(vector<shared_ptr<GameObject>>& _gameObjects)
 {
-
 	RenderMeshRendererDeferred(_gameObjects);
 	RenderModelRendererDeferred(_gameObjects);
 	RenderAnimRendererDeferred(_gameObjects);
@@ -455,7 +504,6 @@ void RenderManager::RenderDeferredLighting()
 {
 	if (m_deferredLightingShader == nullptr)
 		return;
-
 
 	for (int i = 0; i < 4; ++i) {
 		assert(GRAPHICS->m_gBufferSRVs[i] != nullptr);
@@ -484,11 +532,27 @@ void RenderManager::RenderDeferredLighting()
 
 	m_deferredLightingShader->PushFOWData(m_FogData);
 
+	// ★★★ [여기 추가] 다중 광원 데이터(LightDesc2) 전송 ★★★
+	// RenderManager가 m_lightDesc2(구조체)를 멤버로 가지고 있고, 
+	// 여기에 빛 정보가 채워져 있다고 가정합니다.
+	  // ★ 2. MultiLightDesc 전체를 셰이더로 전송
+	//m_deferredLightingShader->PushMultiLightData(m_multiLightDesc);
+
+
 	DC->OMSetDepthStencilState(nullptr, 0);
 	DC->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
 
 	GRAPHICS->BindFullScreenQuad();
 	m_deferredLightingShader->DrawIndexedInstancedCurTech(0, 6, 1, 0, 0, 0);
+
+	//if (true)
+	//{
+	//	// 디버그용 테크닉/패스 실행 (인덱스는 셰이더 파일에 맞게 조정)
+	//	// 예: technique11 T0 내부의 P8이 PS_DebugGBuffer라면, pass index 8 사용
+	//	// 혹은 별도 Technique을 만들었다면 SetTechnique 호출 필요
+	//	m_deferredLightingShader->SetTechnique(L"T0");
+	//	m_deferredLightingShader->DrawIndexedInstancedCurTech(7, 6, 1, 0, 0, 0);
+	//}
 
 
 	ID3D11ShaderResourceView* nullSRVs[Graphics::GBUFFER_COUNT] = {nullptr};

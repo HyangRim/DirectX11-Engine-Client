@@ -18,6 +18,31 @@ struct LightDesc
     float padding;
 };
 
+struct LightDesc2
+{
+    float4 ambient;
+    float4 diffuse;
+    float4 specular;
+    float4 emissive;
+
+    float3 direction;
+    float padding0;
+
+    float3 position; // 새로 추가됨
+    float range; // 새로 추가됨
+
+    int lightType; // 새로 추가됨 (0:Dir, 1:Point, 2:Spot)
+    float3 padding1; // 정렬용 패딩
+};
+
+// 2. 멀티 라이트 버퍼 (C++ MultiLightDesc와 일치)
+cbuffer MultiLightBuffer : register(b10) // 레지스터 번호(b10)는 C++ SetConstantBuffer 슬롯과 일치해야 함
+{
+    LightDesc2 g_lights[100]; // 배열
+    int g_activeLightCount; // 활성화된 라이트 개수
+    float3 g_padding; // 16바이트 정렬 맞춤 (4 + 12 = 16)
+};
+
 struct MaterialDesc
 {
     float4 ambient;
@@ -34,6 +59,11 @@ struct MaterialDesc
 cbuffer LightBuffer
 {
     LightDesc GlobalLight;
+};
+
+cbuffer LightBuffer2
+{
+    LightDesc2 GlobalLight2;
 };
 
 cbuffer MaterialBuffer

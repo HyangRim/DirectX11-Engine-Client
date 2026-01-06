@@ -43,7 +43,7 @@ void WolfAnimRunState::Exit(shared_ptr<ModelAnimator> _animator)
     if (!_animator)
         return;
 
-    cout << "늑대 Run 상태 종료" << endl;
+    //cout << "늑대 Run 상태 종료" << endl;
 
     m_moveTime = 0.0f;
     m_isAnimationStarted = false;

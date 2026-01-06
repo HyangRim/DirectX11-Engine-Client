@@ -41,12 +41,12 @@ void AssimpTool::Start()
 		shared_ptr<Converter> converter = make_shared<Converter>();
 
 		//FBX -> Memory
-		converter->ReadAssetFile(L"Nicky/Nicky_Glove_Skill_02_Counter.fbx");
+		converter->ReadAssetFile(L"bar/Avatar_Girl_Catalyst_Barbara.fbx");
 
 		//Memory ->CustomData;
 		//converter->ExportMaterialData(L"Nicky/NickyESkill_Mesh");
 		//converter->ExportModelData(L"Nicky/NickyESkill_Mesh");
-		converter->ExportAnimationData(L"Nicky/Nicky_Glove_Skill_02_Counter");
+		converter->ExportAnimationData(L"bar/Avatar_Girl_Catalyst_Barbara");
 		//CustomData -> Memory;
 		
 
@@ -71,40 +71,40 @@ void AssimpTool::Start()
 	//}
 
 
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/ChurchBase.fbx");
+	//{
+	//	shared_ptr<Converter> converter = make_shared<Converter>();
+	//	//FBX -> Memory
+	//	converter->ReadAssetFile(L"Map2/ChurchBase.fbx");
 
-		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Map2/ChurchBase");
-		converter->ExportModelData(L"Map2/ChurchBase");
+	//	//Memory ->CustomData;
+	//	converter->ExportMaterialData(L"Map2/ChurchBase");
+	//	converter->ExportModelData(L"Map2/ChurchBase");
 
-		//CustomData -> Memory;
-	}
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/FactoryBase.fbx");
+	//	//CustomData -> Memory;
+	//}
+	//{
+	//	shared_ptr<Converter> converter = make_shared<Converter>();
+	//	//FBX -> Memory
+	//	converter->ReadAssetFile(L"Map2/FactoryBase.fbx");
 
-		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Map2/FactoryBase");
-		converter->ExportModelData(L"Map2/FactoryBase");
+	//	//Memory ->CustomData;
+	//	converter->ExportMaterialData(L"Map2/FactoryBase");
+	//	converter->ExportModelData(L"Map2/FactoryBase");
 
-		//CustomData -> Memory;
-	}
+	//	//CustomData -> Memory;
+	//}
 
-	{
-		shared_ptr<Converter> converter = make_shared<Converter>();
-		//FBX -> Memory
-		converter->ReadAssetFile(L"Map2/HospitalBase.fbx");
+	//{
+	//	shared_ptr<Converter> converter = make_shared<Converter>();
+	//	//FBX -> Memory
+	//	converter->ReadAssetFile(L"Map2/HospitalBase.fbx");
 
-		//Memory ->CustomData;
-		converter->ExportMaterialData(L"Map2/HospitalBase");
-		converter->ExportModelData(L"Map2/HospitalBase");
+	//	//Memory ->CustomData;
+	//	converter->ExportMaterialData(L"Map2/HospitalBase");
+	//	converter->ExportModelData(L"Map2/HospitalBase");
 
-		//CustomData -> Memory;
-	}
+	//	//CustomData -> Memory;
+	//}
 
 
 	//{

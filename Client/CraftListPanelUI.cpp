@@ -182,11 +182,8 @@ void CraftListPanelUI::OnCraftSlotClicked(int slotIndex)
             auto navMeshAgent = m_player->GetNavMeshAgent();
             if (navMeshAgent)
                 navMeshAgent->Stop();
-            //playerStateMachine->GetState(PlayerStateType::Craft)->SetRecipeIndex(slotIndex);
-            //animStateMachine->GetState(AnimationStateType::Craft)->SetExpectedDuration(GetCraftTimeByGrade(itemGrade));
-            // Craft 상태로 전환
-            //animStateMachine->ChangeState(AnimationStateType::Craft);
-            //playerStateMachine->ChangeState(PlayerStateType::Craft);       
+            playerStateMachine->RequestStateChange(PlayerStateType::Craft);
+            animStateMachine->RequestStateChange(AnimationStateType::Craft);
         }
     }
 

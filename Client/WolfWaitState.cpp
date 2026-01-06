@@ -12,7 +12,7 @@ void WolfWaitState::Enter()
     m_animTime = 0.f;
     m_isAnimationStarted = true;
 
-    cout << "´Á´ë Wait State ÁøÀÔ\n";
+    //cout << "´Á´ë Wait State ÁøÀÔ\n";
 }
 
 void WolfWaitState::Update()
@@ -25,7 +25,7 @@ void WolfWaitState::Exit()
     m_animTime = 0.f;
     m_isAnimationStarted = false;
 
-    cout << "´Á´ë Wait State Á¾·á\n";
+    //cout << "´Á´ë Wait State Á¾·á\n";
 }
 
 bool WolfWaitState::CanTransitionTo(MonsterStateType newState)

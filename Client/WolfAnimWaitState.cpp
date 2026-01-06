@@ -17,7 +17,7 @@ void WolfAnimWaitState::Enter(shared_ptr<ModelAnimator> _animator)
     m_idleTime = 0.0f;
     m_isAnimationStarted = true;
 
-    cout << "늑대 Wait  애니메이션 재생 시작" << endl;
+   // cout << "늑대 Wait  애니메이션 재생 시작" << endl;
 }
 
 void WolfAnimWaitState::Update(shared_ptr<ModelAnimator> _animator)
@@ -45,7 +45,7 @@ void WolfAnimWaitState::Exit(shared_ptr<ModelAnimator> _animator)
     if (!_animator)
         return;
 
-    cout << "늑대 Wait 상태 종료 " << endl;
+    //cout << "늑대 Wait 상태 종료 " << endl;
 
     // 상태 종료 시 정리
     m_idleTime = 0.0f;

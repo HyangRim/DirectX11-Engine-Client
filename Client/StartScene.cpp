@@ -160,7 +160,7 @@ void StartScene::CreateLobbyBackGround()
 	//	};
 
 
-	m_backPanel->GetUIPanel()->AddText(
+	m_backPanel->GetUIPanel()->AddD2DText(
 		Vec2(175.f, 190.f),
 		L"게임 시작",
 		22.f,
@@ -245,7 +245,7 @@ void StartScene::CreateLobbyBackGround()
 			22.f,
 			Color(1.f, 1.f, 1.f, 1.f),
 			1.f,
-			Color(0.f, 0.f, 0.f, 0.f),
+			Color(1.f, 0.f, 0.f, 0.f),
 			0.0f,
 			L"GameSoundText"
 		);

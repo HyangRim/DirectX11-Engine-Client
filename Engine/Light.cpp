@@ -8,6 +8,7 @@ Matrix Light::s_ShadowTransform = Matrix::Identity;
 
 Light::Light() : Component(ComponentType::Light)
 {
+    m_desc.direction = Vec3(0.f, -1.f, 0.0f);
 }
 
 Light::~Light()

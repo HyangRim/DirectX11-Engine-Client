@@ -18,7 +18,7 @@ void WolfAnimTraceState::Enter(shared_ptr<ModelAnimator> _animator)
     m_idleTime = 0.0f;
     m_isAnimationStarted = true;
 
-    cout << "늑대 Run 애니메이션 재생 시작" << endl;
+    //cout << "늑대 Run 애니메이션 재생 시작" << endl;
 }
 
 void WolfAnimTraceState::Update(shared_ptr<ModelAnimator> _animator)
@@ -31,7 +31,7 @@ void WolfAnimTraceState::Exit(shared_ptr<ModelAnimator> _animator)
     if (!_animator)
         return;
 
-    cout << "늑대 Run 상태 종료 " << endl;
+   // cout << "늑대 Run 상태 종료 " << endl;
 
     // 상태 종료 시 정리
     m_idleTime = 0.0f;

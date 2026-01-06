@@ -26,6 +26,24 @@ struct LightDesc
 	float padding0;
 };
 
+// Light
+struct LightDesc2
+{
+	Color ambient = Color(1.f, 1.f, 1.f, 1.f);
+	Color diffuse = Color(1.f, 1.f, 1.f, 1.f);
+	Color specular = Color(1.f, 1.f, 1.f, 1.f);
+	Color emissive = Color(1.f, 1.f, 1.f, 1.f);
+
+	Vec3 direction;  // 방향 (Directional / Spot)
+	float padding0;  // 16바이트 정렬용
+
+	Vec3 position;   // 위치 (Point / Spot)
+	float range;     // 범위 (Point / Spot)
+
+	int lightType;   // 0:Directional, 1:Point, 2:Spot
+	Vec3 padding1;   // 16바이트 정렬을 위해 12바이트(float 3개) 패딩 추가
+};
+
 struct MaterialDesc
 {
 	Color ambient = Color(0.f, 0.f, 0.f, 1.f);
@@ -124,9 +142,9 @@ struct FogOfWarData {
 	float time;
 };
 
-#define MAX_LIGHTS 20
+#define MAX_LIGHTS 100
 struct MultiLightDesc {
-	LightDesc lights[MAX_LIGHTS];
+	LightDesc2 lights[MAX_LIGHTS];
 	int activeLightCount;
 	float padding[3];
 };

@@ -149,6 +149,91 @@ float4 PS_DebugSRV(VertexQuadOutput IN) : SV_Target
     return a;
 }
 
+// 4분할 디버그 뷰 픽셀 셰이더
+float4 PS_DebugGBuffer2(VertexQuadOutput input) : SV_TARGET
+{
+    float2 uv = input.uv;
+    float4 finalColor = float4(0, 0, 0, 1);
+
+    // 4분할 영역 판별
+    // 좌상단 (0,0 ~ 0.5, 0.5) -> Albedo
+    if (uv.x < 0.5 && uv.y < 0.5)
+    {
+        float2 localUV = uv * 2.0f; // 0~0.5 범위를 0~1로 확장
+        finalColor = GBufferAlbedo.Sample(LinearSampler, localUV);
+    }
+    // 우상단 (0.5,0 ~ 1.0, 0.5) -> Normal
+    else if (uv.x >= 0.5 && uv.y < 0.5)
+    {
+        float2 localUV = float2((uv.x - 0.5f) * 2.0f, uv.y * 2.0f);
+        float4 normal = GBufferNormal.Sample(LinearSampler, localUV);
+        // Normal은 -1~1 범위일 수 있으므로 보기 좋게 0~1로 변환
+        finalColor = float4((normal.xyz + 1.0f) * 0.5f, 1.0f);
+    }
+    // 좌하단 (0, 0.5 ~ 0.5, 1.0) -> Position
+    else if (uv.x < 0.5 && uv.y >= 0.5)
+    {
+        float2 localUV = float2(uv.x * 2.0f, (uv.y - 0.5f) * 2.0f);
+        float4 pos = GBufferPosition.Sample(LinearSampler, localUV);
+        // Position 값은 범위가 커서 그냥 출력하면 하얗게만 보일 수 있음.
+        // 시각화를 위해 적당히 나누거나 frac 등을 사용하기도 함. 여기선 그대로 출력.
+        // finalColor = float4(frac(pos.xyz), 1.0f); // 패턴으로 보고 싶을 때
+        finalColor = float4(pos.xyz / 100.0f, 1.0f); // 스케일 조정 (예시)
+    }
+    // 우하단 (0.5, 0.5 ~ 1.0, 1.0) -> Material
+    else
+    {
+        float2 localUV = float2((uv.x - 0.5f) * 2.0f, (uv.y - 0.5f) * 2.0f);
+        finalColor = GBufferMaterial.Sample(LinearSampler, localUV);
+    }
+
+    return finalColor;
+}
+
+
+float4 PS_DeferredLightingWithFOW2(VertexQuadOutput input) : SV_TARGET
+{
+    // 1. G-Buffer 샘플링
+    float4 albedo = GBufferAlbedo.Sample(LinearSampler, input.uv);
+    float3 position = GBufferPosition.Sample(LinearSampler, input.uv).xyz;
+    float3 normal = GBufferNormal.Sample(LinearSampler, input.uv).xyz;
+
+    // 초기 색상 (Ambient)
+    float3 finalColor = float3(0, 0, 0);
+
+    // 2. 다중 광원 루프
+    for (int i = 0; i < g_activeLightCount; ++i)
+    {
+        if (g_lights[i].lightType == 1) // Point Light
+        {
+            float dist = distance(g_lights[i].position, position);
+            if (dist < g_lights[i].range)
+            {
+                // 감쇠 (Attenuation)
+                float att = 1.0f - (dist / g_lights[i].range);
+                att = att * att; // 제곱 감쇠로 자연스럽게
+
+                // Diffuse (Lambert)
+                float3 lightDir = normalize(g_lights[i].position - position);
+                float diffuse = max(dot(normal, lightDir), 0.0f);
+
+                // 결과 누적
+                finalColor += albedo.rgb * g_lights[i].diffuse.rgb * diffuse * att;
+            }
+        }
+        else if (g_lights[i].lightType == 0) // Directional Light
+        {
+            float3 lightDir = normalize(-g_lights[i].direction);
+            float diffuse = max(dot(normal, lightDir), 0.0f);
+            finalColor += albedo.rgb * g_lights[i].diffuse.rgb * diffuse;
+        }
+    }
+    
+    // FOW 적용 등 후처리...
+    return float4(finalColor, 1.0f);
+ 
+}
+
 ////////////////
 // Techniques //
 ////////////////
@@ -159,17 +244,24 @@ technique11 T0
     // 기본 FOW 렌더링
     //PASS_VP(P0, VS_Mesh, PS_FOW)
     //PASS_VP(P1, VS_Model, PS_FOW)
+
     //PASS_VP(P2, VS_Animation, PS_FOW)
+
     PASS_VP(P0, VS_Mesh, PS_GBuffer)
+    //PASS_VP(P0, VS_Quad, PS_DebugGBuffer2)
+
+
     PASS_VP(P1, VS_Model, PS_GBuffer)
     PASS_VP(P2, VS_Animation, PS_GBuffer)
+
     PASS_RS_VP(P3, FillModeWireFrame, VS_Mesh, PS_FOW_DEBUG)
     PASS_VP(P4, VS_Mesh, PS_FOW_Transparency)
 // NavMesh 디버그 렌더링 추가
     PASS_BS_VP(P6, AlphaBlend, VS_Mesh, PS_NavMesh_Debug)
     PASS_RS_VP(P7, FillModeWireFrame, VS_Mesh, PS_NavMesh_Wireframe)
 
-    PASS_VP(P8, VS_Quad, PS_DebugGBuffer)
+    PASS_VP(P8, VS_Quad, PS_DebugGBuffer2)
+    
 }
 
 // 그림자 테크닉 (기존과 동일)

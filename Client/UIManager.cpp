@@ -76,7 +76,6 @@ void UIManager::UpdateUI()
 
 void UIManager::CreateInventoryManager()
 {
-
 	// ½½·Ôµé µî·Ï
 	InventoryManager::GetInstance()->RegisterInventorySlots(m_inventory->GetInventorySlots());
 	InventoryManager::GetInstance()->RegisterEquipmentSlots(m_equipment->GetEquipmentSlots());

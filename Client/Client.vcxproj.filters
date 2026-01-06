@@ -16,9 +16,6 @@
     <Filter Include="Game\Week3">
       <UniqueIdentifier>{f5d8a2ef-cfc3-46b6-9fc0-d6a7a191d2a2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Week4">
-      <UniqueIdentifier>{ec5af676-cf94-482d-9d67-5fca2dc4d30f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shaders\Week5">
       <UniqueIdentifier>{5f62659e-f74f-41d7-b10a-919c1fa0eb28}</UniqueIdentifier>
     </Filter>
@@ -219,6 +216,9 @@
     </Filter>
     <Filter Include="Scripts\Player\BaseAttack">
       <UniqueIdentifier>{38bc0f90-fc62-4671-aca5-332dbc0e5e95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Week4">
+      <UniqueIdentifier>{ec5af676-cf94-482d-9d67-5fca2dc4d30f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

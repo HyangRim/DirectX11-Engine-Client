@@ -1701,6 +1701,7 @@ void LumiaIsland::CreateCemeteryItemBox()
 		obj->GetTransform()->SetLocalPosition(Vec3(96.9, 19.5, 59));
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
 		obj->AddComponent(make_shared<AABBBoxCollider>());
+		obj->GetCollider()->SetOffsetScale(Vec3(150.f));
 		obj->AddComponent(make_shared<ItemBox>());
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
 		obj->SetType(OBJECTTYPE::ITEMBOX);
@@ -1726,6 +1727,7 @@ void LumiaIsland::CreateCemeteryItemBox()
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 180.f, 0.f));
 		obj->AddComponent(make_shared<AABBBoxCollider>());
 		obj->AddComponent(make_shared<ItemBox>());
+		obj->GetCollider()->SetOffsetScale(Vec3(150.f));
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
 		obj->SetType(OBJECTTYPE::ITEMBOX);
 
@@ -1749,6 +1751,7 @@ void LumiaIsland::CreateCemeteryItemBox()
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
 		obj->AddComponent(make_shared<AABBBoxCollider>());
 		obj->AddComponent(make_shared<ItemBox>());
+		obj->GetCollider()->SetOffsetScale(Vec3(150.f));
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
 		obj->SetType(OBJECTTYPE::ITEMBOX);
 
@@ -1772,6 +1775,7 @@ void LumiaIsland::CreateCemeteryItemBox()
 		obj->GetTransform()->SetLocalRotation(Vec3(0.f, 180.f, 0.f));
 		obj->AddComponent(make_shared<AABBBoxCollider>());
 		obj->AddComponent(make_shared<ItemBox>());
+		obj->GetCollider()->SetOffsetScale(Vec3(150.f));
 		obj->GetTransform()->SetLocalScale(Vec3(0.02f));
 		obj->SetType(OBJECTTYPE::ITEMBOX);
 

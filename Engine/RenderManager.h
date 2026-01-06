@@ -62,5 +62,10 @@ private:
 
 	shared_ptr<Shader> m_deferredLightingShader;
 	shared_ptr<Shader> m_outlineShader;
+
+
+
+private:
+	MultiLightDesc m_multiLightDesc;
 };
 

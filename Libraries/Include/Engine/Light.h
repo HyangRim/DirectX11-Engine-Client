@@ -15,13 +15,19 @@ public:
 
 public:
 	LightDesc& GetLightDesc() { return m_desc; }
+	LightDesc2& GetLightDesc2() { return m_desc2; }
+
 
 	void SetLightDesc(LightDesc& _desc) { m_desc = _desc; }
+	void SetLightDesc(LightDesc2& _desc) { m_desc2 = _desc; }
 	void SetAmbient(const Color& _color) { m_desc.ambient = _color; }
 	void SetDiffuse(const Color& _color) { m_desc.diffuse = _color; }
 	void SetSpecular(const Color& _color) { m_desc.specular = _color; }
 	void SetEmissive(const Color& _color) { m_desc.emissive = _color; }
 	void SetLightDirection(Vec3 _direction) { m_desc.direction = _direction; }
+
+	void SetLightType(int type) { m_iLightType = type; }
+	int GetLightType() { return m_iLightType; }
 
 public:
 	void SetVPMatrix(Camera* _camera, float _backDist, Matrix _matProjection);
@@ -33,5 +39,9 @@ public:
 
 private:
 	LightDesc m_desc;
+	LightDesc2 m_desc2;
+
+	int m_iLightType = 0;
+
 };
 
