@@ -79,6 +79,11 @@ private:
 	//=====================스킬 레벨업 함수=======================//
 	void HandleSkillLevelUpInput();
 	void LevelUpSkill(int skillIndex);
+
+	// NavMesh 경로 진단 (F8로 켜고 끄기)
+	void UpdateNavPathDebug();
+	void DrawNavPathDebug();
+	bool m_navPathDebug = true;
 	//=====================스킬 레벨업 함수=======================//
 
 private:
