@@ -22,7 +22,10 @@ public:
 		//Return받는게 numOfBytes
 
 		//String은 sizeof로 하는 게 맞나? 따라서 버전을 2개 쓴다. 
-		assert(::WriteFile(_handle, &data, sizeof(T), (LPDWORD)&numOfBytes, nullptr));
+		// WriteFile 을 assert 안에 두면 Release (NDEBUG) 에서 호출 자체가 사라진다
+		const BOOL ok = ::WriteFile(_handle, &data, sizeof(T), (LPDWORD)&numOfBytes, nullptr);
+		assert(ok);
+		(void)ok;
 	}
 
 	//String용도. 템플릿 특수화. (일종의 예외처리)
@@ -39,7 +42,10 @@ public:
 	void Read(OUT T& data)
 	{
 		DWORD numOfBytes = 0;
-		assert(::ReadFile(_handle, &data, sizeof(T), (LPDWORD)&numOfBytes, nullptr));
+		// ReadFile 을 assert 안에 두면 Release (NDEBUG) 에서 호출 자체가 사라진다
+		const BOOL ok = ::ReadFile(_handle, &data, sizeof(T), (LPDWORD)&numOfBytes, nullptr);
+		assert(ok);
+		(void)ok;
 	}
 
 	template<typename T>

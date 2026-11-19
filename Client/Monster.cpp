@@ -7,6 +7,8 @@
 #include "HealthBar.h"
 #include "MonsterState.h"
 
+bool Monster::s_createHealthBar = true;
+
 Monster::Monster(shared_ptr<Shader> _shader)
 	: m_defaultShader(_shader)
 {
@@ -23,9 +25,12 @@ void Monster::Start()
 {
 	Super::Start();
 
-	m_healthBar = make_shared<HealthBar>();
-	AddComponent(m_healthBar);
-	m_healthBar->Create();
+	if (s_createHealthBar)
+	{
+		m_healthBar = make_shared<HealthBar>();
+		AddComponent(m_healthBar);
+		m_healthBar->Create();
+	}
 }
 
 void Monster::Update()
@@ -104,7 +109,8 @@ void Monster::Damaged(DamageInfo _damage)
 
 	if (monsterHP <= 0) {
 		//사망 애니메이션으로. 
-		m_healthBar->SetVisible(false);
+		if (m_healthBar)
+			m_healthBar->SetVisible(false);
 		//GetMonsterStateMachine()->ChangeState(MonsterStateType::Death);
 		m_isStun = true;
 	}

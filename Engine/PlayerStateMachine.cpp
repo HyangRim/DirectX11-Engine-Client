@@ -299,7 +299,7 @@ bool PlayerStateMachine::CheckTargetForSkill(KEY_TYPE skillKey)
     auto quadTree = CURSCENE->GetQuadTree();
     if (!quadTree) return false;
 
-    vector<shared_ptr<GameObject>> candidates = quadTree->Query(ray, cam);
+    vector<shared_ptr<GameObject>> candidates = CURSCENE->QueryRayCandidates(ray, cam);   // Loose 모드면 월드 트리에서 후보
 
     // 유효한 타겟이 있는지 확인
     for (auto& obj : candidates)
@@ -343,7 +343,7 @@ shared_ptr<GameObject> PlayerStateMachine::GetPickedTargetAtMouse()
     auto quadTree = CURSCENE->GetQuadTree();
     if (!quadTree) return nullptr;
 
-    vector<shared_ptr<GameObject>> candidates = quadTree->Query(ray, cam);
+    vector<shared_ptr<GameObject>> candidates = CURSCENE->QueryRayCandidates(ray, cam);   // Loose 모드면 월드 트리에서 후보
 
     float minDistance = FLT_MAX;
     shared_ptr<GameObject> closestTarget = nullptr;
@@ -528,6 +528,19 @@ void PlayerStateMachine::HandleMovementInput()
             cout << "유효한 이동 지점을 찾을 수 없습니다" << endl;
         }
     }
+}
+
+bool PlayerStateMachine::MoveTo(const Vec3& _worldPos)
+{
+    if (!IsCurrentStateMovable()) return false;
+    auto agent = GetGameObject()->GetNavMeshAgent();
+    if (!agent) return false;
+    agent->SetDestination(_worldPos);
+    if (!agent->IsMoving()) return false;   // 경로가 없으면 (다른 섬 등) 이동 안 함
+    RequestStateChange(PlayerStateType::Run);
+    if (m_animationStateMachine)
+        m_animationStateMachine->RequestStateChange(AnimationStateType::Run);
+    return true;
 }
 
 void PlayerStateMachine::CheckMovementCompletion()

@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "FrameProfiler.h"
 #include "GameObject.h"
 #include "Rigidbody.h"
 #include "AABBBoxCollider.h"
@@ -57,6 +58,7 @@ void Rigidbody::FixedUpdate()
 
 void Rigidbody::OnCollision(shared_ptr<GameObject> _other)
 {
+	PROFILE_SCOPE("Collision", "Rigidbody.OnCollision");
 	if (_other == nullptr)
 		return;
 

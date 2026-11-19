@@ -35,6 +35,7 @@ public:
 	Vec3 GetOffsetScale() { return m_offsetScale; }
 
 	void SetVisible(bool _value) { m_DebugObject->SetColliderActive(_value); }
+	shared_ptr<GameObject> GetDebugObject() { return m_DebugObject; }
 
 protected:
 	ColliderType m_colliderType;

@@ -61,5 +61,12 @@ private:
 
     bool m_isDeadMotionStarted = false; // 사망 로직이 시작되었는지 체크
     float m_deathTimer = 0.0f; // 사망 애니메이션 진행 시간 체크용
+
+    // 매 프레임 경로를 다시 구하지 않게 (마리수만큼 FindPath 가 쌓이는 것 방지)
+    bool m_idleEntered = false;       // Idle 에 이미 들어와서 멈춤 명령을 보냈는지
+    bool m_idleThisFrame = false;     // 이번 프레임 행동 트리가 Idle 을 실행했는지
+    bool m_hasRepathTarget = false;   // 추적 경로를 한 번이라도 구했는지
+    Vec3 m_lastRepathTarget;          // 마지막으로 경로를 구한 타겟 위치
+    float m_repathTimer = 0.f;        // 다음 경로 재계산까지 남은 시간
 };
 

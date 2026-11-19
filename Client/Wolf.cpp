@@ -31,6 +31,7 @@
 
 
 #include "BehaviorTree.h"
+#include "FrameProfiler.h"
 
 Wolf::Wolf(shared_ptr<Shader> _shader)
 	: Super(_shader)
@@ -62,7 +63,11 @@ void Wolf::Start()
 
 void Wolf::Update()
 {
-	m_behaviorTree->Update();
+	m_idleThisFrame = false;
+	{ PROFILE_SCOPE("Wolf", "BehaviorTree"); m_behaviorTree->Update(); }
+	// 이번 프레임 Idle 이 아니었으면 다음에 Idle 로 돌아올 때 다시 멈춤 명령을 보낸다
+	if (!m_idleThisFrame)
+		m_idleEntered = false;
 	Super::Update();
 }
 
@@ -126,15 +131,31 @@ void Wolf::UpdateState()
 {
 }
 
+namespace
+{
+	// 늑대끼리 같은 Model 을 쓴다 (메시 · 재질 · 애니메이션 키프레임을 한 벌만 읽는다)
+	weak_ptr<Model> s_sharedWolfModel;
+}
+
 void Wolf::InitWolfModel()
 {
+	if (shared_ptr<Model> shared = s_sharedWolfModel.lock())
+	{
+		m_model = shared;
+		return;
+	}
+
 	m_model = make_shared<Model>();
 	m_model->ReadModel(L"wolf/wolf_mesh");
 	m_model->ReadMaterial(L"wolf/wolf_mesh");
+	s_sharedWolfModel = m_model;
 }
 
 void Wolf::InitWolfAnimation()
 {
+	// 공유 모델에 이미 애니메이션이 있으면 다시 읽지 않는다
+	if (m_model->GetAnimationCount() == 0)
+	{
 	m_model->ReadAnimation(L"Appear", L"wolf/wolf_appear_anim");
 	m_model->ReadAnimation(L"AppearWait", L"wolf/wolf_appearwait_anim");
 	m_model->ReadAnimation(L"Atk1", L"wolf/wolf_atk1_anim");
@@ -144,11 +165,13 @@ void Wolf::InitWolfAnimation()
 	m_model->ReadAnimation(L"Run", L"wolf/wolf_run_anim");
 	//m_model->ReadAnimation(L"Skill", L"wolf/wolf_skill_anim");
 	m_model->ReadAnimation(L"Wait", L"wolf/wolf_wait_anim");
+	}
 
 	AddComponent(make_shared<ModelAnimator>(m_defaultShader));
 	{
 		GetModelAnimator()->SetModel(m_model);
 		GetModelAnimator()->SetPass(2);
+		GetModelAnimator()->SetAnimationCacheKey(L"wolf/wolf_mesh");   // 애니메이션 행렬 · 텍스처도 늑대끼리 공유
 	}
 
 	//FSM 추가. 
@@ -382,6 +405,7 @@ NodeState Wolf::CheckAttackRange()
 	if (dist <= m_monsterStatus.hitRange)
 	{
 		if (m_navAgent) m_navAgent->Stop();
+		m_hasRepathTarget = false;   // 공격 후 다시 추적하면 바로 경로를 구한다
 		return NodeState::SUCCESS;
 	}
 	m_isAttacking = false;
@@ -508,9 +532,26 @@ NodeState Wolf::Trace()
 	if (!target) return NodeState::FAILURE;
 
 	// 1. 이동 처리 (NavMeshAgent)
+	//    SetDestination 은 부를 때마다 A* + 스무딩을 다시 하므로 매 프레임 부르지 않는다.
+	//    처음 (Idle · 공격에서 돌아왔을 때 포함) 은 바로, 그 외엔 0.25초마다 '타겟이 0.5m 이상 움직였거나 멈춰 있을 때' 만
 	if (m_navAgent)
 	{
-		m_navAgent->SetDestination(target->GetTransform()->GetPosition());
+		constexpr float REPATH_INTERVAL = 0.25f;
+		constexpr float REPATH_DIST = 0.5f;
+		const Vec3 targetPos = target->GetTransform()->GetPosition();
+		m_repathTimer -= DT;
+
+		const bool targetMoved = Vec3::DistanceSquared(targetPos, m_lastRepathTarget) > REPATH_DIST * REPATH_DIST;
+		const bool stopped = !m_navAgent->IsMoving();
+		if (!m_hasRepathTarget || (m_repathTimer <= 0.f && (targetMoved || stopped)))
+		{
+			m_navAgent->SetDestination(targetPos);
+			m_lastRepathTarget = targetPos;
+			m_hasRepathTarget = true;
+			// 늑대마다 재계산 시점을 조금씩 어긋나게 해서 한 프레임에 몰리지 않게
+			const float jitter = static_cast<float>(reinterpret_cast<uintptr_t>(this) % 97) / 97.f;
+			m_repathTimer = REPATH_INTERVAL * (0.75f + 0.5f * jitter);
+		}
 		m_navAgent->SetSpeed(2.0f); // 추적 속도
 	}
 
@@ -528,12 +569,17 @@ NodeState Wolf::Trace()
 
 NodeState Wolf::Idle()
 {
-	cout << "Idle 진입\n";
+	m_idleThisFrame = true;
 
-	// 확실하게 멈춤 명령
-	if (m_navAgent) {
-		m_navAgent->Stop();
-		m_navAgent->SetDestination(GetTransform()->GetPosition()); // 현재 위치로 강제 설정
+	// 확실하게 멈춤 명령 : Idle 에 처음 들어올 때 한 번만 (매 프레임 콘솔 출력 · 경로 계산을 하지 않게)
+	if (!m_idleEntered)
+	{
+		m_idleEntered = true;
+		m_hasRepathTarget = false;   // 다시 추적하면 바로 경로를 구한다
+		if (m_navAgent) {
+			m_navAgent->Stop();
+			m_navAgent->SetDestination(GetTransform()->GetPosition()); // 현재 위치로 강제 설정
+		}
 	}
 
 	// 타겟 해제는 신중하게 (여기서 해제하면 추적이 끊길 수 있음)

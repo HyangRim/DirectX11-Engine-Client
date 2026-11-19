@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "SceneManager.h"
+#include "FrameProfiler.h"
 
 void SceneManager::Update()
 {
@@ -12,10 +13,10 @@ void SceneManager::Update()
     if (m_curScene == nullptr)
         return;
 
-    m_curScene->Update();
-    m_curScene->FixedUpdate();
-    m_curScene->LateUpdate();
-    m_curScene->Render();
+    { PROFILE_SCOPE("Scene", "Update"); m_curScene->Update(); }
+    { PROFILE_SCOPE("Scene", "FixedUpdate"); m_curScene->FixedUpdate(); }
+    { PROFILE_SCOPE("Scene", "LateUpdate"); m_curScene->LateUpdate(); }
+    { PROFILE_SCOPE("Scene", "Render"); m_curScene->Render(); }
 }
 
 void SceneManager::ProcessSceneChange()

@@ -3,6 +3,7 @@
 #include "IExecute.h"
 #include "Scene.h"
 #include "SkillConfig.h"
+#include "FrameProfiler.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -136,25 +137,26 @@ LRESULT CALLBACK Game::WndProc(HWND handle, UINT message, WPARAM wParam, LPARAM 
 
 void Game::Update()
 {
-	TIME->Update();
-	INPUT->Update();
+	FrameProfiler::Get().BeginFrame();
+	{ PROFILE_SCOPE("Frame", "Time+Input"); TIME->Update(); INPUT->Update(); }
 	ShowFPS();
 
-	GRAPHICS->RenderBegin();
+	{ PROFILE_SCOPE("Frame", "RenderBegin"); GRAPHICS->RenderBegin(); }
 
 
-	GUI->Update();
+	{ PROFILE_SCOPE("Frame", "GUI.Update"); GUI->Update(); }
 
-	EVENT->Update();
+	{ PROFILE_SCOPE("Frame", "Event"); EVENT->Update(); }
 
-	SCENE->Update();
+	{ PROFILE_SCOPE("Frame", "Scene"); SCENE->Update(); }
 
 	//_desc.app->Update();
 	//_desc.app->Render();
 
-	GUI->Render();
+	{ PROFILE_SCOPE("Frame", "GUI.Render"); GUI->Render(); }
 
-	GRAPHICS->RenderEnd();
+	{ PROFILE_SCOPE("Frame", "Present(vsync)"); GRAPHICS->RenderEnd(); }
+	FrameProfiler::Get().EndFrame();
 }
 
 void Game::ShowFPS()

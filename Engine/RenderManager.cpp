@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "FrameProfiler.h"
 #include "RenderManager.h"
 #include "InstancingBuffer.h"
 #include "GameObject.h"
@@ -46,6 +47,7 @@ void RenderManager::Render(vector<shared_ptr<GameObject>>& _gameObjects, bool _i
 //이 게임 오브젝트들 중에서 실질적으로 인스턴싱 되어야 하는 부분만 여기서. 
 void RenderManager::RenderForward(vector<shared_ptr<GameObject>>& _gameObjects, bool _isShadowTech)
 {
+	PROFILE_SCOPE("RenderMgr", "RenderForward");
 	ClearData();
 
 	m_isShadowTech = _isShadowTech;
@@ -74,6 +76,7 @@ void RenderManager::RenderForward(vector<shared_ptr<GameObject>>& _gameObjects, 
 
 void RenderManager::RenderDeferred(vector<shared_ptr<GameObject>>& _gameObjects, bool _isShadowTech)
 {
+	PROFILE_SCOPE("RenderMgr", "RenderDeferred");
 	ClearData();
 
 	// ★ 1. MultiLightDesc 데이터 채우기
@@ -172,6 +175,7 @@ void RenderManager::ClearData()
 
 void RenderManager::RenderMeshRendererForward(vector<shared_ptr<GameObject>>& _gameObjects)
 {
+	PROFILE_SCOPE("RenderMgr", "RenderMeshRendererForward");
 
 	////인게임에 들어온 모든 아이들을 검사. 
 	//map<InstanceID, vector<shared_ptr<GameObject>>> cache;
@@ -240,6 +244,7 @@ void RenderManager::RenderMeshRendererForward(vector<shared_ptr<GameObject>>& _g
 
 void RenderManager::RenderModelRendererForward(vector<shared_ptr<GameObject>>& _gameObjects)
 {
+	PROFILE_SCOPE("RenderMgr", "RenderModelRendererForward");
 	//인게임에 들어온 모든 아이들을 검사. 
 	map<InstanceID, vector<shared_ptr<GameObject>>> cache;
 
@@ -282,6 +287,7 @@ void RenderManager::RenderModelRendererForward(vector<shared_ptr<GameObject>>& _
 
 void RenderManager::RenderAnimRendererForward(vector<shared_ptr<GameObject>>& _gameObjects)
 {
+	PROFILE_SCOPE("RenderMgr", "RenderAnimRendererForward");
 
 	//인게임에 들어온 모든 아이들을 검사. 
 	map<InstanceID, vector<shared_ptr<GameObject>>> cache;
@@ -360,6 +366,7 @@ void RenderManager::RenderAnimRendererForward(vector<shared_ptr<GameObject>>& _g
 
 void RenderManager::RenderMeshRendererDeferred(vector<shared_ptr<GameObject>>& _gameObjects)
 {
+	PROFILE_SCOPE("RenderMgr", "RenderMeshRendererDeferred");
 	map<InstanceID, vector<shared_ptr<GameObject>>> cache;
 
 	// 분류 단계 (투명 객체 제외)
@@ -399,6 +406,7 @@ void RenderManager::RenderMeshRendererDeferred(vector<shared_ptr<GameObject>>& _
 
 void RenderManager::RenderModelRendererDeferred(vector<shared_ptr<GameObject>>& _gameObjects)
 {
+	PROFILE_SCOPE("RenderMgr", "RenderModelRendererDeferred");
 	map<InstanceID, vector<shared_ptr<GameObject>>> cache;
 
 	// 분류 단계 (투명 객체 제외)
@@ -437,6 +445,7 @@ void RenderManager::RenderModelRendererDeferred(vector<shared_ptr<GameObject>>& 
 
 void RenderManager::RenderAnimRendererDeferred(vector<shared_ptr<GameObject>>& _gameObjects)
 {
+	PROFILE_SCOPE("RenderMgr", "RenderAnimRendererDeferred");
 	map<InstanceID, vector<shared_ptr<GameObject>>> cache;
 
 	// 분류 단계 (투명 객체 제외)
@@ -495,6 +504,7 @@ void RenderManager::AddData(InstanceID _instanceID, InstancingData& _data)
 
 void RenderManager::RenderGeometryPass(vector<shared_ptr<GameObject>>& _gameObjects)
 {
+	PROFILE_SCOPE("RenderMgr", "RenderGeometryPass");
 	RenderMeshRendererDeferred(_gameObjects);
 	RenderModelRendererDeferred(_gameObjects);
 	RenderAnimRendererDeferred(_gameObjects);
@@ -502,6 +512,7 @@ void RenderManager::RenderGeometryPass(vector<shared_ptr<GameObject>>& _gameObje
 
 void RenderManager::RenderDeferredLighting()
 {
+	PROFILE_SCOPE("RenderMgr", "RenderDeferredLighting");
 	if (m_deferredLightingShader == nullptr)
 		return;
 
@@ -567,6 +578,7 @@ void RenderManager::RenderDeferredLighting()
 
 void RenderManager::RenderOutlinePostProcess()
 {
+	PROFILE_SCOPE("RenderMgr", "RenderOutlinePostProcess");
 	if (!m_outlineShader) {
 		m_outlineShader = make_shared<Shader>(L"OutlinePostProcess");
 	}
@@ -586,6 +598,7 @@ void RenderManager::RenderOutlinePostProcess()
 
 void RenderManager::RenderTransparentObjects(vector<shared_ptr<GameObject>>& _gameObjects)
 {
+	PROFILE_SCOPE("RenderMgr", "RenderTransparentObjects");
 	vector<shared_ptr<GameObject>> transparentObjects;
 
 	// 투명 객체 선별 (기존 렌더러들을 통해 확인)

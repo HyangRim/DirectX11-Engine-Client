@@ -85,6 +85,8 @@ public:
     shared_ptr<GameObject> GetPickedTargetAtMouse();
     bool CheckTargetForSkill(KEY_TYPE skillKey);
     bool IsCurrentStateMovable() const;
+    // 우클릭 이동과 같은 처리를 코드로 (자동 측정의 순찰 이동용). 이동할 수 없는 상태면 false
+    bool MoveTo(const Vec3& _worldPos);
     
 
     void PrintCurState();

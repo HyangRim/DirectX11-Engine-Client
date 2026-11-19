@@ -97,6 +97,15 @@
     <ClCompile Include="QuadTree.cpp">
       <Filter>01. Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="LooseQuadTree.cpp">
+      <Filter>01. Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionBenchmark.cpp">
+      <Filter>01. Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameProfiler.cpp">
+      <Filter>01. Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="Sky.cpp">
       <Filter>01. Graphics</Filter>
     </ClCompile>
@@ -397,6 +406,15 @@
       <Filter>02. Managers</Filter>
     </ClInclude>
     <ClInclude Include="QuadTree.h">
+      <Filter>01. Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="LooseQuadTree.h">
+      <Filter>01. Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionBenchmark.h">
+      <Filter>01. Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameProfiler.h">
       <Filter>01. Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Sky.h">

@@ -25,6 +25,9 @@
 #include "NavMesh.h"
 #include "NavMeshAgent.h"
 #include "NavMeshBenchmark.h"
+#include "WolfStressSpawner.h"
+#include "FrameProfiler.h"
+#include <shellapi.h>
 
 #include "D2DText.h"
 #include "ISkill.h"
@@ -104,7 +107,7 @@ void LumiaIsland::Start()
 	CreateCemeterySmallInterior();
 	CreateCemeteryEnvironment();
 
-	//m_cameraScript->SetTarget(m_player);
+	m_cameraScript->SetTarget(m_player);
 	CreateCemeteryItemBox();
 	//CreateTestDummy();
 
@@ -117,7 +120,7 @@ void LumiaIsland::Start()
 		auto wolf = CreateMonsterWolf(Vec3(15, 18, 15.758));
 		wolf->GetItemBox()->GetBoxInventory()[0] = ItemManager::GetInstance()->GetItem(L"쇠구슬");
 	}
-	/*{
+	{
 		auto wolf = CreateMonsterWolf(Vec3(20, 18, 15.22));
 		wolf->GetItemBox()->GetBoxInventory()[0] = ItemManager::GetInstance()->GetItem(L"운동화");
 	}
@@ -141,13 +144,14 @@ void LumiaIsland::Start()
 	}
 	{
 		CreateMonsterAlpha(Vec3(116.722, 18, 108.22));
-	}*/
+	}
 
 	TIME->ResetDeltaTime();
 	SOUND->StopAll();
 	SOUND->PlayBGM(L"BSER_AreaBGM_CEMETERY.wav", 0.5f);
 	CreateCursor();
 	Super::Start();
+	InitAutoProfile();
 
 	// 기존 OnTryCraftFirst는 유지하되, 새로운 OnTryCraft도 추가 등록
 	m_player->GetPlayerStateMachine()->OnTryCraftFirst.Push([this](bool& success) {
@@ -281,6 +285,166 @@ void LumiaIsland::Update()
 	}
 
 	UpdateNavPathDebug();
+	HandleWolfStressInput();
+	UpdateProfilerInput();
+}
+
+void LumiaIsland::InitAutoProfile()
+{
+	int argc = 0;
+	LPWSTR* argv = ::CommandLineToArgvW(::GetCommandLineW(), &argc);
+	if (!argv) return;
+	auto& a = m_autoProfile;
+	for (int i = 1; i < argc; ++i)
+	{
+		const wstring s = argv[i];
+		auto val = [&](const wchar_t* key) -> const wchar_t* {
+			const size_t n = wcslen(key);
+			return (s.compare(0, n, key) == 0) ? s.c_str() + n : nullptr;
+		};
+		if (s == L"--autoprofile") a.enabled = true;
+		else if (s == L"--aggro") a.aggro = true;
+		else if (s == L"--mute") a.mute = true;
+		else if (s == L"--exit") a.exitAfter = true;
+		else if (s == L"--collision=loose") SetCollisionMode(CollisionMode::LooseQuadTree);
+		else if (s == L"--nohpbar") Monster::s_createHealthBar = false;   // 이후 배치되는 몬스터는 체력바 없음
+		else if (s == L"--walk") a.walk = true;
+		else if (s == L"--collision=screen") SetCollisionMode(CollisionMode::ScreenQuadTree);
+		else if (const wchar_t* v = val(L"--wolves=")) a.wolves = _wtoi(v);
+		else if (const wchar_t* v2 = val(L"--near=")) a.nearRadius = static_cast<float>(_wtof(v2));
+		else if (const wchar_t* v3 = val(L"--frames=")) a.frames = max(1, _wtoi(v3));
+		else if (const wchar_t* v4 = val(L"--warmup=")) a.warmup = max(0, _wtoi(v4));
+		else if (const wchar_t* v5 = val(L"--warmupsec=")) a.warmupSec = static_cast<float>(_wtof(v5));
+		else if (const wchar_t* v6 = val(L"--collisionbench=")) a.benchFrames = max(0, _wtoi(v6));
+	}
+	::LocalFree(argv);
+	if (a.enabled && a.mute)
+	{
+		SOUND->SetBGMVolume(0.f);
+		SOUND->SetSFXVolume(0.f);
+	}
+	if (a.enabled)
+		printf("[AutoProfile] wolves=%d near=%.0f aggro=%d frames=%d warmup=%d warmupsec=%.1f bench=%d\n", a.wolves, a.nearRadius, a.aggro ? 1 : 0, a.frames, a.warmup, a.warmupSec, a.benchFrames);
+}
+
+void LumiaIsland::UpdateAutoWalk()
+{
+	// 늑대 배치 뒤부터 플레이어가 같은 순찰 경로를 반복해서 돈다 (같은 시드 → 매 실행 같은 경로)
+	auto& a = m_autoProfile;
+	if (!a.walk || !m_player || !m_navMesh || !m_navMesh->GetNavMesh()) return;
+	auto psm = m_player->GetPlayerStateMachine();
+	auto agent = m_player->GetNavMeshAgent();
+	if (!psm || !agent) return;
+
+	if (a.route.empty())
+	{
+		NavPointSampler sampler(*m_navMesh->GetNavMesh());
+		std::mt19937 rng(777u);
+		const Vec3 start = m_player->GetTransform()->GetPosition();
+		for (int i = 0; i < 6; ++i)
+			a.route.push_back(sampler.SampleNear(rng, start, 35.f));
+		a.route.push_back(start);   // 한 바퀴 돌면 시작 위치로
+		a.routeIndex = -1;
+	}
+
+	a.legTimer += DT;
+	// 도착했거나 · 멈춰 있거나 · 한 구간에 게임 시간 15초 넘게 걸리면 다음 지점
+	if (a.routeIndex >= 0 && agent->IsMoving() && a.legTimer < 15.f)
+		return;
+	for (int tries = 0; tries < static_cast<int>(a.route.size()); ++tries)
+	{
+		a.routeIndex = (a.routeIndex + 1) % static_cast<int>(a.route.size());
+		a.legTimer = 0.f;
+		if (psm->MoveTo(a.route[a.routeIndex]))
+			break;   // 경로가 없는 지점이면 다음 지점을 시도
+	}
+}
+
+string LumiaIsland::MakeProfileNote()
+{
+	char buf[256];
+	const int wolves = m_wolfSpawner ? m_wolfSpawner->GetCount() : 0;
+	sprintf_s(buf, "stress_wolves=%d aggro=%d near=%.0f walk=%d objects=%d ui=%d collision=%s", wolves, m_autoProfile.aggro ? 1 : 0, m_autoProfile.nearRadius, m_autoProfile.walk ? 1 : 0,
+		static_cast<int>(GetObjects().size()), static_cast<int>(GetUIObjects().size()),
+		GetCollisionMode() == CollisionMode::ScreenQuadTree ? "Screen" : "Loose");
+	return buf;
+}
+
+void LumiaIsland::UpdateProfilerInput()
+{
+	// Shift + F2 : 지금 상태로 600 프레임 프로파일
+	if (INPUT->GetButton(KEY_TYPE::LSHIFT) && INPUT->GetButtonDown(KEY_TYPE::F2) && !FrameProfiler::Get().IsActive())
+		FrameProfiler::Get().Start(600, MakeProfileNote());
+
+	// 명령줄 자동 측정 : 로딩 끝 → 대기 → 늑대 배치 → 대기 → 측정 → (종료)
+	auto& a = m_autoProfile;
+	if (!a.enabled) return;
+	if (a.stage >= 1)
+		UpdateAutoWalk();
+	switch (a.stage)
+	{
+	case 0:
+		if (!m_objectsCreated || ++a.counter < a.warmup) return;
+		if (a.wolves > 0 && m_navMesh && m_navMesh->GetNavMesh())
+		{
+			if (!m_wolfSpawner)
+				m_wolfSpawner = make_unique<WolfStressSpawner>(m_navMesh->GetNavMesh(),
+					[this](Vec3 _pos, Vec3 _rot) { return CreateMonsterWolf(_pos, _rot); });
+			if (a.nearRadius > 0.f && m_player)
+				m_wolfSpawner->SpawnNear(a.wolves, m_player->GetTransform()->GetPosition(), a.nearRadius);
+			else
+				m_wolfSpawner->Spawn(a.wolves);
+			if (a.aggro && m_player)
+				m_wolfSpawner->SetTargetAll(m_player);
+		}
+		a.counter = 0;
+		a.timer = 0.f;
+		a.stage = 1;
+		return;
+	case 1:
+		++a.counter;
+		a.timer += DT;
+		if (a.warmupSec > 0.f ? (a.timer < a.warmupSec) : (a.counter < a.warmup)) return;
+		if (a.benchFrames > 0)
+		{
+			StartCollisionBenchmark(a.benchFrames);
+			a.stage = 4;
+			return;
+		}
+		FrameProfiler::Get().Start(a.frames, MakeProfileNote());
+		a.stage = 2;
+		return;
+	case 4:
+		// 충돌 정확성 기록이 끝나면 종료
+		if (GetCollisionBenchmark() && GetCollisionBenchmark()->IsRecording()) return;
+		a.stage = 3;
+		if (a.exitAfter)
+			::PostQuitMessage(0);
+		return;
+	case 2:
+		if (!FrameProfiler::Get().JustFinished()) return;
+		a.stage = 3;
+		if (a.exitAfter)
+			::PostQuitMessage(0);
+		return;
+	default:
+		return;
+	}
+}
+
+void LumiaIsland::HandleWolfStressInput()
+{
+	// F3 : 충돌 벤치마크용 늑대 대량 배치 단계 바꾸기 (같은 수면 매번 같은 배치)
+	if (!INPUT->GetButtonDown(KEY_TYPE::F3))
+		return;
+	if (!m_wolfSpawner)
+	{
+		if (!m_navMesh || !m_navMesh->GetNavMesh())
+			return;
+		m_wolfSpawner = make_unique<WolfStressSpawner>(m_navMesh->GetNavMesh(),
+			[this](Vec3 _pos, Vec3 _rot) { return CreateMonsterWolf(_pos, _rot); });
+	}
+	m_wolfSpawner->Cycle();
 }
 
 void LumiaIsland::FixedUpdate()
@@ -310,8 +474,8 @@ void LumiaIsland::CreateMainCamera()
 	camera->AddComponent(make_shared<Camera>());
 	camera->AddComponent(make_shared<CameraScript>());
 	// 
-	//m_cameraScript = make_shared<BiancaCamera>();
-	//camera->AddComponent(m_cameraScript);
+	m_cameraScript = make_shared<BiancaCamera>();
+	camera->AddComponent(m_cameraScript);
 
 	camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
 	CURSCENE->Add(camera);

@@ -71,6 +71,7 @@
     <ClInclude Include="BillboardDemo.h" />
     <ClInclude Include="ButtonDemo.h" />
     <ClInclude Include="CameraScript.h" />
+    <ClInclude Include="WolfStressSpawner.h" />
     <ClInclude Include="CharacterSelectScene.h" />
     <ClInclude Include="Client_Define.h" />
     <ClInclude Include="CraftGagePanelUI.h" />
@@ -220,6 +221,7 @@
     <ClCompile Include="BillboardDemo.cpp" />
     <ClCompile Include="ButtonDemo.cpp" />
     <ClCompile Include="CameraScript.cpp" />
+    <ClCompile Include="WolfStressSpawner.cpp" />
     <ClCompile Include="CharacterSelectScene.cpp" />
     <ClCompile Include="CraftGagePanelUI.cpp" />
     <ClCompile Include="CraftListPanelUI.cpp" />
