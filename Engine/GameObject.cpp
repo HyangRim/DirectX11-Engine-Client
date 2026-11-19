@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "FrameProfiler.h"
 #include "GameObject.h"
 #include "Transform.h"
 #include "Component.h"
@@ -70,13 +71,16 @@ void GameObject::Start()
 void GameObject::Update()
 {
 	for (shared_ptr<Component>& component : m_components) {
-		if(component != nullptr)
+		if(component != nullptr) {
+			ProfileScope ps("CompUpdate", FrameProfiler::s_active ? ProfileTypeName(typeid(*component)) : nullptr);
 			component->Update();
+		}
 	}
 
 	for (shared_ptr<MonoBehaviour>& script : m_scripts) {
 		if (script && script->IsActive())
 		{
+			ProfileScope ps("CompUpdate", FrameProfiler::s_active ? ProfileTypeName(typeid(*script)) : nullptr);
 			script->Update();
 		}
 	}

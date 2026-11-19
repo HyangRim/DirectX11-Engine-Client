@@ -147,6 +147,11 @@ void HealthBar::Create(Vec3 _offset)
 	CURSCENE->RegisterUIParent(panelObj);
 }
 
+shared_ptr<GameObject> HealthBar::GetPanelObject()
+{
+	return m_healthBarPanel ? m_healthBarPanel->GetGameObject() : nullptr;
+}
+
 void HealthBar::UpdateHealthBar(int _curHP, int _maxHP, int _curMP, int _maxMP)
 {
 	if (_curHP == m_lastCurHP && _maxHP == m_lastMaxHP && _curMP == m_lastCurMP && _maxMP == m_lastMaxMP)

@@ -43,6 +43,9 @@ public:
 
 public:
     MonsterStatus& GetMonsterStatus() { return m_monsterStatus; }
+    shared_ptr<HealthBar> GetHealthBar() { return m_healthBar; }
+    // false 면 이후 Start 하는 몬스터는 체력바 UI 를 만들지 않는다 (--nohpbar, 성능 확인용)
+    static bool s_createHealthBar;
 
     // 타겟 관리용 함수 추가 (행동 트리 노드들이 사용)
     void SetTarget(shared_ptr<Player> target) { m_targetPlayer = static_pointer_cast<Player>(target); }

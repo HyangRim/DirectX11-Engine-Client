@@ -120,6 +120,38 @@ private:
 
 	// 테스트용
 	shared_ptr<GameObject> m_navMesh;
+
+	// 충돌 벤치마크용 늑대 대량 배치 (F3 : 0 → 50 → 100 → 200 → 0)
+	unique_ptr<class WolfStressSpawner> m_wolfSpawner;
+	void HandleWolfStressInput();
+
+	// 프레임 프로파일러 : Shift + F2 로 600 프레임, 또는 명령줄 자동 측정
+	//   Client.exe --autoprofile [--wolves=N] [--near=R] [--aggro] [--frames=M] [--warmup=K] [--warmupsec=S]
+	//              [--collisionbench=N] [--mute] [--exit] [--collision=loose|screen]
+	struct AutoProfile
+	{
+		bool enabled = false;
+		int wolves = 0;
+		float nearRadius = 0.f;   // 0 이면 맵 전체, 아니면 플레이어 반경 안
+		bool aggro = false;
+		int frames = 600;
+		int warmup = 240;
+		float warmupSec = 0.f;   // 0 보다 크면 늑대 배치 후 '게임 시간' 으로 기다린다 (프레임이 느린 방식과 같은 조건)
+		int benchFrames = 0;     // 0 보다 크면 프로파일 대신 충돌 정확성 기록 (CollisionBenchmark)
+		float timer = 0.f;
+		bool walk = false;          // --walk : 플레이어가 고정 순찰 경로를 계속 돈다
+		vector<Vec3> route;         // 시작 위치 주변 NavMesh 지점 (고정 시드)
+		int routeIndex = 0;
+		float legTimer = 0.f;       // 한 구간에 쓴 게임 시간 (막히면 다음 지점으로)
+		bool mute = false;
+		bool exitAfter = false;
+		int stage = 0;
+		int counter = 0;
+	} m_autoProfile;
+	void InitAutoProfile();
+	void UpdateProfilerInput();
+	string MakeProfileNote();
+	void UpdateAutoWalk();
 	
 	shared_ptr<Player> m_player;
 

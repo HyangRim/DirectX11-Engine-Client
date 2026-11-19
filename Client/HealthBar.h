@@ -22,6 +22,8 @@ public:
     void UpdateHealthBar(int _curHP, int _maxHP, int _curMP, int _maxMP);
 
     void SetVisible(bool _visible);
+    // 체력바 UI 패널 오브젝트 (몬스터를 지울 때 같이 지우기 위해)
+    shared_ptr<GameObject> GetPanelObject();
 
 private:
     void UpdateHealthBarPosition();

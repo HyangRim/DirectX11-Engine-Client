@@ -214,6 +214,9 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     <ClInclude Include="NavMesh.h" />
     <ClInclude Include="NavMeshAgent.h" />
     <ClInclude Include="NavMeshBenchmark.h" />
+    <ClInclude Include="LooseQuadTree.h" />
+    <ClInclude Include="CollisionBenchmark.h" />
+    <ClInclude Include="FrameProfiler.h" />
     <ClInclude Include="PlayerStateMachine.h" />
     <ClInclude Include="QuadTree.h" />
     <ClInclude Include="RenderManager.h" />
@@ -336,6 +339,9 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     <ClCompile Include="NavMesh.cpp" />
     <ClCompile Include="NavMeshAgent.cpp" />
     <ClCompile Include="NavMeshBenchmark.cpp" />
+    <ClCompile Include="LooseQuadTree.cpp" />
+    <ClCompile Include="CollisionBenchmark.cpp" />
+    <ClCompile Include="FrameProfiler.cpp" />
     <ClCompile Include="PlayerStateMachine.cpp" />
     <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="RenderManager.cpp" />

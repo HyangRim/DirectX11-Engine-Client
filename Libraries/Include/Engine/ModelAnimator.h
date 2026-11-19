@@ -56,6 +56,9 @@ public:
     void SetModel(shared_ptr<Model> _model);
     shared_ptr<Model> GetModel() { return m_model; }
     void SetPass(uint8 _pass) { m_pass = _pass; }
+    // 같은 키를 쓰는 애니메이터끼리 애니메이션 행렬 · 텍스처를 한 벌만 만들어 공유한다
+    // (같은 모델 파일을 쓰는 객체용. 빈 키 = 공유 안 함 = 기존 동작)
+    void SetAnimationCacheKey(const wstring& _key) { m_animCacheKey = _key; }
     shared_ptr<Shader> GetShader();
 
     // ============================================================================
@@ -158,6 +161,18 @@ private:
     unordered_map<wstring, AnimTransform> m_animTransform;
     ComPtr<ID3D11Texture2D> m_texture;
     ComPtr<ID3D11ShaderResourceView> m_srv;
+
+    // 애니메이션 데이터 공유 (SetAnimationCacheKey)
+    struct SharedAnimData
+    {
+        unordered_map<wstring, AnimTransform> transforms;
+        ComPtr<ID3D11Texture2D> texture;
+        ComPtr<ID3D11ShaderResourceView> srv;
+    };
+    static unordered_map<wstring, weak_ptr<SharedAnimData>> s_animCache;
+    wstring m_animCacheKey;
+    shared_ptr<SharedAnimData> m_sharedAnim;
+    unordered_map<wstring, AnimTransform>& AnimTransforms() { return m_sharedAnim ? m_sharedAnim->transforms : m_animTransform; }
 
     // 태그-인덱스 매핑
     unordered_map<wstring, uint32> m_tagToIndex;

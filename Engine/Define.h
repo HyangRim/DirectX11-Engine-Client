@@ -15,7 +15,8 @@ public:										\
 #define	MSG_BOX(_message)	MessageBox(NULL, TEXT(_message), L"System Message", MB_OK)
 
 
-#define CHECK(p)	assert(SUCCEEDED(p))
+// p 는 항상 실행하고 결과만 assert (Release 에서 assert 가 사라져도 호출은 남게)
+#define CHECK(p)	do { HRESULT _checkHr = (p); assert(SUCCEEDED(_checkHr)); (void)_checkHr; } while (0)
 #define GAME		GET_SINGLE(Game)		
 #define GRAPHICS	GET_SINGLE(Graphics)
 #define DEVICE		GRAPHICS->GetDevice()

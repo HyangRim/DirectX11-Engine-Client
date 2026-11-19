@@ -70,7 +70,9 @@ bool FogOfWar::IsFOWShader(shared_ptr<Shader> _shader)
 void FogOfWar::UpdateShadersWithFOWData(FogOfWarData& _fowData)
 {
 
-	const auto& objects = CURSCENE->GetQuadTree()->GetInsertedObject();
+	// 화면 트리에 넣은 객체 (Loose 모드면 충돌체가 있는 활성 객체 전부, 아래에서 IsObjectVisible 로 거른다)
+	vector<shared_ptr<GameObject>> objects;
+	CURSCENE->GetFOWObjects(objects);
 	shared_ptr<Camera> camera = CURSCENE->GetMainCamera()->GetCamera();
 
 	Vec3 playerPos = _fowData.playerWorldPos;

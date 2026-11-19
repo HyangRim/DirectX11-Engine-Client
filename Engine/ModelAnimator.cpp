@@ -8,6 +8,8 @@
 #include "Camera.h"
 #include "Light.h"
 
+unordered_map<wstring, weak_ptr<ModelAnimator::SharedAnimData>> ModelAnimator::s_animCache;
+
 ModelAnimator::ModelAnimator(shared_ptr<Shader> _shader)
     : Super(ComponentType::Animator), m_shader(_shader)
 {
@@ -506,6 +508,22 @@ void ModelAnimator::CreateTexture()
     if (m_model->GetAnimationCount() == 0)
         return;
 
+    // 같은 키로 이미 만든 데이터가 있으면 그대로 쓴다 (행렬 계산 · 텍스처 생성 생략)
+    if (!m_animCacheKey.empty())
+    {
+        auto cached = s_animCache.find(m_animCacheKey);
+        if (cached != s_animCache.end())
+        {
+            if (shared_ptr<SharedAnimData> data = cached->second.lock())
+            {
+                m_sharedAnim = data;
+                m_texture = data->texture;
+                m_srv = data->srv;
+                return;
+            }
+        }
+    }
+
     uint32 maxFrameCount = 0;
 
     for (const auto& pair : m_model->GetAnimations())
@@ -570,6 +588,18 @@ void ModelAnimator::CreateTexture()
 
     hr = DEVICE->CreateShaderResourceView(m_texture.Get(), &srvDesc, m_srv.GetAddressOf());
     CHECK(hr);
+
+    // 공유 키가 있으면 이번에 만든 행렬 · 텍스처를 캐시에 올린다
+    if (!m_animCacheKey.empty())
+    {
+        auto data = make_shared<SharedAnimData>();
+        data->transforms = std::move(m_animTransform);
+        m_animTransform.clear();
+        data->texture = m_texture;
+        data->srv = m_srv;
+        m_sharedAnim = data;
+        s_animCache[m_animCacheKey] = data;
+    }
 }
 
 void ModelAnimator::CreateAnimationTransform(const wstring& _tag)
@@ -761,8 +791,9 @@ Matrix ModelAnimator::GetAnimatedBoneTransform(const wstring& boneName)
     float ratio = m_tweenDesc.m_curr.m_ratio;
 
     // 이미 계산된 변환 데이터에서 가져오기
-    auto it = m_animTransform.find(currentTag);
-    if (it == m_animTransform.end())
+    auto& animTransforms = AnimTransforms();
+    auto it = animTransforms.find(currentTag);
+    if (it == animTransforms.end())
         return Matrix::Identity;
 
     const auto& transforms = it->second.transforms;

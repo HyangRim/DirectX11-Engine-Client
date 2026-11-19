@@ -58,6 +58,12 @@ public:
 public:
     void UpdateQuadTree();   
     QuadTree* GetQuadTree() { return m_quadTree.get(); }
+    // 벤치마크용 : 직전 UpdateQuadTree 에서 트리를 다시 만들었는지 · 다시 만드는 데 걸린 시간
+    bool WasQuadTreeRebuilt() const { return m_quadTreeRebuilt; }
+    // Loose 모드용 : 화면 트리를 만들어만 두고 (IsObjectVisible 같은 계산용) 내용은 비운다
+    void EnsureQuadTree();
+    void ClearQuadTree();
+    long long GetLastQuadTreeBuildUs() const { return m_lastQuadTreeBuildUs; }
 
 
 private:
@@ -94,5 +100,7 @@ private:
 
     unique_ptr<QuadTree> m_quadTree;
     bool m_quadTreeDirty = true;
+    bool m_quadTreeRebuilt = false;
+    long long m_lastQuadTreeBuildUs = 0;
 };
 

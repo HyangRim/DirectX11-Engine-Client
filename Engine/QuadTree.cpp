@@ -955,6 +955,22 @@ void QuadTree::CheckCollisionsInTree(shared_ptr<Camera> _camera, unordered_map<U
 
 }
 
+void QuadTree::CollectCollisionPairs(vector<ULONG64>& _outPairs, long long& _outNarrow)
+{
+	_outPairs.clear();
+	_outNarrow = 0;
+	if (!m_root) return;
+
+	unordered_map<ULONG64, bool> dummyMap;
+	unordered_set<ULONG64> processedPairs;
+	m_collectPairs = &_outPairs;
+	m_collectNarrow = 0;
+	CheckCollisionsInNode(m_root, dummyMap, processedPairs);
+	CheckBoundaryCollisions(m_root, dummyMap, processedPairs);
+	_outNarrow = m_collectNarrow;
+	m_collectPairs = nullptr;
+}
+
 void QuadTree::CheckCollisionsInNode(const unique_ptr<QuadTreeNode>& _node, unordered_map<ULONG64, bool>& _collisionMap, unordered_set<ULONG64>& _processedPairs)
 {
 	if (!_node) return;
@@ -1079,6 +1095,15 @@ void QuadTree::ProcessCollisionPair(shared_ptr<BaseCollider> _collider1, shared_
 	// 이미 처리된 쌍인지 확인
 	if (_processedPairs.find(id.ID) != _processedPairs.end()) return;
 	_processedPairs.insert(id.ID);
+
+	// 벤치마크 수집 모드 : 판정만 하고 이벤트 / 상태는 건드리지 않는다 (ID 작은 쪽 기준으로 판정)
+	if (m_collectPairs) {
+		++m_collectNarrow;
+		shared_ptr<BaseCollider> lo = (_collider1->GetID() < _collider2->GetID()) ? _collider1 : _collider2;
+		shared_ptr<BaseCollider> hi = (lo == _collider1) ? _collider2 : _collider1;
+		if (lo->Intersects(hi)) m_collectPairs->push_back(id.ID);
+		return;
+	}
 
 	// 충돌 상태 확인
 	auto colliderMapIter = _collisionMap.find(id.ID);

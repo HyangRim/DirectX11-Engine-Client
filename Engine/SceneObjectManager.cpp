@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "FrameProfiler.h"
 #include "SceneObjectManager.h"
 #include "GameObject.h"
 #include "Camera.h"
@@ -39,11 +40,13 @@ void SceneObjectManager::Update()
 {
     const auto& objects = m_gameObjects;
     for (auto& object : objects) {
+        ProfileScope ps("ObjUpdate", FrameProfiler::s_active ? ProfileTypeName(typeid(*object)) : nullptr);
         object->Update();
     }
 
     const auto& uiObjects = m_uiObjects;
     for (auto& object : uiObjects) {
+        ProfileScope ps("UIUpdate", "(all UI objects)");
         object->Update();
     }
 }
@@ -64,6 +67,7 @@ void SceneObjectManager::LateUpdate()
 {
     const auto& objects = m_gameObjects;
     for (auto& object : objects) {
+        ProfileScope ps("ObjLate", FrameProfiler::s_active ? ProfileTypeName(typeid(*object)) : nullptr);
         object->LateUpdate();
     }
     const auto& uiObjects = m_uiObjects;
@@ -342,7 +346,7 @@ shared_ptr<GameObject> SceneObjectManager::PickObjectOrUI()
     Ray ray = CreateRayFromScreen(Vec2(screenPt.x, screenPt.y), camera);
 
     auto queryStart = std::chrono::high_resolution_clock::now();
-    vector<shared_ptr<GameObject>> candidates = m_quadTree->Query(ray, camera);
+    vector<shared_ptr<GameObject>> candidates = CURSCENE->QueryRayCandidates(ray, camera);   // Loose 모드면 월드 트리에서 후보
     auto queryEnd = std::chrono::high_resolution_clock::now();
 
     // 좌표 비교 디버깅 + 음수 좌표 필터링
@@ -472,6 +476,24 @@ Ray SceneObjectManager::CreateRayFromScreen(const Vec2& screenPos, shared_ptr<Ca
     return Ray(nearPoint, rayDirection);
 }
 
+void SceneObjectManager::EnsureQuadTree()
+{
+    m_quadTreeRebuilt = false;
+    if (!m_quadTree)
+    {
+        float width = GRAPHICS->GetViewport().GetWidth();
+        float height = GRAPHICS->GetViewport().GetHeight();
+        m_quadTree = make_unique<QuadTree>(width, height);
+    }
+}
+
+void SceneObjectManager::ClearQuadTree()
+{
+    EnsureQuadTree();
+    m_quadTree->Clear();
+    m_quadTreeDirty = true;   // 다시 화면 모드로 오면 바로 다시 짓는다
+}
+
 void SceneObjectManager::UpdateQuadTree()
 {
     //Assimp용 임시. 
@@ -494,6 +516,8 @@ void SceneObjectManager::UpdateQuadTree()
     
     //객체의 Active감지를 위한 해시맵.
     static unordered_map<shared_ptr<GameObject>, bool> lastObjectActives;
+
+    m_quadTreeRebuilt = false;
 
     Vec3 currentCameraPos = GetMainCamera()->GetTransform()->GetPosition();
     Vec3 currentCameraRot = GetMainCamera()->GetTransform()->GetLocalRotation();
@@ -581,6 +605,8 @@ void SceneObjectManager::UpdateQuadTree()
 
         auto buildEnd = std::chrono::high_resolution_clock::now();
         auto buildTime = std::chrono::duration_cast<std::chrono::microseconds>(buildEnd - buildStart);
+        m_quadTreeRebuilt = true;
+        m_lastQuadTreeBuildUs = buildTime.count();
 
 //#ifdef _DEBUG
 //        cout << "쿼드트리 재구성: " << insertedCount << "/" << m_gameObjects.size()
@@ -621,7 +647,7 @@ shared_ptr<GameObject> SceneObjectManager::PickObjectForAttack(shared_ptr<GameOb
     Ray ray = CreateRayFromScreen(Vec2(screenPt.x, screenPt.y), camera);
 
     // 쿼드트리를 이용한 후보 객체 수집
-    vector<shared_ptr<GameObject>> candidates = m_quadTree->Query(ray, camera);
+    vector<shared_ptr<GameObject>> candidates = CURSCENE->QueryRayCandidates(ray, camera);   // Loose 모드면 월드 트리에서 후보
     vector<shared_ptr<GameObject>> validCandidates;
 
     // 음수 좌표 필터링

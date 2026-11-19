@@ -100,6 +100,9 @@ public:
 //이 밑은 충돌 관련 함수들. 
 public:
     void CheckCollisionsInTree(shared_ptr<Camera> _camera, unordered_map<ULONG64, bool>& _collisionMap);
+    // 벤치마크용 : 이벤트 없이 닿은 쌍만 모은다 (탐색 경로는 CheckCollisionsInTree 와 같다)
+    void CollectCollisionPairs(vector<ULONG64>& _outPairs, long long& _outNarrow);
+    static int GetCreatedNodeCount() { return s_nextNodeId; }
 private:
     // 노드별 충돌 검사
     void CheckCollisionsInNode(const unique_ptr<QuadTreeNode>& _node,
@@ -143,6 +146,10 @@ private:
     //디버그용. 
     QuadTreeStats m_stats;
     static int s_nextNodeId;
+
+    // CollectCollisionPairs 동안만 쓰인다 (nullptr 이면 평소처럼 이벤트 처리)
+    vector<ULONG64>* m_collectPairs = nullptr;
+    long long m_collectNarrow = 0;
 
 };
 

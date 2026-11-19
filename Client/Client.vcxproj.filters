@@ -273,6 +273,9 @@
     <ClCompile Include="CameraScript.cpp">
       <Filter>Scripts\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="WolfStressSpawner.cpp">
+      <Filter>Scripts\Camera</Filter>
+    </ClCompile>
     <ClCompile Include="BiancaTest.cpp">
       <Filter>Scripts\PlayerTest</Filter>
     </ClCompile>
@@ -708,6 +711,9 @@
       <Filter>Scripts\FOW</Filter>
     </ClInclude>
     <ClInclude Include="CameraScript.h">
+      <Filter>Scripts\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="WolfStressSpawner.h">
       <Filter>Scripts\Camera</Filter>
     </ClInclude>
     <ClInclude Include="BiancaTest.h">
