@@ -24,6 +24,7 @@
 
 #include "NavMesh.h"
 #include "NavMeshAgent.h"
+#include "NavMeshBenchmark.h"
 
 #include "D2DText.h"
 #include "ISkill.h"
@@ -103,7 +104,7 @@ void LumiaIsland::Start()
 	CreateCemeterySmallInterior();
 	CreateCemeteryEnvironment();
 
-	m_cameraScript->SetTarget(m_player);
+	//m_cameraScript->SetTarget(m_player);
 	CreateCemeteryItemBox();
 	//CreateTestDummy();
 
@@ -278,6 +279,8 @@ void LumiaIsland::Update()
 		ControlPlayerStatus();
 		HandleSkillLevelUpInput();
 	}
+
+	UpdateNavPathDebug();
 }
 
 void LumiaIsland::FixedUpdate()
@@ -293,6 +296,8 @@ void LumiaIsland::LateUpdate()
 void LumiaIsland::Render()
 {
 	Super::Render();
+
+	DrawNavPathDebug();
 }
 
 void LumiaIsland::CreateMainCamera()
@@ -300,13 +305,13 @@ void LumiaIsland::CreateMainCamera()
 	// Camera
 	auto camera = make_shared<GameObject>();
 	//camera->GetTransform()->SetPosition(Vec3(0.f, 15.f, 15.f));
-	//camera->GetTransform()->SetPosition(Vec3{ 10.f, 30.f, -5.f });
+	camera->GetTransform()->SetPosition(Vec3{ 10.f, 30.f, -5.f });
 	camera->GetTransform()->SetRotation(Vec3(45.f, -45.f, 0.f));
 	camera->AddComponent(make_shared<Camera>());
-	//camera->AddComponent(make_shared<CameraScript>());
+	camera->AddComponent(make_shared<CameraScript>());
 	// 
-	m_cameraScript = make_shared<BiancaCamera>();
-	camera->AddComponent(m_cameraScript);
+	//m_cameraScript = make_shared<BiancaCamera>();
+	//camera->AddComponent(m_cameraScript);
 
 	camera->GetCamera()->SetCullingMaskLayerOnOff(LAYER_UI, true);
 	CURSCENE->Add(camera);
@@ -1818,7 +1823,17 @@ void LumiaIsland::CreateNavMesh()
 		m_navMesh->AddComponent(make_shared<ModelRenderer>(m_defaultshader));
 		{
 			m_navMesh->GetModelRenderer()->SetModel(m1);
-			m_navMesh->GetModelRenderer()->SetPass(1);
+			// FOW.fx T0 의 7번째 pass (P7: FillModeWireFrame + PS_NavMesh_Wireframe) → 빨간색 와이어프레임
+			m_navMesh->GetModelRenderer()->SetPass(6);
+
+			// 디퍼드 G-Buffer 패스(GBufferTech)에는 pass가 0~4만 있어서 6번을 쓰면 범위 밖 에러.
+			// 투명 머티리얼로 지정해 포워드(T0) 경로로만 그리고, 그림자 패스에서는 제외한다.
+			for (auto& material : m1->GetMaterials())
+			{
+				material->SetTransparent(true);
+				material->SetRenderQueue(RenderQueue::Transparent);
+				material->SetCastShadow(false);
+			}
 		}
 
 		m_navMesh->AddComponent(make_shared<NavMesh>());
@@ -2482,4 +2497,106 @@ void LumiaIsland::LevelUpSkill(int skillIndex)
 
 	cout << "스킬 " << (char)('Q' + skillIndex) << " 레벨업! 현재 레벨: "
 		<< skill->GetCurSkillLevel() << "/" << maxLevel << endl;
+}
+
+// =============================================================================
+// NavMesh 경로 진단: F8 토글, 플레이어 NavMeshAgent만 대상
+//                   F7: 스무딩 방식 순환 (기본 Corridor -> CorridorSplit -> CorridorFan -> CorridorFanPortal -> CorridorDP -> CorridorPull -> Funnel -> FunnelFan -> FunnelCurve -> FunnelCurveAngle -> FunnelCurveTangent -> LOS -> Corridor)
+//                   F5: Agent 반경 순환 (0.3 -> 0.6 -> 0 -> 0.3)  / F6: 위치 보정 (Edge <-> Vertex)
+// =============================================================================
+void LumiaIsland::UpdateNavPathDebug()
+{
+	if (INPUT->GetButtonDown(KEY_TYPE::F8))
+	{
+		m_navPathDebug = !m_navPathDebug;
+		cout << "[PathDebug] " << (m_navPathDebug ? "ON" : "OFF") << endl;
+	}
+
+	// F7: 스무딩 방식 순환 (Corridor -> CorridorSplit -> CorridorFan -> CorridorFanPortal -> CorridorDP -> CorridorPull -> Funnel -> FunnelFan -> FunnelCurve -> FunnelCurveAngle -> FunnelCurveTangent -> LOS -> Corridor), Before/After 비교용
+	if (INPUT->GetButtonDown(KEY_TYPE::F7) && m_navMesh && m_navMesh->GetNavMesh())
+	{
+		shared_ptr<NavMesh> navMesh = m_navMesh->GetNavMesh();
+		NavSmoothingMode mode = navMesh->GetSmoothingMode();
+		NavSmoothingMode next = (mode == NavSmoothingMode::Funnel) ? NavSmoothingMode::FunnelFan
+			: (mode == NavSmoothingMode::FunnelFan) ? NavSmoothingMode::FunnelCurve
+			: (mode == NavSmoothingMode::FunnelCurve) ? NavSmoothingMode::FunnelCurveAngle
+			: (mode == NavSmoothingMode::FunnelCurveAngle) ? NavSmoothingMode::FunnelCurveTangent
+			: (mode == NavSmoothingMode::FunnelCurveTangent) ? NavSmoothingMode::LOS
+			: (mode == NavSmoothingMode::LOS) ? NavSmoothingMode::Corridor
+			: (mode == NavSmoothingMode::Corridor) ? NavSmoothingMode::CorridorSplit
+			: (mode == NavSmoothingMode::CorridorSplit) ? NavSmoothingMode::CorridorFan
+			: (mode == NavSmoothingMode::CorridorFan) ? NavSmoothingMode::CorridorFanPortal
+			: (mode == NavSmoothingMode::CorridorFanPortal) ? NavSmoothingMode::CorridorDP
+			: (mode == NavSmoothingMode::CorridorDP) ? NavSmoothingMode::CorridorPull
+			: NavSmoothingMode::Funnel;
+		navMesh->SetSmoothingMode(next);
+		cout << "[PathDebug] smoothing: " << NavMesh::SmoothingModeName(next) << endl;
+	}
+
+	// F4: 플레이어 Look-ahead 추종 거리 순환 (0 = 끔 -> 1 -> 2 -> 3 -> 0). 경로는 그대로, 따라가는 방식만 바뀜
+	if (INPUT->GetButtonDown(KEY_TYPE::F4) && m_player && m_player->GetNavMeshAgent())
+	{
+		shared_ptr<NavMeshAgent> agent = m_player->GetNavMeshAgent();
+		const float la = agent->GetLookAhead();
+		const float next = (la < 0.5f) ? 1.f : (la < 1.5f) ? 2.f : (la < 2.5f) ? 3.f : 0.f;
+		agent->SetLookAhead(next);
+		cout << "[PathDebug] look-ahead: " << next << (next > 0.f ? "" : " (off)") << endl;
+	}
+
+	// F5: Agent 반경 순환 (0.3 -> 0.6 -> 0 -> 0.3), Funnel Portal 축소량
+	if (INPUT->GetButtonDown(KEY_TYPE::F5) && m_navMesh && m_navMesh->GetNavMesh())
+	{
+		shared_ptr<NavMesh> navMesh = m_navMesh->GetNavMesh();
+		const float radius = navMesh->GetAgentRadius();
+		const float next = (radius < 0.15f) ? 0.3f : (radius < 0.45f) ? 0.6f : 0.f;
+		navMesh->SetAgentRadius(next);
+		cout << "[PathDebug] agent radius: " << next << endl;
+	}
+
+	// F6: 위치 보정 방식 (Edge = 삼각형 위 최근접점 <-> Vertex = 기존 꼭짓점 스냅)
+	if (INPUT->GetButtonDown(KEY_TYPE::F6) && m_navMesh && m_navMesh->GetNavMesh())
+	{
+		shared_ptr<NavMesh> navMesh = m_navMesh->GetNavMesh();
+		navMesh->SetEdgeSnap(!navMesh->IsEdgeSnap());
+		cout << "[PathDebug] position correction: " << (navMesh->IsEdgeSnap() ? "Edge" : "Vertex") << endl;
+	}
+
+	// F9: 경로 방식 비교 벤치마크 (LOS / Corridor / Funnel) → 콘솔 표 + ..\tmp\benchmark\compare_*.csv
+	// F10: 마지막 우클릭 이동(시작 위치 → 클릭 지점)을 corner 테스트 케이스로 저장
+	if (m_navMesh && m_navMesh->GetNavMesh() && m_player && m_player->GetNavMeshAgent())
+	{
+		shared_ptr<NavMesh> navMesh = m_navMesh->GetNavMesh();
+		shared_ptr<NavMeshAgent> agent = m_player->GetNavMeshAgent();
+		if (INPUT->GetButtonDown(KEY_TYPE::F9))
+		{
+			NavMeshBenchmark::Config config;
+			config.agentSpeed = agent->GetSpeed();
+			NavMeshBenchmark::Run(navMesh, config);
+			TIME->ResetDeltaTime();   // 측정으로 멈춘 시간이 다음 프레임 DT 로 들어가지 않게
+		}
+		if (INPUT->GetButtonDown(KEY_TYPE::F10))
+		{
+			Vec3 s, d;
+			if (agent->GetLastRequest(s, d))
+				NavMeshBenchmark::AppendCornerPair(NavMeshBenchmark::Config().testSetPath, s, d);
+			else
+				cout << "[Benchmark] 저장할 이동 요청이 없습니다. 먼저 우클릭으로 이동하세요." << endl;
+		}
+	}
+
+	if (m_player && m_player->GetNavMeshAgent())
+		m_player->GetNavMeshAgent()->SetPathDebugEnabled(m_navPathDebug);
+}
+
+void LumiaIsland::DrawNavPathDebug()
+{
+	if (!m_navPathDebug || !m_player || !m_player->GetNavMeshAgent())
+		return;
+
+	shared_ptr<GameObject> cameraObject = GetMainCamera();
+	if (!cameraObject || !cameraObject->GetCamera())
+		return;
+
+	shared_ptr<Camera> camera = cameraObject->GetCamera();
+	m_player->GetNavMeshAgent()->DrawPathDebug(camera->GetViewMatrix(), camera->GetProjectionMatrix());
 }

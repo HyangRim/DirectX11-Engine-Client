@@ -212,6 +212,7 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     <ClInclude Include="MonsterStateMachine.h" />
     <ClInclude Include="NavMesh.h" />
     <ClInclude Include="NavMeshAgent.h" />
+    <ClInclude Include="NavMeshBenchmark.h" />
     <ClInclude Include="PlayerStateMachine.h" />
     <ClInclude Include="QuadTree.h" />
     <ClInclude Include="RenderManager.h" />
@@ -332,6 +333,7 @@ xcopy /Y "$(SolutionDir)Engine\*.inl" "$(SolutionDir)Libraries\Include\Engine"</
     <ClCompile Include="MonsterStateMachine.cpp" />
     <ClCompile Include="NavMesh.cpp" />
     <ClCompile Include="NavMeshAgent.cpp" />
+    <ClCompile Include="NavMeshBenchmark.cpp" />
     <ClCompile Include="PlayerStateMachine.cpp" />
     <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="RenderManager.cpp" />

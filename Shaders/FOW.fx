@@ -95,7 +95,7 @@ float4 PS_NavMesh_Debug(MeshOutput input) : SV_TARGET
 
 float4 PS_NavMesh_Wireframe(MeshOutput input) : SV_TARGET
 {
-    return float4(0.0f, 0.8f, 0.0f, 1.0f); // 불투명 녹색
+    return float4(1.0f, 0.0f, 0.0f, 1.0f); // 불투명 빨간색
 }
 
 // G-Buffer 출력용 픽셀 셰이더

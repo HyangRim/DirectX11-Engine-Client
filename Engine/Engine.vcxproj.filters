@@ -238,6 +238,9 @@
     <ClCompile Include="NavMeshAgent.cpp">
       <Filter>04. Component\NavMesh</Filter>
     </ClCompile>
+    <ClCompile Include="NavMeshBenchmark.cpp">
+      <Filter>04. Component\NavMesh</Filter>
+    </ClCompile>
     <ClCompile Include="LobbyScene.cpp">
       <Filter>02. Managers\Scene</Filter>
     </ClCompile>
@@ -532,6 +535,9 @@
       <Filter>04. Component\NavMesh</Filter>
     </ClInclude>
     <ClInclude Include="NavMeshAgent.h">
+      <Filter>04. Component\NavMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="NavMeshBenchmark.h">
       <Filter>04. Component\NavMesh</Filter>
     </ClInclude>
     <ClInclude Include="LobbyScene.h">
